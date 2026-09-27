@@ -40,6 +40,11 @@ local callbacks = {
 		fire("Flex", { statId = statId })
 	end,
 
+	--- Pins a stat above the character. "" clears it.
+	setDisplayStat = function(statId: string)
+		fire("SetDisplayStat", { statId = statId })
+	end,
+
 	buyPass = function(key: string)
 		fire("PromptPurchase", { kind = "pass", key = key })
 	end,

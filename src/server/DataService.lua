@@ -35,6 +35,7 @@ local function template()
 		lastDaily = 0,
 		flexCount = 0,
 		autoScan = false,
+		displayStat = "", -- statId shown above the player's head
 		playtimeInGame = 0,
 		firstJoin = os.time(),
 		lastSeen = os.time(),

@@ -27,6 +27,7 @@ local EVENTS = {
 	"PromptPurchase", -- client -> server: { kind = "pass"|"product", key }
 	"ResetScans", -- client -> server
 	"OpenMenu", -- server -> client: the podium prompt was triggered
+	"SetDisplayStat", -- client -> server: { statId } ("" clears it)
 }
 
 local FUNCTIONS = {

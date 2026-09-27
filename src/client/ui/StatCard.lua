@@ -69,13 +69,9 @@ function StatCard.new(stat, callbacks: Callbacks, order: number)
 	self.housing = Util.iconHousing(self.root, stat.icon, 44, stat.color)
 	self.housing.Position = UDim2.fromOffset(6, 4)
 
-	-- Status LED.
-	self.led, self.ledLabel = Bevel.led(
-		self.root,
-		Theme.Color.shadowDeep,
-		"idle",
-		UDim2.new(0, 6, 1, -22)
-	)
+	-- Status LED. Diode only, no label: the footer already says the state in
+	-- words, and the LED's 150px labelled holder overlapped it.
+	self.led = Bevel.led(self.root, Theme.Color.shadowDeep, nil, UDim2.new(0, 62, 1, -19))
 
 	-- Title -- uppercase, tight, mounted next to the housing.
 	self.title = Util.text({
@@ -137,8 +133,8 @@ function StatCard.new(stat, callbacks: Callbacks, order: number)
 	-- Footer: stamped metadata.
 	self.footer = Util.stamp({
 		Name = "Footer",
-		Position = UDim2.new(0, 62, 1, -20),
-		Size = UDim2.new(1, -62 - 132, 0, 16),
+		Position = UDim2.new(0, 82, 1, -20),
+		Size = UDim2.new(1, -82 - 132, 0, 16),
 		Text = DISCLAIMER,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = self.root,
@@ -156,15 +152,28 @@ function StatCard.new(stat, callbacks: Callbacks, order: number)
 		Parent = self.root,
 	})
 
-	-- Secondary key (flex), only present once a value exists.
+	-- Secondary keys, only present once a value exists: broadcast it, or pin it
+	-- above your character.
 	self.secondary = Util.button({
 		Name = "Secondary",
 		variant = "secondary",
 		AnchorPoint = Vector2.new(1, 1),
-		Position = UDim2.new(1, 0, 1, -2),
-		Size = UDim2.new(0, 118, 0, 34),
+		Position = UDim2.new(1, -60, 1, -2),
+		Size = UDim2.new(0, 58, 0, 34),
 		Text = "FLEX",
-		TextSize = 13,
+		TextSize = 12,
+		Visible = false,
+		Parent = self.root,
+	})
+
+	self.pin = Util.button({
+		Name = "Pin",
+		variant = "secondary",
+		AnchorPoint = Vector2.new(1, 1),
+		Position = UDim2.new(1, 0, 1, -2),
+		Size = UDim2.new(0, 58, 0, 34),
+		Text = "PIN",
+		TextSize = 12,
 		Visible = false,
 		Parent = self.root,
 	})
@@ -174,6 +183,13 @@ function StatCard.new(stat, callbacks: Callbacks, order: number)
 	end)
 	Util.onClick(self.secondary, 0.2, function()
 		self:onSecondary()
+	end)
+	Util.onClick(self.pin, 0.3, function()
+		if self.mode == "revealed" then
+			-- Pinning the already-pinned stat clears it.
+			local pinned = self.pinned and "" or self.stat.id
+			self.callbacks.setDisplayStat(pinned)
+		end
 	end)
 
 	return self
@@ -241,7 +257,7 @@ function StatCard:resolveMode(state): (string, string?)
 	return Store.isScanned(stat.id) and "revealed" or "ready"
 end
 
-local function setLed(card, color: Color3, label: string)
+local function setLed(card, color: Color3)
 	local diode = card.led:FindFirstChild("Diode")
 	local bloom = card.led:FindFirstChild("Bloom")
 	if diode then
@@ -249,9 +265,6 @@ local function setLed(card, color: Color3, label: string)
 	end
 	if bloom then
 		(bloom :: Frame).BackgroundColor3 = color
-	end
-	if card.ledLabel then
-		card.ledLabel.Text = Theme.stamp(label)
 	end
 end
 
@@ -269,12 +282,18 @@ function StatCard:update(state)
 	self.track.Visible = mode == "scanning"
 	self.value.Visible = mode ~= "scanning"
 	self.secondary.Visible = mode == "revealed"
+	self.pin.Visible = mode == "revealed"
+
+	self.pinned = state.displayStat == stat.id
+	self.pin.Text = self.pinned and "PINNED" or "PIN"
+	self.pin.BackgroundColor3 = self.pinned and Theme.Color.accent or Theme.Color.chassis
+	self.pin.TextColor3 = self.pinned and Theme.Color.accentText or Theme.Color.text
 
 	if mode == "scanning" then
 		self.action.Text = "ABORT"
 		self.action.BackgroundColor3 = Theme.Color.dark
 		self.footer.Text = Theme.stamp("scanning")
-		setLed(self, Theme.Color.ledAmber, "working")
+		setLed(self, Theme.Color.ledAmber)
 	elseif mode == "revealed" then
 		local value = state.values[stat.id]
 		self.value.Text = value ~= nil and Format.value(stat.format, value) or "--"
@@ -283,7 +302,7 @@ function StatCard:update(state)
 		self.action.BackgroundColor3 = Theme.Color.chassis
 		self.action.TextColor3 = Theme.Color.text
 		self.footer.Text = Theme.stamp(DISCLAIMER)
-		setLed(self, Theme.Color.ledGreen, "logged")
+		setLed(self, Theme.Color.ledGreen)
 	elseif mode == "ready" then
 		local estimate = state.instant and "instant"
 			or Format.clock(stat.scanTime / math.max(state.speed or 1, 0.01))
@@ -293,7 +312,7 @@ function StatCard:update(state)
 		self.action.BackgroundColor3 = Theme.Color.accent
 		self.action.TextColor3 = Theme.Color.accentText
 		self.footer.Text = Theme.stamp("ready / " .. estimate)
-		setLed(self, Theme.Color.ledGreen, "ready")
+		setLed(self, Theme.Color.ledGreen)
 	elseif mode == "locked-coins" then
 		local affordable = state.coins >= stat.unlock.amount
 		self.value.Text = lockText or "LOCKED"
@@ -302,7 +321,7 @@ function StatCard:update(state)
 		self.action.BackgroundColor3 = affordable and Theme.Color.accent or Theme.Color.recess
 		self.action.TextColor3 = affordable and Theme.Color.accentText or Theme.Color.textMuted
 		self.footer.Text = Theme.stamp(stat.category .. " module")
-		setLed(self, affordable and Theme.Color.ledAmber or Theme.Color.shadowDeep, "locked")
+		setLed(self, affordable and Theme.Color.ledAmber or Theme.Color.shadowDeep)
 	elseif mode == "locked-pass" then
 		self.value.Text = lockText or "LOCKED"
 		self.value.TextColor3 = Theme.Color.textMuted
@@ -310,7 +329,7 @@ function StatCard:update(state)
 		self.action.BackgroundColor3 = Theme.Color.accent
 		self.action.TextColor3 = Theme.Color.accentText
 		self.footer.Text = Theme.stamp(stat.category .. " module")
-		setLed(self, Theme.Color.ledRed, "locked")
+		setLed(self, Theme.Color.ledRed)
 	else -- locked-progress
 		self.value.Text = lockText or "LOCKED"
 		self.value.TextColor3 = Theme.Color.textMuted
@@ -318,7 +337,7 @@ function StatCard:update(state)
 		self.action.BackgroundColor3 = Theme.Color.recess
 		self.action.TextColor3 = Theme.Color.textMuted
 		self.footer.Text = Theme.stamp(stat.category .. " module")
-		setLed(self, Theme.Color.shadowDeep, "locked")
+		setLed(self, Theme.Color.shadowDeep)
 	end
 end
 

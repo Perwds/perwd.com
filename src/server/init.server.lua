@@ -25,6 +25,7 @@ local AchievementService = require(script.AchievementService)
 local DailyService = require(script.DailyService)
 local RebirthService = require(script.RebirthService)
 local LeaderboardService = require(script.LeaderboardService)
+local NametagService = require(script.NametagService)
 local WorldBuilder = require(script.WorldBuilder)
 
 Remotes.init()
@@ -89,6 +90,7 @@ ScanService.init()
 DailyService.init()
 RebirthService.init()
 LeaderboardService.init()
+NametagService.init()
 WorldBuilder.build()
 
 ScanService.onComplete(function(player)
@@ -222,6 +224,16 @@ Remotes.event("ResetScans").OnServerEvent:Connect(function(player)
 	end
 	ScanService.resetScans(player, true)
 	StateService.notify(player, "Scans reset. Coins kept.", "🔄", Color3.fromRGB(120, 200, 255))
+end)
+
+Remotes.event("SetDisplayStat").OnServerEvent:Connect(function(player, payload)
+	if throttled(player, "pin", 0.4) then
+		return
+	end
+	if type(payload) ~= "table" or type(payload.statId) ~= "string" then
+		return
+	end
+	NametagService.setDisplayStat(player, payload.statId)
 end)
 
 Remotes.event("PromptPurchase").OnServerEvent:Connect(function(player, payload)

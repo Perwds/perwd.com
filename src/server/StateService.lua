@@ -20,10 +20,17 @@ local GamepassService = require(script.Parent.GamepassService)
 local StateService = {}
 
 local providers: { [string]: (Player) -> any } = {}
+local pushListeners: { (Player) -> () } = {}
 local dirty: { [Player]: boolean } = {}
 
 function StateService.registerProvider(name: string, fn: (Player) -> any)
 	providers[name] = fn
+end
+
+--- Called after every state push. Used by NametagService, which has to
+--- re-render the overhead plate whenever the rank or pinned value moves.
+function StateService.onPush(listener: (Player) -> ())
+	table.insert(pushListeners, listener)
 end
 
 --- Total rank score: heavier stats are worth more.
@@ -71,6 +78,7 @@ function StateService.build(player: Player)
 		dailyStreak = profile.dailyStreak,
 		lastDaily = profile.lastDaily,
 		autoScan = profile.autoScan,
+		displayStat = profile.displayStat or "",
 		passes = passes,
 
 		score = score,
@@ -104,6 +112,10 @@ function StateService.push(player: Player)
 	local state = StateService.build(player)
 	if state then
 		Remotes.event("StateChanged"):FireClient(player, state)
+	end
+
+	for _, listener in ipairs(pushListeners) do
+		task.spawn(listener, player)
 	end
 end
 
