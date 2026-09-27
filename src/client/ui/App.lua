@@ -1,8 +1,13 @@
 --!strict
 --[[
-	App
-	Assembles the whole interface: HUD, the scanner modal, the category rail,
-	the stat list and the four side panels.
+	App -- the console.
+
+	Assembles the HUD and the scanner chassis: header, the two nav rails, the
+	stat rack and the four side panels.
+
+	Layout note: the nav used to be one row of eleven keys, which overflowed
+	the chassis. It is now split into a category rail and a section rail, which
+	both fits and reads as two banks of switches.
 ]]
 
 local Players = game:GetService("Players")
@@ -15,6 +20,7 @@ local Format = require(Shared.Format)
 
 local Theme = require(script.Parent.Theme)
 local Util = require(script.Parent.Util)
+local Bevel = require(script.Parent.Bevel)
 local StatCard = require(script.Parent.StatCard)
 local ShopPanel = require(script.Parent.ShopPanel)
 local BoardPanel = require(script.Parent.BoardPanel)
@@ -28,6 +34,8 @@ local App = {}
 App.__index = App
 
 local PANEL_SIZE = Vector2.new(1040, 780)
+local CONTENT_TOP = 198
+local FOOTER_HEIGHT = 44
 
 function App.new(callbacks)
 	local self = setmetatable({}, App)
@@ -51,7 +59,6 @@ function App.new(callbacks)
 	self.toasts = Toasts.new(self.gui)
 	self.flexFeed = FlexFeed.new(self.gui)
 
-	-- Progress bars need a frame loop; everything else is event driven.
 	self.heartbeat = RunService.RenderStepped:Connect(function()
 		self:tick()
 	end)
@@ -79,6 +86,35 @@ end
 
 -- HUD --------------------------------------------------------------------
 
+--- A small mounted read-out: stamped label above a monospace value.
+local function readout(parent: Instance, position: UDim2, width: number, label: string)
+	local module = Util.panel({
+		Position = position,
+		Size = UDim2.fromOffset(width, 56),
+		Parent = parent,
+	})
+
+	Util.stamp({
+		Position = UDim2.fromOffset(14, 7),
+		Size = UDim2.new(1, -28, 0, 12),
+		Text = label,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		Parent = module,
+	})
+
+	local value = Util.text({
+		Position = UDim2.fromOffset(14, 20),
+		Size = UDim2.new(1, -28, 0, 26),
+		Font = Theme.Font.mono,
+		Text = "--",
+		TextSize = 20,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		Parent = module,
+	})
+
+	return module, value
+end
+
 function App:buildHud()
 	self.hud = Util.new("Frame", {
 		Name = "Hud",
@@ -87,96 +123,58 @@ function App:buildHud()
 		Parent = self.gui,
 	})
 
-	-- Coin pill
-	self.coinPill = Util.new("Frame", {
-		Position = UDim2.new(0, 16, 0, 16),
-		Size = UDim2.new(0, 190, 0, 44),
-		BackgroundColor3 = Theme.Color.panelDark,
-		BackgroundTransparency = 0.1,
-		BorderSizePixel = 0,
-		Parent = self.hud,
-	})
-	Util.corner(Theme.Radius.pill, self.coinPill)
-	Util.stroke(Theme.Color.coin, 2, self.coinPill)
+	local _, coinValue = readout(self.hud, UDim2.fromOffset(16, 16), 196, "credits")
+	self.coinLabel = coinValue
 
-	self.coinLabel = Util.new("TextLabel", {
-		Size = UDim2.fromScale(1, 1),
-		BackgroundTransparency = 1,
-		Font = Theme.Font.bold,
-		Text = "🪙 0",
-		TextColor3 = Theme.Color.coin,
-		TextSize = 20,
-		Parent = self.coinPill,
-	})
+	local rankModule, rankValue = readout(self.hud, UDim2.fromOffset(222, 16), 268, "operator rank")
+	self.rankLabel = rankValue
+	self.rankLabel.TextSize = 17
 
-	-- Rank pill
-	self.rankPill = Util.new("Frame", {
-		Position = UDim2.new(0, 216, 0, 16),
-		Size = UDim2.new(0, 250, 0, 44),
-		BackgroundColor3 = Theme.Color.panelDark,
-		BackgroundTransparency = 0.1,
-		BorderSizePixel = 0,
-		Parent = self.hud,
+	-- Rank progress rides in a machined track along the bottom of the module.
+	local track = Util.well({
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, 14, 1, -7),
+		Size = UDim2.new(1, -28, 0, 6),
+		radius = Theme.Radius.full,
+		Parent = rankModule,
 	})
-	Util.corner(Theme.Radius.pill, self.rankPill)
-	Util.stroke(Theme.Color.accent, 2, self.rankPill)
-
-	self.rankLabel = Util.new("TextLabel", {
-		Position = UDim2.new(0, 12, 0, 2),
-		Size = UDim2.new(1, -24, 0, 24),
-		BackgroundTransparency = 1,
-		Font = Theme.Font.bold,
-		Text = "Rank",
-		TextColor3 = Theme.Color.text,
-		TextSize = 17,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		Parent = self.rankPill,
-	})
-
-	local rankBarBack = Util.new("Frame", {
-		Position = UDim2.new(0, 12, 1, -14),
-		Size = UDim2.new(1, -24, 0, 8),
-		BackgroundColor3 = Color3.fromRGB(28, 28, 28),
-		BorderSizePixel = 0,
-		Parent = self.rankPill,
-	})
-	Util.corner(Theme.Radius.pill, rankBarBack)
 
 	self.rankBar = Util.new("Frame", {
 		Size = UDim2.fromScale(0, 1),
 		BackgroundColor3 = Theme.Color.accent,
 		BorderSizePixel = 0,
-		Parent = rankBarBack,
+		ZIndex = 2,
+		Parent = track,
 	})
-	Util.corner(Theme.Radius.pill, self.rankBar)
+	Util.corner(Theme.Radius.full, self.rankBar)
 
-	-- Open button
+	Bevel.led(self.hud, Theme.Color.ledGreen, "system operational", UDim2.fromOffset(500, 36))
+
 	self.openButton = Util.button({
+		variant = "primary",
+		radius = Theme.Radius.lg,
 		AnchorPoint = Vector2.new(0, 1),
 		Position = UDim2.new(0, 16, 1, -16),
-		Size = UDim2.new(0, 230, 0, 62),
-		BackgroundColor3 = Theme.Color.accent,
-		Text = "📊  CHECK MY STATS",
-		TextSize = 21,
+		Size = UDim2.fromOffset(248, 62),
+		Text = "OPEN SCANNER",
+		TextSize = 18,
 		Parent = self.hud,
 	})
-	Util.corner(Theme.Radius.card, self.openButton)
+
+	self.dailyButton = Util.button({
+		variant = "secondary",
+		radius = Theme.Radius.lg,
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, 276, 1, -16),
+		Size = UDim2.fromOffset(190, 62),
+		Text = "DAILY",
+		TextSize = 16,
+		Parent = self.hud,
+	})
+
 	Util.onClick(self.openButton, 0.2, function()
 		self:setOpen(true)
 	end)
-
-	-- Daily reward button
-	self.dailyButton = Util.button({
-		AnchorPoint = Vector2.new(0, 1),
-		Position = UDim2.new(0, 256, 1, -16),
-		Size = UDim2.new(0, 170, 0, 62),
-		BackgroundColor3 = Theme.Color.coin,
-		Text = "🎁 DAILY",
-		TextColor3 = Color3.fromRGB(30, 30, 30),
-		TextSize = 19,
-		Parent = self.hud,
-	})
-	Util.corner(Theme.Radius.card, self.dailyButton)
 	Util.onClick(self.dailyButton, 1, function()
 		self.callbacks.claimDaily()
 	end)
@@ -188,8 +186,8 @@ function App:buildModal()
 	self.backdrop = Util.new("TextButton", {
 		Name = "Backdrop",
 		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = Theme.Color.backdrop,
-		BackgroundTransparency = 0.45,
+		BackgroundColor3 = Theme.Color.dark,
+		BackgroundTransparency = 0.55,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		Text = "",
@@ -200,19 +198,34 @@ function App:buildModal()
 		self:setOpen(false)
 	end)
 
+	-- The shell exists so the chassis and its cast shadow are siblings that
+	-- move as one. A Roblox child always draws in front of its parent's
+	-- background, so a cast shadow cannot live inside the panel it falls from.
+	self.shell = Util.new("Frame", {
+		Name = "Shell",
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
+		ZIndex = 5,
+		Visible = false,
+		Parent = self.gui,
+	})
+
 	self.modal = Util.new("Frame", {
 		Name = "Modal",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromOffset(PANEL_SIZE.X, PANEL_SIZE.Y),
-		BackgroundColor3 = Theme.Color.panel,
+		BackgroundColor3 = Theme.Color.chassis,
 		BorderSizePixel = 0,
+		ZIndex = 5,
 		Visible = false,
-		Parent = self.gui,
+		Parent = self.shell,
 	})
-	Util.corner(Theme.Radius.panel, self.modal)
-	Util.stroke(Color3.fromRGB(20, 20, 20), 3, self.modal)
-	Util.padding(Theme.Padding.panel, self.modal)
+	Bevel.panel(self.modal, "floating", Theme.Radius.xl)
+	Bevel.screws(self.modal, 12, Theme.Space.panel)
+	Bevel.vents(self.modal, 4, UDim2.new(1, -64, 0, 6))
+	Bevel.cast(self.modal, 14)
+	Util.padding(Theme.Space.panel, self.modal)
 
 	-- Scale down on small screens instead of overflowing.
 	local scale = Util.new("UIScale", { Parent = self.modal })
@@ -226,85 +239,103 @@ function App:buildModal()
 	end
 
 	-- Header
-	self.title = Util.new("TextLabel", {
-		Size = UDim2.new(1, -60, 0, 54),
-		BackgroundTransparency = 1,
-		Font = Theme.Font.title,
-		Text = "Click what stats you want to check",
-		TextColor3 = Theme.Color.text,
-		TextSize = 44,
+	self.title = Util.text({
+		Size = UDim2.new(1, -70, 0, 50),
+		Font = Theme.Font.display,
+		Text = "STAT SCANNER",
+		TextSize = 40,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		TextScaled = false,
 		Parent = self.modal,
 	})
 
-	local close = Util.button({
-		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.new(1, 0, 0, 0),
-		Size = UDim2.new(0, 46, 0, 46),
-		BackgroundColor3 = Theme.Color.bad,
-		Text = "✕",
-		TextSize = 26,
+	Util.stamp({
+		Position = UDim2.fromOffset(2, 52),
+		Size = UDim2.new(0, 460, 0, 14),
+		Text = "select a module to begin analysis",
 		Parent = self.modal,
 	})
-	Util.corner(Theme.Radius.card, close)
+
+	Bevel.led(self.modal, Theme.Color.ledGreen, "online", UDim2.new(1, -240, 0, 52))
+
+	local close = Util.button({
+		variant = "primary",
+		AnchorPoint = Vector2.new(1, 0),
+		Position = UDim2.new(1, 0, 0, 0),
+		Size = UDim2.fromOffset(Theme.TOUCH, Theme.TOUCH),
+		Text = "X",
+		TextSize = 20,
+		Parent = self.modal,
+	})
 	Util.onClick(close, 0.1, function()
 		self:setOpen(false)
 	end)
 
-	-- Status strip
-	self.status = Util.new("TextLabel", {
-		Position = UDim2.new(0, 2, 0, 56),
-		Size = UDim2.new(1, -4, 0, 24),
-		BackgroundTransparency = 1,
-		Font = Theme.Font.body,
+	-- Status strip: a recessed data well, monospace throughout.
+	local strip = Util.well({
+		Position = UDim2.fromOffset(0, 80),
+		Size = UDim2.new(1, 0, 0, 30),
+		Parent = self.modal,
+	})
+
+	self.status = Util.text({
+		Position = UDim2.fromOffset(12, 0),
+		Size = UDim2.new(1, -24, 1, 0),
+		Font = Theme.Font.mono,
 		Text = "",
-		TextColor3 = Theme.Color.subtext,
-		TextSize = 16,
+		TextColor3 = Theme.Color.textMuted,
+		TextSize = 13,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		Parent = self.modal,
+		ZIndex = 2,
+		Parent = strip,
 	})
 
-	-- Nav rail
-	local nav = Util.new("Frame", {
-		Position = UDim2.new(0, 0, 0, 86),
-		Size = UDim2.new(1, 0, 0, 38),
-		BackgroundTransparency = 1,
-		Parent = self.modal,
-	})
-	Util.listLayout(6, nav, Enum.FillDirection.Horizontal)
-
+	-- Two banks of switches.
 	self.navButtons = {}
 
-	local function navButton(id: string, text: string, color: Color3)
-		local button = Util.button({
-			Size = UDim2.new(0, 116, 0, 32),
-			BackgroundColor3 = Theme.Color.card,
-			Text = text,
-			TextSize = 14,
-			Parent = nav,
+	local function rail(y: number)
+		local holder = Util.new("Frame", {
+			Position = UDim2.fromOffset(0, y),
+			Size = UDim2.new(1, 0, 0, 32),
+			BackgroundTransparency = 1,
+			Parent = self.modal,
 		})
-		Util.corner(Theme.Radius.pill, button)
+		Util.listLayout(Theme.Space.tight, holder, Enum.FillDirection.Horizontal)
+		return holder
+	end
+
+	local categoryRail = rail(120)
+	local sectionRail = rail(158)
+
+	local function navButton(parent: Instance, id: string, text: string, width: number)
+		local button = Util.button({
+			variant = "slot",
+			radius = Theme.Radius.sm,
+			Size = UDim2.fromOffset(width, 32),
+			Text = text,
+			TextSize = 12,
+			Parent = parent,
+		})
 		Util.onClick(button, 0.1, function()
 			self:setView(id)
 		end)
-		self.navButtons[id] = { button = button, color = color }
+		self.navButtons[id] = button
 		return button
 	end
 
-	navButton("stats", "⭐ All Stats", Theme.Color.accent)
+	navButton(categoryRail, "stats", "ALL", 76)
 	for _, category in ipairs(StatConfig.Categories) do
-		navButton("cat:" .. category.id, category.icon .. " " .. category.name, Theme.Color.accent)
+		navButton(categoryRail, "cat:" .. category.id, category.name:upper(), 122)
 	end
-	navButton("shop", "⚡ Shop", Theme.Color.coin)
-	navButton("boards", "🏅 Boards", Theme.Color.good)
-	navButton("achievements", "🏆 Awards", Theme.Color.warn)
-	navButton("rebirth", "🌟 Rebirth", Theme.Color.coin)
+
+	navButton(sectionRail, "shop", "SHOP", 150)
+	navButton(sectionRail, "boards", "LEADERBOARDS", 180)
+	navButton(sectionRail, "achievements", "AWARDS", 150)
+	navButton(sectionRail, "rebirth", "REBIRTH", 150)
 
 	-- Content host
 	self.content = Util.new("Frame", {
-		Position = UDim2.new(0, 0, 0, 132),
-		Size = UDim2.new(1, 0, 1, -178),
+		Position = UDim2.fromOffset(0, CONTENT_TOP),
+		Size = UDim2.new(1, 0, 1, -CONTENT_TOP - FOOTER_HEIGHT - 8),
 		BackgroundTransparency = 1,
 		Parent = self.modal,
 	})
@@ -314,14 +345,20 @@ function App:buildModal()
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
-		ScrollBarThickness = 8,
-		ScrollBarImageColor3 = Color3.fromRGB(150, 150, 150),
+		ScrollBarThickness = 6,
+		ScrollBarImageColor3 = Theme.Color.shadowDeep,
 		CanvasSize = UDim2.new(),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		Parent = self.content,
 	})
-	Util.listLayout(Theme.Padding.gap, self.statList)
-	Util.padding(4, self.statList)
+	Util.listLayout(Theme.Space.gap, self.statList)
+	Util.new("UIPadding", {
+		PaddingLeft = UDim.new(0, 10),
+		PaddingRight = UDim.new(0, 14),
+		PaddingTop = UDim.new(0, 4),
+		PaddingBottom = UDim.new(0, 4),
+		Parent = self.statList,
+	})
 
 	self.shopPanel = ShopPanel.new(self.content, self.callbacks)
 	self.boardPanel = BoardPanel.new(self.content)
@@ -332,57 +369,52 @@ function App:buildModal()
 	local footer = Util.new("Frame", {
 		AnchorPoint = Vector2.new(0, 1),
 		Position = UDim2.new(0, 0, 1, 0),
-		Size = UDim2.new(1, 0, 0, 40),
+		Size = UDim2.new(1, 0, 0, FOOTER_HEIGHT),
 		BackgroundTransparency = 1,
 		Parent = self.modal,
 	})
-	Util.listLayout(8, footer, Enum.FillDirection.Horizontal)
+	Util.listLayout(Theme.Space.tight, footer, Enum.FillDirection.Horizontal)
 
 	self.scanAllButton = Util.button({
-		Size = UDim2.new(0, 190, 0, 36),
-		BackgroundColor3 = Theme.Color.good,
-		Text = "▶ SCAN EVERYTHING",
-		TextColor3 = Color3.fromRGB(25, 25, 25),
-		TextSize = 16,
+		variant = "primary",
+		Size = UDim2.fromOffset(210, 40),
+		Text = "SCAN EVERYTHING",
+		TextSize = 14,
 		Parent = footer,
 	})
-	Util.corner(Theme.Radius.card, self.scanAllButton)
 	Util.onClick(self.scanAllButton, 0.5, function()
 		self.callbacks.scanAll()
 	end)
 
 	self.autoButton = Util.button({
-		Size = UDim2.new(0, 180, 0, 36),
-		BackgroundColor3 = Theme.Color.card,
-		Text = "🤖 AUTO SCAN: OFF",
-		TextSize = 15,
+		variant = "secondary",
+		Size = UDim2.fromOffset(196, 40),
+		Text = "AUTO SCAN / OFF",
+		TextSize = 13,
 		Parent = footer,
 	})
-	Util.corner(Theme.Radius.card, self.autoButton)
 	Util.onClick(self.autoButton, 0.5, function()
 		local state = Store.get()
 		self.callbacks.setAutoScan(not (state and state.autoScan))
 	end)
 
 	self.resetButton = Util.button({
-		Size = UDim2.new(0, 150, 0, 36),
-		BackgroundColor3 = Theme.Color.card,
-		Text = "🔄 RESET SCANS",
-		TextSize = 15,
+		variant = "ghost",
+		Size = UDim2.fromOffset(160, 40),
+		Text = "RESET SCANS",
+		TextSize = 13,
 		Parent = footer,
 	})
-	Util.corner(Theme.Radius.card, self.resetButton)
 	Util.onClick(self.resetButton, 1, function()
 		self.callbacks.resetScans()
 	end)
 
-	self.progressLabel = Util.new("TextLabel", {
-		Size = UDim2.new(0, 300, 0, 36),
-		BackgroundTransparency = 1,
-		Font = Theme.Font.bold,
+	self.progressLabel = Util.text({
+		Size = UDim2.fromOffset(280, 40),
+		Font = Theme.Font.mono,
 		Text = "",
-		TextColor3 = Theme.Color.subtext,
-		TextSize = 16,
+		TextColor3 = Theme.Color.textMuted,
+		TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = footer,
 	})
@@ -409,8 +441,11 @@ function App:setView(view: string)
 	self.achievementPanel:setVisible(view == "achievements")
 	self.rebirthPanel:setVisible(view == "rebirth")
 
-	for id, entry in pairs(self.navButtons) do
-		entry.button.BackgroundColor3 = id == view and entry.color or Theme.Color.card
+	-- The selected switch lights up; the rest stay recessed and unlit.
+	for id, button in pairs(self.navButtons) do
+		local selected = id == view
+		button.BackgroundColor3 = selected and Theme.Color.accent or Theme.Color.recess
+		button.TextColor3 = selected and Theme.Color.accentText or Theme.Color.textMuted
 	end
 
 	if isStats then
@@ -434,9 +469,13 @@ function App:setOpen(open: boolean, view: string?)
 	self.backdrop.Visible = open
 	self.hud.Visible = not open
 
+	self.shell.Visible = open
+
 	if open then
-		self.modal.Size = UDim2.fromOffset(PANEL_SIZE.X * 0.9, PANEL_SIZE.Y * 0.9)
-		Util.tween(self.modal, 0.16, { Size = UDim2.fromOffset(PANEL_SIZE.X, PANEL_SIZE.Y) }, Enum.EasingStyle.Back)
+		-- The whole shell slides up and settles with the mechanical overshoot,
+		-- so the chassis and its shadow stay locked together.
+		self.shell.Position = UDim2.fromOffset(0, 26)
+		Util.tween(self.shell, Theme.Motion.settle, { Position = UDim2.new() }, Theme.Motion.mechanical)
 		self:setView(view or self.view)
 	end
 end
@@ -448,39 +487,39 @@ function App:update(state)
 		return
 	end
 
-	self.coinLabel.Text = "🪙 " .. Format.comma(state.coins)
+	self.coinLabel.Text = Format.comma(state.coins)
 
 	local rank = state.rank or { name = "?", icon = "" }
-	self.rankLabel.Text = ("%s %s  •  %d pts"):format(rank.icon, rank.name, state.score or 0)
+	self.rankLabel.Text = ("%s / %d"):format(rank.name:upper(), state.score or 0)
 	self.rankBar.Size = UDim2.fromScale(state.rankProgress or 0, 1)
-	if rank.color then
-		self.rankLabel.TextColor3 = rank.color
-	end
 
 	local scannedCount = 0
 	for _ in pairs(state.scanned) do
 		scannedCount += 1
 	end
 
-	self.status.Text = ("%.2fx speed  •  %.2fx coins  •  %d scan slot(s)  •  %d/%d stats found%s"):format(
+	self.status.Text = ("SPD %.2fx   COIN %.2fx   SLOTS %d   MODULES %d/%d   REBIRTH %d"):format(
 		state.speed or 1,
 		state.coinMultiplier or 1,
 		state.slots or 1,
 		scannedCount,
 		StatConfig.Count,
-		state.rebirths > 0 and ("  •  " .. state.rebirths .. " rebirths") or ""
+		state.rebirths or 0
 	)
 
-	self.progressLabel.Text = ("%d / %d scanned"):format(scannedCount, StatConfig.Count)
+	self.progressLabel.Text = ("%d / %d LOGGED"):format(scannedCount, StatConfig.Count)
 
-	self.autoButton.Text = state.autoScan and "🤖 AUTO SCAN: ON" or "🤖 AUTO SCAN: OFF"
-	self.autoButton.BackgroundColor3 = state.autoScan and Theme.Color.good or Theme.Color.card
+	local auto = state.autoScan == true
+	self.autoButton.Text = auto and "AUTO SCAN / ON" or "AUTO SCAN / OFF"
+	self.autoButton.BackgroundColor3 = auto and Theme.Color.accent or Theme.Color.chassis
+	self.autoButton.TextColor3 = auto and Theme.Color.accentText or Theme.Color.text
 
 	local daily = state.daily
 	if daily then
-		self.dailyButton.Text = daily.canClaim and ("🎁 DAILY +" .. Format.comma(daily.reward))
-			or ("🎁 " .. Format.clock(daily.secondsUntilNext))
-		self.dailyButton.BackgroundColor3 = daily.canClaim and Theme.Color.coin or Theme.Color.locked
+		self.dailyButton.Text = daily.canClaim and ("DAILY / +" .. Format.comma(daily.reward))
+			or ("DAILY / " .. Format.clock(daily.secondsUntilNext))
+		self.dailyButton.BackgroundColor3 = daily.canClaim and Theme.Color.accent or Theme.Color.chassis
+		self.dailyButton.TextColor3 = daily.canClaim and Theme.Color.accentText or Theme.Color.textMuted
 	end
 
 	for _, card in pairs(self.cards) do
@@ -510,7 +549,7 @@ function App:flex(payload)
 	self.flexFeed:push(payload)
 end
 
---- Pops the card and shows the reveal toast when a scan lands.
+--- The module clunks when a scan lands.
 function App:onScanFinished(payload)
 	local card = self.cards[payload.statId]
 	if not card then
@@ -519,7 +558,7 @@ function App:onScanFinished(payload)
 
 	local stat = card.stat
 	self.toasts:push({
-		text = ("%s: %s   (+%s coins)"):format(
+		text = ("%s  %s   +%s"):format(
 			stat.name,
 			Format.value(stat.format, payload.value),
 			Format.comma(payload.coins)
@@ -528,9 +567,14 @@ function App:onScanFinished(payload)
 		color = stat.color,
 	})
 
-	local base = card.root.Size
-	card.root.Size = UDim2.new(base.X.Scale, base.X.Offset, base.Y.Scale, base.Y.Offset + 10)
-	Util.tween(card.root, 0.2, { Size = base }, Enum.EasingStyle.Back)
+	-- The stat rack is a UIListLayout, which owns each card's Position, so the
+	-- clunk is expressed by briefly inverting the module's light instead.
+	Bevel.invert(card.root, true)
+	task.delay(0.12, function()
+		if card.root.Parent then
+			Bevel.invert(card.root, false)
+		end
+	end)
 end
 
 return App

@@ -21,6 +21,7 @@ local Players = game:GetService("Players")
 local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local Remotes = require(Shared.Remotes)
 local Format = require(Shared.Format)
+local Palette = require(Shared.Palette)
 
 local DailyService = require(script.Parent.DailyService)
 local LeaderboardService = require(script.Parent.LeaderboardService)
@@ -61,7 +62,7 @@ local function sign(parent: BasePart, text: string, color: Color3, height: numbe
 
 	local backing = Instance.new("Frame")
 	backing.Size = UDim2.fromScale(1, 1)
-	backing.BackgroundColor3 = Color3.fromRGB(24, 26, 36)
+	backing.BackgroundColor3 = Palette.dark
 	backing.BackgroundTransparency = 0.25
 	backing.BorderSizePixel = 0
 	backing.Parent = billboard
@@ -78,7 +79,7 @@ local function sign(parent: BasePart, text: string, color: Color3, height: numbe
 	local label = Instance.new("TextLabel")
 	label.Size = UDim2.fromScale(1, 1)
 	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.FredokaOne
+	label.Font = Enum.Font.GothamBlack
 	label.Text = text
 	label.TextColor3 = color
 	label.TextScaled = true
@@ -98,8 +99,8 @@ local function buildPlaza()
 		Name = "Floor",
 		Size = Vector3.new(FLOOR_SIZE, 4, FLOOR_SIZE),
 		Position = Vector3.new(0, -2, 0),
-		Color = Color3.fromRGB(58, 64, 86),
-		Material = Enum.Material.Slate,
+		Color = Palette.recess,
+		Material = Enum.Material.Concrete,
 	})
 
 	-- Grass border so the plaza reads as a platform, not a void.
@@ -107,8 +108,8 @@ local function buildPlaza()
 		Name = "Lawn",
 		Size = Vector3.new(FLOOR_SIZE + 24, 3, FLOOR_SIZE + 24),
 		Position = Vector3.new(0, -3, 0),
-		Color = Color3.fromRGB(78, 178, 92),
-		Material = Enum.Material.Grass,
+		Color = Palette.shadowDeep,
+		Material = Enum.Material.Concrete,
 	})
 
 	-- Neon inlay ring under the podium.
@@ -116,7 +117,7 @@ local function buildPlaza()
 		Name = "Inlay",
 		Size = Vector3.new(26, 0.4, 26),
 		Position = Vector3.new(0, 0.2, 0),
-		Color = Color3.fromRGB(96, 186, 255),
+		Color = Palette.accent,
 		Material = Enum.Material.Neon,
 		Transparency = 0.45,
 	})
@@ -133,14 +134,14 @@ local function buildPlaza()
 			Name = "Wall" .. index,
 			Size = wall.size,
 			Position = wall.pos,
-			Color = Color3.fromRGB(36, 40, 54),
+			Color = Palette.dark,
 		})
 		-- Neon cap along the top of each wall.
 		part({
 			Name = "WallTrim" .. index,
 			Size = Vector3.new(wall.size.X, 0.5, wall.size.Z),
 			Position = wall.pos + Vector3.new(0, WALL_HEIGHT / 2, 0),
-			Color = Color3.fromRGB(96, 186, 255),
+			Color = Palette.accent,
 			Material = Enum.Material.Neon,
 		})
 	end
@@ -150,12 +151,12 @@ local function buildPlaza()
 	spawnLocation.Anchored = true
 	spawnLocation.Size = Vector3.new(12, 1, 12)
 	spawnLocation.Position = Vector3.new(0, 0.5, 28)
-	spawnLocation.Color = Color3.fromRGB(96, 220, 128)
+	spawnLocation.Color = Palette.ledGreen
 	spawnLocation.Material = Enum.Material.Neon
 	spawnLocation.Duration = 0
 	spawnLocation.Parent = root
 
-	sign(spawnLocation, "SPAWN", Color3.fromRGB(96, 220, 128), 4, 26)
+	sign(spawnLocation, "SPAWN", Palette.ledGreen, 4, 26)
 end
 
 -- Scanner podium ---------------------------------------------------------
@@ -165,14 +166,14 @@ local function buildPodium()
 		Name = "PodiumBase",
 		Size = Vector3.new(14, 2, 14),
 		Position = Vector3.new(0, 1, 0),
-		Color = Color3.fromRGB(30, 33, 44),
+		Color = Palette.dark,
 	})
 
 	local core = part({
 		Name = "PodiumCore",
 		Size = Vector3.new(5, 8, 5),
 		Position = Vector3.new(0, 6, 0),
-		Color = Color3.fromRGB(96, 186, 255),
+		Color = Palette.accent,
 		Material = Enum.Material.Neon,
 	})
 
@@ -188,7 +189,7 @@ local function buildPodium()
 		Remotes.event("OpenMenu"):FireClient(player, { view = "stats" })
 	end)
 
-	sign(core, "📊 STAT SCANNER", Color3.new(1, 1, 1), 6.5, 42)
+	sign(core, "STAT SCANNER", Palette.highlight, 6.5, 42)
 
 	task.spawn(function()
 		local angle = 0
@@ -205,33 +206,33 @@ end
 local KIOSKS = {
 	{
 		name = "Shop",
-		label = "⚡ SHOP",
+		label = "SHOP",
 		action = "Open the shop",
-		color = Color3.fromRGB(255, 205, 90),
+		color = Palette.accent,
 		position = Vector3.new(-18, 0, -18),
 		view = "shop",
 	},
 	{
 		name = "Rebirth",
-		label = "🌟 REBIRTH",
+		label = "REBIRTH",
 		action = "Rebirth",
-		color = Color3.fromRGB(255, 215, 80),
+		color = Palette.accent,
 		position = Vector3.new(0, 0, -22),
 		view = "rebirth",
 	},
 	{
 		name = "Awards",
-		label = "🏆 AWARDS",
+		label = "AWARDS",
 		action = "View achievements",
-		color = Color3.fromRGB(255, 178, 90),
+		color = Palette.ledAmber,
 		position = Vector3.new(18, 0, -18),
 		view = "achievements",
 	},
 	{
 		name = "Daily",
-		label = "🎁 DAILY REWARD",
+		label = "DAILY REWARD",
 		action = "Claim today's coins",
-		color = Color3.fromRGB(120, 230, 160),
+		color = Palette.ledGreen,
 		position = Vector3.new(-28, 0, 6),
 		view = nil, -- claims directly instead of opening a tab
 	},
@@ -251,7 +252,7 @@ local function buildKiosk(config)
 		Name = "Post" .. config.name,
 		Size = Vector3.new(1.4, 7, 1.4),
 		Position = config.position + Vector3.new(0, 4, 0),
-		Color = Color3.fromRGB(30, 33, 44),
+		Color = Palette.dark,
 	})
 
 	sign(post, config.label, config.color, 5, 34)
@@ -284,7 +285,7 @@ local function buildBoard(key: string, title: string, icon: string, position: Ve
 		Name = "Board_" .. key,
 		Size = Vector3.new(22, 16, 1),
 		Position = position,
-		Color = Color3.fromRGB(26, 29, 40),
+		Color = Palette.dark,
 	})
 
 	local surface = Instance.new("SurfaceGui")
@@ -296,17 +297,17 @@ local function buildBoard(key: string, title: string, icon: string, position: Ve
 
 	local background = Instance.new("Frame")
 	background.Size = UDim2.fromScale(1, 1)
-	background.BackgroundColor3 = Color3.fromRGB(22, 24, 34)
+	background.BackgroundColor3 = Palette.dark
 	background.BorderSizePixel = 0
 	background.Parent = surface
 
 	local header = Instance.new("TextLabel")
 	header.Size = UDim2.new(1, 0, 0, 56)
-	header.BackgroundColor3 = Color3.fromRGB(38, 44, 62)
+	header.BackgroundColor3 = Palette.darkSlate
 	header.BorderSizePixel = 0
-	header.Font = Enum.Font.FredokaOne
+	header.Font = Enum.Font.GothamBlack
 	header.Text = icon .. "  " .. title
-	header.TextColor3 = Color3.new(1, 1, 1)
+	header.TextColor3 = Palette.darkText
 	header.TextScaled = true
 	header.Parent = background
 
@@ -326,11 +327,11 @@ local function buildBoard(key: string, title: string, icon: string, position: Ve
 		local row = Instance.new("TextLabel")
 		row.Size = UDim2.new(1, 0, 0, 33)
 		row.LayoutOrder = index
-		row.BackgroundColor3 = index % 2 == 0 and Color3.fromRGB(28, 31, 42) or Color3.fromRGB(33, 37, 50)
+		row.BackgroundColor3 = index % 2 == 0 and Palette.dark or Palette.darkSlate
 		row.BorderSizePixel = 0
-		row.Font = Enum.Font.GothamMedium
+		row.Font = Enum.Font.RobotoMono
 		row.TextXAlignment = Enum.TextXAlignment.Left
-		row.TextColor3 = Color3.fromRGB(230, 235, 245)
+		row.TextColor3 = Palette.darkText
 		row.TextSize = 20
 		row.Text = ""
 		row.Parent = list
@@ -358,10 +359,10 @@ local function renderBoards()
 						entry.name,
 						Format.value(board.format, entry.value)
 					)
-					row.TextColor3 = index <= 3 and Color3.fromRGB(255, 215, 90) or Color3.fromRGB(230, 235, 245)
+					row.TextColor3 = index <= 3 and Palette.accent or Palette.darkText
 				else
 					row.Text = ("#%d  —"):format(index)
-					row.TextColor3 = Color3.fromRGB(105, 112, 130)
+					row.TextColor3 = Palette.darkTextMuted
 				end
 			end
 		end
@@ -389,9 +390,9 @@ function WorldBuilder.build()
 	-- Three boards flat against the north wall. The remaining boards live in
 	-- the Boards tab of the menu, so the plaza stays uncluttered.
 	local wallZ = -FLOOR_SIZE / 2 + 1.5
-	buildBoard("score", "SCANNER SCORE", "🏅", Vector3.new(-24, 9, wallZ))
-	buildBoard("playtime", "PLAYTIME", "⏱️", Vector3.new(0, 9, wallZ))
-	buildBoard("accountValue", "ACCOUNT VALUE", "💎", Vector3.new(24, 9, wallZ))
+	buildBoard("score", "SCANNER SCORE", "01", Vector3.new(-24, 9, wallZ))
+	buildBoard("playtime", "PLAYTIME", "02", Vector3.new(0, 9, wallZ))
+	buildBoard("accountValue", "ACCOUNT VALUE", "03", Vector3.new(24, 9, wallZ))
 
 	task.spawn(function()
 		while true do

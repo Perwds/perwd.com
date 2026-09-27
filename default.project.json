@@ -2,21 +2,18 @@
   "name": "StatScanner",
   "tree": {
     "$className": "DataModel",
-
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
       "Shared": {
         "$path": "src/shared"
       }
     },
-
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "Server": {
         "$path": "src/server"
       }
     },
-
     "StarterPlayer": {
       "$className": "StarterPlayer",
       "StarterPlayerScripts": {
@@ -26,23 +23,39 @@
         }
       }
     },
-
     "Workspace": {
       "$className": "Workspace",
       "$properties": {
         "FilteringEnabled": true
       }
     },
-
     "Lighting": {
       "$className": "Lighting",
       "$properties": {
-        "Ambient": [0.4, 0.4, 0.45],
-        "Brightness": 2.5,
-        "OutdoorAmbient": [0.5, 0.5, 0.55]
+        "Ambient": [
+          0.72,
+          0.74,
+          0.78
+        ],
+        "OutdoorAmbient": [
+          0.78,
+          0.8,
+          0.84
+        ],
+        "Brightness": 2,
+        "ColorShift_Top": [
+          1,
+          1,
+          1
+        ],
+        "EnvironmentDiffuseScale": 0.6,
+        "EnvironmentSpecularScale": 0.3,
+        "GlobalShadows": true,
+        "Technology": "ShadowMap",
+        "ClockTime": 14.5,
+        "GeographicLatitude": 0
       }
     },
-
     "SoundService": {
       "$className": "SoundService",
       "$properties": {
