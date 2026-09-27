@@ -25,8 +25,49 @@
     },
     "Workspace": {
       "$className": "Workspace",
-      "$properties": {
-        "FilteringEnabled": true
+      "EditorPlaceholder": {
+        "$className": "Folder",
+        "Baseplate": {
+          "$className": "Part",
+          "$properties": {
+            "Size": [
+              200,
+              4,
+              200
+            ],
+            "Position": [
+              0,
+              -2,
+              0
+            ],
+            "Anchored": true,
+            "Color": [
+              0.82,
+              0.85,
+              0.9
+            ],
+            "Material": "Concrete",
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "Spawn": {
+          "$className": "SpawnLocation",
+          "$properties": {
+            "Size": [
+              12,
+              1,
+              12
+            ],
+            "Position": [
+              0,
+              0.5,
+              28
+            ],
+            "Anchored": true,
+            "Duration": 0
+          }
+        }
       }
     },
     "Lighting": {
@@ -57,10 +98,7 @@
       }
     },
     "SoundService": {
-      "$className": "SoundService",
-      "$properties": {
-        "RespectFilteringEnabled": true
-      }
+      "$className": "SoundService"
     }
   }
 }

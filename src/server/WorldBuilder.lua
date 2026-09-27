@@ -376,6 +376,15 @@ function WorldBuilder.build()
 		return
 	end
 
+	-- The real lobby is generated here at runtime, which leaves the place file
+	-- empty in edit mode -- alarming if you open it and see a void. The project
+	-- ships a static placeholder baseplate purely so edit mode looks sane; it
+	-- is removed the moment the real plaza exists.
+	local placeholder = workspace:FindFirstChild("EditorPlaceholder")
+	if placeholder then
+		placeholder:Destroy()
+	end
+
 	root = Instance.new("Folder")
 	root.Name = "StatScannerWorld"
 	root.Parent = workspace
