@@ -16,6 +16,23 @@ local Bevel = require(script.Parent.Bevel)
 
 local Util = {}
 
+--- Keys that belong to the helpers in this module, not to Roblox instances.
+--- Util.new skips them so a helper that forgets to strip one degrades to a
+--- missing bevel instead of taking the whole interface down with
+--- "radius is not a valid member of Frame". A misspelled REAL property still
+--- errors, which is what we want.
+local RESERVED = {
+	radius = true,
+	level = true,
+	variant = true,
+	padding = true,
+	inset = true,
+	ventPos = true,
+	ventCount = true,
+	screws = true,
+	vents = true,
+}
+
 function Util.new(className: string, props: { [string]: any }?, children: { Instance }?): any
 	local instance = Instance.new(className)
 
@@ -23,7 +40,9 @@ function Util.new(className: string, props: { [string]: any }?, children: { Inst
 		local parent = props.Parent
 		props.Parent = nil
 		for key, value in pairs(props) do
-			(instance :: any)[key] = value
+			if not RESERVED[key] then
+				(instance :: any)[key] = value
+			end
 		end
 		if parent then
 			instance.Parent = parent
@@ -184,10 +203,14 @@ end
 
 --- Recessed data well: inputs, progress tracks, screen bezels.
 function Util.well(props: { [string]: any }): Frame
+	local radius = props.radius or Theme.Radius.md
+	props.radius = nil
+
 	props.BackgroundColor3 = props.BackgroundColor3 or Theme.Color.recess
 	props.BorderSizePixel = 0
+
 	local frame: Frame = Util.new("Frame", props)
-	Bevel.recess(frame, props.radius or Theme.Radius.md)
+	Bevel.recess(frame, radius)
 	return frame
 end
 
