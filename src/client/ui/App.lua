@@ -429,7 +429,7 @@ function App:applyFilter()
 	end
 end
 
-function App:setOpen(open: boolean)
+function App:setOpen(open: boolean, view: string?)
 	self.modal.Visible = open
 	self.backdrop.Visible = open
 	self.hud.Visible = not open
@@ -437,7 +437,7 @@ function App:setOpen(open: boolean)
 	if open then
 		self.modal.Size = UDim2.fromOffset(PANEL_SIZE.X * 0.9, PANEL_SIZE.Y * 0.9)
 		Util.tween(self.modal, 0.16, { Size = UDim2.fromOffset(PANEL_SIZE.X, PANEL_SIZE.Y) }, Enum.EasingStyle.Back)
-		self:setView(self.view)
+		self:setView(view or self.view)
 	end
 end
 

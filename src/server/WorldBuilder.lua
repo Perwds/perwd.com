@@ -1,9 +1,19 @@
 --!strict
 --[[
 	WorldBuilder
-	Generates the lobby entirely from code so the place file stays empty and
-	everything lives in version control: a floor, spawn, the scanner podium
-	that opens the menu, and six physical leaderboard pillars.
+	Generates the whole lobby from code so the place file stays empty and
+	everything lives in version control.
+
+	It is deliberately a small arena -- an 84x84 walled plaza you can cross in a
+	few seconds -- because every menu is one keypress away and nothing is gained
+	by making players walk. The layout:
+
+	    spawn pad (south)  ->  scanner podium (centre)
+	    three kiosks (north): Shop / Rebirth / Awards
+	    three leaderboard boards on the north wall
+
+	Each kiosk carries a ProximityPrompt and a floating sign, and opens the
+	matching tab of the screen UI through the OpenMenu remote.
 ]]
 
 local Players = game:GetService("Players")
@@ -12,17 +22,21 @@ local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local Remotes = require(Shared.Remotes)
 local Format = require(Shared.Format)
 
+local DailyService = require(script.Parent.DailyService)
 local LeaderboardService = require(script.Parent.LeaderboardService)
 
 local WorldBuilder = {}
 
-local FLOOR_SIZE = 220
+local FLOOR_SIZE = 84
+local WALL_HEIGHT = 14
 local BOARD_REFRESH = 30
 
 local root: Folder
 local boardLabels: { [string]: { TextLabel } } = {}
 
-local function part(props: { [string]: any }): BasePart
+-- Helpers ----------------------------------------------------------------
+
+local function part(props: { [string]: any }, parent: Instance?): BasePart
 	local instance = Instance.new("Part")
 	instance.Anchored = true
 	instance.Material = Enum.Material.SmoothPlastic
@@ -31,133 +45,274 @@ local function part(props: { [string]: any }): BasePart
 	for key, value in pairs(props) do
 		(instance :: any)[key] = value
 	end
-	instance.Parent = root
+	instance.Parent = parent or root
 	return instance
 end
 
-local function buildFloor()
+--- Floating label above a part.
+local function sign(parent: BasePart, text: string, color: Color3, height: number, size: number)
+	local billboard = Instance.new("BillboardGui")
+	billboard.Name = "Sign"
+	billboard.Size = UDim2.fromScale(11, 2.6)
+	billboard.StudsOffsetWorldSpace = Vector3.new(0, height, 0)
+	billboard.AlwaysOnTop = false
+	billboard.MaxDistance = 140
+	billboard.Parent = parent
+
+	local backing = Instance.new("Frame")
+	backing.Size = UDim2.fromScale(1, 1)
+	backing.BackgroundColor3 = Color3.fromRGB(24, 26, 36)
+	backing.BackgroundTransparency = 0.25
+	backing.BorderSizePixel = 0
+	backing.Parent = billboard
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0.25, 0)
+	corner.Parent = backing
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = color
+	stroke.Thickness = 3
+	stroke.Parent = backing
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.Text = text
+	label.TextColor3 = color
+	label.TextScaled = true
+	label.Parent = backing
+
+	local constraint = Instance.new("UITextSizeConstraint")
+	constraint.MaxTextSize = size
+	constraint.Parent = label
+
+	return label
+end
+
+-- Plaza ------------------------------------------------------------------
+
+local function buildPlaza()
 	part({
 		Name = "Floor",
 		Size = Vector3.new(FLOOR_SIZE, 4, FLOOR_SIZE),
 		Position = Vector3.new(0, -2, 0),
-		Color = Color3.fromRGB(64, 200, 84),
+		Color = Color3.fromRGB(58, 64, 86),
+		Material = Enum.Material.Slate,
+	})
+
+	-- Grass border so the plaza reads as a platform, not a void.
+	part({
+		Name = "Lawn",
+		Size = Vector3.new(FLOOR_SIZE + 24, 3, FLOOR_SIZE + 24),
+		Position = Vector3.new(0, -3, 0),
+		Color = Color3.fromRGB(78, 178, 92),
 		Material = Enum.Material.Grass,
 	})
 
-	-- A darker inlay under the podium so the centre reads as a stage.
+	-- Neon inlay ring under the podium.
 	part({
-		Name = "Stage",
-		Size = Vector3.new(60, 1, 60),
-		Position = Vector3.new(0, 0.5, 0),
-		Color = Color3.fromRGB(48, 54, 72),
+		Name = "Inlay",
+		Size = Vector3.new(26, 0.4, 26),
+		Position = Vector3.new(0, 0.2, 0),
+		Color = Color3.fromRGB(96, 186, 255),
+		Material = Enum.Material.Neon,
+		Transparency = 0.45,
 	})
+
+	local walls = {
+		{ size = Vector3.new(FLOOR_SIZE, WALL_HEIGHT, 2), pos = Vector3.new(0, WALL_HEIGHT / 2, -FLOOR_SIZE / 2) },
+		{ size = Vector3.new(FLOOR_SIZE, WALL_HEIGHT, 2), pos = Vector3.new(0, WALL_HEIGHT / 2, FLOOR_SIZE / 2) },
+		{ size = Vector3.new(2, WALL_HEIGHT, FLOOR_SIZE), pos = Vector3.new(-FLOOR_SIZE / 2, WALL_HEIGHT / 2, 0) },
+		{ size = Vector3.new(2, WALL_HEIGHT, FLOOR_SIZE), pos = Vector3.new(FLOOR_SIZE / 2, WALL_HEIGHT / 2, 0) },
+	}
+
+	for index, wall in ipairs(walls) do
+		part({
+			Name = "Wall" .. index,
+			Size = wall.size,
+			Position = wall.pos,
+			Color = Color3.fromRGB(36, 40, 54),
+		})
+		-- Neon cap along the top of each wall.
+		part({
+			Name = "WallTrim" .. index,
+			Size = Vector3.new(wall.size.X, 0.5, wall.size.Z),
+			Position = wall.pos + Vector3.new(0, WALL_HEIGHT / 2, 0),
+			Color = Color3.fromRGB(96, 186, 255),
+			Material = Enum.Material.Neon,
+		})
+	end
 
 	local spawnLocation = Instance.new("SpawnLocation")
 	spawnLocation.Name = "Spawn"
 	spawnLocation.Anchored = true
-	spawnLocation.Size = Vector3.new(14, 1, 14)
-	spawnLocation.Position = Vector3.new(0, 1.5, 22)
+	spawnLocation.Size = Vector3.new(12, 1, 12)
+	spawnLocation.Position = Vector3.new(0, 0.5, 28)
 	spawnLocation.Color = Color3.fromRGB(96, 220, 128)
 	spawnLocation.Material = Enum.Material.Neon
 	spawnLocation.Duration = 0
 	spawnLocation.Parent = root
+
+	sign(spawnLocation, "SPAWN", Color3.fromRGB(96, 220, 128), 4, 26)
 end
 
+-- Scanner podium ---------------------------------------------------------
+
 local function buildPodium()
-	local base = part({
+	part({
 		Name = "PodiumBase",
-		Size = Vector3.new(16, 3, 16),
-		Position = Vector3.new(0, 2.5, 0),
-		Color = Color3.fromRGB(38, 42, 56),
+		Size = Vector3.new(14, 2, 14),
+		Position = Vector3.new(0, 1, 0),
+		Color = Color3.fromRGB(30, 33, 44),
 	})
 
 	local core = part({
 		Name = "PodiumCore",
-		Size = Vector3.new(6, 9, 6),
-		Position = Vector3.new(0, 8.5, 0),
+		Size = Vector3.new(5, 8, 5),
+		Position = Vector3.new(0, 6, 0),
 		Color = Color3.fromRGB(96, 186, 255),
 		Material = Enum.Material.Neon,
-		Shape = Enum.PartType.Block,
 	})
 
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Check your stats"
 	prompt.ObjectText = "STAT SCANNER"
 	prompt.HoldDuration = 0
-	prompt.MaxActivationDistance = 22
+	prompt.MaxActivationDistance = 18
 	prompt.RequiresLineOfSight = false
 	prompt.Parent = core
 
 	prompt.Triggered:Connect(function(player)
-		Remotes.event("OpenMenu"):FireClient(player)
+		Remotes.event("OpenMenu"):FireClient(player, { view = "stats" })
 	end)
 
-	local sign = Instance.new("BillboardGui")
-	sign.Name = "PodiumSign"
-	sign.Size = UDim2.fromScale(18, 4)
-	sign.StudsOffsetWorldSpace = Vector3.new(0, 8, 0)
-	sign.AlwaysOnTop = true
-	sign.MaxDistance = 200
-	sign.Parent = core
+	sign(core, "📊 STAT SCANNER", Color3.new(1, 1, 1), 6.5, 42)
 
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.FredokaOne
-	label.Text = "STAT SCANNER"
-	label.TextColor3 = Color3.new(1, 1, 1)
-	label.TextStrokeTransparency = 0.2
-	label.TextScaled = true
-	label.Parent = sign
-
-	-- Slow spin: purely cosmetic, cheap enough to run every frame on the server
-	-- because it is one CFrame write.
 	task.spawn(function()
 		local angle = 0
 		while core.Parent do
-			angle += 0.01
+			angle += 0.015
 			core.CFrame = CFrame.new(core.Position) * CFrame.Angles(0, angle, 0)
 			task.wait(0.03)
 		end
 	end)
-
-	return base
 end
 
-local function buildBoard(key: string, title: string, icon: string, position: Vector3, rotation: number)
-	local pillar = part({
-		Name = "Board_" .. key,
-		Size = Vector3.new(18, 22, 1.5),
-		CFrame = CFrame.new(position) * CFrame.Angles(0, math.rad(rotation), 0),
+-- Kiosks -----------------------------------------------------------------
+
+local KIOSKS = {
+	{
+		name = "Shop",
+		label = "⚡ SHOP",
+		action = "Open the shop",
+		color = Color3.fromRGB(255, 205, 90),
+		position = Vector3.new(-18, 0, -18),
+		view = "shop",
+	},
+	{
+		name = "Rebirth",
+		label = "🌟 REBIRTH",
+		action = "Rebirth",
+		color = Color3.fromRGB(255, 215, 80),
+		position = Vector3.new(0, 0, -22),
+		view = "rebirth",
+	},
+	{
+		name = "Awards",
+		label = "🏆 AWARDS",
+		action = "View achievements",
+		color = Color3.fromRGB(255, 178, 90),
+		position = Vector3.new(18, 0, -18),
+		view = "achievements",
+	},
+	{
+		name = "Daily",
+		label = "🎁 DAILY REWARD",
+		action = "Claim today's coins",
+		color = Color3.fromRGB(120, 230, 160),
+		position = Vector3.new(-28, 0, 6),
+		view = nil, -- claims directly instead of opening a tab
+	},
+}
+
+local function buildKiosk(config)
+	local pad = part({
+		Name = "Kiosk" .. config.name,
+		Size = Vector3.new(10, 1, 10),
+		Position = config.position + Vector3.new(0, 0.5, 0),
+		Color = config.color,
+		Material = Enum.Material.Neon,
+		Transparency = 0.25,
+	})
+
+	local post = part({
+		Name = "Post" .. config.name,
+		Size = Vector3.new(1.4, 7, 1.4),
+		Position = config.position + Vector3.new(0, 4, 0),
 		Color = Color3.fromRGB(30, 33, 44),
+	})
+
+	sign(post, config.label, config.color, 5, 34)
+
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = config.action
+	prompt.ObjectText = config.label
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 14
+	prompt.RequiresLineOfSight = false
+	prompt.Parent = post
+
+	prompt.Triggered:Connect(function(player)
+		if config.view then
+			Remotes.event("OpenMenu"):FireClient(player, { view = config.view })
+		else
+			DailyService.claim(player)
+		end
+	end)
+
+	return pad
+end
+
+-- Leaderboard boards -----------------------------------------------------
+
+local BOARD_ROWS = 10
+
+local function buildBoard(key: string, title: string, icon: string, position: Vector3)
+	local frame = part({
+		Name = "Board_" .. key,
+		Size = Vector3.new(22, 16, 1),
+		Position = position,
+		Color = Color3.fromRGB(26, 29, 40),
 	})
 
 	local surface = Instance.new("SurfaceGui")
 	surface.Name = "Display"
 	surface.Face = Enum.NormalId.Front
-	surface.CanvasSize = Vector2.new(540, 660)
+	surface.CanvasSize = Vector2.new(560, 420)
 	surface.LightInfluence = 0
-	surface.Parent = pillar
+	surface.Parent = frame
 
 	local background = Instance.new("Frame")
 	background.Size = UDim2.fromScale(1, 1)
-	background.BackgroundColor3 = Color3.fromRGB(24, 26, 36)
+	background.BackgroundColor3 = Color3.fromRGB(22, 24, 34)
 	background.BorderSizePixel = 0
 	background.Parent = surface
 
 	local header = Instance.new("TextLabel")
-	header.Size = UDim2.new(1, 0, 0, 70)
+	header.Size = UDim2.new(1, 0, 0, 56)
 	header.BackgroundColor3 = Color3.fromRGB(38, 44, 62)
 	header.BorderSizePixel = 0
 	header.Font = Enum.Font.FredokaOne
-	header.Text = icon .. " " .. title
+	header.Text = icon .. "  " .. title
 	header.TextColor3 = Color3.new(1, 1, 1)
 	header.TextScaled = true
 	header.Parent = background
 
 	local list = Instance.new("Frame")
-	list.Position = UDim2.new(0, 8, 0, 78)
-	list.Size = UDim2.new(1, -16, 1, -86)
+	list.Position = UDim2.new(0, 8, 0, 62)
+	list.Size = UDim2.new(1, -16, 1, -70)
 	list.BackgroundTransparency = 1
 	list.Parent = background
 
@@ -167,16 +322,16 @@ local function buildBoard(key: string, title: string, icon: string, position: Ve
 	layout.Parent = list
 
 	local labels = {}
-	for index = 1, 15 do
+	for index = 1, BOARD_ROWS do
 		local row = Instance.new("TextLabel")
-		row.Size = UDim2.new(1, 0, 0, 36)
+		row.Size = UDim2.new(1, 0, 0, 33)
 		row.LayoutOrder = index
-		row.BackgroundColor3 = index % 2 == 0 and Color3.fromRGB(30, 33, 44) or Color3.fromRGB(35, 39, 52)
+		row.BackgroundColor3 = index % 2 == 0 and Color3.fromRGB(28, 31, 42) or Color3.fromRGB(33, 37, 50)
 		row.BorderSizePixel = 0
 		row.Font = Enum.Font.GothamMedium
 		row.TextXAlignment = Enum.TextXAlignment.Left
 		row.TextColor3 = Color3.fromRGB(230, 235, 245)
-		row.TextSize = 22
+		row.TextSize = 20
 		row.Text = ""
 		row.Parent = list
 
@@ -206,12 +361,14 @@ local function renderBoards()
 					row.TextColor3 = index <= 3 and Color3.fromRGB(255, 215, 90) or Color3.fromRGB(230, 235, 245)
 				else
 					row.Text = ("#%d  —"):format(index)
-					row.TextColor3 = Color3.fromRGB(110, 118, 136)
+					row.TextColor3 = Color3.fromRGB(105, 112, 130)
 				end
 			end
 		end
 	end
 end
+
+-- Build ------------------------------------------------------------------
 
 function WorldBuilder.build()
 	if root then
@@ -222,25 +379,19 @@ function WorldBuilder.build()
 	root.Name = "StatScannerWorld"
 	root.Parent = workspace
 
-	buildFloor()
+	buildPlaza()
 	buildPodium()
 
-	local boards = {
-		{ key = "score", title = "SCANNER SCORE", icon = "🏅" },
-		{ key = "playtime", title = "PLAYTIME", icon = "⏱️" },
-		{ key = "accountValue", title = "ACCOUNT VALUE", icon = "💎" },
-		{ key = "walkDistance", title = "WALK DISTANCE", icon = "🚶" },
-		{ key = "badges", title = "BADGES", icon = "🎖️" },
-		{ key = "rebirths", title = "REBIRTHS", icon = "🌟" },
-	}
-
-	local radius = 52
-	for index, board in ipairs(boards) do
-		local angle = math.rad(180 + (index - 1) * (360 / #boards))
-		local position = Vector3.new(math.sin(angle) * radius, 12, math.cos(angle) * radius)
-		local facing = math.deg(math.atan2(-position.X, -position.Z))
-		buildBoard(board.key, board.title, board.icon, position, facing)
+	for _, config in ipairs(KIOSKS) do
+		buildKiosk(config)
 	end
+
+	-- Three boards flat against the north wall. The remaining boards live in
+	-- the Boards tab of the menu, so the plaza stays uncluttered.
+	local wallZ = -FLOOR_SIZE / 2 + 1.5
+	buildBoard("score", "SCANNER SCORE", "🏅", Vector3.new(-24, 9, wallZ))
+	buildBoard("playtime", "PLAYTIME", "⏱️", Vector3.new(0, 9, wallZ))
+	buildBoard("accountValue", "ACCOUNT VALUE", "💎", Vector3.new(24, 9, wallZ))
 
 	task.spawn(function()
 		while true do
@@ -249,7 +400,6 @@ function WorldBuilder.build()
 		end
 	end)
 
-	-- Give late joiners a board refresh so they never see empty pillars.
 	Players.PlayerAdded:Connect(function()
 		task.delay(3, function()
 			pcall(renderBoards)

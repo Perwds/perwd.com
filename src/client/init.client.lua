@@ -120,8 +120,10 @@ Remotes.event("LeaderboardUpdate").OnClientEvent:Connect(function(snapshot)
 	Store.setLeaderboards(snapshot)
 end)
 
-Remotes.event("OpenMenu").OnClientEvent:Connect(function()
-	app:setOpen(true)
+Remotes.event("OpenMenu").OnClientEvent:Connect(function(payload)
+	-- Kiosks pass the tab they belong to; the podium just opens the stat list.
+	local view = type(payload) == "table" and payload.view or nil
+	app:setOpen(true, view)
 end)
 
 -- Initial snapshot -------------------------------------------------------
