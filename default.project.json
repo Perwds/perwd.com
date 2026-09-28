@@ -68,6 +68,12 @@
             "Duration": 0
           }
         }
+      },
+      "Terrain": {
+        "$className": "Terrain",
+        "$properties": {
+          "Decoration": true
+        }
       }
     },
     "Lighting": {

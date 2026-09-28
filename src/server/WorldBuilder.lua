@@ -65,10 +65,11 @@ local POD_COLOR = {
 -- Ground -----------------------------------------------------------------
 
 local function buildGround()
-	-- Real terrain rather than a painted slab: with Terrain.Decoration on,
-	-- grass material grows actual 3D blades that move in the wind.
+	-- Real terrain rather than a painted slab, so grass material grows actual
+	-- 3D blades. Terrain.Decoration turns those blades on, but it is tagged
+	-- NotScriptable -- assigning it from a script throws -- so it is set in the
+	-- place file instead (see default.project.json).
 	local terrain = workspace.Terrain
-	terrain.Decoration = true
 	terrain:FillBlock(CFrame.new(0, -10, 0), Vector3.new(GROUND, 20, GROUND), Enum.Material.Grass)
 
 	-- A patch of packed dirt where the town has worn the grass down.

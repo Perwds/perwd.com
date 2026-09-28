@@ -51,12 +51,21 @@ def props(cls):
         seen.add(cls)
         c = classes[cls]
         for m in c["Members"]:
+            # Callbacks (MarketplaceService.ProcessReceipt, RemoteFunction's
+            # OnServerInvoke) are assigned exactly like properties, so they
+            # belong in this set or every handler reads as a typo.
+            if m["MemberType"] == "Callback":
+                out.setdefault(m["Name"], {"writable": True, "deprecated": False})
+                continue
             if m["MemberType"] != "Property":
                 continue
             tags = set(m.get("Tags") or [])
             sec = m.get("Security")
             writable = True
-            if "ReadOnly" in tags:
+            # NotScriptable means a script cannot touch the property AT ALL --
+            # assigning it raises. Terrain.Decoration is one, and missing it
+            # took out an entire world build.
+            if "ReadOnly" in tags or "NotScriptable" in tags:
                 writable = False
             if isinstance(sec, dict) and sec.get("Write") not in (None, "None"):
                 writable = False
@@ -157,6 +166,48 @@ for path in sorted(pathlib.Path("src").rglob("*.lua")):
                 problems.append((path, line, f"{cls}.{k} is not a property (via {var})"))
             elif not info["writable"]:
                 problems.append((path, line, f"{cls}.{k} is read-only (via {var})"))
+
+    # Singletons held in a local: `local t = workspace.Terrain`, or
+    # `local x = game:GetService("Lighting")`. These were invisible to the
+    # Instance.new rule above, which is how a NotScriptable assignment to
+    # Terrain.Decoration slipped through and killed a whole world build.
+    SINGLETONS = {"workspace.Terrain": "Terrain", "game.Workspace.Terrain": "Terrain"}
+
+    for m in re.finditer(r'local\s+(\w+)\s*=\s*(workspace\.Terrain|game\.Workspace\.Terrain)\b', src):
+        var, cls = m.group(1), SINGLETONS[m.group(2)]
+        allowed = props(cls)
+        for a in re.finditer(r'\b' + re.escape(var) + r'\.([A-Za-z_]\w*)\s*=(?!=)', src[m.end():]):
+            k = a.group(1)
+            line = src.count("\n", 0, m.end() + a.start()) + 1
+            info = allowed.get(k)
+            if not info:
+                problems.append((path, line, f"{cls}.{k} is not a property (via {var})"))
+            elif not info["writable"]:
+                problems.append((path, line, f"{cls}.{k} cannot be assigned from a script (via {var})"))
+
+    for m in re.finditer(r'local\s+(\w+)\s*=\s*game:GetService\(\s*"(\w+)"\s*\)', src):
+        var, cls = m.group(1), m.group(2)
+        if cls not in classes:
+            continue
+        allowed = props(cls)
+        for a in re.finditer(r'\b' + re.escape(var) + r'\.([A-Za-z_]\w*)\s*=(?!=)', src[m.end():]):
+            k = a.group(1)
+            line = src.count("\n", 0, m.end() + a.start()) + 1
+            info = allowed.get(k)
+            if not info:
+                problems.append((path, line, f"{cls}.{k} is not a property (via {var})"))
+            elif not info["writable"]:
+                problems.append((path, line, f"{cls}.{k} cannot be assigned from a script (via {var})"))
+
+    # Direct singleton assignment: `workspace.Terrain.Decoration = true`
+    for m in re.finditer(r'\b(?:game\.Workspace|workspace)\.Terrain\.([A-Za-z_]\w*)\s*=(?!=)', src):
+        k = m.group(1)
+        line = src.count("\n", 0, m.start()) + 1
+        info = props("Terrain").get(k)
+        if not info:
+            problems.append((path, line, f"Terrain.{k} is not a property"))
+        elif not info["writable"]:
+            problems.append((path, line, f"Terrain.{k} cannot be assigned from a script"))
 
     # Enum.Foo.Bar
     for m in re.finditer(r'Enum\.(\w+)\.(\w+)', src):
