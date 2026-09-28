@@ -619,16 +619,19 @@ function WorldBuilder.build()
 		return
 	end
 
+	root = Instance.new("Folder")
+	root.Name = "StatScannerWorld"
+	root.Parent = workspace
+
+	-- Ground and spawn go down before the editor placeholder is removed, so
+	-- there is never an instant with nothing underneath a spawning player.
+	buildGround()
+
 	local placeholder = workspace:FindFirstChild("EditorPlaceholder")
 	if placeholder then
 		placeholder:Destroy()
 	end
 
-	root = Instance.new("Folder")
-	root.Name = "StatScannerWorld"
-	root.Parent = workspace
-
-	buildGround()
 	buildShrine()
 	buildMarket()
 	buildTown()

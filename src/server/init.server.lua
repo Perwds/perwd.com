@@ -85,6 +85,30 @@ end
 
 -- Boot -------------------------------------------------------------------
 
+-- The world is built FIRST, and characters are held back until it exists.
+--
+-- Previously the map was built last, after DataService.init() -- which yields
+-- on a DataStore probe and retries with backoff if it fails. A player joining
+-- in that window spawned on the editor placeholder, which the builder then
+-- deleted out from under them, so they fell through the world.
+Players.CharacterAutoLoads = false
+
+PickupService.init()
+
+-- Wrapped: if the builder throws, characters must still load, otherwise a
+-- geometry bug becomes "nobody can spawn at all".
+local built, buildError = pcall(WorldBuilder.build)
+if not built then
+	warn("[StatScanner] world build failed: " .. tostring(buildError))
+end
+
+Players.CharacterAutoLoads = true
+for _, player in ipairs(Players:GetPlayers()) do
+	if not player.Character then
+		player:LoadCharacter()
+	end
+end
+
 DataService.init()
 GamepassService.init(grantProduct)
 ScanService.init()
@@ -92,8 +116,6 @@ DailyService.init()
 RebirthService.init()
 LeaderboardService.init()
 NametagService.init()
-PickupService.init()
-WorldBuilder.build()
 
 ScanService.onComplete(function(player)
 	AchievementService.evaluate(player)
