@@ -65,13 +65,16 @@ local POD_COLOR = {
 -- Ground -----------------------------------------------------------------
 
 local function buildGround()
-	Build.part({
-		Name = "Ground",
-		Size = Vector3.new(GROUND, 8, GROUND),
-		Position = Vector3.new(0, -4, 0),
-		Color = Color3.fromRGB(108, 172, 96),
-		Material = Enum.Material.LeafyGrass,
-	}, root)
+	-- Real terrain rather than a painted slab: with Terrain.Decoration on,
+	-- grass material grows actual 3D blades that move in the wind.
+	local terrain = workspace.Terrain
+	terrain.Decoration = true
+	terrain:FillBlock(CFrame.new(0, -10, 0), Vector3.new(GROUND, 20, GROUND), Enum.Material.Grass)
+
+	-- A patch of packed dirt where the town has worn the grass down.
+	-- FillCylinder runs its height along the CFrame's Y axis, so this one is
+	-- left upright rather than rotated the way a cylinder Part would be.
+	terrain:FillCylinder(CFrame.new(0, -4, 0), 8, SQUARE_RADIUS + 34, Enum.Material.Ground)
 
 	Build.part({
 		Name = "Square",
@@ -170,7 +173,7 @@ local function buildShrine()
 	light.Brightness = 3.5
 	light.Parent = core
 
-	Build.sign(core, "STAT SCANNER", Palette.ink, 8, 56)
+	Build.hologram(Vector3.new(0, 44, 0), "STAT SCANNER", "press E at the shrine", Palette.cyan, root)
 
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Open scanner"
@@ -246,7 +249,15 @@ local function buildMarket()
 
 		-- Face the stall back towards the square.
 		local cf = CFrame.lookAt(position, Vector3.new(0, 0, 0))
-		local glow = Build.stall(cf, tint, category.icon .. " " .. category.name:upper(), root)
+		local glow = Build.stall(cf, tint, root)
+
+		Build.hologram(
+			position + Vector3.new(0, 17, 0),
+			category.name:upper(),
+			"scan next stat",
+			tint,
+			root
+		)
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "Scan next"
@@ -261,6 +272,11 @@ local function buildMarket()
 		end)
 
 		PickupService.scatter(position, 15, 2, 18, tint)
+
+		-- Market clutter around the stall.
+		Build.barrel(position + Vector3.new(8, 0, 4), root)
+		Build.crate(position + Vector3.new(-8, 0, 3), math.rad(math.random(0, 90)), root)
+		Build.flowers(position + Vector3.new(0, 0, 10), 5, root)
 	end
 end
 
@@ -329,13 +345,61 @@ local function buildTown()
 		local b = Vector3.new(math.sin(angle + math.rad(45)) * 100, 0, math.cos(angle + math.rad(45)) * 100)
 		Build.fence(a, b, root)
 	end
+
+	-- Fountains in the corners of the square.
+	for index = 1, 4 do
+		local angle = math.rad(index * 90 + 45)
+		Build.fountain(Vector3.new(math.sin(angle) * 34, 0, math.cos(angle) * 34), root)
+	end
+
+	-- Hedges lining the four paths out of town.
+	for _, angle in ipairs({ 0, 90, 180, 270 }) do
+		local radians = math.rad(angle)
+		local direction = Vector3.new(math.sin(radians), 0, math.cos(radians))
+		local side = Vector3.new(direction.Z, 0, -direction.X) * 9
+		Build.hedge(direction * 58 + side, direction * 150 + side, root)
+		Build.hedge(direction * 58 - side, direction * 150 - side, root)
+	end
+
+	-- Flowers, long grass and farm clutter scattered over the green.
+	for index = 1, 40 do
+		local angle = math.rad(index * 9.1)
+		local distance = 74 + (index % 7) * 13
+		local spot = Vector3.new(math.sin(angle) * distance, 0, math.cos(angle) * distance)
+
+		Build.flowers(spot, 4, root)
+		if index % 2 == 0 then
+			Build.grassTufts(spot + Vector3.new(6, 0, -4), 3, 7, root)
+		end
+		if index % 7 == 0 then
+			Build.hayBale(spot + Vector3.new(-10, 0, 6), math.rad(math.random(0, 180)), root)
+		end
+		if index % 9 == 0 then
+			Build.crate(spot + Vector3.new(9, 0, 9), math.rad(math.random(0, 90)), root)
+		end
+	end
+
+	-- Signpost by the spawn so the town explains itself.
+	Build.signpost(Vector3.new(16, 0, 44), {
+		{ text = "SKY RUINS", angle = 135, tint = Palette.gold },
+		{ text = "VOID ISLE", angle = 180, tint = Palette.purple },
+		{ text = "MARKET", angle = 0, tint = Palette.green },
+	}, root)
+
+	-- Pollen drifting over the green.
+	for index = 1, 5 do
+		local angle = math.rad(index * 72)
+		Build.pollen(Vector3.new(math.sin(angle) * 80, 16, math.cos(angle) * 80), root)
+	end
 end
 
 -- Kiosks -----------------------------------------------------------------
 
-local function kiosk(position: Vector3, label: string, tint: Color3, view: string?, onUse: ((Player) -> ())?)
+local function kiosk(position: Vector3, label: string, subtitle: string, tint: Color3, view: string?, onUse: ((Player) -> ())?)
 	local cf = CFrame.lookAt(position, Vector3.new(0, 0, 0))
-	local glow = Build.stall(cf, tint, label, root)
+	local glow = Build.stall(cf, tint, root)
+
+	Build.hologram(position + Vector3.new(0, 17, 0), label, subtitle, tint, root)
 
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Open"
@@ -355,10 +419,10 @@ local function kiosk(position: Vector3, label: string, tint: Color3, view: strin
 end
 
 local function buildKiosks()
-	kiosk(Vector3.new(-40, 0, 96), "SHOP", Palette.gold, "shop")
-	kiosk(Vector3.new(40, 0, 96), "QUESTS", Palette.pink, "achievements")
-	kiosk(Vector3.new(-40, 0, -96), "REBIRTH", Palette.purple, "rebirth")
-	kiosk(Vector3.new(40, 0, -96), "DAILY", Palette.green, nil, function(player)
+	kiosk(Vector3.new(-40, 0, 96), "SHOP", "gamepasses & coins", Palette.gold, "shop")
+	kiosk(Vector3.new(40, 0, 96), "QUESTS", "free coin rewards", Palette.pink, "achievements")
+	kiosk(Vector3.new(-40, 0, -96), "REBIRTH", "reset for power", Palette.purple, "rebirth")
+	kiosk(Vector3.new(40, 0, -96), "DAILY", "claim once a day", Palette.green, nil, function(player)
 		DailyService.claim(player)
 	end)
 end
@@ -426,7 +490,7 @@ local function buildRuins()
 		Color = Color3.fromRGB(176, 168, 152),
 		Material = Enum.Material.Brick,
 	}, root)
-	Build.sign(pillar, "SKY RUINS", Palette.gold, 64, 50)
+	Build.hologram(centre + Vector3.new(0, 30, 0), "SKY RUINS", "climb for the chest", Palette.gold, root)
 
 	local steps = 18
 	for index = 1, steps do

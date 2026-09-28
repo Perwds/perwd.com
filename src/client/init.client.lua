@@ -14,6 +14,7 @@ local StatConfig = require(Shared.StatConfig)
 
 local Store = require(script.Store)
 local App = require(script.ui.App)
+local HoloFx = require(script.ui.HoloFx)
 
 local player = Players.LocalPlayer
 
@@ -97,6 +98,7 @@ local callbacks = {
 }
 
 app = App.new(callbacks)
+HoloFx.start()
 
 -- Remote wiring ----------------------------------------------------------
 

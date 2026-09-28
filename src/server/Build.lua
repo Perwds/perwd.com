@@ -138,7 +138,11 @@ function Build.house(cf: CFrame, roofColor: Color3, parent: Instance, scale: num
 		glow.Range = 14
 		glow.Brightness = 1.2
 		glow.Parent = window
+
+		Build.windowBox(cf * CFrame.new(offset, h * 0.72 - 2.4, d / 2 + 0.7), parent)
 	end
+
+	Build.chimney(cf * CFrame.new(w * 0.3, h + 6, -d * 0.2), parent)
 end
 
 --- Round stone tower with a spire.
@@ -185,7 +189,7 @@ function Build.tower(position: Vector3, radius: number, height: number, roofColo
 end
 
 --- Market stall with a striped awning. These are the scan stations.
-function Build.stall(cf: CFrame, tint: Color3, label: string, parent: Instance): BasePart
+function Build.stall(cf: CFrame, tint: Color3, parent: Instance): BasePart
 	local counter = Build.part({
 		Name = "Counter",
 		Size = Vector3.new(12, 4, 6),
@@ -231,8 +235,6 @@ function Build.stall(cf: CFrame, tint: Color3, label: string, parent: Instance):
 	light.Range = 18
 	light.Brightness = 2
 	light.Parent = glow
-
-	Build.sign(glow, label, tint, 6, 42)
 
 	return glow
 end
@@ -399,6 +401,500 @@ function Build.path(from: Vector3, to: Vector3, width: number, parent: Instance)
 	}, parent)
 end
 
+
+-- Holograms --------------------------------------------------------------
+
+local CollectionService = game:GetService("CollectionService")
+
+--- A floating holographic panel: translucent plate, bright rim, corner
+--- brackets, a projector disc beneath it and a column of light.
+---
+--- The animation (scanline, bob, flicker) is deliberately NOT done here. These
+--- are server-created instances, and animating a GuiObject from the server
+--- replicates every property write. The client's HoloFx module picks them up by
+--- tag and animates them locally instead, which is both smoother and free.
+function Build.hologram(position: Vector3, title: string, subtitle: string?, tint: Color3, parent: Instance)
+	local anchor = Build.part({
+		Name = "HoloAnchor",
+		Size = Vector3.new(0.4, 0.4, 0.4),
+		Position = position,
+		Transparency = 1,
+		CanCollide = false,
+	}, parent)
+
+	-- Projector disc on the ground below the panel.
+	local disc = Build.part({
+		Name = "HoloDisc",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(0.5, 7, 7),
+		CFrame = CFrame.new(position - Vector3.new(0, 4.5, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = tint,
+		Material = Enum.Material.Neon,
+		Transparency = 0.25,
+		CanCollide = false,
+	}, parent)
+
+	local light = Instance.new("PointLight")
+	light.Color = tint
+	light.Range = 22
+	light.Brightness = 2.4
+	light.Parent = disc
+
+	-- The beam of light the panel appears to sit in.
+	Build.part({
+		Name = "HoloColumn",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(9, 6.4, 6.4),
+		CFrame = CFrame.new(position - Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = tint,
+		Material = Enum.Material.Neon,
+		Transparency = 0.9,
+		CanCollide = false,
+	}, parent)
+
+	-- Motes drifting up through the beam.
+	local motes = Instance.new("ParticleEmitter")
+	motes.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+	motes.Color = ColorSequence.new(tint)
+	motes.LightEmission = 1
+	motes.Rate = 7
+	motes.Lifetime = NumberRange.new(1.6, 2.6)
+	motes.Speed = NumberRange.new(2, 4)
+	motes.SpreadAngle = Vector2.new(14, 14)
+	motes.Size = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0.5),
+		NumberSequenceKeypoint.new(1, 0),
+	})
+	motes.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0.3),
+		NumberSequenceKeypoint.new(1, 1),
+	})
+	motes.Parent = disc
+
+	local billboard = Instance.new("BillboardGui")
+	billboard.Name = "Holo"
+	billboard.Size = UDim2.fromOffset(300, 116)
+	billboard.StudsOffsetWorldSpace = Vector3.new(0, 0, 0)
+	billboard.MaxDistance = 260
+	billboard.LightInfluence = 0
+	billboard.ClipsDescendants = true
+	billboard.Parent = anchor
+
+	local plate = Instance.new("Frame")
+	plate.Name = "Plate"
+	plate.Size = UDim2.fromScale(1, 1)
+	plate.BackgroundColor3 = tint
+	plate.BackgroundTransparency = 0.62
+	plate.BorderSizePixel = 0
+	plate.Parent = billboard
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 10)
+	corner.Parent = plate
+
+	local rim = Instance.new("UIStroke")
+	rim.Color = tint
+	rim.Thickness = 2
+	rim.Transparency = 0.15
+	rim.Parent = plate
+
+	local sheen = Instance.new("UIGradient")
+	sheen.Color = ColorSequence.new(Color3.new(1, 1, 1), tint)
+	sheen.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0.55),
+		NumberSequenceKeypoint.new(1, 0.9),
+	})
+	sheen.Rotation = 90
+	sheen.Parent = plate
+
+	-- Corner brackets, the detail that makes a panel read as a projection.
+	for index, spot in ipairs({
+		{ UDim2.fromScale(0, 0), Vector2.new(0, 0) },
+		{ UDim2.fromScale(1, 0), Vector2.new(1, 0) },
+		{ UDim2.fromScale(0, 1), Vector2.new(0, 1) },
+		{ UDim2.fromScale(1, 1), Vector2.new(1, 1) },
+	}) do
+		for _, shape in ipairs({ Vector2.new(20, 3), Vector2.new(3, 20) }) do
+			local bracket = Instance.new("Frame")
+			bracket.Name = "Bracket" .. index
+			bracket.AnchorPoint = spot[2]
+			bracket.Position = spot[1]
+			bracket.Size = UDim2.fromOffset(shape.X, shape.Y)
+			bracket.BackgroundColor3 = Color3.new(1, 1, 1)
+			bracket.BackgroundTransparency = 0.15
+			bracket.BorderSizePixel = 0
+			bracket.ZIndex = 4
+			bracket.Parent = plate
+		end
+	end
+
+	-- The band the client sweeps down the panel.
+	local scan = Instance.new("Frame")
+	scan.Name = "Scanline"
+	scan.Size = UDim2.new(1, 0, 0, 12)
+	scan.Position = UDim2.fromScale(0, 0)
+	scan.BackgroundColor3 = Color3.new(1, 1, 1)
+	scan.BackgroundTransparency = 0.82
+	scan.BorderSizePixel = 0
+	scan.ZIndex = 3
+	scan.Parent = plate
+
+	local heading = Instance.new("TextLabel")
+	heading.Name = "Title"
+	heading.Position = UDim2.fromOffset(0, subtitle and 12 or 0)
+	heading.Size = UDim2.new(1, 0, 0, subtitle and 58 or 116)
+	heading.BackgroundTransparency = 1
+	heading.Font = Enum.Font.FredokaOne
+	heading.Text = title
+	heading.TextColor3 = Color3.new(1, 1, 1)
+	heading.TextStrokeColor3 = Palette.outline
+	heading.TextStrokeTransparency = 0.35
+	heading.TextScaled = true
+	heading.ZIndex = 5
+	heading.Parent = plate
+
+	local cap = Instance.new("UITextSizeConstraint")
+	cap.MaxTextSize = 44
+	cap.Parent = heading
+
+	if subtitle then
+		local sub = Instance.new("TextLabel")
+		sub.Name = "Subtitle"
+		sub.Position = UDim2.fromOffset(0, 68)
+		sub.Size = UDim2.new(1, 0, 0, 32)
+		sub.BackgroundTransparency = 1
+		sub.Font = Enum.Font.GothamBold
+		sub.Text = subtitle
+		sub.TextColor3 = Color3.new(1, 1, 1)
+		sub.TextTransparency = 0.25
+		sub.TextScaled = true
+		sub.ZIndex = 5
+		sub.Parent = plate
+
+		local subCap = Instance.new("UITextSizeConstraint")
+		subCap.MaxTextSize = 20
+		subCap.Parent = sub
+	end
+
+	billboard:SetAttribute("HoloTint", tint)
+	CollectionService:AddTag(billboard, "Hologram")
+
+	return anchor, billboard
+end
+
+
+-- Detail props -----------------------------------------------------------
+
+local FLOWERS = {
+	Color3.fromRGB(255, 122, 152),
+	Color3.fromRGB(255, 214, 92),
+	Color3.fromRGB(168, 132, 255),
+	Color3.fromRGB(255, 255, 255),
+	Color3.fromRGB(255, 152, 88),
+}
+
+--- A clump of stems with blossoms on top.
+function Build.flowers(position: Vector3, count: number, parent: Instance)
+	for index = 1, count do
+		local offset = Vector3.new(math.random(-28, 28) / 10, 0, math.random(-28, 28) / 10)
+		local height = 1.2 + math.random() * 0.8
+
+		Build.part({
+			Name = "Stem",
+			Size = Vector3.new(0.18, height, 0.18),
+			CFrame = CFrame.new(position + offset + Vector3.new(0, height / 2, 0)),
+			Color = Color3.fromRGB(88, 150, 76),
+			Material = Enum.Material.Grass,
+			CanCollide = false,
+		}, parent)
+
+		Build.part({
+			Name = "Blossom",
+			Shape = Enum.PartType.Ball,
+			Size = Vector3.new(0.7, 0.7, 0.7),
+			CFrame = CFrame.new(position + offset + Vector3.new(0, height + 0.2, 0)),
+			Color = FLOWERS[((index + math.random(0, 4)) % #FLOWERS) + 1],
+			Material = Enum.Material.SmoothPlastic,
+			CanCollide = false,
+		}, parent)
+	end
+end
+
+--- Tufts of long grass, for edges where terrain decoration alone looks thin.
+function Build.grassTufts(position: Vector3, count: number, spread: number, parent: Instance)
+	for _ = 1, count do
+		local offset = Vector3.new(math.random(-spread, spread), 0, math.random(-spread, spread))
+		local height = 1.6 + math.random() * 1.6
+
+		for blade = 1, 3 do
+			Build.part({
+				Name = "Blade",
+				Size = Vector3.new(0.22, height, 0.22),
+				CFrame = CFrame.new(position + offset + Vector3.new(blade * 0.3 - 0.3, height / 2, 0))
+					* CFrame.Angles(math.rad(math.random(-14, 14)), 0, math.rad(math.random(-18, 18))),
+				Color = blade == 2 and Color3.fromRGB(104, 178, 88) or Color3.fromRGB(86, 158, 76),
+				Material = Enum.Material.Grass,
+				CanCollide = false,
+			}, parent)
+		end
+	end
+end
+
+function Build.barrel(position: Vector3, parent: Instance)
+	local body = Build.part({
+		Name = "Barrel",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(4.4, 3.2, 3.2),
+		CFrame = CFrame.new(position + Vector3.new(0, 2.2, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(128, 86, 54),
+		Material = Enum.Material.Wood,
+	}, parent)
+
+	for _, height in ipairs({ 1.2, 3.2 }) do
+		Build.part({
+			Name = "Hoop",
+			Shape = Enum.PartType.Cylinder,
+			Size = Vector3.new(0.4, 3.5, 3.5),
+			CFrame = CFrame.new(position + Vector3.new(0, height, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			Color = Color3.fromRGB(72, 64, 58),
+			Material = Enum.Material.Metal,
+		}, parent)
+	end
+
+	return body
+end
+
+function Build.crate(position: Vector3, rotation: number, parent: Instance)
+	Build.part({
+		Name = "Crate",
+		Size = Vector3.new(4, 4, 4),
+		CFrame = CFrame.new(position + Vector3.new(0, 2, 0)) * CFrame.Angles(0, rotation, 0),
+		Color = Color3.fromRGB(154, 112, 66),
+		Material = Enum.Material.WoodPlanks,
+	}, parent)
+
+	for _, axis in ipairs({ Vector3.new(0, 0, 2.1), Vector3.new(2.1, 0, 0) }) do
+		Build.part({
+			Name = "CrateBand",
+			Size = axis.Z > 0 and Vector3.new(4.2, 0.6, 0.2) or Vector3.new(0.2, 0.6, 4.2),
+			CFrame = CFrame.new(position + Vector3.new(0, 2, 0)) * CFrame.Angles(0, rotation, 0)
+				* CFrame.new(axis),
+			Color = Color3.fromRGB(104, 74, 44),
+			Material = Enum.Material.Wood,
+		}, parent)
+	end
+end
+
+function Build.hayBale(position: Vector3, rotation: number, parent: Instance)
+	local bale = Build.part({
+		Name = "HayBale",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(5, 4.6, 4.6),
+		CFrame = CFrame.new(position + Vector3.new(0, 2.3, 0)) * CFrame.Angles(0, rotation, 0),
+		Color = Color3.fromRGB(216, 186, 106),
+		Material = Enum.Material.Grass,
+	}, parent)
+	return bale
+end
+
+function Build.hedge(from: Vector3, to: Vector3, parent: Instance)
+	local span = to - from
+	local mid = from + span * 0.5
+
+	Build.part({
+		Name = "Hedge",
+		Size = Vector3.new(3.4, 4, span.Magnitude),
+		CFrame = CFrame.lookAt(mid + Vector3.new(0, 2, 0), mid + Vector3.new(0, 2, 0) + span.Unit),
+		Color = Color3.fromRGB(64, 122, 62),
+		Material = Enum.Material.LeafyGrass,
+	}, parent)
+end
+
+--- Chimney with smoke, which is most of what makes a roof look inhabited.
+function Build.chimney(cf: CFrame, parent: Instance)
+	local stack = Build.part({
+		Name = "Chimney",
+		Size = Vector3.new(3, 8, 3),
+		CFrame = cf,
+		Color = Color3.fromRGB(148, 96, 82),
+		Material = Enum.Material.Brick,
+	}, parent)
+
+	local cap = Build.part({
+		Name = "ChimneyCap",
+		Size = Vector3.new(3.8, 0.6, 3.8),
+		CFrame = cf * CFrame.new(0, 4.2, 0),
+		Color = Color3.fromRGB(96, 88, 84),
+		Material = Enum.Material.Slate,
+	}, parent)
+
+	local smoke = Instance.new("ParticleEmitter")
+	smoke.Texture = "rbxasset://textures/particles/smoke_main.dds"
+	smoke.Color = ColorSequence.new(Color3.fromRGB(226, 222, 216))
+	smoke.Rate = 3
+	smoke.Lifetime = NumberRange.new(3, 5)
+	smoke.Speed = NumberRange.new(2.5, 4)
+	smoke.SpreadAngle = Vector2.new(9, 9)
+	smoke.Acceleration = Vector3.new(1.2, 1.6, 0)
+	smoke.Size = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 1.4),
+		NumberSequenceKeypoint.new(1, 6),
+	})
+	smoke.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0.55),
+		NumberSequenceKeypoint.new(1, 1),
+	})
+	smoke.Parent = cap
+end
+
+--- Flower box under a window.
+function Build.windowBox(cf: CFrame, parent: Instance)
+	Build.part({
+		Name = "WindowBox",
+		Size = Vector3.new(4, 1.2, 1.4),
+		CFrame = cf,
+		Color = Color3.fromRGB(110, 76, 48),
+		Material = Enum.Material.Wood,
+	}, parent)
+
+	for index = -1, 1 do
+		Build.part({
+			Name = "BoxBloom",
+			Shape = Enum.PartType.Ball,
+			Size = Vector3.new(1, 1, 1),
+			CFrame = cf * CFrame.new(index * 1.2, 0.9, 0),
+			Color = FLOWERS[((index + 2) % #FLOWERS) + 1],
+			Material = Enum.Material.SmoothPlastic,
+		}, parent)
+	end
+end
+
+--- Stone fountain, the centrepiece every town square wants.
+function Build.fountain(position: Vector3, parent: Instance)
+	Build.part({
+		Name = "FountainBasin",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(3, 22, 22),
+		CFrame = CFrame.new(position + Vector3.new(0, 1.5, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(198, 192, 180),
+		Material = Enum.Material.Marble,
+	}, parent)
+
+	Build.part({
+		Name = "FountainWater",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(0.6, 19, 19),
+		CFrame = CFrame.new(position + Vector3.new(0, 2.8, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(96, 190, 226),
+		Material = Enum.Material.Glass,
+		Transparency = 0.35,
+		CanCollide = false,
+	}, parent)
+
+	Build.part({
+		Name = "FountainStem",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(7, 3, 3),
+		CFrame = CFrame.new(position + Vector3.new(0, 5, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(210, 204, 192),
+		Material = Enum.Material.Marble,
+	}, parent)
+
+	local bowl = Build.part({
+		Name = "FountainBowl",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(1.4, 9, 9),
+		CFrame = CFrame.new(position + Vector3.new(0, 8, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(198, 192, 180),
+		Material = Enum.Material.Marble,
+	}, parent)
+
+	local spray = Instance.new("ParticleEmitter")
+	spray.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+	spray.Color = ColorSequence.new(Color3.fromRGB(180, 226, 255))
+	spray.LightEmission = 0.6
+	spray.Rate = 26
+	spray.Lifetime = NumberRange.new(1, 1.6)
+	spray.Speed = NumberRange.new(9, 13)
+	spray.SpreadAngle = Vector2.new(26, 26)
+	spray.Acceleration = Vector3.new(0, -34, 0)
+	spray.Size = NumberSequence.new(0.6)
+	spray.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0.2),
+		NumberSequenceKeypoint.new(1, 1),
+	})
+	spray.Parent = bowl
+end
+
+--- Wooden signpost with arrow boards.
+function Build.signpost(position: Vector3, arrows: { { text: string, angle: number, tint: Color3 } }, parent: Instance)
+	Build.part({
+		Name = "SignPost",
+		Size = Vector3.new(1.2, 16, 1.2),
+		CFrame = CFrame.new(position + Vector3.new(0, 8, 0)),
+		Color = Color3.fromRGB(104, 72, 46),
+		Material = Enum.Material.Wood,
+	}, parent)
+
+	for index, arrow in ipairs(arrows) do
+		local board = Build.part({
+			Name = "Arrow",
+			Size = Vector3.new(11, 2.6, 0.5),
+			CFrame = CFrame.new(position + Vector3.new(0, 14 - index * 3.2, 0))
+				* CFrame.Angles(0, math.rad(arrow.angle), 0)
+				* CFrame.new(4.5, 0, 0),
+			Color = Color3.fromRGB(154, 112, 66),
+			Material = Enum.Material.WoodPlanks,
+		}, parent)
+
+		local surface = Instance.new("SurfaceGui")
+		surface.Face = Enum.NormalId.Front
+		surface.CanvasSize = Vector2.new(320, 76)
+		surface.LightInfluence = 0.4
+		surface.Parent = board
+
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.fromScale(1, 1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.FredokaOne
+		label.Text = arrow.text
+		label.TextColor3 = arrow.tint
+		label.TextScaled = true
+		label.Parent = surface
+	end
+end
+
+--- Pollen drifting across the town, which is what sells a sunny day.
+function Build.pollen(position: Vector3, parent: Instance)
+	local anchor = Build.part({
+		Name = "PollenAnchor",
+		Size = Vector3.new(1, 1, 1),
+		Position = position,
+		Transparency = 1,
+		CanCollide = false,
+	}, parent)
+
+	local motes = Instance.new("ParticleEmitter")
+	motes.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+	motes.Color = ColorSequence.new(Color3.fromRGB(255, 244, 196))
+	motes.LightEmission = 0.75
+	motes.Rate = 14
+	motes.Lifetime = NumberRange.new(6, 11)
+	motes.Speed = NumberRange.new(1, 3)
+	motes.SpreadAngle = Vector2.new(180, 180)
+	motes.Acceleration = Vector3.new(1.4, 0.4, 0.8)
+	motes.Size = NumberSequence.new(0.45)
+	motes.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 1),
+		NumberSequenceKeypoint.new(0.25, 0.4),
+		NumberSequenceKeypoint.new(0.8, 0.5),
+		NumberSequenceKeypoint.new(1, 1),
+	})
+	motes.Parent = anchor
+
+	return anchor
+end
+
 -- Fixtures ---------------------------------------------------------------
 
 --- A carved stone slab, the way hub leaderboards are usually done.
@@ -524,7 +1020,7 @@ function Build.portal(position: Vector3, tint: Color3, label: string, parent: In
 		CanCollide = false,
 	}, parent)
 
-	Build.sign(beam, label, tint, 22, 46)
+	Build.hologram(position + Vector3.new(0, 14, 0), label, "step on the ring", tint, parent)
 
 	return pad
 end
