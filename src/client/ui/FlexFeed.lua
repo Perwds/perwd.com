@@ -1,12 +1,9 @@
 --!strict
---[[
-	FlexFeed -- a dark data strip along the top for server-wide events.
-	Monospace, LED-prefixed, deliberately terse: it reads as telemetry rather
-	than as chat.
-]]
+--[[ FlexFeed -- server-wide brags across the top. ]]
 
 local Theme = require(script.Parent.Theme)
 local Util = require(script.Parent.Util)
+local Skin = require(script.Parent.Skin)
 
 local FlexFeed = {}
 
@@ -18,8 +15,8 @@ function FlexFeed.new(parent: Instance)
 	self.root = Util.new("Frame", {
 		Name = "FlexFeed",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, 14),
-		Size = UDim2.fromOffset(660, 140),
+		Position = UDim2.new(0.5, 0, 0, 16),
+		Size = UDim2.fromOffset(720, 160),
 		BackgroundTransparency = 1,
 		Parent = parent,
 	})
@@ -31,55 +28,40 @@ function FlexFeed.new(parent: Instance)
 end
 
 function FlexFeed:push(payload)
-	local text, accent
+	local text, tint
 
 	if payload.kind == "rebirth" then
-		text = ("%s COMPLETED REBIRTH CYCLE %d"):format(payload.player:upper(), payload.rebirths)
-		accent = Theme.Color.accent
+		text = ("%s just REBIRTHED (x%d)!"):format(payload.player, payload.rebirths)
+		tint = Theme.Color.gold
 	else
-		text = ("%s // %s"):format(payload.player:upper(), payload.message or "")
-		accent = payload.color or Theme.Color.ledGreen
+		text = ("%s  %s"):format(payload.player, payload.message or "")
+		tint = payload.color or Theme.Color.cyan
 	end
 
-	local cell, inner = Util.slot({
-		Size = UDim2.new(1, 0, 0, 34),
-		Parent = self.root,
-	})
+	local cell, inner = Util.slot({ Size = UDim2.new(1, 0, 0, 42), Parent = self.root })
 
-	local strip = Util.new("Frame", {
+	local strip = Util.card({
 		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = Theme.Color.dark,
-		BackgroundTransparency = 0.12,
-		BorderSizePixel = 0,
+		BackgroundColor3 = tint,
+		radius = Theme.Radius.full,
+		lip = Theme.Lip.small,
 		Parent = inner,
 	})
-	Util.corner(Theme.Radius.sm, strip)
-	Util.stroke(accent, 2, strip)
 
-	-- Indicator bar in place of an icon, so the strip stays machine-like.
-	local pip = Util.new("Frame", {
-		Position = UDim2.fromOffset(8, 10),
-		Size = UDim2.fromOffset(4, 14),
-		BackgroundColor3 = accent,
-		BorderSizePixel = 0,
-		Parent = strip,
-	})
-	Util.corner(Theme.Radius.full, pip)
-
-	Util.text({
-		Position = UDim2.fromOffset(22, 0),
-		Size = UDim2.new(1, -32, 1, 0),
-		Font = Theme.Font.mono,
+	Util.title({
+		Size = UDim2.new(1, -28, 1, -6),
+		Position = UDim2.fromOffset(14, 0),
 		Text = text,
-		TextColor3 = Theme.Color.darkText,
-		TextSize = 13,
+		TextSize = 18,
+		TextColor3 = Theme.inkOn(tint),
 		TextTruncate = Enum.TextTruncate.AtEnd,
-		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 3,
 		Parent = strip,
 	})
 
-	strip.Position = UDim2.fromOffset(0, -18)
-	Util.tween(strip, 0.25, { Position = UDim2.new() }, Theme.Motion.mechanical)
+	strip.Position = UDim2.fromOffset(0, -30)
+	Util.tween(strip, 0.3, { Position = UDim2.new() }, Theme.Motion.pop)
+	Skin.pop(strip, 0.06)
 
 	task.delay(LIFETIME, function()
 		if cell.Parent then

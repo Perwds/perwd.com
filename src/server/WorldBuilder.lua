@@ -1,19 +1,20 @@
 --!strict
 --[[
 	WorldBuilder
-	Generates the whole lobby from code so the place file stays empty and
-	everything lives in version control.
+	Builds the whole map from code.
 
-	It is deliberately a small arena -- an 84x84 walled plaza you can cross in a
-	few seconds -- because every menu is one keypress away and nothing is gained
-	by making players walk. The layout:
+	Layout:
 
-	    spawn pad (south)  ->  scanner podium (centre)
-	    three kiosks (north): Shop / Rebirth / Awards
-	    three leaderboard boards on the north wall
+	    HUB ISLAND          spawn, scanner tower, seven category pods,
+	                        shop / rebirth / daily props, leaderboard wall,
+	                        coin orbs scattered across the grass
+	    OBBY TOWER (west)   sixteen platforms spiralling up to a chest
+	    VOID ISLAND (north) gated behind scanner score, six-times orb value
+	                        and a bigger chest
 
-	Each kiosk carries a ProximityPrompt and a floating sign, and opens the
-	matching tab of the screen UI through the OpenMenu remote.
+	The point of the pods and the orbs is that a scan takes time: instead of
+	standing in a menu watching a bar, you walk a pod, start a scan, and go
+	collect while it runs.
 ]]
 
 local Players = game:GetService("Players")
@@ -22,14 +23,21 @@ local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local Remotes = require(Shared.Remotes)
 local Format = require(Shared.Format)
 local Palette = require(Shared.Palette)
+local StatConfig = require(Shared.StatConfig)
 
+local DataService = require(script.Parent.DataService)
 local DailyService = require(script.Parent.DailyService)
 local LeaderboardService = require(script.Parent.LeaderboardService)
+local PickupService = require(script.Parent.PickupService)
+local ScanService = require(script.Parent.ScanService)
+local StateService = require(script.Parent.StateService)
 
 local WorldBuilder = {}
 
-local FLOOR_SIZE = 84
-local WALL_HEIGHT = 14
+local HUB = 200
+local VOID_CENTRE = Vector3.new(0, 0, -300)
+local VOID_SIZE = 150
+local VOID_REQUIREMENT = 30 -- scanner score needed to cross the bridge
 local BOARD_REFRESH = 30
 
 local root: Folder
@@ -50,40 +58,24 @@ local function part(props: { [string]: any }, parent: Instance?): BasePart
 	return instance
 end
 
---- Floating label above a part.
-local function sign(parent: BasePart, text: string, color: Color3, height: number, size: number)
+local function sign(parent: BasePart, text: string, tint: Color3, height: number, size: number): TextLabel
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "Sign"
-	billboard.Size = UDim2.fromScale(11, 2.6)
+	billboard.Size = UDim2.fromScale(13, 3)
 	billboard.StudsOffsetWorldSpace = Vector3.new(0, height, 0)
-	billboard.AlwaysOnTop = false
-	billboard.MaxDistance = 140
+	billboard.MaxDistance = 220
 	billboard.Parent = parent
-
-	local backing = Instance.new("Frame")
-	backing.Size = UDim2.fromScale(1, 1)
-	backing.BackgroundColor3 = Palette.dark
-	backing.BackgroundTransparency = 0.25
-	backing.BorderSizePixel = 0
-	backing.Parent = billboard
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0.25, 0)
-	corner.Parent = backing
-
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = color
-	stroke.Thickness = 3
-	stroke.Parent = backing
 
 	local label = Instance.new("TextLabel")
 	label.Size = UDim2.fromScale(1, 1)
 	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.GothamBlack
+	label.Font = Enum.Font.FredokaOne
 	label.Text = text
-	label.TextColor3 = color
+	label.TextColor3 = tint
+	label.TextStrokeColor3 = Palette.outline
+	label.TextStrokeTransparency = 0
 	label.TextScaled = true
-	label.Parent = backing
+	label.Parent = billboard
 
 	local constraint = Instance.new("UITextSizeConstraint")
 	constraint.MaxTextSize = size
@@ -92,96 +84,97 @@ local function sign(parent: BasePart, text: string, color: Color3, height: numbe
 	return label
 end
 
--- Plaza ------------------------------------------------------------------
+-- Hub --------------------------------------------------------------------
 
-local function buildPlaza()
+local function buildHub()
 	part({
-		Name = "Floor",
-		Size = Vector3.new(FLOOR_SIZE, 4, FLOOR_SIZE),
-		Position = Vector3.new(0, -2, 0),
-		Color = Palette.recess,
-		Material = Enum.Material.Concrete,
-	})
-
-	-- Grass border so the plaza reads as a platform, not a void.
-	part({
-		Name = "Lawn",
-		Size = Vector3.new(FLOOR_SIZE + 24, 3, FLOOR_SIZE + 24),
+		Name = "HubGrass",
+		Size = Vector3.new(HUB, 6, HUB),
 		Position = Vector3.new(0, -3, 0),
-		Color = Palette.shadowDeep,
-		Material = Enum.Material.Concrete,
+		Color = Palette.grass,
+		Material = Enum.Material.Grass,
 	})
 
-	-- Neon inlay ring under the podium.
 	part({
-		Name = "Inlay",
-		Size = Vector3.new(26, 0.4, 26),
-		Position = Vector3.new(0, 0.2, 0),
-		Color = Palette.accent,
-		Material = Enum.Material.Neon,
-		Transparency = 0.45,
+		Name = "HubRim",
+		Size = Vector3.new(HUB + 12, 4, HUB + 12),
+		Position = Vector3.new(0, -6, 0),
+		Color = Palette.grassDeep,
+		Material = Enum.Material.Grass,
 	})
 
-	local walls = {
-		{ size = Vector3.new(FLOOR_SIZE, WALL_HEIGHT, 2), pos = Vector3.new(0, WALL_HEIGHT / 2, -FLOOR_SIZE / 2) },
-		{ size = Vector3.new(FLOOR_SIZE, WALL_HEIGHT, 2), pos = Vector3.new(0, WALL_HEIGHT / 2, FLOOR_SIZE / 2) },
-		{ size = Vector3.new(2, WALL_HEIGHT, FLOOR_SIZE), pos = Vector3.new(-FLOOR_SIZE / 2, WALL_HEIGHT / 2, 0) },
-		{ size = Vector3.new(2, WALL_HEIGHT, FLOOR_SIZE), pos = Vector3.new(FLOOR_SIZE / 2, WALL_HEIGHT / 2, 0) },
-	}
+	-- Paved circle under the tower.
+	part({
+		Name = "Plaza",
+		Size = Vector3.new(78, 0.6, 78),
+		Position = Vector3.new(0, 0.3, 0),
+		Color = Palette.path,
+		Material = Enum.Material.Sand,
+	})
 
-	for index, wall in ipairs(walls) do
+	-- Four paths radiating out.
+	for index, angle in ipairs({ 0, 90, 180, 270 }) do
+		local radians = math.rad(angle)
 		part({
-			Name = "Wall" .. index,
-			Size = wall.size,
-			Position = wall.pos,
-			Color = Palette.dark,
-		})
-		-- Neon cap along the top of each wall.
-		part({
-			Name = "WallTrim" .. index,
-			Size = Vector3.new(wall.size.X, 0.5, wall.size.Z),
-			Position = wall.pos + Vector3.new(0, WALL_HEIGHT / 2, 0),
-			Color = Palette.accent,
-			Material = Enum.Material.Neon,
+			Name = "Path" .. index,
+			Size = Vector3.new(12, 0.5, 74),
+			CFrame = CFrame.new(Vector3.new(math.sin(radians) * 72, 0.3, math.cos(radians) * 72))
+				* CFrame.Angles(0, radians, 0),
+			Color = Palette.path,
+			Material = Enum.Material.Sand,
 		})
 	end
 
 	local spawnLocation = Instance.new("SpawnLocation")
 	spawnLocation.Name = "Spawn"
 	spawnLocation.Anchored = true
-	spawnLocation.Size = Vector3.new(12, 1, 12)
-	spawnLocation.Position = Vector3.new(0, 0.5, 28)
-	spawnLocation.Color = Palette.ledGreen
+	spawnLocation.Size = Vector3.new(16, 1, 16)
+	spawnLocation.Position = Vector3.new(0, 0.8, 74)
+	spawnLocation.Color = Palette.green
 	spawnLocation.Material = Enum.Material.Neon
 	spawnLocation.Duration = 0
 	spawnLocation.Parent = root
-
-	sign(spawnLocation, "SPAWN", Palette.ledGreen, 4, 26)
+	sign(spawnLocation, "SPAWN", Palette.green, 5, 30)
 end
 
--- Scanner podium ---------------------------------------------------------
+-- Scanner tower ----------------------------------------------------------
 
-local function buildPodium()
+local function buildTower()
 	part({
-		Name = "PodiumBase",
-		Size = Vector3.new(14, 2, 14),
-		Position = Vector3.new(0, 1, 0),
-		Color = Palette.dark,
+		Name = "TowerBase",
+		Size = Vector3.new(26, 3, 26),
+		Position = Vector3.new(0, 1.5, 0),
+		Color = Palette.stone,
+	})
+	part({
+		Name = "TowerMid",
+		Size = Vector3.new(16, 14, 16),
+		Position = Vector3.new(0, 10, 0),
+		Color = Palette.panel,
 	})
 
 	local core = part({
-		Name = "PodiumCore",
-		Size = Vector3.new(5, 8, 5),
-		Position = Vector3.new(0, 6, 0),
-		Color = Palette.accent,
+		Name = "TowerCore",
+		Shape = Enum.PartType.Ball,
+		Size = Vector3.new(11, 11, 11),
+		Position = Vector3.new(0, 23, 0),
+		Color = Palette.cyan,
 		Material = Enum.Material.Neon,
 	})
 
+	local light = Instance.new("PointLight")
+	light.Color = Palette.cyan
+	light.Range = 40
+	light.Brightness = 3
+	light.Parent = core
+
+	sign(core, "STAT SCANNER", Palette.ink, 9, 58)
+
 	local prompt = Instance.new("ProximityPrompt")
-	prompt.ActionText = "Check your stats"
+	prompt.ActionText = "Open scanner"
 	prompt.ObjectText = "STAT SCANNER"
 	prompt.HoldDuration = 0
-	prompt.MaxActivationDistance = 18
+	prompt.MaxActivationDistance = 26
 	prompt.RequiresLineOfSight = false
 	prompt.Parent = core
 
@@ -189,152 +182,226 @@ local function buildPodium()
 		Remotes.event("OpenMenu"):FireClient(player, { view = "stats" })
 	end)
 
-	sign(core, "STAT SCANNER", Palette.highlight, 6.5, 42)
-
 	task.spawn(function()
 		local angle = 0
 		while core.Parent do
-			angle += 0.015
-			core.CFrame = CFrame.new(core.Position) * CFrame.Angles(0, angle, 0)
+			angle += 0.02
+			core.CFrame = CFrame.new(core.Position) * CFrame.Angles(0, angle, math.sin(angle) * 0.15)
 			task.wait(0.03)
 		end
 	end)
 end
 
--- Kiosks -----------------------------------------------------------------
+-- Category scan pods -----------------------------------------------------
 
-local KIOSKS = {
-	{
-		name = "Shop",
-		label = "SHOP",
-		action = "Open the shop",
-		color = Palette.accent,
-		position = Vector3.new(-18, 0, -18),
-		view = "shop",
-	},
-	{
-		name = "Rebirth",
-		label = "REBIRTH",
-		action = "Rebirth",
-		color = Palette.accent,
-		position = Vector3.new(0, 0, -22),
-		view = "rebirth",
-	},
-	{
-		name = "Awards",
-		label = "AWARDS",
-		action = "View achievements",
-		color = Palette.ledAmber,
-		position = Vector3.new(18, 0, -18),
-		view = "achievements",
-	},
-	{
-		name = "Daily",
-		label = "DAILY REWARD",
-		action = "Claim today's coins",
-		color = Palette.ledGreen,
-		position = Vector3.new(-28, 0, 6),
-		view = nil, -- claims directly instead of opening a tab
-	},
+local POD_COLOR = {
+	core = Palette.cyan,
+	movement = Palette.orange,
+	combat = Palette.red,
+	social = Palette.pink,
+	economy = Palette.green,
+	collection = Palette.purple,
+	cursed = Palette.gold,
 }
 
-local function buildKiosk(config)
-	local pad = part({
-		Name = "Kiosk" .. config.name,
-		Size = Vector3.new(10, 1, 10),
-		Position = config.position + Vector3.new(0, 0.5, 0),
-		Color = config.color,
-		Material = Enum.Material.Neon,
-		Transparency = 0.25,
+--- Starts the next scannable stat in a category, so a pod is a real verb
+--- rather than a shortcut into the menu.
+local function scanCategory(player: Player, categoryId: string)
+	local profile = DataService.get(player)
+	if not profile then
+		return
+	end
+
+	local locked = 0
+
+	for _, stat in ipairs(StatConfig.inCategory(categoryId)) do
+		if not profile.scanned[stat.id] then
+			if ScanService.isAvailable(player, stat) then
+				local started, reason = ScanService.start(player, stat.id)
+				if started then
+					StateService.notify(player, ("Scanning %s..."):format(stat.name), ">", POD_COLOR[categoryId])
+				elseif reason then
+					StateService.notify(player, reason, "!", Palette.red)
+				end
+				return
+			end
+			locked += 1
+		end
+	end
+
+	if locked > 0 then
+		StateService.notify(
+			player,
+			("%d %s stats left, all locked. Open the scanner to unlock one."):format(locked, categoryId),
+			"!",
+			Palette.gold
+		)
+	else
+		StateService.notify(player, ("All %s stats scanned!"):format(categoryId), "*", Palette.green)
+	end
+end
+
+local function buildPods()
+	local categories = StatConfig.Categories
+	local radius = 62
+
+	for index, category in ipairs(categories) do
+		local angle = math.rad((index - 1) * (360 / #categories))
+		local position = Vector3.new(math.sin(angle) * radius, 0, math.cos(angle) * radius)
+		local tint = POD_COLOR[category.id] or Palette.purple
+
+		local pad = part({
+			Name = "Pod_" .. category.id,
+			Shape = Enum.PartType.Cylinder,
+			Size = Vector3.new(1.2, 18, 18),
+			CFrame = CFrame.new(position + Vector3.new(0, 0.9, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			Color = tint,
+			Material = Enum.Material.Neon,
+		})
+
+		local post = part({
+			Name = "PodPost_" .. category.id,
+			Size = Vector3.new(2, 9, 2),
+			Position = position + Vector3.new(0, 5, 0),
+			Color = Palette.stone,
+		})
+
+		sign(post, category.icon .. " " .. category.name:upper(), tint, 6.5, 40)
+
+		local prompt = Instance.new("ProximityPrompt")
+		prompt.ActionText = "Scan next"
+		prompt.ObjectText = category.name:upper()
+		prompt.HoldDuration = 0
+		prompt.MaxActivationDistance = 16
+		prompt.RequiresLineOfSight = false
+		prompt.Parent = post
+
+		prompt.Triggered:Connect(function(player)
+			scanCategory(player, category.id)
+		end)
+
+		-- A ring of orbs around every pod.
+		PickupService.scatter(position, 16, 3, 18, tint)
+	end
+end
+
+-- Props ------------------------------------------------------------------
+
+local function kiosk(position: Vector3, label: string, tint: Color3, view: string?, onUse: ((Player) -> ())?)
+	local body = part({
+		Name = "Kiosk_" .. label,
+		Size = Vector3.new(10, 9, 8),
+		Position = position + Vector3.new(0, 4.5, 0),
+		Color = tint,
 	})
 
-	local post = part({
-		Name = "Post" .. config.name,
-		Size = Vector3.new(1.4, 7, 1.4),
-		Position = config.position + Vector3.new(0, 4, 0),
-		Color = Palette.dark,
+	part({
+		Name = "KioskRoof",
+		Size = Vector3.new(13, 1.4, 11),
+		Position = position + Vector3.new(0, 9.7, 0),
+		Color = Palette.outline,
 	})
 
-	sign(post, config.label, config.color, 5, 34)
+	sign(body, label, Palette.ink, 7.5, 44)
 
 	local prompt = Instance.new("ProximityPrompt")
-	prompt.ActionText = config.action
-	prompt.ObjectText = config.label
+	prompt.ActionText = "Use"
+	prompt.ObjectText = label
 	prompt.HoldDuration = 0
 	prompt.MaxActivationDistance = 14
 	prompt.RequiresLineOfSight = false
-	prompt.Parent = post
+	prompt.Parent = body
 
 	prompt.Triggered:Connect(function(player)
-		if config.view then
-			Remotes.event("OpenMenu"):FireClient(player, { view = config.view })
-		else
-			DailyService.claim(player)
+		if onUse then
+			onUse(player)
+		elseif view then
+			Remotes.event("OpenMenu"):FireClient(player, { view = view })
 		end
 	end)
 
-	return pad
+	return body
 end
 
--- Leaderboard boards -----------------------------------------------------
+local function buildProps()
+	kiosk(Vector3.new(-62, 0, 44), "SHOP", Palette.gold, "shop")
+	kiosk(Vector3.new(62, 0, 44), "QUESTS", Palette.pink, "achievements")
+	kiosk(Vector3.new(-62, 0, -44), "REBIRTH", Palette.purple, "rebirth")
+	kiosk(Vector3.new(62, 0, -44), "DAILY", Palette.green, nil, function(player)
+		DailyService.claim(player)
+	end)
+end
+
+-- Leaderboard wall -------------------------------------------------------
 
 local BOARD_ROWS = 10
 
-local function buildBoard(key: string, title: string, icon: string, position: Vector3)
+local function buildBoard(key: string, title: string, position: Vector3)
 	local frame = part({
 		Name = "Board_" .. key,
-		Size = Vector3.new(22, 16, 1),
+		Size = Vector3.new(26, 18, 1.5),
 		Position = position,
-		Color = Palette.dark,
+		Color = Palette.panel,
+	})
+
+	part({
+		Name = "BoardLeg",
+		Size = Vector3.new(3, 12, 3),
+		Position = position - Vector3.new(0, 15, 0),
+		Color = Palette.stone,
 	})
 
 	local surface = Instance.new("SurfaceGui")
-	surface.Name = "Display"
 	surface.Face = Enum.NormalId.Front
-	surface.CanvasSize = Vector2.new(560, 420)
+	surface.CanvasSize = Vector2.new(620, 430)
 	surface.LightInfluence = 0
 	surface.Parent = frame
 
 	local background = Instance.new("Frame")
 	background.Size = UDim2.fromScale(1, 1)
-	background.BackgroundColor3 = Palette.dark
+	background.BackgroundColor3 = Palette.panel
 	background.BorderSizePixel = 0
 	background.Parent = surface
 
 	local header = Instance.new("TextLabel")
-	header.Size = UDim2.new(1, 0, 0, 56)
-	header.BackgroundColor3 = Palette.darkSlate
+	header.Size = UDim2.new(1, 0, 0, 62)
+	header.BackgroundColor3 = Palette.purple
 	header.BorderSizePixel = 0
-	header.Font = Enum.Font.GothamBlack
-	header.Text = icon .. "  " .. title
-	header.TextColor3 = Palette.darkText
+	header.Font = Enum.Font.FredokaOne
+	header.Text = title
+	header.TextColor3 = Palette.ink
 	header.TextScaled = true
 	header.Parent = background
 
 	local list = Instance.new("Frame")
-	list.Position = UDim2.new(0, 8, 0, 62)
-	list.Size = UDim2.new(1, -16, 1, -70)
+	list.Position = UDim2.new(0, 10, 0, 70)
+	list.Size = UDim2.new(1, -20, 1, -80)
 	list.BackgroundTransparency = 1
 	list.Parent = background
 
 	local layout = Instance.new("UIListLayout")
-	layout.Padding = UDim.new(0, 2)
+	layout.Padding = UDim.new(0, 3)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 	layout.Parent = list
 
 	local labels = {}
 	for index = 1, BOARD_ROWS do
 		local row = Instance.new("TextLabel")
-		row.Size = UDim2.new(1, 0, 0, 33)
+		row.Size = UDim2.new(1, 0, 0, 32)
 		row.LayoutOrder = index
-		row.BackgroundColor3 = index % 2 == 0 and Palette.dark or Palette.darkSlate
+		row.BackgroundColor3 = index <= 3 and Palette.gold or Palette.panelLite
+		row.BackgroundTransparency = index <= 3 and 0.1 or 0.35
 		row.BorderSizePixel = 0
-		row.Font = Enum.Font.RobotoMono
+		row.Font = Enum.Font.GothamBold
 		row.TextXAlignment = Enum.TextXAlignment.Left
-		row.TextColor3 = Palette.darkText
-		row.TextSize = 20
+		row.TextColor3 = Palette.ink
+		row.TextSize = 19
 		row.Text = ""
 		row.Parent = list
+
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, 6)
+		corner.Parent = row
 
 		local padding = Instance.new("UIPadding")
 		padding.PaddingLeft = UDim.new(0, 10)
@@ -354,18 +421,160 @@ local function renderBoards()
 			for index, row in ipairs(labels) do
 				local entry = board.rows[index]
 				if entry then
-					row.Text = ("#%d  %s  —  %s"):format(
+					row.Text = ("#%d  %s   %s"):format(
 						entry.rank,
 						entry.name,
 						Format.value(board.format, entry.value)
 					)
-					row.TextColor3 = index <= 3 and Palette.accent or Palette.darkText
+					row.TextColor3 = Palette.ink
 				else
-					row.Text = ("#%d  —"):format(index)
-					row.TextColor3 = Palette.darkTextMuted
+					row.Text = "#" .. index
+					row.TextColor3 = Palette.inkDim
 				end
 			end
 		end
+	end
+end
+
+-- Obby -------------------------------------------------------------------
+
+local function buildObby()
+	local centre = Vector3.new(-128, 0, 0)
+
+	part({
+		Name = "ObbyBase",
+		Size = Vector3.new(40, 6, 40),
+		Position = centre - Vector3.new(0, 3, 0),
+		Color = Palette.stone,
+	})
+
+	local pillar = part({
+		Name = "ObbyPillar",
+		Size = Vector3.new(8, 96, 8),
+		Position = centre + Vector3.new(0, 48, 0),
+		Color = Palette.panel,
+	})
+	sign(pillar, "CLIMB ME", Palette.gold, 52, 46)
+
+	local steps = 16
+	for index = 1, steps do
+		local angle = math.rad(index * 62)
+		local height = 6 + index * 5.4
+		local reach = 15
+
+		part({
+			Name = "Step" .. index,
+			Size = Vector3.new(9, 1.2, 9),
+			Position = centre + Vector3.new(math.sin(angle) * reach, height, math.cos(angle) * reach),
+			Color = index % 2 == 0 and Palette.cyan or Palette.pink,
+			Material = Enum.Material.SmoothPlastic,
+		})
+
+		-- An orb on every third step to pay for the climb.
+		if index % 3 == 0 then
+			PickupService.spawnOrb(
+				centre + Vector3.new(math.sin(angle) * reach, height + 3.5, math.cos(angle) * reach),
+				35,
+				Palette.cyan
+			)
+		end
+	end
+
+	local top = part({
+		Name = "ObbyTop",
+		Size = Vector3.new(22, 2, 22),
+		Position = centre + Vector3.new(0, 6 + steps * 5.4 + 4, 0),
+		Color = Palette.gold,
+	})
+	sign(top, "SUMMIT", Palette.gold, 5, 40)
+
+	PickupService.spawnChest(top.Position + Vector3.new(0, 3.5, 0), 900, 180, "SUMMIT CHEST")
+end
+
+-- Void island ------------------------------------------------------------
+
+local function buildVoid()
+	part({
+		Name = "VoidIsland",
+		Size = Vector3.new(VOID_SIZE, 6, VOID_SIZE),
+		Position = VOID_CENTRE - Vector3.new(0, 3, 0),
+		Color = Palette.purple,
+		Material = Enum.Material.Slate,
+	})
+
+	-- Bridge from the hub edge to the island.
+	part({
+		Name = "VoidBridge",
+		Size = Vector3.new(14, 1.5, 130),
+		Position = Vector3.new(0, 0, -165),
+		Color = Palette.stone,
+	})
+
+	local gate = part({
+		Name = "VoidGate",
+		Size = Vector3.new(16, 16, 2),
+		Position = Vector3.new(0, 8, -108),
+		Color = Palette.red,
+		Material = Enum.Material.ForceField,
+		Transparency = 0.35,
+		CanCollide = false,
+	})
+
+	sign(gate, ("VOID ISLAND — %d SCORE"):format(VOID_REQUIREMENT), Palette.red, 11, 38)
+
+	-- Unqualified players bounce off; qualified players walk straight through.
+	local bouncing: { [number]: boolean } = {}
+
+	gate.Touched:Connect(function(hit)
+		local character = hit:FindFirstAncestorOfClass("Model")
+		local player = character and Players:GetPlayerFromCharacter(character)
+		if not player or bouncing[player.UserId] then
+			return
+		end
+
+		local profile = DataService.get(player)
+		if not profile then
+			return
+		end
+
+		local score = StateService.scoreFor(profile)
+		if score >= VOID_REQUIREMENT then
+			return
+		end
+
+		bouncing[player.UserId] = true
+
+		local rootPart = character:FindFirstChild("HumanoidRootPart") :: BasePart?
+		if rootPart then
+			rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 2, 14))
+		end
+
+		StateService.notify(
+			player,
+			("Void Island needs %d scanner score. You have %d."):format(VOID_REQUIREMENT, score),
+			"!",
+			Palette.red
+		)
+
+		task.delay(1.5, function()
+			bouncing[player.UserId] = nil
+		end)
+	end)
+
+	-- Richer orbs, and a bigger chest.
+	PickupService.scatter(VOID_CENTRE, 60, 16, 120, Palette.purple)
+	PickupService.spawnChest(VOID_CENTRE + Vector3.new(0, 3.5, 0), 4000, 300, "VOID CHEST")
+
+	for index = 1, 8 do
+		local angle = math.rad(index * 45)
+		part({
+			Name = "VoidSpire" .. index,
+			Size = Vector3.new(4, math.random(12, 30), 4),
+			Position = VOID_CENTRE + Vector3.new(math.sin(angle) * 62, 8, math.cos(angle) * 62),
+			Color = Palette.pink,
+			Material = Enum.Material.Neon,
+			Transparency = 0.25,
+		})
 	end
 end
 
@@ -376,10 +585,6 @@ function WorldBuilder.build()
 		return
 	end
 
-	-- The real lobby is generated here at runtime, which leaves the place file
-	-- empty in edit mode -- alarming if you open it and see a void. The project
-	-- ships a static placeholder baseplate purely so edit mode looks sane; it
-	-- is removed the moment the real plaza exists.
 	local placeholder = workspace:FindFirstChild("EditorPlaceholder")
 	if placeholder then
 		placeholder:Destroy()
@@ -389,19 +594,19 @@ function WorldBuilder.build()
 	root.Name = "StatScannerWorld"
 	root.Parent = workspace
 
-	buildPlaza()
-	buildPodium()
+	buildHub()
+	buildTower()
+	buildPods()
+	buildProps()
+	buildObby()
+	buildVoid()
 
-	for _, config in ipairs(KIOSKS) do
-		buildKiosk(config)
-	end
+	-- Loose orbs across the grass, away from the pods.
+	PickupService.scatter(Vector3.new(0, 0, 0), 92, 22, 12)
 
-	-- Three boards flat against the north wall. The remaining boards live in
-	-- the Boards tab of the menu, so the plaza stays uncluttered.
-	local wallZ = -FLOOR_SIZE / 2 + 1.5
-	buildBoard("score", "SCANNER SCORE", "01", Vector3.new(-24, 9, wallZ))
-	buildBoard("playtime", "PLAYTIME", "02", Vector3.new(0, 9, wallZ))
-	buildBoard("accountValue", "ACCOUNT VALUE", "03", Vector3.new(24, 9, wallZ))
+	buildBoard("score", "SCANNER SCORE", Vector3.new(-30, 12, -96))
+	buildBoard("playtime", "PLAYTIME", Vector3.new(0, 12, -96))
+	buildBoard("accountValue", "ACCOUNT VALUE", Vector3.new(30, 12, -96))
 
 	task.spawn(function()
 		while true do

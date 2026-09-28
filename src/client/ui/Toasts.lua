@@ -1,18 +1,17 @@
 --!strict
---[[
-	Toasts -- notification modules that slide out from the right edge, as if
-	ejected from a slot. Each carries the stat's identity stripe and a
-	monospace readout.
-]]
+--[[ Toasts -- reward popups, bottom right. ]]
+
+local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
+local Format = require(Shared.Format)
 
 local Theme = require(script.Parent.Theme)
 local Util = require(script.Parent.Util)
-local Bevel = require(script.Parent.Bevel)
+local Skin = require(script.Parent.Skin)
 
 local Toasts = {}
 
-local MAX_VISIBLE = 5
-local LIFETIME = 4.5
+local MAX = 4
+local LIFETIME = 4
 
 function Toasts.new(parent: Instance)
 	local self = setmetatable({}, { __index = Toasts })
@@ -20,8 +19,8 @@ function Toasts.new(parent: Instance)
 	self.root = Util.new("Frame", {
 		Name = "Toasts",
 		AnchorPoint = Vector2.new(1, 1),
-		Position = UDim2.new(1, -18, 1, -18),
-		Size = UDim2.fromOffset(350, 420),
+		Position = UDim2.new(1, -20, 1, -20),
+		Size = UDim2.fromOffset(340, 460),
 		BackgroundTransparency = 1,
 		Parent = parent,
 	})
@@ -35,8 +34,7 @@ function Toasts.new(parent: Instance)
 end
 
 function Toasts:push(payload)
-	if self.count >= MAX_VISIBLE then
-		-- Drop the oldest so a burst of objectives cannot flood the screen.
+	if self.count >= MAX then
 		for _, child in ipairs(self.root:GetChildren()) do
 			if child:IsA("Frame") then
 				child:Destroy()
@@ -44,60 +42,50 @@ function Toasts:push(payload)
 				break
 			end
 		end
-
 	end
-
 	self.count += 1
 
-	local accent = payload.color or Theme.Color.accent
+	local tint = payload.color or Theme.Color.green
+	local cell, inner = Util.slot({ Size = UDim2.new(1, 0, 0, 74), Parent = self.root })
 
-	-- The cell is what the list lays out; the card slides inside it.
-	local cell, inner = Util.slot({
-		Size = UDim2.new(1, 0, 0, 58),
-		Parent = self.root,
-	})
-
-	local card = Util.panel({
+	local card = Util.card({
 		Size = UDim2.fromScale(1, 1),
+		BackgroundColor3 = tint,
+		radius = Theme.Radius.md,
+		lip = Theme.Lip.base,
 		Parent = inner,
 	})
-	Util.padding(10, card)
 
-	-- Identity stripe down the left edge.
-	local stripe = Util.new("Frame", {
-		Position = UDim2.fromOffset(-4, 6),
-		Size = UDim2.new(0, 4, 1, -12),
-		BackgroundColor3 = accent,
-		BorderSizePixel = 0,
+	Util.badge(card, payload.icon or "!", 44, Color3.new(1, 1, 1)).Position = UDim2.fromOffset(10, 11)
+
+	Util.title({
+		Position = UDim2.fromOffset(64, 8),
+		Size = UDim2.new(1, -74, 0, 48),
+		Text = payload.text or "",
+		TextSize = 17,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextYAlignment = Enum.TextYAlignment.Top,
 		ZIndex = 3,
 		Parent = card,
 	})
-	Util.corner(Theme.Radius.full, stripe)
 
-	local housing = Util.iconHousing(card, payload.icon or "*", 34, accent)
-	housing.Position = UDim2.fromOffset(2, 2)
+	if payload.coins then
+		Util.title({
+			AnchorPoint = Vector2.new(1, 1),
+			Position = UDim2.new(1, -10, 1, -10),
+			Size = UDim2.fromOffset(120, 22),
+			Text = "+" .. Format.comma(payload.coins),
+			TextSize = 19,
+			TextColor3 = Theme.Color.gold,
+			TextXAlignment = Enum.TextXAlignment.Right,
+			ZIndex = 3,
+			Parent = card,
+		})
+	end
 
-	Util.text({
-		Position = UDim2.fromOffset(44, 0),
-		Size = UDim2.new(1, -52, 1, 0),
-		Font = Theme.Font.mono,
-		Text = payload.text or "",
-		TextColor3 = Theme.Color.text,
-		TextSize = 12,
-		TextWrapped = true,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		Parent = card,
-	})
-
-	-- Ejected from the slot, then settles.
-	card.Position = UDim2.fromOffset(70, 0)
-	Util.tween(card, 0.22, { Position = UDim2.new() }, Theme.Motion.mechanical)
-	Bevel.invert(card, true)
-	task.delay(0.16, function()
-		if card.Parent then
-			Bevel.invert(card, false)
-		end
-	end)
+	card.Position = UDim2.fromOffset(80, 0)
+	Util.tween(card, 0.3, { Position = UDim2.new() }, Theme.Motion.pop)
+	Skin.pop(card, 0.08)
 
 	task.delay(LIFETIME, function()
 		if cell.Parent then

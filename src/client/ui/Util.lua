@@ -1,36 +1,29 @@
 --!strict
 --[[
-	Util -- declarative instance builder plus the composed control primitives.
+	Util -- instance builder plus the composed arcade controls.
 
-	Nothing here invents styling. Every colour, radius, easing curve and
-	elevation comes from Theme, and every bevel comes from Bevel, so a token
-	change propagates to the whole interface.
-
-	  Util.new("TextLabel", { Text = "hi" }, { child1, child2 })
+	Every colour, radius and motion curve comes from Theme, and every surface
+	treatment from Skin, so restyling the game means editing those two files.
 ]]
 
 local TweenService = game:GetService("TweenService")
 
 local Theme = require(script.Parent.Theme)
-local Bevel = require(script.Parent.Bevel)
+local Skin = require(script.Parent.Skin)
+local Sfx = require(script.Parent.Sfx)
 
 local Util = {}
 
---- Keys that belong to the helpers in this module, not to Roblox instances.
---- Util.new skips them so a helper that forgets to strip one degrades to a
---- missing bevel instead of taking the whole interface down with
---- "radius is not a valid member of Frame". A misspelled REAL property still
---- errors, which is what we want.
+--- Keys owned by these helpers, not by Roblox instances. Util.new skips them
+--- so a helper that forgets to strip one loses a lip, not the whole UI.
 local RESERVED = {
 	radius = true,
-	level = true,
 	variant = true,
+	weight = true,
+	lip = true,
+	gloss = true,
+	sound = true,
 	padding = true,
-	inset = true,
-	ventPos = true,
-	ventCount = true,
-	screws = true,
-	vents = true,
 }
 
 function Util.new(className: string, props: { [string]: any }?, children: { Instance }?): any
@@ -90,16 +83,8 @@ function Util.listLayout(padding: number, parent: Instance?, direction: Enum.Fil
 	})
 end
 
-function Util.gradient(top: Color3, bottom: Color3, parent: Instance?): UIGradient
-	return Util.new("UIGradient", {
-		Color = ColorSequence.new(top, bottom),
-		Rotation = Theme.LIGHT_ANGLE,
-		Parent = parent,
-	})
-end
-
 function Util.tween(instance: Instance, seconds: number, goal: { [string]: any }, style: Enum.EasingStyle?): Tween
-	local info = TweenInfo.new(seconds, style or Theme.Motion.smooth, Enum.EasingDirection.Out)
+	local info = TweenInfo.new(seconds, style or Theme.Motion.snap, Enum.EasingDirection.Out)
 	local tween = TweenService:Create(instance, info, goal)
 	tween:Play()
 	return tween
@@ -107,149 +92,148 @@ end
 
 -- Text -------------------------------------------------------------------
 
---- Body / heading text. `mono` routes numbers and data through RobotoMono.
 function Util.text(props: { [string]: any }): TextLabel
 	props.BackgroundTransparency = props.BackgroundTransparency or 1
 	props.Font = props.Font or Theme.Font.body
-	props.TextColor3 = props.TextColor3 or Theme.Color.text
+	props.TextColor3 = props.TextColor3 or Theme.Color.ink
 	props.BorderSizePixel = 0
 	return Util.new("TextLabel", props)
 end
 
---- Stamped uppercase monospace metadata -- the printed-label look.
-function Util.stamp(props: { [string]: any }): TextLabel
-	props.Font = Theme.Font.mono
-	props.Text = Theme.stamp(props.Text or "")
-	props.TextColor3 = props.TextColor3 or Theme.Color.textMuted
-	props.TextSize = props.TextSize or 11
-	return Util.text(props)
+--- Heavy display text with the dark outline that keeps it readable on any fill.
+function Util.title(props: { [string]: any }): TextLabel
+	props.Font = props.Font or Theme.Font.display
+	local label = Util.text(props)
+	Util.new("UIStroke", {
+		Thickness = props.TextSize and math.max(2, props.TextSize / 12) or 2,
+		Color = Theme.Color.outline,
+		Transparency = 0.15,
+		Parent = label,
+	})
+	return label
 end
 
 -- Controls ---------------------------------------------------------------
 
 local VARIANTS = {
-	-- Safety orange. The emergency-stop control: use sparingly.
-	primary = {
-		fill = Theme.Color.accent,
-		ink = Theme.Color.accentText,
-		level = "floating",
-	},
-	-- Chassis-coloured key. The default.
-	secondary = {
-		fill = Theme.Color.chassis,
-		ink = Theme.Color.text,
-		level = "panel",
-	},
-	-- Flat label until touched.
-	ghost = {
-		fill = Theme.Color.chassis,
-		ink = Theme.Color.textMuted,
-		level = "chassis",
-	},
-	-- Recessed well that lights up when selected (nav rail, tabs).
-	slot = {
-		fill = Theme.Color.recess,
-		ink = Theme.Color.textMuted,
-		level = "recessed",
-	},
+	go = { fill = Theme.Color.green, sound = "click" },
+	gold = { fill = Theme.Color.gold, sound = "click" },
+	danger = { fill = Theme.Color.red, sound = "deny" },
+	plain = { fill = Theme.Color.panelLite, sound = "click" },
+	dark = { fill = Theme.Color.slot, sound = "tab" },
+	pink = { fill = Theme.Color.pink, sound = "click" },
+	cyan = { fill = Theme.Color.cyan, sound = "click" },
 }
 
---- A physical key. Depresses 2px and inverts its rim on press, springs back
---- on release, and never changes size -- real buttons do not grow when you
---- point at them.
+--- A chunky key: outline, lip, gloss, and a squash on press.
 function Util.button(props: { [string]: any }, children: { Instance }?): TextButton
-	local variant = VARIANTS[props.variant or "secondary"]
+	local variant = VARIANTS[props.variant or "plain"]
 	local radius = props.radius or Theme.Radius.md
-	props.variant = nil
-	props.radius = nil
+	local lip = props.lip
+	local sound = props.sound or variant.sound
 
 	props.AutoButtonColor = false
-	props.Font = props.Font or Theme.Font.bold
-	props.BackgroundColor3 = props.BackgroundColor3 or variant.fill
-	props.TextColor3 = props.TextColor3 or variant.ink
 	props.BorderSizePixel = 0
-
-	if props.Text then
-		props.Text = props.Text
-	end
+	props.Font = props.Font or Theme.Font.display
+	props.BackgroundColor3 = props.BackgroundColor3 or variant.fill
+	props.TextColor3 = props.TextColor3 or Theme.inkOn(props.BackgroundColor3)
 
 	local button: TextButton = Util.new("TextButton", props, children)
 
-	if variant.level == "recessed" then
-		Bevel.recess(button, radius)
-		button.BackgroundColor3 = props.BackgroundColor3
-	elseif variant.level == "chassis" then
-		Util.corner(radius, button)
-	else
-		Bevel.panel(button, variant.level, radius)
-	end
+	Skin.card(button, { radius = radius, lip = lip, gloss = true })
 
-	-- Hover raises the ink towards the accent rather than resizing the key.
-	-- The rest colour is sampled on enter, not at construction, because
-	-- selection state (the nav rail) rewrites TextColor3 after the fact.
-	local restInk = button.TextColor3
-	button.MouseEnter:Connect(function()
-		restInk = button.TextColor3
-		Util.tween(button, Theme.Motion.hover, { TextColor3 = Theme.Color.accent })
-	end)
-	button.MouseLeave:Connect(function()
-		Util.tween(button, Theme.Motion.hover, { TextColor3 = restInk })
-	end)
+	-- Outlines the label text (Contextual stroke mode), which is a different
+	-- job from the border outline Skin.card already applied.
+	Util.new("UIStroke", {
+		Thickness = 2,
+		Color = Theme.Color.outline,
+		Transparency = 0.25,
+		Parent = button:FindFirstChildOfClass("TextLabel") or button,
+	})
 
-	Bevel.pressable(button)
+	Skin.pressable(button)
+
+	button.Activated:Connect(function()
+		Sfx.play(sound)
+	end)
 
 	return button
 end
 
---- Recessed data well: inputs, progress tracks, screen bezels.
+--- Recessed track or strip.
 function Util.well(props: { [string]: any }): Frame
+	local radius = props.radius or Theme.Radius.full
+	props.BorderSizePixel = 0
+	props.BackgroundColor3 = props.BackgroundColor3 or Theme.Color.slot
+
+	local frame: Frame = Util.new("Frame", props)
+	Skin.well(frame, radius)
+	return frame
+end
+
+--- A solid card. Pass `padding` here rather than adding a UIPadding
+--- afterwards: the lip and gloss measure the padding when they are built.
+function Util.card(props: { [string]: any }): Frame
 	local radius = props.radius or Theme.Radius.md
-	props.radius = nil
+	local weight = props.weight
+	local lip = props.lip
+	local gloss = props.gloss
+	local padding = props.padding
 
-	props.BackgroundColor3 = props.BackgroundColor3 or Theme.Color.recess
 	props.BorderSizePixel = 0
+	props.BackgroundColor3 = props.BackgroundColor3 or Theme.Color.panelLite
 
 	local frame: Frame = Util.new("Frame", props)
-	Bevel.recess(frame, radius)
-	return frame
-end
-
---- Panel bolted to the chassis.
----
---- `details` turns on the manufacturing marks. Pass `true` for the defaults,
---- or a table to place them: { padding = 16, ventPos = UDim2..., screws =,
---- vents = }. Panels that carry a UIPadding must declare it so the screws sit
---- in the border margin rather than over the content.
-function Util.panel(props: { [string]: any }, details: (boolean | { [string]: any })?): Frame
-	local radius = props.radius or Theme.Radius.lg
-	local level = props.level or "panel"
-	props.radius = nil
-	props.level = nil
-
-	props.BackgroundColor3 = props.BackgroundColor3 or Theme.Color.chassis
-	props.BorderSizePixel = 0
-
-	local frame: Frame = Util.new("Frame", props)
-	Bevel.panel(frame, level, radius)
-
-	if details then
-		local options = type(details) == "table" and details or {}
-		if options.screws ~= false then
-			Bevel.screws(frame, options.inset, options.padding)
-		end
-		if options.vents ~= false then
-			Bevel.vents(frame, options.ventCount, options.ventPos)
-		end
+	if padding then
+		Util.padding(padding, frame)
 	end
-
+	Skin.card(frame, { radius = radius, weight = weight, lip = lip, gloss = gloss })
 	return frame
 end
 
---- Fades an element and everything inside it, then runs the callback. Tweening
---- only BackgroundTransparency would leave the text and stripes visible until
---- the instance is destroyed.
+--- Round badge for an icon or a number.
+function Util.badge(parent: Instance, glyph: string, size: number, fill: Color3?): Frame
+	local badge = Util.new("Frame", {
+		Size = UDim2.fromOffset(size, size),
+		BackgroundColor3 = fill or Theme.Color.panel,
+		BorderSizePixel = 0,
+		Parent = parent,
+	})
+	Skin.card(badge, { radius = Theme.Radius.full, lip = Theme.Lip.small, gloss = true })
+
+	Util.text({
+		Size = UDim2.fromScale(1, 1),
+		Text = glyph,
+		TextSize = math.floor(size * 0.52),
+		Font = Theme.Font.display,
+		Parent = badge,
+	})
+
+	return badge
+end
+
+--- A layout-safe animation cell: the list positions the cell, you move what is
+--- inside it.
+function Util.slot(props: { [string]: any }): (Frame, Frame)
+	local cell = Util.new("Frame", {
+		Size = props.Size,
+		LayoutOrder = props.LayoutOrder,
+		BackgroundTransparency = 1,
+		Parent = props.Parent,
+	})
+
+	local inner = Util.new("Frame", {
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
+		Parent = cell,
+	})
+
+	return cell, inner
+end
+
+--- Fades an element and everything inside it.
 function Util.fadeOut(instance: GuiObject, seconds: number, done: (() -> ())?)
-	local targets = { instance }
+	local targets: { Instance } = { instance }
 	for _, descendant in ipairs(instance:GetDescendants()) do
 		table.insert(targets, descendant)
 	end
@@ -271,47 +255,6 @@ function Util.fadeOut(instance: GuiObject, seconds: number, done: (() -> ())?)
 	end)
 end
 
---- A layout-safe animation slot. A UIListLayout owns its children's Position,
---- so anything that needs to slide has to move INSIDE a cell the layout owns.
-function Util.slot(props: { [string]: any }): (Frame, Frame)
-	local cell = Util.new("Frame", {
-		Size = props.Size,
-		LayoutOrder = props.LayoutOrder,
-		BackgroundTransparency = 1,
-		Parent = props.Parent,
-	})
-
-	local inner = Util.new("Frame", {
-		Size = UDim2.fromScale(1, 1),
-		BackgroundTransparency = 1,
-		Parent = cell,
-	})
-
-	return cell, inner
-end
-
---- Circular recessed housing for an icon, so icons are never left floating.
-function Util.iconHousing(parent: Instance, glyph: string, size: number, color: Color3?): Frame
-	local housing = Util.new("Frame", {
-		Size = UDim2.fromOffset(size, size),
-		BackgroundColor3 = Theme.Color.chassis,
-		BorderSizePixel = 0,
-		Parent = parent,
-	})
-	Bevel.panel(housing, "floating", Theme.Radius.full)
-
-	Util.text({
-		Size = UDim2.fromScale(1, 1),
-		Text = glyph,
-		TextSize = math.floor(size * 0.5),
-		TextColor3 = color or Theme.Color.accent,
-		Parent = housing,
-	})
-
-	return housing
-end
-
---- Debounced click handler.
 function Util.onClick(button: GuiButton, cooldown: number, callback: () -> ())
 	local last = 0
 	button.Activated:Connect(function()

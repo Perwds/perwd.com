@@ -64,7 +64,21 @@ def props(cls):
         cls = c.get("Superclass")
     return out
 
-RESERVED = {"radius","level","variant","padding","inset","ventPos","ventCount","screws","vents"}
+def reserved_keys() -> set:
+    """Read Util's RESERVED table rather than duplicating it here.
+
+    These are helper-only option names that Util.new deliberately skips, so
+    they are not property mistakes. Parsing them out of the source means the
+    two lists cannot drift apart and produce false failures.
+    """
+    util = pathlib.Path("src/client/ui/Util.lua").read_text()
+    block = re.search(r"local RESERVED = \{(.*?)\}", util, re.S)
+    if not block:
+        raise SystemExit("could not find RESERVED in Util.lua")
+    return set(re.findall(r"(\w+)\s*=\s*true", block.group(1)))
+
+
+RESERVED = reserved_keys()
 HELPERS = {
     "Util.text": "TextLabel", "Util.stamp": "TextLabel", "Util.button": "TextButton",
     "Util.well": "Frame", "Util.panel": "Frame", "Util.slot": "Frame",

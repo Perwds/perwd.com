@@ -1,8 +1,5 @@
 --!strict
---[[
-	AchievementPanel -- the objective checklist. Each row is a module with a
-	status LED: green once claimed, amber while outstanding.
-]]
+--[[ AchievementPanel -- quests and their coin payouts. ]]
 
 local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local AchievementConfig = require(Shared.AchievementConfig)
@@ -10,7 +7,6 @@ local Format = require(Shared.Format)
 
 local Theme = require(script.Parent.Theme)
 local Util = require(script.Parent.Util)
-local Bevel = require(script.Parent.Bevel)
 
 local AchievementPanel = {}
 AchievementPanel.__index = AchievementPanel
@@ -28,78 +24,78 @@ function AchievementPanel.new(parent: Instance)
 		Parent = parent,
 	})
 
-	self.header = Util.stamp({
-		Size = UDim2.new(1, 0, 0, 16),
-		Text = "objectives",
+	self.header = Util.title({
+		Size = UDim2.new(1, 0, 0, 28),
+		Text = "QUESTS",
+		TextSize = 22,
 		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 6,
 		Parent = self.root,
 	})
 
 	local scroll = Util.new("ScrollingFrame", {
-		Position = UDim2.fromOffset(0, 24),
-		Size = UDim2.new(1, 0, 1, -24),
+		Position = UDim2.fromOffset(0, 34),
+		Size = UDim2.new(1, 0, 1, -34),
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
-		ScrollBarThickness = 6,
-		ScrollBarImageColor3 = Theme.Color.shadowDeep,
+		ScrollBarThickness = 7,
+		ScrollBarImageColor3 = Theme.Color.purple,
 		CanvasSize = UDim2.new(),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
+		ZIndex = 6,
 		Parent = self.root,
 	})
 	Util.listLayout(Theme.Space.gap, scroll)
-	Util.new("UIPadding", {
-		PaddingLeft = UDim.new(0, 6),
-		PaddingRight = UDim.new(0, 12),
-		PaddingTop = UDim.new(0, 4),
-		PaddingBottom = UDim.new(0, 4),
-		Parent = scroll,
-	})
+	Util.new("UIPadding", { PaddingRight = UDim.new(0, 12), PaddingBottom = UDim.new(0, 10), Parent = scroll })
 
 	for index, entry in ipairs(AchievementConfig.List) do
-		local card = Util.panel({
-			Size = UDim2.new(1, 0, 0, 68),
+		local card = Util.card({
+			Size = UDim2.new(1, 0, 0, 76),
+			BackgroundColor3 = Theme.Color.panelLite,
+			radius = Theme.Radius.md,
+			lip = Theme.Lip.base,
 			LayoutOrder = index,
+			ZIndex = 6,
 			Parent = scroll,
 		})
-		Util.padding(12, card)
 
-		local housing = Util.iconHousing(card, entry.icon, 40, Theme.Color.accent)
-		housing.Position = UDim2.fromOffset(0, 2)
+		local badge = Util.badge(card, entry.icon, 46, Theme.Color.purple)
+		badge.Position = UDim2.fromOffset(12, 13)
 
-		local name = Util.text({
-			Position = UDim2.fromOffset(52, 0),
-			Size = UDim2.new(1, -52 - 190, 0, 22),
-			Font = Theme.Font.bold,
+		local name = Util.title({
+			Position = UDim2.fromOffset(72, 12),
+			Size = UDim2.new(1, -72 - 180, 0, 24),
 			Text = entry.name:upper(),
-			TextSize = 16,
+			TextSize = 19,
 			TextXAlignment = Enum.TextXAlignment.Left,
+			ZIndex = 7,
 			Parent = card,
 		})
 
 		Util.text({
-			Position = UDim2.fromOffset(52, 22),
-			Size = UDim2.new(1, -52 - 190, 0, 20),
+			Position = UDim2.fromOffset(72, 36),
+			Size = UDim2.new(1, -72 - 180, 0, 22),
+			Font = Theme.Font.small,
 			Text = entry.blurb,
-			TextColor3 = Theme.Color.textMuted,
-			TextSize = 13,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			Parent = card,
-		})
-
-		local led = Bevel.led(card, Theme.Color.shadowDeep, nil, UDim2.new(1, -172, 0, 15))
-
-		local status = Util.text({
-			AnchorPoint = Vector2.new(1, 0.5),
-			Position = UDim2.new(1, 0, 0.5, 0),
-			Size = UDim2.fromOffset(140, 44),
-			Font = Theme.Font.mono,
-			Text = "",
+			TextColor3 = Theme.Color.inkMuted,
 			TextSize = 14,
-			TextXAlignment = Enum.TextXAlignment.Right,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			ZIndex = 7,
 			Parent = card,
 		})
 
-		self.rows[entry.id] = { card = card, status = status, name = name, led = led, entry = entry }
+		local status = Util.title({
+			AnchorPoint = Vector2.new(1, 0.5),
+			Position = UDim2.new(1, -16, 0.5, -3),
+			Size = UDim2.fromOffset(160, 40),
+			Text = "",
+			TextSize = 22,
+			TextXAlignment = Enum.TextXAlignment.Right,
+			ZIndex = 7,
+			Parent = card,
+		})
+
+		self.rows[entry.id] = { card = card, status = status, name = name, badge = badge, entry = entry }
 	end
 
 	return self
@@ -110,33 +106,28 @@ function AchievementPanel:update(state)
 
 	for id, row in pairs(self.rows) do
 		local earned = state.achievements and state.achievements[id]
-		local diode = row.led:FindFirstChild("Diode")
-		local bloom = row.led:FindFirstChild("Bloom")
-		local color = earned and Theme.Color.ledGreen or Theme.Color.ledAmber
+		local fill = earned and Theme.Color.green or Theme.Color.panelLite
 
-		if diode then
-			(diode :: Frame).BackgroundColor3 = color
+		row.card.BackgroundColor3 = fill
+		local lip = row.card:FindFirstChild("Lip") :: Frame?
+		if lip then
+			lip.BackgroundColor3 = Theme.shade(fill, -0.32)
 		end
-		if bloom then
-			(bloom :: Frame).BackgroundColor3 = color
-		end
+
+		local ink = Theme.inkOn(fill)
+		row.name.TextColor3 = ink
 
 		if earned then
 			done += 1
-			row.status.Text = "CLAIMED"
-			row.status.TextColor3 = Theme.Color.textMuted
-			row.name.TextColor3 = Theme.Color.textMuted
-			-- A completed objective sinks into the chassis.
-			Bevel.invert(row.card, true)
+			row.status.Text = "DONE"
+			row.status.TextColor3 = ink
 		else
 			row.status.Text = "+" .. Format.comma(row.entry.reward)
-			row.status.TextColor3 = Theme.Color.accent
-			row.name.TextColor3 = Theme.Color.text
-			Bevel.invert(row.card, false)
+			row.status.TextColor3 = Theme.Color.gold
 		end
 	end
 
-	self.header.Text = Theme.stamp(("objectives %d of %d"):format(done, #AchievementConfig.List))
+	self.header.Text = ("QUESTS   %d / %d"):format(done, #AchievementConfig.List)
 end
 
 function AchievementPanel:setVisible(visible: boolean)

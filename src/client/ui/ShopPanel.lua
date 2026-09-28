@@ -1,9 +1,5 @@
 --!strict
---[[
-	ShopPanel -- gamepasses on the left, coin and utility products on the right.
-	Each product is its own bolted module; prices are monospace, as all numeric
-	displays are.
-]]
+--[[ ShopPanel -- gamepasses and coin packs. ]]
 
 local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local GamepassConfig = require(Shared.GamepassConfig)
@@ -11,7 +7,6 @@ local Format = require(Shared.Format)
 
 local Theme = require(script.Parent.Theme)
 local Util = require(script.Parent.Util)
-local Bevel = require(script.Parent.Bevel)
 
 local ShopPanel = {}
 ShopPanel.__index = ShopPanel
@@ -21,33 +16,35 @@ local function column(parent: Instance, title: string, position: UDim2, size: UD
 		Position = position,
 		Size = size,
 		BackgroundTransparency = 1,
+		ZIndex = 6,
 		Parent = parent,
 	})
 
-	Util.stamp({
-		Size = UDim2.new(1, 0, 0, 16),
+	Util.title({
+		Size = UDim2.new(1, 0, 0, 26),
 		Text = title,
+		TextSize = 22,
 		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 6,
 		Parent = holder,
 	})
 
 	local scroll = Util.new("ScrollingFrame", {
-		Position = UDim2.fromOffset(0, 24),
-		Size = UDim2.new(1, 0, 1, -24),
+		Position = UDim2.fromOffset(0, 32),
+		Size = UDim2.new(1, 0, 1, -32),
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
-		ScrollBarThickness = 6,
-		ScrollBarImageColor3 = Theme.Color.shadowDeep,
+		ScrollBarThickness = 7,
+		ScrollBarImageColor3 = Theme.Color.purple,
 		CanvasSize = UDim2.new(),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
+		ZIndex = 6,
 		Parent = holder,
 	})
 	Util.listLayout(Theme.Space.gap, scroll)
 	Util.new("UIPadding", {
-		PaddingLeft = UDim.new(0, 6),
 		PaddingRight = UDim.new(0, 12),
-		PaddingTop = UDim.new(0, 4),
-		PaddingBottom = UDim.new(0, 4),
+		PaddingBottom = UDim.new(0, 10),
 		Parent = scroll,
 	})
 
@@ -57,7 +54,6 @@ end
 function ShopPanel.new(parent: Instance, callbacks)
 	local self = setmetatable({}, ShopPanel)
 
-	self.callbacks = callbacks
 	self.passRows = {}
 
 	self.root = Util.new("Frame", {
@@ -68,73 +64,55 @@ function ShopPanel.new(parent: Instance, callbacks)
 		Parent = parent,
 	})
 
-	local passes = column(self.root, "gamepasses", UDim2.new(), UDim2.new(0.56, -10, 1, -34))
-	local products = column(self.root, "credits & utilities", UDim2.new(0.56, 10, 0, 0), UDim2.new(0.44, -10, 1, -34))
+	local passes = column(self.root, "GAMEPASSES", UDim2.new(), UDim2.new(0.58, -10, 1, -40))
+	local packs = column(self.root, "COIN PACKS", UDim2.new(0.58, 10, 0, 0), UDim2.new(0.42, -10, 1, -40))
 
 	for _, pass in ipairs(GamepassConfig.Passes) do
-		local card = Util.panel({
-			Size = UDim2.new(1, 0, 0, 124),
+		local card = Util.card({
+			Size = UDim2.new(1, 0, 0, 108),
+			BackgroundColor3 = pass.color,
+			radius = Theme.Radius.lg,
+			lip = Theme.Lip.base,
+			ZIndex = 6,
 			Parent = passes,
-		}, { padding = Theme.Space.panel, ventPos = UDim2.new(1, -134, 0, 2) })
-		Util.padding(Theme.Space.panel, card)
+		})
 
-		local housing = Util.iconHousing(card, pass.icon, 40, pass.color)
-		housing.Position = UDim2.fromOffset(2, 2)
+		Util.badge(card, pass.icon, 46, Color3.new(1, 1, 1)).Position = UDim2.fromOffset(12, 14)
 
-		Util.text({
-			Position = UDim2.fromOffset(52, 0),
-			Size = UDim2.new(1, -52 - 120, 0, 24),
-			Font = Theme.Font.display,
+		Util.title({
+			Position = UDim2.fromOffset(70, 10),
+			Size = UDim2.new(1, -70 - 140, 0, 26),
 			Text = pass.name:upper(),
-			TextSize = 19,
+			TextSize = 21,
 			TextXAlignment = Enum.TextXAlignment.Left,
+			ZIndex = 7,
 			Parent = card,
 		})
 
 		Util.text({
-			Position = UDim2.fromOffset(52, 24),
-			Size = UDim2.new(1, -52 - 120, 0, 20),
-			Text = pass.blurb,
-			TextColor3 = Theme.Color.textMuted,
-			TextSize = 14,
+			Position = UDim2.fromOffset(70, 36),
+			Size = UDim2.new(1, -70 - 140, 0, 38),
+			Font = Theme.Font.small,
+			Text = pass.blurb .. "\n" .. table.concat(pass.perks, " · "),
+			TextSize = 13,
+			TextTransparency = 0.1,
 			TextWrapped = true,
+			TextYAlignment = Enum.TextYAlignment.Top,
 			TextXAlignment = Enum.TextXAlignment.Left,
+			ZIndex = 7,
 			Parent = card,
-		})
-
-		-- Perks in a recessed spec well.
-		local well = Util.well({
-			Position = UDim2.new(0, 0, 1, -46),
-			Size = UDim2.new(1, -6, 0, 44),
-			AnchorPoint = Vector2.new(0, 1),
-			Parent = card,
-		})
-
-		Util.text({
-			Position = UDim2.fromOffset(10, 0),
-			Size = UDim2.new(1, -20, 1, 0),
-			Font = Theme.Font.mono,
-			Text = "- " .. table.concat(pass.perks, "\n- "),
-			TextColor3 = Theme.Color.textMuted,
-			TextSize = 11,
-			TextWrapped = true,
-			TextYAlignment = Enum.TextYAlignment.Center,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			ZIndex = 2,
-			Parent = well,
 		})
 
 		local buy = Util.button({
-			variant = "primary",
+			variant = "go",
 			AnchorPoint = Vector2.new(1, 0),
-			Position = UDim2.new(1, 0, 0, 0),
-			Size = UDim2.fromOffset(112, Theme.TOUCH),
-			Font = Theme.Font.mono,
+			Position = UDim2.new(1, -12, 0, 14),
+			Size = UDim2.fromOffset(122, Theme.TOUCH),
 			Text = "R$ " .. pass.price,
-			TextSize = 15,
+			TextSize = 19,
+			ZIndex = 7,
 			Parent = card,
 		})
-
 		Util.onClick(buy, 0.5, function()
 			callbacks.buyPass(pass.key)
 		end)
@@ -143,55 +121,60 @@ function ShopPanel.new(parent: Instance, callbacks)
 	end
 
 	for _, product in ipairs(GamepassConfig.Products) do
-		local card = Util.panel({
-			Size = UDim2.new(1, 0, 0, 62),
-			Parent = products,
+		local card = Util.card({
+			Size = UDim2.new(1, 0, 0, 68),
+			BackgroundColor3 = Theme.Color.panelLite,
+			radius = Theme.Radius.md,
+			lip = Theme.Lip.base,
+			ZIndex = 6,
+			Parent = packs,
 		})
-		Util.padding(10, card)
 
-		Util.text({
-			Position = UDim2.fromOffset(4, 0),
-			Size = UDim2.new(1, -120, 1, 0),
-			Font = Theme.Font.bold,
+		Util.badge(card, product.icon, 40, Theme.Color.gold).Position = UDim2.fromOffset(10, 12)
+
+		Util.title({
+			Position = UDim2.fromOffset(60, 12),
+			Size = UDim2.new(1, -60 - 120, 0, 28),
 			Text = product.name:upper(),
-			TextSize = 15,
+			TextSize = 17,
 			TextXAlignment = Enum.TextXAlignment.Left,
+			ZIndex = 7,
 			Parent = card,
 		})
 
 		local buy = Util.button({
-			variant = "secondary",
-			AnchorPoint = Vector2.new(1, 0.5),
-			Position = UDim2.new(1, 0, 0.5, 0),
-			Size = UDim2.fromOffset(104, 40),
-			Font = Theme.Font.mono,
+			variant = "gold",
+			AnchorPoint = Vector2.new(1, 0),
+			Position = UDim2.new(1, -10, 0, 11),
+			Size = UDim2.fromOffset(108, 42),
 			Text = "R$ " .. product.price,
-			TextSize = 14,
+			TextSize = 17,
+			lip = Theme.Lip.small,
+			ZIndex = 7,
 			Parent = card,
 		})
-
 		Util.onClick(buy, 0.5, function()
 			callbacks.buyProduct(product.key)
 		end)
 	end
 
-	-- Live multiplier readout along the bottom.
 	local strip = Util.well({
 		AnchorPoint = Vector2.new(0, 1),
 		Position = UDim2.new(0, 0, 1, 0),
-		Size = UDim2.new(1, 0, 0, 28),
+		Size = UDim2.new(1, 0, 0, 32),
+		radius = Theme.Radius.md,
+		ZIndex = 6,
 		Parent = self.root,
 	})
 
 	self.summary = Util.text({
-		Position = UDim2.fromOffset(12, 0),
-		Size = UDim2.new(1, -24, 1, 0),
-		Font = Theme.Font.mono,
+		Position = UDim2.fromOffset(14, 0),
+		Size = UDim2.new(1, -28, 1, 0),
 		Text = "",
-		TextColor3 = Theme.Color.textMuted,
-		TextSize = 12,
+		TextColor3 = Theme.Color.inkMuted,
+		TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		ZIndex = 2,
+		ZIndex = 7,
 		Parent = strip,
 	})
 
@@ -202,19 +185,20 @@ function ShopPanel:update(state)
 	for key, row in pairs(self.passRows) do
 		local owned = state.passes and state.passes[key]
 		row.buy.Text = owned and "OWNED" or ("R$ " .. row.pass.price)
-		row.buy.BackgroundColor3 = owned and Theme.Color.recess or Theme.Color.accent
-		row.buy.TextColor3 = owned and Theme.Color.textMuted or Theme.Color.accentText
+		row.buy.BackgroundColor3 = owned and Theme.Color.slot or Theme.Color.green
+		row.buy.TextColor3 = owned and Theme.Color.inkMuted or Theme.inkOn(Theme.Color.green)
 		row.buy.Active = not owned
-		if owned then
-			Bevel.invert(row.buy, true)
+		local lip = row.buy:FindFirstChild("Lip") :: Frame?
+		if lip then
+			lip.BackgroundColor3 = Theme.shade(row.buy.BackgroundColor3, -0.32)
 		end
 	end
 
-	self.summary.Text = ("ACTIVE: SPD %.2fx   COIN %.2fx   SLOTS %d   BALANCE %s"):format(
+	self.summary.Text = ("you have %s coins  ·  %.1fx speed  ·  %.1fx coins  ·  %d scan slots"):format(
+		Format.comma(state.coins or 0),
 		state.speed or 1,
 		state.coinMultiplier or 1,
-		state.slots or 1,
-		Format.comma(state.coins or 0)
+		state.slots or 1
 	)
 end
 

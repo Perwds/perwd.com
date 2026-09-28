@@ -1,41 +1,40 @@
 --!strict
 --[[
-	Palette -- the industrial colour tokens, shared across the client/server
-	boundary.
+	Palette -- arcade colour tokens, shared by the UI and the world.
 
-	The UI theme and the physical lobby have to agree: a chassis-grey menu
-	floating over a lime-green baseplate reads as two different products. This
-	module is the single definition, re-exported by the client's Theme and
-	consumed directly by WorldBuilder.
-
-	Hex values are from the design system, converted to Color3.
+	Deep purple night, candy accents, near-black outlines. Every card, sign and
+	pad reads from here so the menu and the map look like one game.
 ]]
 
 local C = Color3.fromRGB
 
 return {
-	chassis = C(224, 229, 236), -- #e0e5ec  Level 0, the base material
-	panel = C(240, 242, 245), -- #f0f2f5  raised surface
-	recess = C(209, 217, 230), -- #d1d9e6  sunken areas
+	-- Surfaces
+	night = C(27, 16, 51), -- deepest backdrop
+	panel = C(42, 27, 77), -- menu body
+	panelLite = C(58, 38, 104), -- raised rows
+	slot = C(33, 21, 62), -- recessed wells
 
-	text = C(45, 52, 54), -- #2d3436
-	textMuted = C(74, 85, 104), -- #4a5568
+	-- The outline that makes everything read as a sticker.
+	outline = C(20, 11, 38),
 
-	accent = C(255, 71, 87), -- #ff4757  safety orange, used sparingly
-	accentText = C(255, 255, 255),
-	accentDeep = C(166, 50, 60),
-	accentLift = C(255, 100, 110),
+	ink = C(255, 255, 255),
+	inkMuted = C(185, 167, 232),
+	inkDim = C(132, 115, 178),
 
-	shadow = C(186, 190, 204), -- #babecc
-	highlight = C(255, 255, 255),
-	shadowDeep = C(163, 177, 198), -- #a3b1c6
+	-- Accents
+	green = C(61, 220, 132), -- go / success
+	gold = C(255, 197, 61), -- coins / rewards
+	pink = C(255, 95, 162),
+	cyan = C(52, 213, 240),
+	orange = C(255, 138, 61),
+	red = C(255, 77, 94), -- danger / locked
+	purple = C(164, 107, 255),
 
-	dark = C(45, 52, 54), -- #2d3436  technical panels
-	darkSlate = C(44, 62, 80), -- #2c3e50
-	darkText = C(224, 229, 236),
-	darkTextMuted = C(168, 178, 209), -- #a8b2d1
-
-	ledGreen = C(34, 197, 94),
-	ledAmber = C(250, 204, 21),
-	ledRed = C(255, 71, 87),
+	-- World
+	grass = C(104, 208, 112),
+	grassDeep = C(72, 168, 88),
+	path = C(232, 214, 176),
+	stone = C(86, 74, 120),
+	water = C(64, 176, 224),
 }
