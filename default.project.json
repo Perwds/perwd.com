@@ -74,27 +74,68 @@
       "$className": "Lighting",
       "$properties": {
         "Ambient": [
-          0.72,
-          0.74,
-          0.78
+          0.19,
+          0.17,
+          0.26
         ],
         "OutdoorAmbient": [
-          0.78,
-          0.8,
-          0.84
+          0.26,
+          0.24,
+          0.34
         ],
-        "Brightness": 2,
+        "Brightness": 1.6,
         "ColorShift_Top": [
-          1,
-          1,
-          1
+          1.0,
+          0.86,
+          0.68
         ],
-        "EnvironmentDiffuseScale": 0.6,
+        "EnvironmentDiffuseScale": 0.45,
         "EnvironmentSpecularScale": 0.3,
         "GlobalShadows": true,
         "Technology": "ShadowMap",
-        "ClockTime": 14.5,
-        "GeographicLatitude": 0
+        "ClockTime": 17.4,
+        "GeographicLatitude": 12,
+        "FogEnd": 900,
+        "FogStart": 260,
+        "FogColor": [
+          0.2,
+          0.18,
+          0.3
+        ]
+      },
+      "Atmosphere": {
+        "$className": "Atmosphere",
+        "$properties": {
+          "Density": 0.34,
+          "Offset": 0.1,
+          "Color": [
+            0.78,
+            0.72,
+            0.85
+          ],
+          "Decay": [
+            0.42,
+            0.36,
+            0.55
+          ],
+          "Glare": 0.3,
+          "Haze": 1.4
+        }
+      },
+      "Bloom": {
+        "$className": "BloomEffect",
+        "$properties": {
+          "Intensity": 0.45,
+          "Size": 26,
+          "Threshold": 1.1
+        }
+      },
+      "SunRays": {
+        "$className": "SunRaysEffect",
+        "$properties": {
+          "Intensity": 0.08,
+          "Spread": 0.6
+        }
       }
     },
     "SoundService": {

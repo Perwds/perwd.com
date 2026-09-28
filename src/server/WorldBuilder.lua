@@ -1,20 +1,20 @@
 --!strict
 --[[
 	WorldBuilder
-	Builds the whole map from code.
+	Lays out the village.
 
-	Layout:
+	    TOWN SQUARE     cobbled circle, the Scanner shrine in the middle,
+	                    string lights overhead, banners, lamp posts
+	    MARKET RING     seven stalls, one per stat category -- the scan stations
+	    HOUSES          a ring of timber cottages and two towers facing in
+	    GRAVESTONES     three carved leaderboards, west side
+	    PORTALS         a glowing ring east that teleports to the Void Isle,
+	                    once you have the scanner score for it
+	    SKY RUINS       an obby climb north-west with a chest at the top
+	    OUTSKIRTS       trees, fences, lanterns along the paths
 
-	    HUB ISLAND          spawn, scanner tower, seven category pods,
-	                        shop / rebirth / daily props, leaderboard wall,
-	                        coin orbs scattered across the grass
-	    OBBY TOWER (west)   sixteen platforms spiralling up to a chest
-	    VOID ISLAND (north) gated behind scanner score, six-times orb value
-	                        and a bigger chest
-
-	The point of the pods and the orbs is that a scan takes time: instead of
-	standing in a menu watching a bar, you walk a pod, start a scan, and go
-	collect while it runs.
+	A scan takes time, so the town is built to give you somewhere to be while it
+	runs: orbs along the paths, a climb, and a second island worth crossing to.
 ]]
 
 local Players = game:GetService("Players")
@@ -25,6 +25,7 @@ local Format = require(Shared.Format)
 local Palette = require(Shared.Palette)
 local StatConfig = require(Shared.StatConfig)
 
+local Build = require(script.Parent.Build)
 local DataService = require(script.Parent.DataService)
 local DailyService = require(script.Parent.DailyService)
 local LeaderboardService = require(script.Parent.LeaderboardService)
@@ -34,165 +35,22 @@ local StateService = require(script.Parent.StateService)
 
 local WorldBuilder = {}
 
-local HUB = 200
-local VOID_CENTRE = Vector3.new(0, 0, -300)
-local VOID_SIZE = 150
-local VOID_REQUIREMENT = 30 -- scanner score needed to cross the bridge
+local GROUND = 420
+local SQUARE_RADIUS = 46
+local VOID_CENTRE = Vector3.new(0, 140, -420)
+local VOID_REQUIREMENT = 30
 local BOARD_REFRESH = 30
 
 local root: Folder
 local boardLabels: { [string]: { TextLabel } } = {}
 
--- Helpers ----------------------------------------------------------------
-
-local function part(props: { [string]: any }, parent: Instance?): BasePart
-	local instance = Instance.new("Part")
-	instance.Anchored = true
-	instance.Material = Enum.Material.SmoothPlastic
-	instance.TopSurface = Enum.SurfaceType.Smooth
-	instance.BottomSurface = Enum.SurfaceType.Smooth
-	for key, value in pairs(props) do
-		(instance :: any)[key] = value
-	end
-	instance.Parent = parent or root
-	return instance
-end
-
-local function sign(parent: BasePart, text: string, tint: Color3, height: number, size: number): TextLabel
-	local billboard = Instance.new("BillboardGui")
-	billboard.Name = "Sign"
-	billboard.Size = UDim2.fromScale(13, 3)
-	billboard.StudsOffsetWorldSpace = Vector3.new(0, height, 0)
-	billboard.MaxDistance = 220
-	billboard.Parent = parent
-
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.FredokaOne
-	label.Text = text
-	label.TextColor3 = tint
-	label.TextStrokeColor3 = Palette.outline
-	label.TextStrokeTransparency = 0
-	label.TextScaled = true
-	label.Parent = billboard
-
-	local constraint = Instance.new("UITextSizeConstraint")
-	constraint.MaxTextSize = size
-	constraint.Parent = label
-
-	return label
-end
-
--- Hub --------------------------------------------------------------------
-
-local function buildHub()
-	part({
-		Name = "HubGrass",
-		Size = Vector3.new(HUB, 6, HUB),
-		Position = Vector3.new(0, -3, 0),
-		Color = Palette.grass,
-		Material = Enum.Material.Grass,
-	})
-
-	part({
-		Name = "HubRim",
-		Size = Vector3.new(HUB + 12, 4, HUB + 12),
-		Position = Vector3.new(0, -6, 0),
-		Color = Palette.grassDeep,
-		Material = Enum.Material.Grass,
-	})
-
-	-- Paved circle under the tower.
-	part({
-		Name = "Plaza",
-		Size = Vector3.new(78, 0.6, 78),
-		Position = Vector3.new(0, 0.3, 0),
-		Color = Palette.path,
-		Material = Enum.Material.Sand,
-	})
-
-	-- Four paths radiating out.
-	for index, angle in ipairs({ 0, 90, 180, 270 }) do
-		local radians = math.rad(angle)
-		part({
-			Name = "Path" .. index,
-			Size = Vector3.new(12, 0.5, 74),
-			CFrame = CFrame.new(Vector3.new(math.sin(radians) * 72, 0.3, math.cos(radians) * 72))
-				* CFrame.Angles(0, radians, 0),
-			Color = Palette.path,
-			Material = Enum.Material.Sand,
-		})
-	end
-
-	local spawnLocation = Instance.new("SpawnLocation")
-	spawnLocation.Name = "Spawn"
-	spawnLocation.Anchored = true
-	spawnLocation.Size = Vector3.new(16, 1, 16)
-	spawnLocation.Position = Vector3.new(0, 0.8, 74)
-	spawnLocation.Color = Palette.green
-	spawnLocation.Material = Enum.Material.Neon
-	spawnLocation.Duration = 0
-	spawnLocation.Parent = root
-	sign(spawnLocation, "SPAWN", Palette.green, 5, 30)
-end
-
--- Scanner tower ----------------------------------------------------------
-
-local function buildTower()
-	part({
-		Name = "TowerBase",
-		Size = Vector3.new(26, 3, 26),
-		Position = Vector3.new(0, 1.5, 0),
-		Color = Palette.stone,
-	})
-	part({
-		Name = "TowerMid",
-		Size = Vector3.new(16, 14, 16),
-		Position = Vector3.new(0, 10, 0),
-		Color = Palette.panel,
-	})
-
-	local core = part({
-		Name = "TowerCore",
-		Shape = Enum.PartType.Ball,
-		Size = Vector3.new(11, 11, 11),
-		Position = Vector3.new(0, 23, 0),
-		Color = Palette.cyan,
-		Material = Enum.Material.Neon,
-	})
-
-	local light = Instance.new("PointLight")
-	light.Color = Palette.cyan
-	light.Range = 40
-	light.Brightness = 3
-	light.Parent = core
-
-	sign(core, "STAT SCANNER", Palette.ink, 9, 58)
-
-	local prompt = Instance.new("ProximityPrompt")
-	prompt.ActionText = "Open scanner"
-	prompt.ObjectText = "STAT SCANNER"
-	prompt.HoldDuration = 0
-	prompt.MaxActivationDistance = 26
-	prompt.RequiresLineOfSight = false
-	prompt.Parent = core
-
-	prompt.Triggered:Connect(function(player)
-		Remotes.event("OpenMenu"):FireClient(player, { view = "stats" })
-	end)
-
-	task.spawn(function()
-		local angle = 0
-		while core.Parent do
-			angle += 0.02
-			core.CFrame = CFrame.new(core.Position) * CFrame.Angles(0, angle, math.sin(angle) * 0.15)
-			task.wait(0.03)
-		end
-	end)
-end
-
--- Category scan pods -----------------------------------------------------
+local ROOFS = {
+	Color3.fromRGB(132, 86, 158), -- purple
+	Color3.fromRGB(176, 72, 72), -- red
+	Color3.fromRGB(86, 126, 178), -- blue
+	Color3.fromRGB(196, 132, 68), -- amber
+	Color3.fromRGB(96, 140, 104), -- green
+}
 
 local POD_COLOR = {
 	core = Palette.cyan,
@@ -204,7 +62,143 @@ local POD_COLOR = {
 	cursed = Palette.gold,
 }
 
---- Starts the next scannable stat in a category, so a pod is a real verb
+-- Ground -----------------------------------------------------------------
+
+local function buildGround()
+	Build.part({
+		Name = "Ground",
+		Size = Vector3.new(GROUND, 8, GROUND),
+		Position = Vector3.new(0, -4, 0),
+		Color = Color3.fromRGB(108, 172, 96),
+		Material = Enum.Material.LeafyGrass,
+	}, root)
+
+	Build.part({
+		Name = "Square",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(0.8, SQUARE_RADIUS * 2, SQUARE_RADIUS * 2),
+		CFrame = CFrame.new(0, 0.4, 0) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(150, 140, 128),
+		Material = Enum.Material.Cobblestone,
+	}, root)
+
+	-- Paths out to each quarter of the town.
+	for _, angle in ipairs({ 0, 90, 180, 270 }) do
+		local radians = math.rad(angle)
+		local direction = Vector3.new(math.sin(radians), 0, math.cos(radians))
+		Build.path(direction * SQUARE_RADIUS, direction * 170, 14, root)
+	end
+
+	local spawnLocation = Instance.new("SpawnLocation")
+	spawnLocation.Name = "Spawn"
+	spawnLocation.Anchored = true
+	spawnLocation.Size = Vector3.new(16, 1, 16)
+	spawnLocation.Position = Vector3.new(0, 0.9, 34)
+	spawnLocation.Color = Palette.green
+	spawnLocation.Material = Enum.Material.Neon
+	spawnLocation.Duration = 0
+	spawnLocation.Parent = root
+end
+
+-- Scanner shrine ---------------------------------------------------------
+
+local function buildShrine()
+	Build.part({
+		Name = "ShrineBase",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(2.4, 34, 34),
+		CFrame = CFrame.new(0, 1.2, 0) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(214, 204, 186),
+		Material = Enum.Material.Marble,
+	}, root)
+
+	Build.part({
+		Name = "ShrineStep",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(1.6, 42, 42),
+		CFrame = CFrame.new(0, 0.8, 0) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(196, 186, 170),
+		Material = Enum.Material.Marble,
+	}, root)
+
+	-- Six pillars holding the canopy.
+	for index = 1, 6 do
+		local angle = math.rad(index * 60)
+		Build.part({
+			Name = "ShrinePillar",
+			Shape = Enum.PartType.Cylinder,
+			Size = Vector3.new(22, 3, 3),
+			CFrame = CFrame.new(Vector3.new(math.sin(angle) * 13, 13, math.cos(angle) * 13))
+				* CFrame.Angles(0, 0, math.rad(90)),
+			Color = Color3.fromRGB(226, 218, 202),
+			Material = Enum.Material.Marble,
+		}, root)
+	end
+
+	Build.part({
+		Name = "ShrineRing",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(1.6, 32, 32),
+		CFrame = CFrame.new(0, 24.5, 0) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(214, 204, 186),
+		Material = Enum.Material.Marble,
+	}, root)
+
+	local roof = Build.part({
+		Name = "ShrineRoof",
+		Size = Vector3.new(34, 12, 34),
+		CFrame = CFrame.new(0, 31, 0),
+		Color = ROOFS[1],
+		Material = Enum.Material.Slate,
+	}, root)
+	local roofMesh = Instance.new("SpecialMesh")
+	roofMesh.MeshType = Enum.MeshType.Pyramid
+	roofMesh.Parent = roof
+
+	local core = Build.part({
+		Name = "ShrineCore",
+		Shape = Enum.PartType.Ball,
+		Size = Vector3.new(9, 9, 9),
+		Position = Vector3.new(0, 14, 0),
+		Color = Palette.cyan,
+		Material = Enum.Material.Neon,
+	}, root)
+
+	local light = Instance.new("PointLight")
+	light.Color = Palette.cyan
+	light.Range = 46
+	light.Brightness = 3.5
+	light.Parent = core
+
+	Build.sign(core, "STAT SCANNER", Palette.ink, 8, 56)
+
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = "Open scanner"
+	prompt.ObjectText = "STAT SHRINE"
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 28
+	prompt.RequiresLineOfSight = false
+	prompt.Parent = core
+
+	prompt.Triggered:Connect(function(player)
+		Remotes.event("OpenMenu"):FireClient(player, { view = "stats" })
+	end)
+
+	task.spawn(function()
+		local angle = 0
+		while core.Parent do
+			angle += 0.02
+			core.CFrame = CFrame.new(core.Position)
+				* CFrame.Angles(0, angle, 0)
+				* CFrame.new(0, math.sin(angle * 2) * 0.5, 0)
+			task.wait(0.03)
+		end
+	end)
+end
+
+-- Market ring ------------------------------------------------------------
+
+--- Starts the next scannable stat in a category, so a stall is a real verb
 --- rather than a shortcut into the menu.
 local function scanCategory(player: Player, categoryId: string)
 	local profile = DataService.get(player)
@@ -241,32 +235,18 @@ local function scanCategory(player: Player, categoryId: string)
 	end
 end
 
-local function buildPods()
+local function buildMarket()
 	local categories = StatConfig.Categories
-	local radius = 62
+	local radius = 68
 
 	for index, category in ipairs(categories) do
 		local angle = math.rad((index - 1) * (360 / #categories))
 		local position = Vector3.new(math.sin(angle) * radius, 0, math.cos(angle) * radius)
 		local tint = POD_COLOR[category.id] or Palette.purple
 
-		local pad = part({
-			Name = "Pod_" .. category.id,
-			Shape = Enum.PartType.Cylinder,
-			Size = Vector3.new(1.2, 18, 18),
-			CFrame = CFrame.new(position + Vector3.new(0, 0.9, 0)) * CFrame.Angles(0, 0, math.rad(90)),
-			Color = tint,
-			Material = Enum.Material.Neon,
-		})
-
-		local post = part({
-			Name = "PodPost_" .. category.id,
-			Size = Vector3.new(2, 9, 2),
-			Position = position + Vector3.new(0, 5, 0),
-			Color = Palette.stone,
-		})
-
-		sign(post, category.icon .. " " .. category.name:upper(), tint, 6.5, 40)
+		-- Face the stall back towards the square.
+		local cf = CFrame.lookAt(position, Vector3.new(0, 0, 0))
+		local glow = Build.stall(cf, tint, category.icon .. " " .. category.name:upper(), root)
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "Scan next"
@@ -274,43 +254,96 @@ local function buildPods()
 		prompt.HoldDuration = 0
 		prompt.MaxActivationDistance = 16
 		prompt.RequiresLineOfSight = false
-		prompt.Parent = post
+		prompt.Parent = glow
 
 		prompt.Triggered:Connect(function(player)
 			scanCategory(player, category.id)
 		end)
 
-		-- A ring of orbs around every pod.
-		PickupService.scatter(position, 16, 3, 18, tint)
+		PickupService.scatter(position, 15, 2, 18, tint)
 	end
 end
 
--- Props ------------------------------------------------------------------
+-- Town -------------------------------------------------------------------
+
+--- CFrame.lookAt aims an object's -Z at its target, but Build.house puts the
+--- door on +Z. Looking AWAY from the square is what turns the door towards it.
+local function facingSquare(position: Vector3): CFrame
+	return CFrame.lookAt(position, position + position.Unit * 10)
+end
+
+local function buildTown()
+	-- Cottages in a ring, doors onto the square.
+	local houses = 10
+	for index = 1, houses do
+		local angle = math.rad((index - 1) * (360 / houses) + 18)
+		local distance = 122 + (index % 3) * 10
+		local position = Vector3.new(math.sin(angle) * distance, 0, math.cos(angle) * distance)
+		Build.house(facingSquare(position), ROOFS[(index % #ROOFS) + 1], root, index % 4 == 0 and 1.25 or 1)
+	end
+
+	Build.tower(Vector3.new(-96, 0, 96), 9, 42, ROOFS[1], root)
+	Build.tower(Vector3.new(96, 0, 96), 7, 32, ROOFS[3], root)
+
+	-- Banners and lamp posts around the square.
+	for index = 1, 8 do
+		local angle = math.rad(index * 45 + 22)
+		local position = Vector3.new(math.sin(angle) * (SQUARE_RADIUS + 6), 0, math.cos(angle) * (SQUARE_RADIUS + 6))
+		Build.banner(position, ROOFS[(index % #ROOFS) + 1], root)
+	end
+
+	for index = 1, 10 do
+		local angle = math.rad(index * 36)
+		Build.lanternPost(
+			Vector3.new(math.sin(angle) * 92, 0, math.cos(angle) * 92),
+			root
+		)
+	end
+
+	-- String lights criss-crossing above the square.
+	for index = 1, 6 do
+		local a = math.rad(index * 60)
+		local b = a + math.rad(150)
+		Build.stringLights(
+			Vector3.new(math.sin(a) * (SQUARE_RADIUS + 4), 20, math.cos(a) * (SQUARE_RADIUS + 4)),
+			Vector3.new(math.sin(b) * (SQUARE_RADIUS + 4), 20, math.cos(b) * (SQUARE_RADIUS + 4)),
+			7,
+			root
+		)
+	end
+
+	-- Trees and fences on the outskirts.
+	for index = 1, 46 do
+		local angle = math.rad(index * 7.83)
+		local distance = 165 + (index % 5) * 14
+		Build.tree(
+			Vector3.new(math.sin(angle) * distance, 0, math.cos(angle) * distance),
+			0.85 + (index % 4) * 0.2,
+			root
+		)
+	end
+
+	for index = 1, 4 do
+		local angle = math.rad(index * 90 + 45)
+		local a = Vector3.new(math.sin(angle) * 100, 0, math.cos(angle) * 100)
+		local b = Vector3.new(math.sin(angle + math.rad(45)) * 100, 0, math.cos(angle + math.rad(45)) * 100)
+		Build.fence(a, b, root)
+	end
+end
+
+-- Kiosks -----------------------------------------------------------------
 
 local function kiosk(position: Vector3, label: string, tint: Color3, view: string?, onUse: ((Player) -> ())?)
-	local body = part({
-		Name = "Kiosk_" .. label,
-		Size = Vector3.new(10, 9, 8),
-		Position = position + Vector3.new(0, 4.5, 0),
-		Color = tint,
-	})
-
-	part({
-		Name = "KioskRoof",
-		Size = Vector3.new(13, 1.4, 11),
-		Position = position + Vector3.new(0, 9.7, 0),
-		Color = Palette.outline,
-	})
-
-	sign(body, label, Palette.ink, 7.5, 44)
+	local cf = CFrame.lookAt(position, Vector3.new(0, 0, 0))
+	local glow = Build.stall(cf, tint, label, root)
 
 	local prompt = Instance.new("ProximityPrompt")
-	prompt.ActionText = "Use"
+	prompt.ActionText = "Open"
 	prompt.ObjectText = label
 	prompt.HoldDuration = 0
-	prompt.MaxActivationDistance = 14
+	prompt.MaxActivationDistance = 16
 	prompt.RequiresLineOfSight = false
-	prompt.Parent = body
+	prompt.Parent = glow
 
 	prompt.Triggered:Connect(function(player)
 		if onUse then
@@ -319,100 +352,20 @@ local function kiosk(position: Vector3, label: string, tint: Color3, view: strin
 			Remotes.event("OpenMenu"):FireClient(player, { view = view })
 		end
 	end)
-
-	return body
 end
 
-local function buildProps()
-	kiosk(Vector3.new(-62, 0, 44), "SHOP", Palette.gold, "shop")
-	kiosk(Vector3.new(62, 0, 44), "QUESTS", Palette.pink, "achievements")
-	kiosk(Vector3.new(-62, 0, -44), "REBIRTH", Palette.purple, "rebirth")
-	kiosk(Vector3.new(62, 0, -44), "DAILY", Palette.green, nil, function(player)
+local function buildKiosks()
+	kiosk(Vector3.new(-40, 0, 96), "SHOP", Palette.gold, "shop")
+	kiosk(Vector3.new(40, 0, 96), "QUESTS", Palette.pink, "achievements")
+	kiosk(Vector3.new(-40, 0, -96), "REBIRTH", Palette.purple, "rebirth")
+	kiosk(Vector3.new(40, 0, -96), "DAILY", Palette.green, nil, function(player)
 		DailyService.claim(player)
 	end)
 end
 
--- Leaderboard wall -------------------------------------------------------
+-- Leaderboards -----------------------------------------------------------
 
-local BOARD_ROWS = 10
-
-local function buildBoard(key: string, title: string, position: Vector3)
-	local frame = part({
-		Name = "Board_" .. key,
-		Size = Vector3.new(26, 18, 1.5),
-		Position = position,
-		Color = Palette.panel,
-	})
-
-	part({
-		Name = "BoardLeg",
-		Size = Vector3.new(3, 12, 3),
-		Position = position - Vector3.new(0, 15, 0),
-		Color = Palette.stone,
-	})
-
-	local surface = Instance.new("SurfaceGui")
-	surface.Face = Enum.NormalId.Front
-	surface.CanvasSize = Vector2.new(620, 430)
-	surface.LightInfluence = 0
-	surface.Parent = frame
-
-	local background = Instance.new("Frame")
-	background.Size = UDim2.fromScale(1, 1)
-	background.BackgroundColor3 = Palette.panel
-	background.BorderSizePixel = 0
-	background.Parent = surface
-
-	local header = Instance.new("TextLabel")
-	header.Size = UDim2.new(1, 0, 0, 62)
-	header.BackgroundColor3 = Palette.purple
-	header.BorderSizePixel = 0
-	header.Font = Enum.Font.FredokaOne
-	header.Text = title
-	header.TextColor3 = Palette.ink
-	header.TextScaled = true
-	header.Parent = background
-
-	local list = Instance.new("Frame")
-	list.Position = UDim2.new(0, 10, 0, 70)
-	list.Size = UDim2.new(1, -20, 1, -80)
-	list.BackgroundTransparency = 1
-	list.Parent = background
-
-	local layout = Instance.new("UIListLayout")
-	layout.Padding = UDim.new(0, 3)
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Parent = list
-
-	local labels = {}
-	for index = 1, BOARD_ROWS do
-		local row = Instance.new("TextLabel")
-		row.Size = UDim2.new(1, 0, 0, 32)
-		row.LayoutOrder = index
-		row.BackgroundColor3 = index <= 3 and Palette.gold or Palette.panelLite
-		row.BackgroundTransparency = index <= 3 and 0.1 or 0.35
-		row.BorderSizePixel = 0
-		row.Font = Enum.Font.GothamBold
-		row.TextXAlignment = Enum.TextXAlignment.Left
-		row.TextColor3 = Palette.ink
-		row.TextSize = 19
-		row.Text = ""
-		row.Parent = list
-
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0, 6)
-		corner.Parent = row
-
-		local padding = Instance.new("UIPadding")
-		padding.PaddingLeft = UDim.new(0, 10)
-		padding.PaddingRight = UDim.new(0, 10)
-		padding.Parent = row
-
-		labels[index] = row
-	end
-
-	boardLabels[key] = labels
-end
+local BOARD_ROWS = 14
 
 local function renderBoards()
 	for _, board in ipairs(LeaderboardService.snapshot()) do
@@ -421,161 +374,178 @@ local function renderBoards()
 			for index, row in ipairs(labels) do
 				local entry = board.rows[index]
 				if entry then
-					row.Text = ("#%d  %s   %s"):format(
+					row.Text = ("%d. %s  %s"):format(
 						entry.rank,
 						entry.name,
 						Format.value(board.format, entry.value)
 					)
-					row.TextColor3 = Palette.ink
+					row.TextColor3 = index <= 3 and Palette.gold or Color3.fromRGB(238, 232, 216)
 				else
-					row.Text = "#" .. index
-					row.TextColor3 = Palette.inkDim
+					row.Text = ("%d. —"):format(index)
+					row.TextColor3 = Color3.fromRGB(128, 122, 112)
 				end
 			end
 		end
 	end
 end
 
--- Obby -------------------------------------------------------------------
+local function buildGraveyard()
+	local boards = {
+		{ key = "score", title = "Top Scanners", offset = -26 },
+		{ key = "playtime", title = "Most Playtime", offset = 0 },
+		{ key = "accountValue", title = "Richest", offset = 26 },
+	}
 
-local function buildObby()
-	local centre = Vector3.new(-128, 0, 0)
+	for _, board in ipairs(boards) do
+		-- Rotated to face +X, i.e. back towards the square, so they spread
+		-- along Z to stand side by side rather than one behind another.
+		local cf = CFrame.new(Vector3.new(-120, 0, board.offset)) * CFrame.Angles(0, math.rad(90), 0)
+		boardLabels[board.key] = Build.gravestone(cf, board.title, BOARD_ROWS, root)
+	end
+end
 
-	part({
-		Name = "ObbyBase",
-		Size = Vector3.new(40, 6, 40),
-		Position = centre - Vector3.new(0, 3, 0),
-		Color = Palette.stone,
-	})
+-- Sky ruins (obby) -------------------------------------------------------
 
-	local pillar = part({
-		Name = "ObbyPillar",
-		Size = Vector3.new(8, 96, 8),
-		Position = centre + Vector3.new(0, 48, 0),
-		Color = Palette.panel,
-	})
-	sign(pillar, "CLIMB ME", Palette.gold, 52, 46)
+local function buildRuins()
+	local centre = Vector3.new(-150, 0, -140)
 
-	local steps = 16
+	Build.part({
+		Name = "RuinBase",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(4, 52, 52),
+		CFrame = CFrame.new(centre + Vector3.new(0, 2, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(150, 142, 130),
+		Material = Enum.Material.Slate,
+	}, root)
+
+	local pillar = Build.part({
+		Name = "RuinPillar",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(118, 12, 12),
+		CFrame = CFrame.new(centre + Vector3.new(0, 59, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(176, 168, 152),
+		Material = Enum.Material.Brick,
+	}, root)
+	Build.sign(pillar, "SKY RUINS", Palette.gold, 64, 50)
+
+	local steps = 18
 	for index = 1, steps do
-		local angle = math.rad(index * 62)
-		local height = 6 + index * 5.4
-		local reach = 15
+		local angle = math.rad(index * 58)
+		local height = 6 + index * 5.8
+		local reach = 19
 
-		part({
-			Name = "Step" .. index,
-			Size = Vector3.new(9, 1.2, 9),
-			Position = centre + Vector3.new(math.sin(angle) * reach, height, math.cos(angle) * reach),
-			Color = index % 2 == 0 and Palette.cyan or Palette.pink,
-			Material = Enum.Material.SmoothPlastic,
-		})
+		Build.part({
+			Name = "RuinStep" .. index,
+			Size = Vector3.new(11, 1.4, 11),
+			CFrame = CFrame.new(centre + Vector3.new(math.sin(angle) * reach, height, math.cos(angle) * reach))
+				* CFrame.Angles(0, angle, 0),
+			Color = Color3.fromRGB(196, 188, 170),
+			Material = Enum.Material.Slate,
+		}, root)
 
-		-- An orb on every third step to pay for the climb.
 		if index % 3 == 0 then
 			PickupService.spawnOrb(
 				centre + Vector3.new(math.sin(angle) * reach, height + 3.5, math.cos(angle) * reach),
-				35,
+				40,
 				Palette.cyan
 			)
 		end
 	end
 
-	local top = part({
-		Name = "ObbyTop",
-		Size = Vector3.new(22, 2, 22),
-		Position = centre + Vector3.new(0, 6 + steps * 5.4 + 4, 0),
+	local top = Build.part({
+		Name = "RuinTop",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(2.4, 30, 30),
+		CFrame = CFrame.new(centre + Vector3.new(0, 6 + steps * 5.8 + 4, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 		Color = Palette.gold,
-	})
-	sign(top, "SUMMIT", Palette.gold, 5, 40)
+		Material = Enum.Material.Marble,
+	}, root)
 
-	PickupService.spawnChest(top.Position + Vector3.new(0, 3.5, 0), 900, 180, "SUMMIT CHEST")
+	PickupService.spawnChest(top.Position + Vector3.new(0, 4, 0), 900, 180, "RUINS CHEST")
 end
 
--- Void island ------------------------------------------------------------
+-- Void isle + portals ----------------------------------------------------
 
-local function buildVoid()
-	part({
-		Name = "VoidIsland",
-		Size = Vector3.new(VOID_SIZE, 6, VOID_SIZE),
-		Position = VOID_CENTRE - Vector3.new(0, 3, 0),
-		Color = Palette.purple,
-		Material = Enum.Material.Slate,
-	})
+local function teleporter(position: Vector3, destination: Vector3, tint: Color3, label: string, requirement: number?)
+	local pad = Build.portal(position, tint, label, root)
+	local busy: { [number]: boolean } = {}
 
-	-- Bridge from the hub edge to the island.
-	part({
-		Name = "VoidBridge",
-		Size = Vector3.new(14, 1.5, 130),
-		Position = Vector3.new(0, 0, -165),
-		Color = Palette.stone,
-	})
-
-	local gate = part({
-		Name = "VoidGate",
-		Size = Vector3.new(16, 16, 2),
-		Position = Vector3.new(0, 8, -108),
-		Color = Palette.red,
-		Material = Enum.Material.ForceField,
-		Transparency = 0.35,
-		CanCollide = false,
-	})
-
-	sign(gate, ("VOID ISLAND — %d SCORE"):format(VOID_REQUIREMENT), Palette.red, 11, 38)
-
-	-- Unqualified players bounce off; qualified players walk straight through.
-	local bouncing: { [number]: boolean } = {}
-
-	gate.Touched:Connect(function(hit)
+	pad.Touched:Connect(function(hit)
 		local character = hit:FindFirstAncestorOfClass("Model")
 		local player = character and Players:GetPlayerFromCharacter(character)
-		if not player or bouncing[player.UserId] then
+		if not player or busy[player.UserId] then
 			return
 		end
-
-		local profile = DataService.get(player)
-		if not profile then
-			return
-		end
-
-		local score = StateService.scoreFor(profile)
-		if score >= VOID_REQUIREMENT then
-			return
-		end
-
-		bouncing[player.UserId] = true
 
 		local rootPart = character:FindFirstChild("HumanoidRootPart") :: BasePart?
-		if rootPart then
-			rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 2, 14))
+		if not rootPart then
+			return
 		end
 
-		StateService.notify(
-			player,
-			("Void Island needs %d scanner score. You have %d."):format(VOID_REQUIREMENT, score),
-			"!",
-			Palette.red
-		)
-
-		task.delay(1.5, function()
-			bouncing[player.UserId] = nil
+		busy[player.UserId] = true
+		task.delay(2, function()
+			busy[player.UserId] = nil
 		end)
+
+		if requirement then
+			local profile = DataService.get(player)
+			local score = profile and StateService.scoreFor(profile) or 0
+			if score < requirement then
+				StateService.notify(
+					player,
+					("Void Isle needs %d scanner score. You have %d."):format(requirement, score),
+					"!",
+					Palette.red
+				)
+				return
+			end
+		end
+
+		rootPart.CFrame = CFrame.new(destination)
+		StateService.notify(player, label, "*", tint)
 	end)
+end
 
-	-- Richer orbs, and a bigger chest.
-	PickupService.scatter(VOID_CENTRE, 60, 16, 120, Palette.purple)
-	PickupService.spawnChest(VOID_CENTRE + Vector3.new(0, 3.5, 0), 4000, 300, "VOID CHEST")
+local function buildVoid()
+	Build.part({
+		Name = "VoidIsle",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(8, 170, 170),
+		CFrame = CFrame.new(VOID_CENTRE - Vector3.new(0, 4, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Palette.purple,
+		Material = Enum.Material.Slate,
+	}, root)
 
-	for index = 1, 8 do
-		local angle = math.rad(index * 45)
-		part({
+	for index = 1, 10 do
+		local angle = math.rad(index * 36)
+		Build.part({
 			Name = "VoidSpire" .. index,
-			Size = Vector3.new(4, math.random(12, 30), 4),
-			Position = VOID_CENTRE + Vector3.new(math.sin(angle) * 62, 8, math.cos(angle) * 62),
-			Color = Palette.pink,
+			Size = Vector3.new(6, math.random(18, 44), 6),
+			Position = VOID_CENTRE + Vector3.new(math.sin(angle) * 70, 14, math.cos(angle) * 70),
+			Color = index % 2 == 0 and Palette.pink or Palette.cyan,
 			Material = Enum.Material.Neon,
 			Transparency = 0.25,
-		})
+		}, root)
 	end
+
+	PickupService.scatter(VOID_CENTRE, 66, 18, 120, Palette.purple)
+	PickupService.spawnChest(VOID_CENTRE + Vector3.new(0, 4, 0), 4000, 300, "VOID CHEST")
+
+	-- Out and back.
+	teleporter(
+		Vector3.new(0, 0, -110),
+		VOID_CENTRE + Vector3.new(0, 6, 40),
+		Palette.purple,
+		("VOID ISLE  ·  %d SCORE"):format(VOID_REQUIREMENT),
+		VOID_REQUIREMENT
+	)
+	teleporter(
+		VOID_CENTRE + Vector3.new(0, 0, 62),
+		Vector3.new(0, 6, -92),
+		Palette.cyan,
+		"BACK TO TOWN",
+		nil
+	)
 end
 
 -- Build ------------------------------------------------------------------
@@ -594,19 +564,25 @@ function WorldBuilder.build()
 	root.Name = "StatScannerWorld"
 	root.Parent = workspace
 
-	buildHub()
-	buildTower()
-	buildPods()
-	buildProps()
-	buildObby()
+	buildGround()
+	buildShrine()
+	buildMarket()
+	buildTown()
+	buildKiosks()
+	buildGraveyard()
+	buildRuins()
 	buildVoid()
 
-	-- Loose orbs across the grass, away from the pods.
-	PickupService.scatter(Vector3.new(0, 0, 0), 92, 22, 12)
+	-- Orbs along the paths so there is always something to run for.
+	for _, angle in ipairs({ 0, 90, 180, 270 }) do
+		local radians = math.rad(angle)
+		local direction = Vector3.new(math.sin(radians), 0, math.cos(radians))
+		for step = 1, 7 do
+			PickupService.spawnOrb(direction * (55 + step * 15) + Vector3.new(0, 3, 0), 14)
+		end
+	end
 
-	buildBoard("score", "SCANNER SCORE", Vector3.new(-30, 12, -96))
-	buildBoard("playtime", "PLAYTIME", Vector3.new(0, 12, -96))
-	buildBoard("accountValue", "ACCOUNT VALUE", Vector3.new(30, 12, -96))
+	PickupService.scatter(Vector3.new(0, 0, 0), 100, 14, 12)
 
 	task.spawn(function()
 		while true do
