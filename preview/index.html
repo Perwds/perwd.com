@@ -34,8 +34,8 @@
     --display: "Montserrat", "Helvetica Neue", Arial, sans-serif;
     --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-    --hud-w: 1280;
-    --hud-h: 720;
+    --vp-w: 1280;
+    --vp-h: 720;
   }
 
   * { box-sizing: border-box; }
@@ -97,17 +97,19 @@
 
   /* ---------- stage ---------- */
 
-  .stage-scroll { overflow-x: auto; overflow-y: hidden; border-radius: 16px; }
-
   .stage {
     position: relative;
-    min-width: 640px;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: var(--vp-aspect, 16 / 9);
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid var(--rule);
     background: #000;
     cursor: crosshair;
+    /* Holding to reel must not scroll or text-select the page underneath. */
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -117,12 +119,19 @@
   .hud {
     position: absolute;
     top: 0; left: 0;
-    width: calc(var(--hud-w) * 1px);
-    height: calc(var(--hud-h) * 1px);
+    width: calc(var(--vp-w) * 1px);
+    height: calc(var(--vp-h) * 1px);
     transform-origin: top left;
     pointer-events: none;
   }
   .hud * { pointer-events: auto; }
+
+  .hint {
+    margin: 10px 0 0;
+    font: 500 11.5px/1.6 var(--mono);
+    color: var(--fg-dim);
+  }
+  .hint b { color: var(--fg); font-weight: 600; }
 
   .stage-meta {
     display: flex; flex-wrap: wrap; gap: 14px 22px;
@@ -175,8 +184,8 @@
   }
   .slot h3 { margin: 0 0 3px; font-size: 13px; font-weight: 700; letter-spacing: .01em; }
   .slot p { margin: 0 0 14px; font: 400 11px/1.55 var(--mono); color: var(--fg-faint); }
-  .slot .mount { position: relative; display: flex; justify-content: center; }
-  .slot .mount > * { position: relative !important; top: auto !important; left: auto !important; }
+  .slot .mount { position: relative; display: flex; justify-content: center; overflow: hidden; }
+  .slot .mount > * { max-width: 100%; }
 
   /* ---------- ladders ---------- */
 
@@ -227,7 +236,8 @@
       The real HUD, reel minigame and catch cards, at the pixel sizes the Luau
       builds them. The rarity rolls, luck maths and coin values come straight out
       of <code>src/shared/Config</code>, so what you see here is what the game does.
-      Click the water to cast, then hold to reel.
+      Tap the water to cast, then hold anywhere to reel. The screen picker runs
+      the game's own HUD scaling, so pick a phone to see what a phone gets.
     </p>
   </header>
 
@@ -239,14 +249,17 @@
     <span class="label">Rod</span>
     <div class="seg" id="rod-tabs"></div>
   </div>
-
-  <div class="stage-scroll">
-    <div class="stage" id="stage">
-      <canvas id="scene"></canvas>
-      <div class="hud" id="hud"></div>
-    </div>
+  <div class="controls">
+    <span class="label">Screen</span>
+    <div class="seg" id="device-tabs"></div>
   </div>
 
+  <div class="stage" id="stage">
+    <canvas id="scene"></canvas>
+    <div class="hud" id="hud"></div>
+  </div>
+
+  <p class="hint" id="hint"></p>
   <div class="stage-meta" id="stage-meta"></div>
 
   <section>
@@ -349,6 +362,27 @@ const REEL = {
 };
 const WEIGHT_VALUE_SPREAD = 1.5;
 const LUCK_PER_LEVEL = 0.012;
+
+// Port of GameConfig.HudScale. The interface is authored in fixed pixels
+// against 1280x720; this is what keeps it readable and on-screen everywhere
+// else, and it is the same maths the game runs.
+const HUD = { refW: 1280, refH: 720, tallest: 460, widest: 620, touchBoost: 1.25 };
+
+function hudScaleFor(vx, vy, touch) {
+  if (vx <= 0 || vy <= 0) return 1;
+  const proportional = Math.min(vx / HUD.refW, vy / HUD.refH);
+  let scale = clamp(proportional, 0.8, 1.2);
+  if (touch) scale *= HUD.touchBoost;
+  return clamp(Math.min(scale, (vy - 24) / HUD.tallest, (vx - 24) / HUD.widest), 0.5, 1.4);
+}
+
+const DEVICES = [
+  { id: "desktop1080", label: "1080p", w: 1920, h: 1080, touch: false },
+  { id: "desktop720", label: "720p", w: 1280, h: 720, touch: false },
+  { id: "tablet", label: "Tablet", w: 1180, h: 820, touch: true },
+  { id: "phone", label: "Phone", w: 896, h: 414, touch: true },
+  { id: "phoneSmall", label: "Small phone", w: 667, h: 375, touch: true },
+];
 
 // Pools, mirroring Fish.luau's build step.
 const POOL = {}, TIERS = {};
@@ -459,6 +493,7 @@ const catchColor = (c) => c.mutation !== "None" ? MUTATIONS[c.mutation].color : 
 const state = {
   zone: "pond",
   rod: "wooden",
+  device: DEVICES[1],
   level: 12,
   coins: 4820,
   lifetime: 7400,
@@ -472,6 +507,33 @@ const state = {
   ripples: [],
   cardTier: null,
 };
+
+const vp = () => state.device;
+const hudScale = () => hudScaleFor(state.device.w, state.device.h, state.device.touch);
+
+// ax/ay are the element's anchor (0..1); x/y are viewport pixels.
+function place(node, ax, ay, x, y) {
+  const base = `translate(${-ax * 100}%, ${-ay * 100}%) scale(${hudScale()})`;
+  node.style.left = `${x}px`;
+  node.style.top = `${y}px`;
+  node.style.bottom = "auto";
+  node.style.transformOrigin = `${ax * 100}% ${ay * 100}%`;
+  node.style.transform = base;
+  node._base = base;
+  return node;
+}
+
+// The gallery shows pieces at native size, outside the stage's coordinate space.
+function unplace(node, transform) {
+  Object.assign(node.style, {
+    position: "relative",
+    left: "0", top: "0", bottom: "auto",
+    transform: transform ?? "none",
+    transformOrigin: "top center",
+  });
+  node._base = transform ?? "";
+  return node;
+}
 
 const el = (tag, cls, css) => {
   const node = document.createElement(tag);
@@ -513,7 +575,8 @@ function glassPanel({ w, h, x, y, tint, radius = 14, alpha = 0.04 }) {
 function buildHeader() {
   const accent = { r: 86, g: 168, b: 255 };
   const coin = { r: 255, g: 202, b: 84 };
-  const panel = glassPanel({ w: 286, h: 104, x: 18, y: 18, tint: accent });
+  const panel = glassPanel({ w: 286, h: 104, tint: accent });
+  place(panel, 0, 0, 18, 18);
 
   const dot = el("div", "", {
     position: "absolute", left: "14px", top: "21px", width: "14px", height: "14px",
@@ -546,7 +609,8 @@ function buildHeader() {
 const PANEL_BUTTONS = ["BAG", "RODS", "ZONES", "INDEX", "BOARD"];
 
 function buildPanelButtons() {
-  const holder = el("div", "", { position: "absolute", left: "18px", top: "136px", width: "104px" });
+  const holder = el("div", "", { position: "absolute", width: "104px" });
+  place(holder, 0, 0, 18, 136);
   PANEL_BUTTONS.forEach((text, i) => {
     const raised = { r: 28, g: 33, b: 45 };
     const button = el("button", "", {
@@ -565,7 +629,7 @@ function buildPanelButtons() {
 
 function buildPrompt() {
   const panel = glassPanel({ w: 330, h: 40, radius: 999 });
-  Object.assign(panel.style, { left: `${(1280 - 330) / 2}px`, top: `${720 - 42 - 40}px` });
+  place(panel, 0.5, 1, vp().w / 2, vp().h - 42);
   const text = hudText(panel, { text: "Click the water to cast", x: 0, y: 0, w: 330, h: 40, size: 14, weight: 700, align: "center" });
   panel.dataset.role = "prompt";
   panel._text = text;
@@ -573,7 +637,8 @@ function buildPrompt() {
 }
 
 function buildFeed() {
-  const holder = el("div", "", { position: "absolute", left: "18px", bottom: "18px", width: "330px" });
+  const holder = el("div", "", { position: "absolute", width: "330px" });
+  place(holder, 0, 1, 18, vp().h - 18);
   holder.dataset.role = "feed";
   return holder;
 }
@@ -622,10 +687,13 @@ function buildCatchCard(result) {
   hudText(card, { text: `+${commas(result.value)}`, x: 14, y: 90, w: 298, h: 24, size: 19, weight: 900, color: "var(--coin)", align: "center", glow: coin, glowAlpha: .7 });
   hudText(card, { text: "added to your bag", x: 14, y: 116, w: 298, h: 14, size: 11, weight: 500, color: "var(--fg-faint)", align: "center" });
 
-  card.animate(
-    [{ transform: "scale(.8)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }],
-    { duration: 340, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" }
-  );
+  requestAnimationFrame(() => {
+    const base = card._base ?? "";
+    card.animate(
+      [{ transform: `${base} scale(.8)`, opacity: 0 }, { transform: base || "none", opacity: 1 }],
+      { duration: 340, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" }
+    );
+  });
   return card;
 }
 
@@ -715,10 +783,14 @@ function note(text, kind = "info") {
   const colors = { info: "var(--accent)", good: "var(--good)", warn: "var(--warn)", bad: "var(--bad)" };
   const tints = { info: {r:86,g:168,b:255}, good: {r:88,g:216,b:140}, warn: {r:255,g:186,b:76}, bad: {r:255,g:96,b:108} };
   const card = glassPanel({ w: 318, h: 34, radius: 8, tint: tints[kind] });
-  Object.assign(card.style, { left: `${(1280 - 318) / 2}px`, top: "18px", zIndex: "20" });
+  place(card, 0.5, 0, vp().w / 2, 18);
+  card.style.zIndex = "20";
   hudText(card, { text, x: 0, y: 0, w: 318, h: 34, size: 13, weight: 500, color: colors[kind], align: "center" });
   hud.appendChild(card);
-  card.animate([{ transform: "scale(.9)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], { duration: 200, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" });
+  card.animate(
+    [{ transform: `${card._base} scale(.9)`, opacity: 0 }, { transform: card._base, opacity: 1 }],
+    { duration: 200, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" }
+  );
   setTimeout(() => {
     card.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: "both" }).finished.then(() => card.remove());
   }, 2600);
@@ -726,13 +798,16 @@ function note(text, kind = "info") {
 
 function resize() {
   const rect = stage.getBoundingClientRect();
+  if (!rect.width) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.round(rect.width * dpr);
   canvas.height = Math.round(rect.height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  hud.style.transform = `scale(${rect.width / 1280})`;
+  // The HUD layer is the device viewport, fitted to however wide the stage is.
+  hud.style.transform = `scale(${rect.width / state.device.w})`;
 }
 new ResizeObserver(resize).observe(stage);
+window.addEventListener("orientationchange", () => setTimeout(applyDevice, 120));
 
 // ---------------------------------------------------------------------------
 // Scene
@@ -1001,6 +1076,8 @@ stage.addEventListener("pointerdown", (event) => {
   }
 });
 window.addEventListener("pointerup", () => { holding = false; });
+window.addEventListener("pointercancel", () => { holding = false; });
+window.addEventListener("blur", () => { holding = false; });
 window.addEventListener("keydown", (e) => { if (e.code === "Space") { e.preventDefault(); holding = true; } });
 window.addEventListener("keyup", (e) => { if (e.code === "Space") holding = false; });
 
@@ -1037,9 +1114,12 @@ function startReel() {
   };
 
   reelEl = buildReel(reel);
-  Object.assign(reelEl.style, { left: `${1280 - 34 - (REEL.trackW + 104)}px`, top: `${(720 - (REEL.trackH + 68)) / 2}px` });
+  place(reelEl, 1, 0.5, vp().w - 34, vp().h / 2);
   hud.appendChild(reelEl);
-  reelEl.animate([{ transform: "scale(.88)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], { duration: 340, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" });
+  reelEl.animate(
+    [{ transform: `${reelEl._base} scale(.88)`, opacity: 0 }, { transform: reelEl._base, opacity: 1 }],
+    { duration: 340, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" }
+  );
   mountReel();
 }
 
@@ -1123,7 +1203,8 @@ function finishReel(won) {
 function showCatch(result) {
   if (cardEl) cardEl.remove();
   cardEl = buildCatchCard(result);
-  Object.assign(cardEl.style, { left: `${(1280 - 326) / 2}px`, top: `${360 + 96 - 73}px`, zIndex: "30" });
+  place(cardEl, 0.5, 0.5, vp().w / 2, vp().h / 2 + 96 * hudScale());
+  cardEl.style.zIndex = "30";
   hud.appendChild(cardEl);
 
   const peak = Math.max(result.rarityIndex, result.mutationIndex);
@@ -1151,22 +1232,18 @@ function showCatch(result) {
 function mountHeader() {
   const slot = document.getElementById("mount-header");
   slot.innerHTML = "";
-  const node = buildHeader();
-  Object.assign(node.style, { position: "relative", left: "0", top: "0" });
-  slot.appendChild(node);
+  slot.appendChild(unplace(buildHeader()));
 }
 function mountCard(result) {
   const slot = document.getElementById("mount-card");
   slot.innerHTML = "";
-  const node = buildCatchCard(result);
-  Object.assign(node.style, { position: "relative", left: "0", top: "0" });
-  slot.appendChild(node);
+  slot.appendChild(unplace(buildCatchCard(result)));
 }
 function mountReel() {
   const slot = document.getElementById("mount-reel");
   slot.innerHTML = "";
-  const node = buildReel(reel ?? { barSize: RODS[state.rod].barSize });
-  Object.assign(node.style, { position: "relative", left: "0", top: "0", transform: "scale(.78)", transformOrigin: "top center", marginBottom: "-84px" });
+  const node = unplace(buildReel(reel ?? { barSize: RODS[state.rod].barSize }), "scale(.78)");
+  node.style.marginBottom = "-84px";
   slot.appendChild(node);
 }
 
@@ -1225,6 +1302,38 @@ function syncRodTabs() {
     }
   );
 }
+function syncDeviceTabs() {
+  buildTabs(
+    document.getElementById("device-tabs"),
+    DEVICES.map((d) => ({ id: d.id, label: d.label })),
+    (item) => item.id === state.device.id,
+    (item) => setDevice(DEVICES.find((d) => d.id === item.id))
+  );
+}
+
+function applyDevice() {
+  const device = state.device;
+  stage.style.setProperty("--vp-aspect", `${device.w} / ${device.h}`);
+  stage.style.setProperty("--vp-w", String(device.w));
+  stage.style.setProperty("--vp-h", String(device.h));
+  resize();
+
+  const scale = hudScale();
+  document.getElementById("hint").innerHTML =
+    `<b>${device.label}</b> — ${device.w}×${device.h}${device.touch ? " touch" : ""}, HUD at ` +
+    `<b>${scale.toFixed(2)}×</b>. Smallest label renders at ${(11 * scale).toFixed(1)}px; ` +
+    `the reel bar is ${Math.round(388 * scale)}px tall in a ${device.h}px viewport.`;
+}
+
+function setDevice(device) {
+  if (!device) return;
+  state.device = device;
+  applyDevice();
+  syncDeviceTabs();
+  rebuildHud();
+  renderMeta();
+}
+
 function syncTierTabs() {
   buildTabs(
     document.getElementById("tier-tabs"),
@@ -1364,11 +1473,18 @@ state.feed = [
   { player: "tavi", fish: "Void Trench Wyrm", rarity: "Legendary", mutation: "Void" },
 ];
 
+// Opened on a phone? Start on the phone profile, since that is the question
+// being asked.
+if (Math.min(window.innerWidth, window.innerHeight) < 520) {
+  state.device = DEVICES.find((d) => d.id === "phone") ?? state.device;
+}
+
 seedParticles();
 applyGrade();
-resize();
+applyDevice();
 syncZoneTabs();
 syncRodTabs();
+syncDeviceTabs();
 syncTierTabs();
 rebuildHud();
 mountHeader();

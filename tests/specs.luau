@@ -300,6 +300,93 @@ do
 	)
 end
 
+print("== hud scaling ==")
+
+-- Real element footprints, from the code that builds them. If a panel grows,
+-- these move and the fit assertions below catch it.
+local REEL_HEIGHT = 320 + 68   -- ReelBar TRACK_HEIGHT + chrome
+local REEL_WIDTH = 54 + 104    -- ReelBar TRACK_WIDTH + chrome
+local PANEL_HEIGHT = 442       -- Panels root
+local PANEL_WIDTH = 576
+
+check(
+	"HudTallest covers the tallest real element",
+	GameConfig.HudTallest >= math.max(REEL_HEIGHT, PANEL_HEIGHT),
+	string.format("%d vs %d", GameConfig.HudTallest, math.max(REEL_HEIGHT, PANEL_HEIGHT))
+)
+check(
+	"HudWidest covers the widest real element",
+	GameConfig.HudWidest >= math.max(REEL_WIDTH, PANEL_WIDTH),
+	string.format("%d vs %d", GameConfig.HudWidest, math.max(REEL_WIDTH, PANEL_WIDTH))
+)
+
+-- Viewports the game will actually meet. Roblox mobile is landscape by default.
+local VIEWPORTS = {
+	{ name = "desktop 1080p", x = 1920, y = 1080, touch = false },
+	{ name = "desktop 720p", x = 1280, y = 720, touch = false },
+	{ name = "small window", x = 900, y = 500, touch = false },
+	{ name = "tablet landscape", x = 1180, y = 820, touch = true },
+	{ name = "phone landscape", x = 896, y = 414, touch = true },
+	{ name = "small phone", x = 667, y = 375, touch = true },
+	{ name = "very short phone", x = 800, y = 340, touch = true },
+}
+
+for _, viewport in VIEWPORTS do
+	local scale = GameConfig.HudScale(viewport.x, viewport.y, viewport.touch)
+
+	print(string.format(
+		"  %-18s %4dx%-4d %-7s %.2fx  reel %.0fpx  label %.1fpx",
+		viewport.name,
+		viewport.x,
+		viewport.y,
+		viewport.touch and "touch" or "mouse",
+		scale,
+		REEL_HEIGHT * scale,
+		11 * scale
+	))
+
+	check(
+		string.format("%s: reel bar fits on screen", viewport.name),
+		REEL_HEIGHT * scale <= viewport.y and REEL_WIDTH * scale <= viewport.x,
+		string.format("%.0fpx tall in a %dpx viewport at %.2fx", REEL_HEIGHT * scale, viewport.y, scale)
+	)
+	check(
+		string.format("%s: panel fits on screen", viewport.name),
+		PANEL_HEIGHT * scale <= viewport.y and PANEL_WIDTH * scale <= viewport.x,
+		string.format("%.0fx%.0f in %dx%d at %.2fx", PANEL_WIDTH * scale, PANEL_HEIGHT * scale, viewport.x, viewport.y, scale)
+	)
+	check(
+		string.format("%s: scale stays in bounds", viewport.name),
+		scale >= 0.5 and scale <= 1.4,
+		string.format("%.3f", scale)
+	)
+	-- Text must not end up microscopic: the smallest label is 11px.
+	check(
+		string.format("%s: smallest label stays above 7px", viewport.name),
+		11 * scale >= 7,
+		string.format("%.1fpx", 11 * scale)
+	)
+end
+
+check("a touch device never scales smaller than the same viewport on desktop", (function()
+	for _, viewport in VIEWPORTS do
+		if GameConfig.HudScale(viewport.x, viewport.y, true) < GameConfig.HudScale(viewport.x, viewport.y, false) then
+			return false
+		end
+	end
+	return true
+end)())
+
+check(
+	"a degenerate viewport falls back to 1x rather than dividing by zero",
+	GameConfig.HudScale(0, 0, false) == 1
+)
+
+check(
+	"a bigger screen never scales the HUD smaller",
+	GameConfig.HudScale(1920, 1080, false) >= GameConfig.HudScale(1280, 720, false)
+)
+
 print("== economy simulation ==")
 
 -- Average coins per cast in each zone with the rod a player would plausibly

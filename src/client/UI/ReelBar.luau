@@ -14,6 +14,7 @@ local GameConfig = require(Shared.Config.GameConfig)
 
 local Theme = require(script.Parent.Theme)
 local Widgets = require(script.Parent.Widgets)
+local HudScale = require(script.Parent.HudScale)
 
 local ReelBar = {}
 ReelBar.__index = ReelBar
@@ -83,6 +84,7 @@ function ReelBar:BuildUi(parent: ScreenGui)
 		strokeThickness = 1.8,
 		zIndex = 10,
 	})
+	HudScale.Attach(root)
 	self.root = root
 	Widgets.PopIn(root, 0.88)
 

@@ -12,6 +12,7 @@ local Format = require(Shared.Util.Format)
 
 local Theme = require(script.Parent.Theme)
 local Widgets = require(script.Parent.Widgets)
+local HudScale = require(script.Parent.HudScale)
 
 local Panels = {}
 Panels.__index = Panels
@@ -48,6 +49,7 @@ function Panels:Build(screenGui: ScreenGui)
 		visible = false,
 		zIndex = 15,
 	})
+	HudScale.Attach(root)
 	self.root = root
 
 	self.title = Widgets.Text({

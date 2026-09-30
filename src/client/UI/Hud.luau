@@ -11,6 +11,7 @@ local Format = require(Shared.Util.Format)
 
 local Theme = require(script.Parent.Theme)
 local Widgets = require(script.Parent.Widgets)
+local HudScale = require(script.Parent.HudScale)
 
 local Hud = {}
 Hud.__index = Hud
@@ -63,6 +64,7 @@ function Hud:BuildHeader()
 		position = UDim2.fromOffset(18, 18),
 		tint = Theme.Accent,
 	})
+	HudScale.Attach(header)
 	Widgets.Padding(header, 14)
 
 	-- Coin readout.
@@ -152,6 +154,7 @@ function Hud:BuildPanelButtons()
 		position = UDim2.fromOffset(18, 136),
 		transparency = 1,
 	})
+	HudScale.Attach(holder)
 	Widgets.List(holder, 7)
 
 	for order, entry in PANEL_BUTTONS do
@@ -193,6 +196,7 @@ function Hud:BuildPrompt()
 		align = Enum.TextXAlignment.Center,
 	})
 
+	HudScale.Attach(prompt)
 	self.prompt = prompt
 end
 
@@ -217,6 +221,7 @@ function Hud:BuildNotifications()
 	local layout = Widgets.List(holder, 7)
 	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
+	HudScale.Attach(holder)
 	self.notifyHolder = holder
 end
 
@@ -273,6 +278,7 @@ function Hud:BuildFeed()
 
 	local layout = Widgets.List(holder, 5)
 	layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+	HudScale.Attach(holder)
 	self.feedLayout = layout
 	self.feedHolder = holder
 end
@@ -346,6 +352,7 @@ function Hud:ShowCatch(result)
 		strokeThickness = 2,
 		zIndex = 30,
 	})
+	HudScale.Attach(card)
 	Widgets.Padding(card, 14)
 	self.catchCard = card
 

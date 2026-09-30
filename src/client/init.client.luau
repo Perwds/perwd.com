@@ -8,6 +8,7 @@ local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local Net = require(Shared.Net)
 local Zones = require(Shared.Config.Zones)
 
+local HudScale = require(script.UI.HudScale)
 local Hud = require(script.UI.Hud)
 local Panels = require(script.UI.Panels)
 local Atmosphere = require(script.Effects.Atmosphere)
@@ -24,6 +25,7 @@ screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
 Atmosphere.Start()
+HudScale.Start()
 
 local hud = Hud.new(screenGui)
 

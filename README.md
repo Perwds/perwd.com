@@ -122,6 +122,27 @@ strokes, rarity-tinted panels, glow on the numbers that matter, and a catch card
 that reacts to the tier it is showing. The reel bar tightens and glows when you
 are on the fish and loosens when you are losing it.
 
+The interface is authored in fixed pixels against 1280x720 and then scaled per
+viewport by `GameConfig.HudScale`, because most Roblox players are on a phone.
+Scaling down proportionally would leave 11px labels unreadable on a dense
+screen, so small viewports stay near the authored size and touch devices get a
+deliberate bump — then the result is capped so the reel bar and the panel, the
+two largest fixed elements, always fit. `HudScale` is attached per panel rather
+than to one full-screen container: a `UIScale` scales the object it sits on, so
+one wrapper would shrink the wrapper and pull edge-anchored panels off the
+screen edges.
+
+| Viewport | HUD | Reel bar | Smallest label |
+| --- | --- | --- | --- |
+| 1920x1080 | 1.20x | 466px | 13.2px |
+| 1280x720 | 1.00x | 388px | 11.0px |
+| 1180x820 touch | 1.15x | 447px | 12.7px |
+| 896x414 touch | 0.85x | 329px | 9.3px |
+| 667x375 touch | 0.76x | 296px | 8.4px |
+
+That table is printed by the test suite, which asserts both large elements fit
+and no label drops below 7px on every viewport listed.
+
 ### Seeing it without Studio
 
 `preview/` is a browser reproduction of the HUD, reel minigame and catch cards at
@@ -132,6 +153,10 @@ maths and coin values on it are the real ones:
 ```bash
 python3 scripts/build_preview.py      # -> preview/index.html
 ```
+
+Its screen picker runs the same `HudScale` maths as the game, so choosing a
+phone shows what a phone actually gets; a test asserts the two implementations
+agree on every viewport.
 
 It is an approximation of the scene, not a render of it — the game itself uses
 terrain water, Future lighting and real post-processing, which a canvas can
@@ -190,11 +215,12 @@ The shared modules are free of Roblox services, so they run under the plain
 python3 tests/run_tests.py --luau /path/to/luau
 ```
 
-172 assertions covering the roster, that each zone's effective odds sum to
+205 assertions covering the roster, that each zone's effective odds sum to
 exactly 1, that luck moves the tail the right way, a 300,000-sample check that
 the empirical roll distribution matches the published odds, number formatting,
 the level curve, the reel-timing anti-cheat margin, completeness of every zone's
-visual profile, and a 40,000-sample economy simulation asserting every zone
-out-earns the last and no unlock is a wall.
+visual profile, HUD scaling across seven real device viewports, and a
+40,000-sample economy simulation asserting every zone out-earns the last and no
+unlock is a wall.
 
 The balance table in this README is printed by that simulation.
