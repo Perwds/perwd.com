@@ -1,0 +1,65 @@
+{
+  "name": "StealAPet",
+  "globIgnorePaths": ["**/.DS_Store"],
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared": { "$path": "src/shared" }
+    },
+
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Server": { "$path": "src/server" }
+    },
+
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$properties": {
+        "CharacterWalkSpeed": 24,
+        "CharacterJumpPower": 52,
+        "EnableMouseLockOption": false
+      },
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "Client": { "$path": "src/client" }
+      }
+    },
+
+    "Workspace": {
+      "$className": "Workspace",
+      "$properties": {
+        "Gravity": 196.2,
+        "FilteringEnabled": true,
+        "StreamingEnabled": false
+      }
+    },
+
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "Ambient": [70, 70, 80],
+        "OutdoorAmbient": [128, 128, 140],
+        "Brightness": 2.5,
+        "ClockTime": 14,
+        "GeographicLatitude": 12,
+        "EnvironmentDiffuseScale": 0.6,
+        "EnvironmentSpecularScale": 0.4
+      }
+    },
+
+    "SoundService": {
+      "$className": "SoundService",
+      "$properties": { "RespectFilteringEnabled": true }
+    },
+
+    "Players": {
+      "$className": "Players",
+      "$properties": {
+        "CharacterAutoLoads": true,
+        "RespawnTime": 3
+      }
+    }
+  }
+}
