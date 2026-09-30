@@ -43,14 +43,27 @@ local function part(props: { [string]: any }, parent: Instance): Part
 	return p
 end
 
-local function billboard(adornee: BasePart, text: string, subtext: string?, color: Color3?)
+--[[
+	`maxDistance` matters more than it looks: twelve plots of six labels each
+	all drawing at once turns the base area into unreadable soup. Keep local
+	props short-range and save the long distances for landmarks.
+]]
+local function billboard(
+	adornee: BasePart,
+	text: string,
+	subtext: string?,
+	color: Color3?,
+	maxDistance: number?
+)
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "Label"
 	gui.Adornee = adornee
-	gui.Size = UDim2.fromScale(11, 3.4)
-	gui.StudsOffsetWorldSpace = Vector3.new(0, adornee.Size.Y / 2 + 3, 0)
+	gui.Size = UDim2.fromScale(14, 4.2)
+	gui.StudsOffsetWorldSpace = Vector3.new(0, adornee.Size.Y / 2 + 3.5, 0)
 	gui.AlwaysOnTop = false
-	gui.MaxDistance = 220
+	gui.LightInfluence = 0
+	gui.ClipsDescendants = false
+	gui.MaxDistance = maxDistance or 120
 	gui.Parent = adornee
 
 	local title = Instance.new("TextLabel")
@@ -160,7 +173,7 @@ local function buildZone(world: string): Folder
 		Transparency = 0.25,
 	}, folder)
 	shop:SetAttribute("World", world)
-	billboard(shop, `{info.display} Egg`, `{Format.abbreviate(info.eggCost)} cash`, Color3.fromRGB(150, 255, 170))
+	billboard(shop, `{info.display} Egg`, `{Format.abbreviate(info.eggCost)} cash`, Color3.fromRGB(150, 255, 170), 150)
 
 	-- Zone gate on the -X edge, unlocked with cash.
 	if info.unlockCost > 0 then
@@ -174,7 +187,7 @@ local function buildZone(world: string): Folder
 			CanCollide = true,
 		}, folder)
 		gate:SetAttribute("World", world)
-		billboard(gate, info.display, `Unlock: {Format.abbreviate(info.unlockCost)}`, Color3.fromRGB(255, 225, 120))
+		billboard(gate, info.display, `Unlock: {Format.abbreviate(info.unlockCost)}`, Color3.fromRGB(255, 225, 120), 260)
 	end
 
 	-- Bridge to the previous zone.
@@ -220,7 +233,7 @@ local function buildPlot(index: number): Folder
 		Position = origin + Vector3.new(0, 8, PLOT_SIZE.Z / 2 - 1),
 		Color = Color3.fromRGB(60, 62, 78),
 	}, folder)
-	billboard(sign, "Empty Plot", "Walk in to claim", Color3.fromRGB(200, 205, 220))
+	billboard(sign, "Empty Plot", "Walk in to claim", Color3.fromRGB(200, 205, 220), 120)
 
 	-- Hatch pads.
 	local pads = Instance.new("Folder")
@@ -240,7 +253,7 @@ local function buildPlot(index: number): Folder
 		pad.Name = `Pad{i}`
 		pad:SetAttribute("PadIndex", i)
 		pad.Parent = pads
-		billboard(pad, "Empty", "Carry an egg here", Color3.fromRGB(190, 195, 215))
+		billboard(pad, "Empty", "Carry an egg here", Color3.fromRGB(190, 195, 215), 70)
 	end
 
 	-- Sell stand.
@@ -252,7 +265,7 @@ local function buildPlot(index: number): Folder
 		Material = Enum.Material.Neon,
 		Transparency = 0.2,
 	}, folder)
-	billboard(sell, "SELL", "Unequipped pets", Color3.fromRGB(255, 120, 120))
+	billboard(sell, "SELL", "Unequipped pets", Color3.fromRGB(255, 120, 120), 80)
 
 	local canopy = part({
 		Name = "Canopy",
@@ -277,7 +290,7 @@ local function buildPlot(index: number): Folder
 		Color = Color3.fromRGB(120, 220, 255),
 		Material = Enum.Material.Neon,
 	}, folder)
-	billboard(fuse, "Fuse Machine", `0/{Balance.Fuse.INPUT_COUNT}`, Color3.fromRGB(150, 220, 255))
+	billboard(fuse, "Fuse Machine", `0/{Balance.Fuse.INPUT_COUNT}`, Color3.fromRGB(150, 220, 255), 80)
 
 	-- Spawn point so a claimed plot is where you respawn.
 	local spawnPad = Instance.new("SpawnLocation")

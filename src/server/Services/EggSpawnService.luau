@@ -76,7 +76,9 @@ function EggSpawnService.createEgg(world: string, tier, cframe: CFrame): Model
 	model.Parent = MapBuilder.getRoot().Eggs
 
 	local shell = model.PrimaryPart :: BasePart
-	MapBuilder.billboard(shell, tier.name, worldInfo.display, Rarity.get(tier.rarity).glow)
+	-- Long range on purpose: spotting a Golden egg land across the zone is
+	-- what starts the race for it.
+	MapBuilder.billboard(shell, tier.name, worldInfo.display, Rarity.get(tier.rarity).glow, 200)
 
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.Name = "GrabPrompt"

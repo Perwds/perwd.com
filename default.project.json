@@ -1,19 +1,22 @@
 {
   "name": "StealAPet",
-  "globIgnorePaths": ["**/.DS_Store"],
+  "globIgnorePaths": [
+    "**/.DS_Store"
+  ],
   "tree": {
     "$className": "DataModel",
-
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
-      "Shared": { "$path": "src/shared" }
+      "Shared": {
+        "$path": "src/shared"
+      }
     },
-
     "ServerScriptService": {
       "$className": "ServerScriptService",
-      "Server": { "$path": "src/server" }
+      "Server": {
+        "$path": "src/server"
+      }
     },
-
     "StarterPlayer": {
       "$className": "StarterPlayer",
       "$properties": {
@@ -23,10 +26,11 @@
       },
       "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
-        "Client": { "$path": "src/client" }
+        "Client": {
+          "$path": "src/client"
+        }
       }
     },
-
     "Workspace": {
       "$className": "Workspace",
       "$properties": {
@@ -34,25 +38,53 @@
         "StreamingEnabled": false
       }
     },
-
     "Lighting": {
       "$className": "Lighting",
       "$properties": {
-        "Ambient": [70, 70, 80],
-        "OutdoorAmbient": [128, 128, 140],
-        "Brightness": 2.5,
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "OutdoorAmbient": [
+          0.412,
+          0.412,
+          0.463
+        ],
+        "Brightness": 2,
         "ClockTime": 14,
         "GeographicLatitude": 12,
-        "EnvironmentDiffuseScale": 0.6,
-        "EnvironmentSpecularScale": 0.4
+        "EnvironmentDiffuseScale": 0.4,
+        "EnvironmentSpecularScale": 0.2,
+        "ExposureCompensation": 0,
+        "Technology": "ShadowMap"
+      },
+      "Atmosphere": {
+        "$className": "Atmosphere",
+        "$properties": {
+          "Density": 0.32,
+          "Offset": 0.2,
+          "Color": [
+            0.78,
+            0.81,
+            0.86
+          ],
+          "Decay": [
+            0.42,
+            0.45,
+            0.51
+          ],
+          "Glare": 0,
+          "Haze": 1.2
+        }
       }
     },
-
     "SoundService": {
       "$className": "SoundService",
-      "$properties": { "RespectFilteringEnabled": true }
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
     },
-
     "Players": {
       "$className": "Players",
       "$properties": {

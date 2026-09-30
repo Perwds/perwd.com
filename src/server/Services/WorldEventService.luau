@@ -61,10 +61,11 @@ local function setPhase(isNight: boolean)
 	state.phaseEndsAt = os.time() + (isNight and Balance.Events.NIGHT_LENGTH or Balance.Events.DAY_LENGTH)
 	recomputeLuck()
 
+	-- Keep these in step with the Lighting block in default.project.json.
 	TweenService:Create(Lighting, TweenInfo.new(6), {
 		ClockTime = isNight and 0 or 14,
-		Brightness = isNight and 1 or 2.5,
-		OutdoorAmbient = isNight and Color3.fromRGB(50, 52, 78) or Color3.fromRGB(128, 128, 140),
+		Brightness = isNight and 0.8 or 2,
+		OutdoorAmbient = isNight and Color3.fromRGB(44, 46, 70) or Color3.fromRGB(105, 105, 118),
 	}):Play()
 
 	for _, player in Players:GetPlayers() do
@@ -98,7 +99,7 @@ local function dropPotion()
 	bottle.CanCollide = false
 	bottle.Parent = root.Effects
 
-	MapBuilder.billboard(bottle, "Luck Potion", "Grab it!", Color3.fromRGB(180, 255, 180))
+	MapBuilder.billboard(bottle, "Luck Potion", "Grab it!", Color3.fromRGB(180, 255, 180), 220)
 
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Drink"
