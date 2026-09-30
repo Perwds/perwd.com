@@ -36,28 +36,28 @@ function Panels.new(screenGui: ScreenGui, callbacks)
 end
 
 function Panels:Build(screenGui: ScreenGui)
-	local root = Widgets.Frame({
+	local root = Widgets.Glass({
 		parent = screenGui,
 		name = "Panel",
-		size = UDim2.fromOffset(560, 430),
+		size = UDim2.fromOffset(576, 442),
 		position = UDim2.fromScale(0.5, 0.5),
 		anchor = Vector2.new(0.5, 0.5),
-		color = Theme.Background,
-		transparency = 0.06,
+		tint = Theme.Accent,
+		strokeThickness = 1.8,
+		transparency = 0.02,
 		visible = false,
+		zIndex = 15,
 	})
-	Widgets.Corner(root)
-	Widgets.Stroke(root)
 	self.root = root
 
 	self.title = Widgets.Text({
 		parent = root,
 		name = "Title",
 		text = "",
-		font = Theme.FontBold,
-		textSize = 18,
+		font = Theme.FontBlack,
+		textSize = 19,
 		size = UDim2.new(1, -80, 0, 30),
-		position = UDim2.fromOffset(18, 14),
+		position = UDim2.fromOffset(20, 16),
 	})
 
 	Widgets.Button({
@@ -100,16 +100,17 @@ end
 
 -- Row helpers -------------------------------------------------------------------
 
-function Panels:Row(order: number, height: number?)
-	local row = Widgets.Frame({
+function Panels:Row(order: number, height: number?, tint: Color3?)
+	local row = Widgets.Glass({
 		parent = self.body,
 		name = "Row",
-		size = UDim2.new(1, -6, 0, height or 44),
-		color = Theme.Panel,
+		size = UDim2.new(1, -8, 0, height or 44),
+		corner = Theme.CornerSmall,
+		tint = tint,
+		transparency = tint and 0.1 or 0.16,
 		order = order,
 	})
-	Widgets.Corner(row, Theme.CornerSmall)
-	Widgets.Padding(row, 10)
+	Widgets.Padding(row, 10, 12)
 	return row
 end
 
@@ -160,7 +161,7 @@ function Panels:RenderBag()
 		local mutation = Mutations.Get(entry.mutation)
 		local color = entry.mutation ~= "None" and mutation.color or tier.color
 
-		local row = self:Row(order)
+		local row = self:Row(order, 44, color)
 
 		Widgets.Text({
 			parent = row,
@@ -225,7 +226,7 @@ function Panels:RenderRods()
 	self.subtitle.Text = "Better rods mean better luck and an easier reel."
 
 	for order, rod in profile.rods do
-		local row = self:Row(order, 48)
+		local row = self:Row(order, 48, rod.equipped and Theme.Good or nil)
 
 		Widgets.Text({
 			parent = row,
@@ -303,7 +304,7 @@ function Panels:RenderZones()
 	)
 
 	for order, zone in profile.zones do
-		local row = self:Row(order, 54)
+		local row = self:Row(order, 54, zone.current and Theme.Good or nil)
 
 		Widgets.Text({
 			parent = row,
@@ -390,11 +391,11 @@ function Panels:RenderIndex()
 		order += 1
 		Widgets.Text({
 			parent = self.body,
-			text = zone.name,
-			font = Theme.FontBold,
-			textSize = 13,
-			color = Theme.TextDim,
-			size = UDim2.new(1, 0, 0, 20),
+			text = string.upper(zone.name),
+			font = Theme.FontBlack,
+			textSize = 12,
+			color = Theme.TextFaint,
+			size = UDim2.new(1, 0, 0, 22),
 			order = order,
 		})
 
@@ -406,7 +407,7 @@ function Panels:RenderIndex()
 			order += 1
 			local found = profile.index[record.id]
 			local tier = Rarities.Get(record.rarity)
-			local row = self:Row(order, 38)
+			local row = self:Row(order, 38, found and tier.color or nil)
 
 			Widgets.Text({
 				parent = row,
@@ -460,11 +461,11 @@ function Panels:RenderBoard()
 		order += 1
 		Widgets.Text({
 			parent = self.body,
-			text = board.title,
-			font = Theme.FontBold,
-			textSize = 13,
-			color = Theme.TextDim,
-			size = UDim2.new(1, 0, 0, 20),
+			text = string.upper(board.title),
+			font = Theme.FontBlack,
+			textSize = 12,
+			color = Theme.TextFaint,
+			size = UDim2.new(1, 0, 0, 22),
 			order = order,
 		})
 
@@ -535,6 +536,7 @@ function Panels:Open(id: string)
 
 	self.current = id
 	self.root.Visible = true
+	Widgets.PopIn(self.root, 0.9)
 	self:Refresh()
 end
 

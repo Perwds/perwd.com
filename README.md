@@ -88,24 +88,79 @@ abyss -> rift      ~12,634 catches
 
 ---
 
+## Graphics
+
+Everything is built at runtime from config; no uploaded meshes, textures or
+image assets, so the whole look lives in source.
+
+**World.** Six islands sculpted out of real Roblox terrain — genuine terrain
+water (refractive, animated, raycastable), organic coastlines built from
+overlapping fills rather than cylinders, plank piers with pilings, railings and
+lit lanterns, and per-zone dressing: trees, boulders, ice spikes, obsidian,
+coral fans, and floating crystal shards in the Rift.
+
+**Lighting.** The place runs `Future` lighting for real shadows and light
+bleeding. Each zone then drives its own full stack, tweened on arrival:
+`Atmosphere` density and haze, `Clouds` cover, bloom, sun rays, colour grading,
+depth of field, clock time, exposure, and Terrain water colour, transparency,
+reflectance and wave settings.
+
+All of it is written client-side. Lighting and Terrain property writes are local
+to a client, which is what lets two players standing in different zones each see
+their own world — so the Abyss can be near-black with a 34-stud focus distance
+while someone else is in bright tropical shallows.
+
+**Feel.** A rod you actually hold, coloured by the one you have equipped, with a
+sagging `Beam` fishing line that snaps taut when a fish bites. Splashes,
+spreading ripples, a bobber that twitches on the hook. Catch effects scale with
+how rare the catch was: a Common is a small plink, a Secret gets a particle
+burst, a shaft of light, a screen flash, a colour-graded punch and an FOV kick.
+Per-zone ambient particles — pollen, snow, embers, drifting motes, rift sparks.
+
+**Interface.** Glass surfaces with vertical gradients and graded hairline
+strokes, rarity-tinted panels, glow on the numbers that matter, and a catch card
+that reacts to the tier it is showing. The reel bar tightens and glows when you
+are on the fish and loosens when you are losing it.
+
+### Seeing it without Studio
+
+`preview/` is a browser reproduction of the HUD, reel minigame and catch cards at
+the exact pixel sizes the Luau builds them, with a canvas approximation of each
+zone's grading. It is generated from the game's own config, so the odds, luck
+maths and coin values on it are the real ones:
+
+```bash
+python3 scripts/build_preview.py      # -> preview/index.html
+```
+
+It is an approximation of the scene, not a render of it — the game itself uses
+terrain water, Future lighting and real post-processing, which a canvas can
+suggest but not match.
+
+---
+
 ## Layout
 
 ```
 src/shared/          replicated to both sides
-  Config/            all game data: fish, rarities, mutations, rods, zones, tuning
+  Config/            all game data: fish, rarities, mutations, rods, zones,
+                     per-zone visuals, tuning
   Util/              formatting and weighted rolling
   CatchRoll.luau     the catch roll, kept pure so tests can drive it
   Net.luau           remote definitions; built by the server, awaited by the client
 
 src/server/
   Services/          data, fishing, economy, leaderboards, profile view
-  World/MapBuilder   builds all six zones from the zone config
+  World/             terrain sculpting, props, the holdable rod
 
 src/client/
   UI/                theme, widgets, HUD, reel minigame, panels
-  Controllers/       casting input and the bobber
+  Effects/           lighting and post-processing, tackle, catch effects
+  Controllers/       casting input
 
 tests/               runs the shared modules outside Roblox
+preview/             browser reproduction of the UI, generated from the config
+scripts/             config export, preview build, Open Cloud publish
 ```
 
 ### How a catch works
@@ -135,10 +190,11 @@ The shared modules are free of Roblox services, so they run under the plain
 python3 tests/run_tests.py --luau /path/to/luau
 ```
 
-57 assertions covering the roster, that each zone's effective odds sum to
+172 assertions covering the roster, that each zone's effective odds sum to
 exactly 1, that luck moves the tail the right way, a 300,000-sample check that
 the empirical roll distribution matches the published odds, number formatting,
-the level curve, the reel-timing anti-cheat margin, and a 40,000-sample economy
-simulation asserting every zone out-earns the last and no unlock is a wall.
+the level curve, the reel-timing anti-cheat margin, completeness of every zone's
+visual profile, and a 40,000-sample economy simulation asserting every zone
+out-earns the last and no unlock is a wall.
 
 The balance table in this README is printed by that simulation.

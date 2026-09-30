@@ -1,0 +1,1387 @@
+<title>Fishing RNG Preview</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* Layout: a composited 1280x720 game screen on top, then the same HUD parts
+     at native size for detail, then the two rarity ladders as data.
+     Deliberately single-theme dark: it reproduces a dark game HUD, and a light
+     page would misrepresent every colour in it. */
+  :root {
+    color-scheme: dark;
+
+    /* Mirrors src/client/UI/Theme.luau exactly. */
+    --bg: rgb(10 12 18);
+    --panel: rgb(19 23 32);
+    --panel-raised: rgb(28 33 45);
+    --glass-top: rgb(42 50 68);
+    --glass-bottom: rgb(12 15 22);
+    --stroke-top: rgb(104 118 148);
+    --stroke-bottom: rgb(32 38 52);
+    --fg: rgb(238 242 250);
+    --fg-dim: rgb(140 151 172);
+    --fg-faint: rgb(94 103 122);
+    --accent: rgb(86 168 255);
+    --good: rgb(88 216 140);
+    --warn: rgb(255 186 76);
+    --bad: rgb(255 96 108);
+    --coin: rgb(255 202 84);
+
+    /* Page chrome, a shade cooler than the HUD so the HUD reads as the subject. */
+    --page: rgb(7 8 12);
+    --page-raised: rgb(14 16 23);
+    --rule: rgb(30 35 48);
+
+    --display: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --hud-w: 1280;
+    --hud-h: 720;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--fg);
+    font-family: var(--display);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 28px 64px;
+  }
+
+  /* ---------- page header ---------- */
+
+  header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+
+  h1 {
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h1 .sub { color: var(--accent); }
+
+  .lede { margin: 0; max-width: 62ch; color: var(--fg-dim); font-size: 14px; line-height: 1.6; }
+
+  /* ---------- controls ---------- */
+
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 18px 0 12px; }
+
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .chip {
+    font: 600 11px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    background: var(--page-raised);
+    border: 1px solid var(--rule);
+    border-radius: 7px;
+    padding: 8px 11px;
+    cursor: pointer;
+    transition: color .14s, border-color .14s, background .14s;
+  }
+  .chip:hover { color: var(--fg); border-color: var(--stroke-bottom); }
+  .chip[aria-pressed="true"] { color: var(--bg); background: var(--zone-accent, var(--accent)); border-color: transparent; }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .label { font: 600 10px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-faint); }
+
+  /* ---------- stage ---------- */
+
+  .stage-scroll { overflow-x: auto; overflow-y: hidden; border-radius: 16px; }
+
+  .stage {
+    position: relative;
+    min-width: 640px;
+    aspect-ratio: 16 / 9;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: #000;
+    cursor: crosshair;
+  }
+
+  .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* The HUD is authored at 1280x720 in Luau, so it is reproduced at those exact
+     pixel offsets and scaled as a whole. Nothing here re-guesses a size. */
+  .hud {
+    position: absolute;
+    top: 0; left: 0;
+    width: calc(var(--hud-w) * 1px);
+    height: calc(var(--hud-h) * 1px);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+  .hud * { pointer-events: auto; }
+
+  .stage-meta {
+    display: flex; flex-wrap: wrap; gap: 14px 22px;
+    margin-top: 10px;
+    font: 500 11px/1.5 var(--mono);
+    color: var(--fg-faint);
+  }
+  .stage-meta b { color: var(--fg-dim); font-weight: 600; }
+
+  /* ---------- HUD primitives (ports of Widgets.luau) ---------- */
+
+  .glass {
+    position: absolute;
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--glass-top), var(--glass-bottom));
+    border: 1.4px solid;
+    border-image: linear-gradient(180deg, var(--tint, var(--stroke-top)), var(--stroke-bottom)) 1;
+    /* border-image drops the radius, so the ring is drawn as a shadow instead. */
+    border: none;
+    box-shadow: inset 0 0 0 1.4px color-mix(in srgb, var(--tint, var(--stroke-top)) 70%, transparent),
+                inset 0 -40px 40px -40px rgb(0 0 0 / .5);
+  }
+  .glass::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--tint, var(--stroke-top)) 45%, transparent), transparent 55%);
+    opacity: .5; pointer-events: none;
+  }
+
+  .hud-text { position: absolute; font-family: var(--display); line-height: 1; white-space: nowrap; }
+
+  .bar { position: absolute; border-radius: 999px; background: rgb(10 12 18 / .75); overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; border-radius: 999px; transition: width .3s cubic-bezier(.22,1,.36,1); }
+
+  /* ---------- component gallery ---------- */
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+    align-items: start;
+    margin-top: 14px;
+  }
+
+  .slot {
+    background: var(--page-raised);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 16px;
+    min-width: 0;
+  }
+  .slot h3 { margin: 0 0 3px; font-size: 13px; font-weight: 700; letter-spacing: .01em; }
+  .slot p { margin: 0 0 14px; font: 400 11px/1.55 var(--mono); color: var(--fg-faint); }
+  .slot .mount { position: relative; display: flex; justify-content: center; }
+  .slot .mount > * { position: relative !important; top: auto !important; left: auto !important; }
+
+  /* ---------- ladders ---------- */
+
+  section { margin-top: 44px; }
+  h2 { font-size: 19px; font-weight: 900; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .note { margin: 0 0 16px; font: 400 12px/1.6 var(--mono); color: var(--fg-faint); max-width: 70ch; }
+
+  .tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+
+  .tbl-wrap { overflow-x: auto; background: var(--page-raised); border: 1px solid var(--rule); border-radius: 14px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  caption {
+    text-align: left; padding: 14px 16px 10px;
+    font: 700 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-faint);
+  }
+  th, td { padding: 8px 16px; text-align: right; font: 500 12px/1.35 var(--mono); white-space: nowrap; }
+  th { color: var(--fg-faint); font-weight: 600; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--rule); }
+  th:first-child, td:first-child { text-align: left; }
+  tbody tr + tr td { border-top: 1px solid rgb(30 35 48 / .55); }
+  td.tier { font-family: var(--display); font-weight: 700; font-size: 12px; }
+  td.dim { color: var(--fg-faint); }
+  .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 8px; vertical-align: 1px; }
+
+  .zone-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .zone-card {
+    background: var(--page-raised); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 13px 14px; min-width: 0;
+  }
+  .zone-card .swatches { display: flex; gap: 4px; margin-bottom: 10px; }
+  .zone-card .swatches i { flex: 1; height: 22px; border-radius: 4px; }
+  .zone-card h4 { margin: 0 0 2px; font-size: 13px; font-weight: 700; }
+  .zone-card dl { margin: 8px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font: 500 10.5px/1.4 var(--mono); }
+  .zone-card dt { color: var(--fg-faint); }
+  .zone-card dd { margin: 0; text-align: right; color: var(--fg-dim); }
+
+  footer { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--rule); font: 400 11.5px/1.7 var(--mono); color: var(--fg-faint); }
+  footer code { color: var(--fg-dim); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Fishing RNG <span class="sub">preview</span></h1>
+    <p class="lede">
+      The real HUD, reel minigame and catch cards, at the pixel sizes the Luau
+      builds them. The rarity rolls, luck maths and coin values come straight out
+      of <code>src/shared/Config</code>, so what you see here is what the game does.
+      Click the water to cast, then hold to reel.
+    </p>
+  </header>
+
+  <div class="controls">
+    <span class="label">Zone</span>
+    <div class="seg" id="zone-tabs"></div>
+  </div>
+  <div class="controls">
+    <span class="label">Rod</span>
+    <div class="seg" id="rod-tabs"></div>
+  </div>
+
+  <div class="stage-scroll">
+    <div class="stage" id="stage">
+      <canvas id="scene"></canvas>
+      <div class="hud" id="hud"></div>
+    </div>
+  </div>
+
+  <div class="stage-meta" id="stage-meta"></div>
+
+  <section>
+    <h2>The pieces up close</h2>
+    <p class="note">
+      Same builders as the stage above, rendered at native size. Use the tier
+      buttons to see the catch card at every rarity — the glow, the sweep and the
+      screen flash only switch on for the top tiers.
+    </p>
+
+    <div class="controls">
+      <span class="label">Card tier</span>
+      <div class="seg" id="tier-tabs"></div>
+    </div>
+
+    <div class="gallery">
+      <div class="slot">
+        <h3>Stat header</h3>
+        <p>coins · zone · level · luck · bag</p>
+        <div class="mount" id="mount-header"></div>
+      </div>
+      <div class="slot">
+        <h3>Catch card</h3>
+        <p>rarity-tinted, odds shown as rolled</p>
+        <div class="mount" id="mount-card"></div>
+      </div>
+      <div class="slot">
+        <h3>Reel minigame</h3>
+        <p>hold to push the bar, release to fall</p>
+        <div class="mount" id="mount-reel"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Zone grading</h2>
+    <p class="note">
+      Each zone drives its own water colour, atmosphere, cloud cover, bloom and
+      colour grade. Swatches are the actual values the client tweens to.
+    </p>
+    <div class="zone-cards" id="zone-cards"></div>
+  </section>
+
+  <section>
+    <h2>The two ladders</h2>
+    <p class="note">
+      Fish rarity and mutation roll independently, which is why a Glitched Minnow
+      beats most of the Abyss. "Effective" is the real chance once weights are
+      normalised across the tiers a zone can actually produce — the headline
+      1-in-N is the flavour number.
+    </p>
+    <div class="controls">
+      <button class="chip" id="sim-btn" aria-pressed="false">Roll 20,000 in this zone</button>
+      <span class="label" id="sim-status"></span>
+    </div>
+    <div class="tables">
+      <div class="tbl-wrap">
+        <table id="rarity-table"><caption>Fish rarity</caption></table>
+      </div>
+      <div class="tbl-wrap">
+        <table id="mutation-table"><caption>Mutation</caption></table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Generated from the repository by <code>scripts/build_preview.py</code>.
+    Colours mirror <code>src/client/UI/Theme.luau</code>; the scene approximates
+    the in-engine look — the game itself uses Roblox terrain water, Future
+    lighting and real post-processing, which a canvas can suggest but not match.
+  </footer>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Data, extracted from the Luau config at build time.
+// ---------------------------------------------------------------------------
+const DATA = {"Rarities":{"Order":["Common","Uncommon","Rare","Epic","Legendary","Mythic","Exotic","Secret"],"Data":{"Common":{"chance":2,"color":{"r":198,"g":205,"b":216},"valueMult":1,"luckExponent":0,"score":1},"Uncommon":{"chance":8,"color":{"r":116,"g":210,"b":124},"valueMult":2.2,"luckExponent":0.25,"score":5},"Rare":{"chance":40,"color":{"r":88,"g":158,"b":255},"valueMult":5.5,"luckExponent":0.45,"score":25},"Epic":{"chance":250,"color":{"r":172,"g":108,"b":255},"valueMult":16,"luckExponent":0.6,"score":150},"Legendary":{"chance":1500,"color":{"r":255,"g":176,"b":54},"valueMult":60,"luckExponent":0.75,"score":900},"Mythic":{"chance":12000,"color":{"r":255,"g":84,"b":110},"valueMult":240,"luckExponent":0.85,"score":7000},"Exotic":{"chance":100000,"color":{"r":80,"g":245,"b":230},"valueMult":1400,"luckExponent":0.95,"score":60000},"Secret":{"chance":1000000,"color":{"r":255,"g":255,"b":255},"valueMult":9000,"luckExponent":1,"score":600000}}},"Mutations":{"Order":["None","Shiny","Albino","Golden","Radioactive","Void","Celestial","Glitched"],"Data":{"None":{"chance":1,"valueMult":1,"scoreMult":1,"color":{"r":215,"g":220,"b":230},"prefix":"","luckExponent":0},"Shiny":{"chance":50,"valueMult":3,"scoreMult":2.5,"color":{"r":255,"g":236,"b":130},"prefix":"Shiny","luckExponent":0.3},"Albino":{"chance":200,"valueMult":6,"scoreMult":5,"color":{"r":246,"g":246,"b":250},"prefix":"Albino","luckExponent":0.4},"Golden":{"chance":1000,"valueMult":15,"scoreMult":12,"color":{"r":255,"g":190,"b":40},"prefix":"Golden","luckExponent":0.55},"Radioactive":{"chance":5000,"valueMult":45,"scoreMult":40,"color":{"r":140,"g":255,"b":70},"prefix":"Radioactive","luckExponent":0.7},"Void":{"chance":25000,"valueMult":150,"scoreMult":140,"color":{"r":120,"g":60,"b":220},"prefix":"Void","luckExponent":0.8},"Celestial":{"chance":250000,"valueMult":800,"scoreMult":900,"color":{"r":120,"g":230,"b":255},"prefix":"Celestial","luckExponent":0.9},"Glitched":{"chance":1000000,"valueMult":4000,"scoreMult":5000,"color":{"r":255,"g":60,"b":220},"prefix":"Glitched","luckExponent":1}}},"Rods":{"Order":["wooden","fiberglass","carbon","enchanted","abyssal","celestial","eventide"],"Data":{"wooden":{"name":"Wooden Rod","cost":0,"luck":1,"barSize":0.22,"fillRate":0.55,"drainRate":0.38,"fishSpeed":1,"biteSpeed":1,"color":{"r":146,"g":110,"b":68}},"fiberglass":{"name":"Fiberglass Rod","cost":750,"luck":1.15,"barSize":0.24,"fillRate":0.6,"drainRate":0.36,"fishSpeed":0.95,"biteSpeed":0.92,"color":{"r":120,"g":168,"b":196}},"carbon":{"name":"Carbon Rod","cost":12000,"luck":1.4,"barSize":0.26,"fillRate":0.65,"drainRate":0.34,"fishSpeed":0.9,"biteSpeed":0.85,"color":{"r":70,"g":74,"b":82}},"enchanted":{"name":"Enchanted Rod","cost":180000,"luck":1.9,"barSize":0.28,"fillRate":0.72,"drainRate":0.3,"fishSpeed":0.85,"biteSpeed":0.78,"color":{"r":150,"g":116,"b":224}},"abyssal":{"name":"Abyssal Rod","cost":2500000,"luck":2.8,"barSize":0.3,"fillRate":0.8,"drainRate":0.27,"fishSpeed":0.8,"biteSpeed":0.7,"color":{"r":48,"g":62,"b":118}},"celestial":{"name":"Celestial Rod","cost":30000000,"luck":4.2,"barSize":0.33,"fillRate":0.9,"drainRate":0.24,"fishSpeed":0.75,"biteSpeed":0.6,"color":{"r":186,"g":168,"b":255}},"eventide":{"name":"Eventide Rod","cost":150000000,"luck":7,"barSize":0.36,"fillRate":1,"drainRate":0.2,"fishSpeed":0.7,"biteSpeed":0.5,"color":{"r":255,"g":244,"b":196}}}},"Zones":{"Order":["pond","reef","frost","volcano","abyss","rift"],"Data":{"pond":{"name":"Starter Pond","blurb":"Still water, friendly fish, no surprises.","unlockCoins":0,"luckBonus":1,"biteRange":{"min":1.4,"max":4.2},"origin":{"x":0,"y":0,"z":0},"waterColor":{"r":58,"g":132,"b":168},"accentColor":{"r":126,"g":200,"b":120},"fogColor":{"r":176,"g":202,"b":216},"radius":90},"reef":{"name":"Coral Reef","blurb":"Warm shallows. The colours here are worth money.","unlockCoins":2500,"luckBonus":1.15,"biteRange":{"min":1.6,"max":4.8},"origin":{"x":520,"y":0,"z":-140},"waterColor":{"r":40,"g":186,"b":190},"accentColor":{"r":255,"g":142,"b":156},"fogColor":{"r":168,"g":226,"b":226},"radius":100},"frost":{"name":"Frostbite Lake","blurb":"Cut a hole, drop a line, hope something is still alive.","unlockCoins":25000,"luckBonus":1.35,"biteRange":{"min":2.2,"max":6},"origin":{"x":-480,"y":0,"z":-420},"waterColor":{"r":122,"g":190,"b":214},"accentColor":{"r":226,"g":244,"b":255},"fogColor":{"r":214,"g":232,"b":242},"radius":105},"volcano":{"name":"Volcanic Depths","blurb":"The water boils. Whatever lives in it is angry.","unlockCoins":150000,"luckBonus":1.7,"biteRange":{"min":2.4,"max":6.5},"origin":{"x":300,"y":0,"z":620},"waterColor":{"r":198,"g":78,"b":40},"accentColor":{"r":255,"g":122,"b":40},"fogColor":{"r":96,"g":52,"b":44},"radius":100},"abyss":{"name":"The Abyss","blurb":"No light reaches the bottom. Something down there has teeth.","unlockCoins":1500000,"luckBonus":2.4,"biteRange":{"min":3,"max":8},"origin":{"x":-700,"y":0,"z":480},"waterColor":{"r":18,"g":26,"b":54},"accentColor":{"r":76,"g":108,"b":220},"fogColor":{"r":12,"g":16,"b":32},"radius":115},"rift":{"name":"Celestial Rift","blurb":"Not water. Not really. It still takes bait.","unlockCoins":6000000,"luckBonus":3.5,"biteRange":{"min":3.5,"max":9},"origin":{"x":120,"y":0,"z":-860},"waterColor":{"r":96,"g":68,"b":200},"accentColor":{"r":180,"g":160,"b":255},"fogColor":{"r":48,"g":32,"b":96},"radius":120}}},"Visuals":{"Data":{"pond":{"ground":"Grass","shore":"Sand","underwater":"Mud","prop":"Wood","propColor":{"r":96,"g":128,"b":72},"water":{"color":{"r":28,"g":104,"b":130},"transparency":0.62,"reflectance":0.28,"waveSize":0.11,"waveSpeed":7},"lighting":{"clockTime":14.4,"brightness":2.4,"exposure":0,"ambient":{"r":58,"g":64,"b":74},"outdoorAmbient":{"r":122,"g":134,"b":152},"shadowSoftness":0.22},"atmosphere":{"density":0.32,"offset":0.1,"color":{"r":202,"g":216,"b":226},"decay":{"r":122,"g":140,"b":158},"glare":0.2,"haze":1.1},"clouds":{"cover":0.52,"density":0.55,"color":{"r":240,"g":246,"b":252}},"bloom":{"intensity":0.55,"size":22,"threshold":1.05},"sunRays":{"intensity":0.1,"spread":0.9},"correction":{"brightness":0.015,"contrast":0.07,"saturation":0.1,"tint":{"r":255,"g":252,"b":244}},"dof":{"far":0.08,"focus":90,"radius":60,"near":0},"ambient":{"kind":"pollen","color":{"r":255,"g":244,"b":200},"rate":14}},"reef":{"ground":"Sand","shore":"Sand","underwater":"Sand","prop":"Sandstone","propColor":{"r":255,"g":152,"b":162},"water":{"color":{"r":16,"g":180,"b":186},"transparency":0.74,"reflectance":0.34,"waveSize":0.14,"waveSpeed":9},"lighting":{"clockTime":13.2,"brightness":3,"exposure":0.08,"ambient":{"r":64,"g":76,"b":82},"outdoorAmbient":{"r":140,"g":168,"b":176},"shadowSoftness":0.18},"atmosphere":{"density":0.28,"offset":0.16,"color":{"r":216,"g":240,"b":240},"decay":{"r":128,"g":180,"b":186},"glare":0.45,"haze":1.3},"clouds":{"cover":0.36,"density":0.4,"color":{"r":255,"g":255,"b":255}},"bloom":{"intensity":0.85,"size":26,"threshold":0.95},"sunRays":{"intensity":0.2,"spread":1},"correction":{"brightness":0.03,"contrast":0.1,"saturation":0.26,"tint":{"r":246,"g":255,"b":255}},"dof":{"far":0.1,"focus":110,"radius":70,"near":0},"ambient":{"kind":"pollen","color":{"r":190,"g":255,"b":250},"rate":10}},"frost":{"ground":"Snow","shore":"Glacier","underwater":"Slate","prop":"Ice","propColor":{"r":222,"g":240,"b":252},"water":{"color":{"r":96,"g":150,"b":176},"transparency":0.5,"reflectance":0.42,"waveSize":0.05,"waveSpeed":4},"lighting":{"clockTime":9.4,"brightness":2,"exposure":0.05,"ambient":{"r":74,"g":82,"b":92},"outdoorAmbient":{"r":150,"g":166,"b":182},"shadowSoftness":0.5},"atmosphere":{"density":0.44,"offset":0.05,"color":{"r":226,"g":236,"b":246},"decay":{"r":150,"g":168,"b":190},"glare":0.1,"haze":2.4},"clouds":{"cover":0.86,"density":0.72,"color":{"r":228,"g":236,"b":246}},"bloom":{"intensity":0.7,"size":30,"threshold":1},"sunRays":{"intensity":0.06,"spread":0.7},"correction":{"brightness":0.02,"contrast":0.04,"saturation":-0.22,"tint":{"r":236,"g":246,"b":255}},"dof":{"far":0.16,"focus":70,"radius":45,"near":0},"ambient":{"kind":"snow","color":{"r":246,"g":252,"b":255},"rate":60}},"volcano":{"ground":"Basalt","shore":"CrackedLava","underwater":"Basalt","prop":"Rock","propColor":{"r":58,"g":48,"b":48},"water":{"color":{"r":150,"g":44,"b":18},"transparency":0.3,"reflectance":0.2,"waveSize":0.09,"waveSpeed":5},"lighting":{"clockTime":19.4,"brightness":1.5,"exposure":-0.05,"ambient":{"r":58,"g":34,"b":28},"outdoorAmbient":{"r":84,"g":48,"b":38},"shadowSoftness":0.35},"atmosphere":{"density":0.52,"offset":0.02,"color":{"r":150,"g":96,"b":74},"decay":{"r":96,"g":44,"b":30},"glare":0.6,"haze":3.2},"clouds":{"cover":0.94,"density":0.9,"color":{"r":90,"g":62,"b":58}},"bloom":{"intensity":1.5,"size":34,"threshold":0.82},"sunRays":{"intensity":0.3,"spread":1},"correction":{"brightness":-0.01,"contrast":0.2,"saturation":0.2,"tint":{"r":255,"g":226,"b":206}},"dof":{"far":0.24,"focus":55,"radius":35,"near":0},"ambient":{"kind":"embers","color":{"r":255,"g":142,"b":52},"rate":34}},"abyss":{"ground":"Rock","shore":"Slate","underwater":"Rock","prop":"Marble","propColor":{"r":44,"g":56,"b":96},"water":{"color":{"r":6,"g":14,"b":40},"transparency":0.18,"reflectance":0.12,"waveSize":0.04,"waveSpeed":3},"lighting":{"clockTime":0.6,"brightness":0.7,"exposure":0.22,"ambient":{"r":16,"g":22,"b":44},"outdoorAmbient":{"r":26,"g":34,"b":62},"shadowSoftness":0.85},"atmosphere":{"density":0.62,"offset":0,"color":{"r":38,"g":52,"b":96},"decay":{"r":10,"g":16,"b":36},"glare":0.05,"haze":5},"clouds":{"cover":1,"density":0.95,"color":{"r":20,"g":26,"b":48}},"bloom":{"intensity":1.9,"size":40,"threshold":0.6},"sunRays":{"intensity":0,"spread":0.4},"correction":{"brightness":0.04,"contrast":0.26,"saturation":-0.1,"tint":{"r":196,"g":214,"b":255}},"dof":{"far":0.5,"focus":34,"radius":20,"near":0.02},"ambient":{"kind":"motes","color":{"r":98,"g":150,"b":255},"rate":26}},"rift":{"ground":"Marble","shore":"Glacier","underwater":"Marble","prop":"Neon","propColor":{"r":176,"g":150,"b":255},"water":{"color":{"r":78,"g":46,"b":180},"transparency":0.46,"reflectance":0.6,"waveSize":0.08,"waveSpeed":6},"lighting":{"clockTime":2.4,"brightness":1.1,"exposure":0.2,"ambient":{"r":38,"g":28,"b":66},"outdoorAmbient":{"r":62,"g":48,"b":104},"shadowSoftness":0.6},"atmosphere":{"density":0.48,"offset":0.24,"color":{"r":128,"g":104,"b":220},"decay":{"r":52,"g":34,"b":104},"glare":1.2,"haze":3.6},"clouds":{"cover":0.7,"density":0.6,"color":{"r":150,"g":126,"b":226}},"bloom":{"intensity":2.2,"size":44,"threshold":0.55},"sunRays":{"intensity":0.36,"spread":1},"correction":{"brightness":0.05,"contrast":0.22,"saturation":0.3,"tint":{"r":226,"g":214,"b":255}},"dof":{"far":0.3,"focus":80,"radius":50,"near":0},"ambient":{"kind":"sparks","color":{"r":198,"g":172,"b":255},"rate":40}}},"AmbientStyles":{"pollen":{"lifetime":{"min":5,"max":9},"speed":{"min":0.4,"max":1.6},"size":0.22,"acceleration":{"x":0.6,"y":0.35,"z":0},"lightEmission":0.55,"spin":{"min":-20,"max":20},"transparency":0.45},"snow":{"lifetime":{"min":6,"max":10},"speed":{"min":0.5,"max":1.4},"size":0.32,"acceleration":{"x":2.2,"y":-7.5,"z":0.8},"lightEmission":0.35,"spin":{"min":-45,"max":45},"transparency":0.2},"embers":{"lifetime":{"min":3.2,"max":6},"speed":{"min":1.4,"max":3.6},"size":0.26,"acceleration":{"x":0.8,"y":5.5,"z":0},"lightEmission":1,"spin":{"min":-90,"max":90},"transparency":0.1},"motes":{"lifetime":{"min":7,"max":12},"speed":{"min":0.2,"max":0.9},"size":0.3,"acceleration":{"x":0,"y":0.4,"z":0},"lightEmission":0.9,"spin":{"min":-10,"max":10},"transparency":0.25},"sparks":{"lifetime":{"min":2.4,"max":5},"speed":{"min":2,"max":5},"size":0.22,"acceleration":{"x":0,"y":1.4,"z":0},"lightEmission":1,"spin":{"min":-180,"max":180},"transparency":0.05}}},"Fish":[{"id":"minnow","name":"Minnow","zone":"pond","rarity":"Common","value":4,"kg":[0.05,0.6],"color":[176,188,200]},{"id":"bluegill","name":"Bluegill","zone":"pond","rarity":"Common","value":6,"kg":[0.2,1.4],"color":[108,156,186]},{"id":"carp","name":"Common Carp","zone":"pond","rarity":"Common","value":7,"kg":[1,6],"color":[158,142,96]},{"id":"perch","name":"Yellow Perch","zone":"pond","rarity":"Uncommon","value":12,"kg":[0.3,2.2],"color":[206,176,74]},{"id":"bass","name":"Largemouth Bass","zone":"pond","rarity":"Uncommon","value":15,"kg":[1.2,7],"color":[104,148,92]},{"id":"pike","name":"Northern Pike","zone":"pond","rarity":"Rare","value":26,"kg":[3,16],"color":[92,132,82]},{"id":"golden_koi","name":"Golden Koi","zone":"pond","rarity":"Epic","value":48,"kg":[2,9],"color":[244,176,62]},{"id":"pond_leviathan","name":"Pond Leviathan","zone":"pond","rarity":"Legendary","value":110,"kg":[40,180],"color":[74,96,78]},{"id":"wishing_coin","name":"Wishing Coin","zone":"pond","rarity":"Mythic","value":260,"kg":[0.01,0.03],"color":[232,208,128]},{"id":"clownfish","name":"Clownfish","zone":"reef","rarity":"Common","value":9,"kg":[0.05,0.4],"color":[244,138,54]},{"id":"parrotfish","name":"Parrotfish","zone":"reef","rarity":"Common","value":11,"kg":[0.8,4],"color":[92,198,168]},{"id":"angelfish","name":"Emperor Angelfish","zone":"reef","rarity":"Uncommon","value":18,"kg":[0.4,2.6],"color":[240,210,88]},{"id":"lionfish","name":"Lionfish","zone":"reef","rarity":"Uncommon","value":21,"kg":[0.5,2],"color":[226,112,120]},{"id":"reef_shark","name":"Reef Shark","zone":"reef","rarity":"Rare","value":34,"kg":[20,70],"color":[132,146,158]},{"id":"manta_ray","name":"Manta Ray","zone":"reef","rarity":"Rare","value":38,"kg":[60,300],"color":[66,84,104]},{"id":"seahorse_king","name":"Seahorse King","zone":"reef","rarity":"Epic","value":62,"kg":[0.1,0.5],"color":[248,172,196]},{"id":"coral_crown","name":"Coral Crown","zone":"reef","rarity":"Legendary","value":140,"kg":[3,12],"color":[255,132,148]},{"id":"kraken_spawn","name":"Kraken Spawn","zone":"reef","rarity":"Mythic","value":300,"kg":[80,400],"color":[128,66,150]},{"id":"herring","name":"Frozen Herring","zone":"frost","rarity":"Common","value":12,"kg":[0.2,1],"color":[186,202,214]},{"id":"arctic_cod","name":"Arctic Cod","zone":"frost","rarity":"Common","value":14,"kg":[1,5],"color":[154,170,182]},{"id":"char","name":"Arctic Char","zone":"frost","rarity":"Uncommon","value":24,"kg":[1.5,8],"color":[218,132,116]},{"id":"ice_trout","name":"Ice Trout","zone":"frost","rarity":"Uncommon","value":27,"kg":[2,10],"color":[168,206,226]},{"id":"glacier_eel","name":"Glacier Eel","zone":"frost","rarity":"Rare","value":44,"kg":[6,24],"color":[132,178,198]},{"id":"frost_sturgeon","name":"Frost Sturgeon","zone":"frost","rarity":"Rare","value":47,"kg":[30,140],"color":[116,140,156]},{"id":"permafrost_pike","name":"Permafrost Pike","zone":"frost","rarity":"Epic","value":78,"kg":[12,48],"color":[190,222,238]},{"id":"wendigo_fin","name":"Wendigo Fin","zone":"frost","rarity":"Legendary","value":170,"kg":[20,90],"color":[226,238,246]},{"id":"heart_of_winter","name":"Heart of Winter","zone":"frost","rarity":"Mythic","value":340,"kg":[0.5,3],"color":[146,224,255]},{"id":"ember_minnow","name":"Ember Minnow","zone":"volcano","rarity":"Common","value":20,"kg":[0.1,0.8],"color":[240,132,60]},{"id":"ashfin","name":"Ashfin","zone":"volcano","rarity":"Common","value":22,"kg":[1,6],"color":[128,112,108]},{"id":"magma_crab","name":"Magma Crab","zone":"volcano","rarity":"Uncommon","value":34,"kg":[2,11],"color":[214,82,48]},{"id":"obsidian_eel","name":"Obsidian Eel","zone":"volcano","rarity":"Uncommon","value":38,"kg":[5,22],"color":[48,44,52]},{"id":"cinder_ray","name":"Cinder Ray","zone":"volcano","rarity":"Rare","value":58,"kg":[30,120],"color":[176,70,44]},{"id":"lava_sturgeon","name":"Lava Sturgeon","zone":"volcano","rarity":"Rare","value":62,"kg":[45,200],"color":[226,108,44]},{"id":"pyroclast","name":"Pyroclast","zone":"volcano","rarity":"Epic","value":100,"kg":[15,70],"color":[255,156,48]},{"id":"forge_serpent","name":"Forge Serpent","zone":"volcano","rarity":"Legendary","value":210,"kg":[90,420],"color":[255,108,40]},{"id":"phoenix_roe","name":"Phoenix Roe","zone":"volcano","rarity":"Mythic","value":420,"kg":[0.02,0.2],"color":[255,196,92]},{"id":"molten_core","name":"Molten Core","zone":"volcano","rarity":"Exotic","value":900,"kg":[5,30],"color":[255,232,120]},{"id":"lanternfish","name":"Lanternfish","zone":"abyss","rarity":"Common","value":30,"kg":[0.05,0.5],"color":[92,118,146]},{"id":"gulper_eel","name":"Gulper Eel","zone":"abyss","rarity":"Common","value":32,"kg":[2,9],"color":[54,60,82]},{"id":"anglerfish","name":"Anglerfish","zone":"abyss","rarity":"Uncommon","value":52,"kg":[3,16],"color":[70,82,108]},{"id":"viperfish","name":"Viperfish","zone":"abyss","rarity":"Uncommon","value":55,"kg":[1,6],"color":[86,96,128]},{"id":"bone_ray","name":"Bone Ray","zone":"abyss","rarity":"Rare","value":82,"kg":[40,180],"color":[206,204,190]},{"id":"hadal_squid","name":"Hadal Squid","zone":"abyss","rarity":"Rare","value":88,"kg":[25,140],"color":[128,90,160]},{"id":"pale_colossus","name":"Pale Colossus","zone":"abyss","rarity":"Epic","value":140,"kg":[200,900],"color":[222,220,226]},{"id":"trench_wyrm","name":"Trench Wyrm","zone":"abyss","rarity":"Legendary","value":290,"kg":[300,1400],"color":[62,74,132]},{"id":"the_unnamed","name":"The Unnamed","zone":"abyss","rarity":"Mythic","value":560,"kg":[500,2600],"color":[32,38,70]},{"id":"abyssal_eye","name":"Abyssal Eye","zone":"abyss","rarity":"Exotic","value":1200,"kg":[8,40],"color":[248,238,210]},{"id":"leviathan_prime","name":"Leviathan Prime","zone":"abyss","rarity":"Secret","value":3200,"kg":[2000,9000],"color":[24,200,196]},{"id":"starlet","name":"Starlet","zone":"rift","rarity":"Uncommon","value":80,"kg":[0.1,1],"color":[244,240,200]},{"id":"nebula_dart","name":"Nebula Dart","zone":"rift","rarity":"Rare","value":120,"kg":[1,8],"color":[186,140,244]},{"id":"quasar_ray","name":"Quasar Ray","zone":"rift","rarity":"Epic","value":200,"kg":[20,110],"color":[140,190,255]},{"id":"comet_serpent","name":"Comet Serpent","zone":"rift","rarity":"Legendary","value":400,"kg":[60,320],"color":[210,226,255]},{"id":"astral_whale","name":"Astral Whale","zone":"rift","rarity":"Mythic","value":780,"kg":[1200,6000],"color":[118,148,236]},{"id":"singularity","name":"Singularity","zone":"rift","rarity":"Exotic","value":1700,"kg":[0.001,0.01],"color":[30,26,44]},{"id":"god_of_still_water","name":"God of Still Water","zone":"rift","rarity":"Secret","value":5000,"kg":[8000,40000],"color":[255,252,236]}]};
+
+const RARITIES = DATA.Rarities.Data;
+const RARITY_ORDER = DATA.Rarities.Order;
+const MUTATIONS = DATA.Mutations.Data;
+const MUTATION_ORDER = DATA.Mutations.Order;
+const RODS = DATA.Rods.Data;
+const ROD_ORDER = DATA.Rods.Order;
+const ZONES = DATA.Zones.Data;
+const ZONE_ORDER = DATA.Zones.Order;
+const VISUALS = DATA.Visuals.Data;
+const AMBIENT_STYLES = DATA.Visuals.AmbientStyles;
+const FISH = DATA.Fish;
+
+// Tuning that lives in GameConfig / ReelBar rather than the data tables.
+const REEL = {
+  startProgress: 0.35,
+  pushAccel: 2.6,
+  fallAccel: -2.3,
+  damping: 0.88,
+  trackH: 320,
+  trackW: 54,
+};
+const WEIGHT_VALUE_SPREAD = 1.5;
+const LUCK_PER_LEVEL = 0.012;
+
+// Pools, mirroring Fish.luau's build step.
+const POOL = {}, TIERS = {};
+for (const fish of FISH) {
+  (POOL[fish.zone] ??= {});
+  (POOL[fish.zone][fish.rarity] ??= []).push(fish);
+  (TIERS[fish.zone] ??= {})[fish.rarity] = true;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+const css = (c) => `rgb(${Math.round(c.r)} ${Math.round(c.g)} ${Math.round(c.b)})`;
+const rgba = (c, a) => `rgb(${Math.round(c.r)} ${Math.round(c.g)} ${Math.round(c.b)} / ${a})`;
+const mix = (a, b, t) => ({ r: a.r + (b.r - a.r) * t, g: a.g + (b.g - a.g) * t, b: a.b + (b.b - a.b) * t });
+const scaleC = (c, k) => ({ r: Math.min(255, c.r * k), g: Math.min(255, c.g * k), b: Math.min(255, c.b * k) });
+const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+const lerp = (a, b, t) => a + (b - a) * t;
+
+const SUFFIX = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp"];
+function abbreviate(value) {
+  if (!Number.isFinite(value)) return "?";
+  const neg = value < 0;
+  value = Math.abs(value);
+  let i = 0;
+  while (value >= 1000 && i < SUFFIX.length - 1) { value /= 1000; i++; }
+  let text;
+  if (i === 0) text = String(Math.floor(value));
+  else if (value < 10) text = value.toFixed(2);
+  else if (value < 100) text = value.toFixed(1);
+  else text = value.toFixed(0);
+  if (text.includes(".")) text = text.replace(/0+$/, "").replace(/\.$/, "");
+  return (neg ? "-" : "") + text + SUFFIX[i];
+}
+const commas = (v) => Math.floor(Math.abs(v)).toLocaleString("en-US");
+function fmtWeight(kg) {
+  if (kg < 0.01) return `${(kg * 1000).toFixed(1)} g`;
+  if (kg < 1) return `${Math.round(kg * 1000)} g`;
+  if (kg < 100) return `${kg.toFixed(2)} kg`;
+  return `${abbreviate(kg)} kg`;
+}
+const fmtOdds = (n) => !Number.isFinite(n) ? "never" : n < 100 ? `1 in ${n.toFixed(1)}` : `1 in ${abbreviate(n)}`;
+
+// ---------------------------------------------------------------------------
+// Roll maths — a direct port of Rarities / Mutations / CatchRoll
+// ---------------------------------------------------------------------------
+const tierWeight = (name, luck) => (1 / RARITIES[name].chance) * Math.pow(Math.max(luck, 0.01), RARITIES[name].luckExponent);
+const mutWeight = (name, luck) => (1 / MUTATIONS[name].chance) * Math.pow(Math.max(luck, 0.01), MUTATIONS[name].luckExponent);
+
+function effectiveOdds(name, luck, available) {
+  let total = 0;
+  for (const tier of RARITY_ORDER) if (!available || available[tier]) total += tierWeight(tier, luck);
+  const own = tierWeight(name, luck);
+  return own <= 0 || total <= 0 ? Infinity : total / own;
+}
+function mutationOdds(name, luck) {
+  let total = 0;
+  for (const m of MUTATION_ORDER) total += mutWeight(m, luck);
+  return total / mutWeight(name, luck);
+}
+function pickWeighted(weights, order) {
+  let total = 0;
+  for (const key of order) total += weights[key] ?? 0;
+  let target = Math.random() * total, cursor = 0;
+  for (const key of order) {
+    cursor += weights[key] ?? 0;
+    if (target <= cursor) return key;
+  }
+  return order[order.length - 1];
+}
+const luckFor = (rodId, zoneId, level) => RODS[rodId].luck * ZONES[zoneId].luckBonus * (1 + (Math.max(level, 1) - 1) * LUCK_PER_LEVEL);
+
+function rollCatch(zoneId, luck) {
+  const available = TIERS[zoneId];
+  const weights = {};
+  for (const tier in available) weights[tier] = tierWeight(tier, luck);
+  const rarity = pickWeighted(weights, RARITY_ORDER);
+
+  const candidates = POOL[zoneId][rarity];
+  const record = candidates[Math.floor(Math.random() * candidates.length)];
+
+  const mw = {};
+  for (const m of MUTATION_ORDER) mw[m] = mutWeight(m, luck);
+  const mutation = pickWeighted(mw, MUTATION_ORDER);
+
+  const [minKg, maxKg] = record.kg;
+  const weight = minKg + (maxKg - minKg) * Math.pow(Math.random(), 2.2);
+  const normalized = clamp((weight - minKg) / Math.max(maxKg - minKg, 1e-6), 0, 1);
+  const factor = 1 + normalized * (WEIGHT_VALUE_SPREAD - 1);
+
+  const tier = RARITIES[rarity], mut = MUTATIONS[mutation];
+  return {
+    fishId: record.id,
+    baseName: record.name,
+    name: mut.prefix ? `${mut.prefix} ${record.name}` : record.name,
+    rarity, mutation, weight,
+    value: Math.max(1, Math.floor(record.value * tier.valueMult * mut.valueMult * factor)),
+    odds: effectiveOdds(rarity, luck, available),
+    rarityIndex: RARITY_ORDER.indexOf(rarity) + 1,
+    mutationIndex: MUTATION_ORDER.indexOf(mutation) + 1,
+  };
+}
+const catchColor = (c) => c.mutation !== "None" ? MUTATIONS[c.mutation].color : RARITIES[c.rarity].color;
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+const state = {
+  zone: "pond",
+  rod: "wooden",
+  level: 12,
+  coins: 4820,
+  lifetime: 7400,
+  bag: 31,
+  bagValue: 2140,
+  xp: 0.42,
+  phase: "idle",      // idle | waiting | reeling
+  feed: [],
+  pending: null,
+  bobber: null,
+  ripples: [],
+  cardTier: null,
+};
+
+const el = (tag, cls, css) => {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (css) Object.assign(node.style, css);
+  return node;
+};
+
+// ---------------------------------------------------------------------------
+// HUD builders — ports of Hud.luau, at its exact offsets
+// ---------------------------------------------------------------------------
+function hudText(parent, { text, x, y, w, h, size = 14, weight = 500, color = "var(--fg)", align = "left", glow, glowAlpha = 0.75 }) {
+  const node = el("div", "hud-text");
+  Object.assign(node.style, {
+    left: `${x}px`, top: `${y}px`,
+    width: w != null ? `${w}px` : "auto",
+    height: `${h}px`, lineHeight: `${h}px`,
+    fontSize: `${size}px`, fontWeight: weight, color,
+    textAlign: align,
+  });
+  if (glow) node.style.textShadow = `0 0 ${size * 0.7}px ${rgba(glow, 1 - glowAlpha)}`;
+  node.innerHTML = text;
+  parent.appendChild(node);
+  return node;
+}
+
+function glassPanel({ w, h, x, y, tint, radius = 14, alpha = 0.04 }) {
+  const node = el("div", "glass", {
+    width: `${w}px`, height: `${h}px`,
+    left: x != null ? `${x}px` : "auto",
+    top: y != null ? `${y}px` : "auto",
+    borderRadius: `${radius}px`,
+  });
+  if (tint) node.style.setProperty("--tint", css(tint));
+  node.style.opacity = String(1 - alpha);
+  return node;
+}
+
+function buildHeader() {
+  const accent = { r: 86, g: 168, b: 255 };
+  const coin = { r: 255, g: 202, b: 84 };
+  const panel = glassPanel({ w: 286, h: 104, x: 18, y: 18, tint: accent });
+
+  const dot = el("div", "", {
+    position: "absolute", left: "14px", top: "21px", width: "14px", height: "14px",
+    borderRadius: "999px", background: `linear-gradient(180deg, ${css(mix(coin, {r:255,g:255,b:255}, .5))}, ${css(coin)})`,
+  });
+  panel.appendChild(dot);
+
+  hudText(panel, { text: commas(state.coins), x: 36, y: 14, w: 250, h: 28, size: 25, weight: 900, color: "var(--coin)", glow: coin, glowAlpha: .78 });
+  hudText(panel, { text: ZONES[state.zone].name, x: 14, y: 44, w: 258, h: 16, size: 12, weight: 500, color: "var(--fg-dim)" });
+  hudText(panel, { text: `LV ${state.level}`, x: 14, y: 66, w: 129, h: 16, size: 12, weight: 700 });
+  hudText(panel, {
+    text: `×${luckFor(state.rod, state.zone, state.level).toFixed(2)} LUCK`,
+    x: 143, y: 66, w: 129, h: 16, size: 12, weight: 700, color: "var(--accent)", align: "right", glow: accent, glowAlpha: .82,
+  });
+
+  const bar = el("div", "bar", { left: "14px", top: "86px", width: "258px", height: "7px" });
+  const fill = el("i", "", { background: `linear-gradient(180deg, ${css(mix(accent, {r:255,g:255,b:255}, .35))}, ${css(accent)})` });
+  bar.appendChild(fill);
+  panel.appendChild(bar);
+  requestAnimationFrame(() => { fill.style.width = `${state.xp * 100}%`; });
+
+  hudText(panel, {
+    text: `BAG ${state.bag}/250 &nbsp;·&nbsp; WORTH ${abbreviate(state.bagValue)}`,
+    x: 14, y: 98, w: 258, h: 14, size: 11, weight: 500, color: "var(--fg-faint)",
+  });
+
+  return panel;
+}
+
+const PANEL_BUTTONS = ["BAG", "RODS", "ZONES", "INDEX", "BOARD"];
+
+function buildPanelButtons() {
+  const holder = el("div", "", { position: "absolute", left: "18px", top: "136px", width: "104px" });
+  PANEL_BUTTONS.forEach((text, i) => {
+    const raised = { r: 28, g: 33, b: 45 };
+    const button = el("button", "", {
+      position: "absolute", left: "0", top: `${i * 40}px`, width: "104px", height: "33px",
+      borderRadius: "8px", border: "none", cursor: "pointer",
+      background: `linear-gradient(180deg, ${css(mix(raised, {r:255,g:255,b:255}, .16))}, ${css(raised)})`,
+      boxShadow: `inset 0 0 0 1.2px ${rgba(mix(raised, {r:255,g:255,b:255}, .4), .8)}`,
+      font: `700 12px/1 var(--display)`, color: "var(--fg)", letterSpacing: ".04em",
+    });
+    button.textContent = text;
+    button.addEventListener("click", () => note(`${text} panel — wired to the real inventory in game`));
+    holder.appendChild(button);
+  });
+  return holder;
+}
+
+function buildPrompt() {
+  const panel = glassPanel({ w: 330, h: 40, radius: 999 });
+  Object.assign(panel.style, { left: `${(1280 - 330) / 2}px`, top: `${720 - 42 - 40}px` });
+  const text = hudText(panel, { text: "Click the water to cast", x: 0, y: 0, w: 330, h: 40, size: 14, weight: 700, align: "center" });
+  panel.dataset.role = "prompt";
+  panel._text = text;
+  return panel;
+}
+
+function buildFeed() {
+  const holder = el("div", "", { position: "absolute", left: "18px", bottom: "18px", width: "330px" });
+  holder.dataset.role = "feed";
+  return holder;
+}
+
+function renderFeed(holder) {
+  holder.innerHTML = "";
+  for (const entry of state.feed.slice(-5)) {
+    const color = entry.mutation !== "None" ? MUTATIONS[entry.mutation].color : RARITIES[entry.rarity].color;
+    const row = glassPanel({ w: 330, h: 26, radius: 8, tint: color, alpha: .18 });
+    Object.assign(row.style, { position: "relative", marginTop: "5px" });
+    hudText(row, {
+      text: `<span style="color:var(--fg-dim)">${entry.player}</span> hooked <b style="color:${css(color)}">${entry.fish}</b>`,
+      x: 9, y: 0, w: 312, h: 26, size: 12,
+    });
+    holder.appendChild(row);
+  }
+}
+
+function buildCatchCard(result) {
+  const color = catchColor(result);
+  const coin = { r: 255, g: 202, b: 84 };
+  const peak = Math.max(result.rarityIndex, result.mutationIndex);
+
+  const card = glassPanel({ w: 326, h: 146, radius: 14, tint: color });
+  card.style.boxShadow = `inset 0 0 0 2px ${rgba(color, .8)}, 0 18px 50px -20px ${rgba(color, .5)}`;
+
+  if (peak >= 6) {
+    const sweep = el("div", "", {
+      position: "absolute", inset: "0", borderRadius: "14px", overflow: "hidden", pointerEvents: "none",
+    });
+    const shine = el("div", "", {
+      position: "absolute", inset: "-40% -120%",
+      background: `linear-gradient(72deg, transparent 35%, ${rgba(color, .55)} 50%, transparent 65%)`,
+      animation: "sweep 1.6s linear infinite",
+    });
+    sweep.appendChild(shine);
+    card.appendChild(sweep);
+  }
+
+  hudText(card, { text: result.name, x: 14, y: 14, w: 298, h: 26, size: 21, weight: 900, color: css(color), align: "center", glow: color, glowAlpha: peak >= 5 ? .45 : .75 });
+  hudText(card, {
+    text: `${result.mutation !== "None" ? result.mutation.toUpperCase() + " &nbsp;·&nbsp; " : ""}${result.rarity.toUpperCase()} &nbsp;·&nbsp; ${fmtOdds(result.odds)}`,
+    x: 14, y: 44, w: 298, h: 14, size: 11, weight: 700, color: "var(--fg-dim)", align: "center",
+  });
+  hudText(card, { text: fmtWeight(result.weight), x: 14, y: 66, w: 298, h: 20, size: 15, weight: 500, align: "center" });
+  hudText(card, { text: `+${commas(result.value)}`, x: 14, y: 90, w: 298, h: 24, size: 19, weight: 900, color: "var(--coin)", align: "center", glow: coin, glowAlpha: .7 });
+  hudText(card, { text: "added to your bag", x: 14, y: 116, w: 298, h: 14, size: 11, weight: 500, color: "var(--fg-faint)", align: "center" });
+
+  card.animate(
+    [{ transform: "scale(.8)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }],
+    { duration: 340, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" }
+  );
+  return card;
+}
+
+function buildReel(config) {
+  const accent = { r: 86, g: 168, b: 255 };
+  const good = { r: 88, g: 216, b: 140 };
+  const panel = glassPanel({ w: REEL.trackW + 104, h: REEL.trackH + 68, tint: accent });
+
+  hudText(panel, { text: "REEL IT IN", x: 0, y: 0, w: REEL.trackW + 104, h: 30, size: 12, weight: 900, color: "var(--fg-dim)", align: "center" });
+
+  const track = el("div", "", {
+    position: "absolute", left: "18px", top: "46px", width: `${REEL.trackW}px`, height: `${REEL.trackH}px`,
+    borderRadius: "14px", overflow: "hidden",
+    background: "linear-gradient(180deg, var(--bg), var(--panel))",
+    boxShadow: `inset 0 0 0 1.2px ${rgba({r:104,g:118,b:148}, .45)}`,
+  });
+
+  const catchBar = el("div", "", {
+    position: "absolute", left: "5px", width: `${REEL.trackW - 10}px`,
+    height: `${config.barSize * 100}%`, borderRadius: "8px",
+    background: `linear-gradient(180deg, ${css(mix(good, {r:255,g:255,b:255}, .4))}, ${css(good)})`,
+    boxShadow: `0 0 0 1.6px ${css(good)}`, opacity: ".7",
+  });
+  const fish = el("div", "", {
+    position: "absolute", left: "13px", width: `${REEL.trackW - 26}px`, height: "16px",
+    borderRadius: "999px", background: "linear-gradient(180deg, #fff, rgb(198 214 240))",
+    boxShadow: "0 0 0 1.4px var(--fg), 0 0 12px rgb(255 255 255 / .45)",
+  });
+  track.append(catchBar, fish);
+  panel.appendChild(track);
+
+  const meter = el("div", "", {
+    position: "absolute", left: `${REEL.trackW + 40}px`, top: "46px", width: "20px", height: `${REEL.trackH}px`,
+    borderRadius: "8px", overflow: "hidden",
+    background: "linear-gradient(180deg, var(--bg), var(--panel))",
+    boxShadow: `inset 0 0 0 1.2px ${rgba({r:104,g:118,b:148}, .45)}`,
+  });
+  const meterFill = el("div", "", {
+    position: "absolute", left: "0", bottom: "0", width: "100%", borderRadius: "8px",
+    height: `${REEL.startProgress * 100}%`,
+    background: `linear-gradient(180deg, ${css(mix(accent, {r:255,g:255,b:255}, .4))}, ${css(accent)})`,
+  });
+  meter.appendChild(meterFill);
+  panel.appendChild(meter);
+
+  hudText(panel, { text: "hold to reel", x: 0, y: REEL.trackH + 44, w: REEL.trackW + 104, h: 16, size: 11, weight: 500, color: "var(--fg-faint)", align: "center" });
+
+  panel._parts = { catchBar, fish, meterFill };
+  return panel;
+}
+
+// ---------------------------------------------------------------------------
+// Stage assembly
+// ---------------------------------------------------------------------------
+const stage = document.getElementById("stage");
+const hud = document.getElementById("hud");
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d");
+
+let promptEl, feedEl, reelEl = null, cardEl = null;
+
+function rebuildHud() {
+  hud.innerHTML = "";
+  hud.appendChild(buildHeader());
+  hud.appendChild(buildPanelButtons());
+  promptEl = buildPrompt();
+  hud.appendChild(promptEl);
+  feedEl = buildFeed();
+  hud.appendChild(feedEl);
+  renderFeed(feedEl);
+  setPrompt();
+}
+
+function setPrompt() {
+  if (!promptEl) return;
+  const map = {
+    idle: ["Click the water to cast", "var(--fg)"],
+    waiting: ["Waiting for a bite…", "var(--fg-dim)"],
+    reeling: ["Hold to reel!", "var(--good)"],
+  };
+  const [text, color] = map[state.phase];
+  promptEl._text.textContent = text;
+  promptEl._text.style.color = color;
+}
+
+function note(text, kind = "info") {
+  const colors = { info: "var(--accent)", good: "var(--good)", warn: "var(--warn)", bad: "var(--bad)" };
+  const tints = { info: {r:86,g:168,b:255}, good: {r:88,g:216,b:140}, warn: {r:255,g:186,b:76}, bad: {r:255,g:96,b:108} };
+  const card = glassPanel({ w: 318, h: 34, radius: 8, tint: tints[kind] });
+  Object.assign(card.style, { left: `${(1280 - 318) / 2}px`, top: "18px", zIndex: "20" });
+  hudText(card, { text, x: 0, y: 0, w: 318, h: 34, size: 13, weight: 500, color: colors[kind], align: "center" });
+  hud.appendChild(card);
+  card.animate([{ transform: "scale(.9)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], { duration: 200, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" });
+  setTimeout(() => {
+    card.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: "both" }).finished.then(() => card.remove());
+  }, 2600);
+}
+
+function resize() {
+  const rect = stage.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  hud.style.transform = `scale(${rect.width / 1280})`;
+}
+new ResizeObserver(resize).observe(stage);
+
+// ---------------------------------------------------------------------------
+// Scene
+// ---------------------------------------------------------------------------
+const particles = [];
+function seedParticles() {
+  particles.length = 0;
+  const v = VISUALS[state.zone];
+  const style = AMBIENT_STYLES[v.ambient.kind];
+  if (!style) return;
+  const count = Math.round(v.ambient.rate * 2.2);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random(), y: Math.random(),
+      vx: (style.acceleration.x / 40) * (0.5 + Math.random()),
+      vy: (-style.acceleration.y / 90) * (0.5 + Math.random()) + (style.speed.min / 220),
+      size: style.size * (0.6 + Math.random() * 0.9),
+      alpha: 1 - style.transparency,
+      glow: style.lightEmission,
+    });
+  }
+}
+
+function drawScene(time) {
+  const w = canvas.width / (Math.min(window.devicePixelRatio || 1, 2));
+  const h = canvas.height / (Math.min(window.devicePixelRatio || 1, 2));
+  const v = VISUALS[state.zone];
+  const zone = ZONES[state.zone];
+  const horizon = h * 0.44;
+  const bright = clamp(v.lighting.brightness / 2.4, 0.3, 1.35);
+
+  // Sky.
+  const sky = ctx.createLinearGradient(0, 0, 0, horizon);
+  sky.addColorStop(0, css(scaleC(v.atmosphere.decay, bright * 0.75)));
+  sky.addColorStop(0.62, css(scaleC(v.atmosphere.color, bright * 0.85)));
+  sky.addColorStop(1, css(scaleC(mix(v.atmosphere.color, v.clouds.color, 0.5), bright)));
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, horizon + 1);
+
+  // Sun or moon, placed by the zone's clock time.
+  const dayT = ((v.lighting.clockTime % 24) / 24);
+  const sunX = w * clamp((dayT - 0.18) / 0.64, -0.1, 1.1);
+  const night = v.lighting.clockTime < 5 || v.lighting.clockTime > 19.5;
+  const sunY = horizon * (night ? 0.3 : 0.28 + 0.3 * Math.sin(Math.PI * clamp((dayT - 0.2) / 0.6, 0, 1)));
+  const sunColor = night ? { r: 226, g: 234, b: 255 } : mix(v.atmosphere.color, { r: 255, g: 246, b: 214 }, 0.7);
+
+  ctx.save();
+  ctx.globalCompositeOperation = "screen";
+  const halo = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, h * (0.42 + v.sunRays.intensity));
+  halo.addColorStop(0, rgba(sunColor, night ? 0.5 : 0.85));
+  halo.addColorStop(0.22, rgba(sunColor, 0.22 + v.bloom.intensity * 0.05));
+  halo.addColorStop(1, rgba(sunColor, 0));
+  ctx.fillStyle = halo;
+  ctx.fillRect(0, 0, w, horizon + 40);
+  ctx.beginPath();
+  ctx.arc(sunX, sunY, night ? h * 0.026 : h * 0.036, 0, Math.PI * 2);
+  ctx.fillStyle = rgba(sunColor, 0.95);
+  ctx.fill();
+  ctx.restore();
+
+  // Cloud band.
+  ctx.save();
+  ctx.globalAlpha = 0.16 + v.clouds.cover * 0.5;
+  for (let i = 0; i < 7; i++) {
+    const cx = ((i * 0.19 + time * 0.000004 * (1 + i % 3)) % 1.25 - 0.12) * w;
+    const cy = horizon * (0.3 + (i % 4) * 0.13);
+    const cw = w * (0.16 + (i % 3) * 0.1);
+    const ch = horizon * (0.05 + (i % 2) * 0.03) * (0.6 + v.clouds.density);
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, cw);
+    g.addColorStop(0, rgba(scaleC(v.clouds.color, bright), 0.75));
+    g.addColorStop(1, rgba(v.clouds.color, 0));
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, cw, ch, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // Island silhouettes, hazing toward the sky with distance.
+  const groundBase = mix(v.propColor, { r: 0, g: 0, b: 0 }, 0.45);
+  for (let layer = 2; layer >= 0; layer--) {
+    const haze = 0.16 + layer * 0.24 * clamp(v.atmosphere.haze / 3, 0.3, 1.4);
+    ctx.fillStyle = css(mix(scaleC(groundBase, bright), scaleC(v.atmosphere.color, bright), clamp(haze, 0, 0.9)));
+    ctx.beginPath();
+    ctx.moveTo(-10, horizon + 2);
+    const humps = 5 + layer;
+    for (let i = 0; i <= humps; i++) {
+      const x = (i / humps) * (w + 20) - 10;
+      const seed = Math.sin(i * 12.9898 + layer * 4.1) * 43758.5453;
+      const noise = seed - Math.floor(seed);
+      const peak = horizon - h * (0.02 + noise * (0.09 - layer * 0.02));
+      ctx.quadraticCurveTo(x - w / humps / 2, peak, x, horizon + 2 - h * 0.005 * noise);
+    }
+    ctx.lineTo(w + 10, horizon + 2);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Water.
+  const waterTop = mix(v.water.color, v.atmosphere.color, 0.42);
+  const water = ctx.createLinearGradient(0, horizon, 0, h);
+  water.addColorStop(0, css(scaleC(waterTop, bright)));
+  water.addColorStop(0.35, css(scaleC(v.water.color, bright * 0.95)));
+  water.addColorStop(1, css(scaleC(v.water.color, bright * 0.55)));
+  ctx.fillStyle = water;
+  ctx.fillRect(0, horizon, w, h - horizon);
+
+  // Wave shimmer. Rows get wider and slower toward the camera.
+  ctx.save();
+  ctx.globalCompositeOperation = "screen";
+  const rows = 40;
+  for (let i = 0; i < rows; i++) {
+    const t = i / rows;
+    const y = horizon + Math.pow(t, 1.9) * (h - horizon);
+    const speed = v.water.waveSpeed * (0.2 + t * 1.6);
+    const phase = time * 0.0009 * speed + i * 0.7;
+    const amp = 0.5 + t * 3.2;
+    ctx.globalAlpha = (0.05 + v.water.reflectance * 0.4) * (0.25 + t * 0.9);
+    ctx.strokeStyle = css(mix(waterTop, { r: 255, g: 255, b: 255 }, 0.55 + v.water.reflectance * 0.3));
+    ctx.lineWidth = 0.6 + t * 2.4;
+    ctx.beginPath();
+    for (let x = -20; x <= w + 20; x += 18) {
+      const yy = y + Math.sin(x * (0.006 + t * 0.004) + phase) * amp
+                   + Math.sin(x * 0.019 - phase * 1.4) * amp * 0.4;
+      x === -20 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
+    }
+    ctx.stroke();
+  }
+
+  // Glitter column under the light source.
+  const glitter = ctx.createLinearGradient(0, horizon, 0, h);
+  glitter.addColorStop(0, rgba(sunColor, 0.32 * (night ? 0.5 : 1)));
+  glitter.addColorStop(1, rgba(sunColor, 0));
+  ctx.globalAlpha = 0.5 + v.water.reflectance;
+  ctx.fillStyle = glitter;
+  ctx.beginPath();
+  ctx.moveTo(sunX - w * 0.02, horizon);
+  ctx.lineTo(sunX + w * 0.02, horizon);
+  ctx.lineTo(sunX + w * 0.15, h);
+  ctx.lineTo(sunX - w * 0.15, h);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // Pier, foreground right, with lantern glow.
+  const pierColor = { r: 74, g: 54, b: 40 };
+  ctx.save();
+  ctx.fillStyle = css(scaleC(pierColor, bright * 0.8));
+  const pierY = h * 0.78;
+  ctx.beginPath();
+  ctx.moveTo(w * 0.52, h);
+  ctx.lineTo(w * 0.62, pierY);
+  ctx.lineTo(w * 1.02, pierY - h * 0.02);
+  ctx.lineTo(w * 1.02, h);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = rgba(scaleC(pierColor, bright * 1.25), 0.9);
+  ctx.fillRect(w * 0.6, pierY - 4, w * 0.45, 6);
+
+  for (let i = 0; i < 3; i++) {
+    const lx = w * (0.68 + i * 0.13);
+    const ly = pierY - h * 0.09;
+    ctx.fillStyle = css(scaleC(pierColor, bright * 0.7));
+    ctx.fillRect(lx - 2, ly, 4, h * 0.09);
+    ctx.globalCompositeOperation = "screen";
+    const lamp = ctx.createRadialGradient(lx, ly, 0, lx, ly, h * 0.12);
+    lamp.addColorStop(0, rgba(v.ambient.color, 0.9));
+    lamp.addColorStop(0.3, rgba(v.ambient.color, 0.3));
+    lamp.addColorStop(1, rgba(v.ambient.color, 0));
+    ctx.fillStyle = lamp;
+    ctx.fillRect(lx - h * 0.12, ly - h * 0.12, h * 0.24, h * 0.24);
+    ctx.globalCompositeOperation = "source-over";
+  }
+  ctx.restore();
+
+  // Bobber and ripples.
+  if (state.bobber) {
+    const bx = state.bobber.x * w, by = horizon + state.bobber.y * (h - horizon);
+    const jitter = state.phase === "reeling" ? Math.sin(time * 0.02) * 3 : Math.sin(time * 0.003) * 1.2;
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    const g = ctx.createRadialGradient(bx, by + jitter, 0, bx, by + jitter, 26);
+    g.addColorStop(0, "rgb(255 120 120 / .95)");
+    g.addColorStop(1, "rgb(255 88 88 / 0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(bx - 26, by - 26 + jitter, 52, 52);
+    ctx.restore();
+    ctx.beginPath();
+    ctx.arc(bx, by + jitter, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "rgb(255 96 96)";
+    ctx.fill();
+  }
+
+  for (const r of state.ripples) {
+    const age = (time - r.born) / 1100;
+    if (age >= 1) continue;
+    const rx = r.x * w, ry = horizon + r.y * (h - horizon);
+    ctx.save();
+    ctx.globalAlpha = (1 - age) * 0.6;
+    ctx.strokeStyle = css(mix(v.water.color, { r: 255, g: 255, b: 255 }, 0.7));
+    ctx.lineWidth = 1.6 * (1 - age) + 0.4;
+    ctx.beginPath();
+    ctx.ellipse(rx, ry, age * 52 * r.scale, age * 15 * r.scale, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+  state.ripples = state.ripples.filter((r) => time - r.born < 1100);
+
+  // Ambient particles.
+  ctx.save();
+  ctx.globalCompositeOperation = "screen";
+  for (const p of particles) {
+    p.x += p.vx * 0.0012;
+    p.y -= p.vy * 0.0012;
+    if (p.y < -0.05) p.y = 1.05;
+    if (p.y > 1.08) p.y = -0.05;
+    if (p.x > 1.05) p.x = -0.05;
+    if (p.x < -0.08) p.x = 1.05;
+    const px = p.x * w, py = p.y * h;
+    const radius = p.size * h * 0.02 * (1 + p.glow);
+    const g = ctx.createRadialGradient(px, py, 0, px, py, radius);
+    g.addColorStop(0, rgba(v.ambient.color, p.alpha));
+    g.addColorStop(1, rgba(v.ambient.color, 0));
+    ctx.fillStyle = g;
+    ctx.fillRect(px - radius, py - radius, radius * 2, radius * 2);
+  }
+  ctx.restore();
+
+  // Bloom lift and vignette.
+  ctx.save();
+  ctx.globalCompositeOperation = "screen";
+  ctx.globalAlpha = clamp(v.bloom.intensity * 0.035, 0, 0.16);
+  ctx.fillStyle = css(v.atmosphere.color);
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+
+  const vig = ctx.createRadialGradient(w / 2, h * 0.52, Math.min(w, h) * 0.25, w / 2, h * 0.52, Math.max(w, h) * 0.78);
+  vig.addColorStop(0, "rgb(0 0 0 / 0)");
+  vig.addColorStop(1, `rgb(0 0 0 / ${0.3 + (1 - bright) * 0.3})`);
+  ctx.fillStyle = vig;
+  ctx.fillRect(0, 0, w, h);
+}
+
+// The colour grade maps straight onto ColorCorrectionEffect.
+function applyGrade() {
+  const c = VISUALS[state.zone].correction;
+  canvas.style.filter = `saturate(${(1 + c.saturation).toFixed(3)}) contrast(${(1 + c.contrast).toFixed(3)}) brightness(${(1 + c.brightness).toFixed(3)})`;
+}
+
+// ---------------------------------------------------------------------------
+// The cast -> bite -> reel -> catch loop
+// ---------------------------------------------------------------------------
+let reel = null;
+let holding = false;
+let biteTimer = null;
+
+stage.addEventListener("pointerdown", (event) => {
+  if (event.target.closest("button")) return;
+  holding = true;
+  if (state.phase === "idle") {
+    const rect = stage.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    if (y < 0.46) { note("Cast into the water.", "warn"); return; }
+    cast(x, (y - 0.44) / 0.56);
+  }
+});
+window.addEventListener("pointerup", () => { holding = false; });
+window.addEventListener("keydown", (e) => { if (e.code === "Space") { e.preventDefault(); holding = true; } });
+window.addEventListener("keyup", (e) => { if (e.code === "Space") holding = false; });
+
+function cast(x, y) {
+  state.phase = "waiting";
+  state.bobber = { x: clamp(x, 0.04, 0.96), y: clamp(y, 0.05, 0.95) };
+  state.ripples.push({ x: state.bobber.x, y: state.bobber.y, born: performance.now(), scale: 1 });
+  setPrompt();
+
+  const zone = ZONES[state.zone];
+  const delay = (zone.biteRange.min + Math.random() * (zone.biteRange.max - zone.biteRange.min)) * RODS[state.rod].biteSpeed;
+  clearTimeout(biteTimer);
+  biteTimer = setTimeout(startReel, delay * 1000);
+}
+
+function startReel() {
+  // The catch is rolled now and held, exactly as the server does it.
+  const luck = luckFor(state.rod, state.zone, state.level);
+  state.pending = rollCatch(state.zone, luck);
+
+  const rod = RODS[state.rod];
+  const fight = (1 + (state.pending.rarityIndex - 1) * 0.16 + (state.pending.mutationIndex - 1) * 0.05)
+    * (0.92 + Math.random() * 0.2);
+
+  state.phase = "reeling";
+  setPrompt();
+  state.ripples.push({ x: state.bobber.x, y: state.bobber.y, born: performance.now(), scale: 0.6 });
+
+  reel = {
+    barSize: rod.barSize, fillRate: rod.fillRate, drainRate: rod.drainRate,
+    fishSpeed: rod.fishSpeed * fight,
+    progress: REEL.startProgress, barPos: 0.5, barVel: 0,
+    fishPos: 0.5, fishTarget: 0.5, retargetIn: 0, last: performance.now(),
+  };
+
+  reelEl = buildReel(reel);
+  Object.assign(reelEl.style, { left: `${1280 - 34 - (REEL.trackW + 104)}px`, top: `${(720 - (REEL.trackH + 68)) / 2}px` });
+  hud.appendChild(reelEl);
+  reelEl.animate([{ transform: "scale(.88)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], { duration: 340, easing: "cubic-bezier(.34,1.56,.64,1)", fill: "both" });
+  mountReel();
+}
+
+function stepReel(now) {
+  if (!reel) return;
+  const dt = Math.min((now - reel.last) / 1000, 0.1);
+  reel.last = now;
+
+  const accel = holding ? REEL.pushAccel : REEL.fallAccel;
+  reel.barVel = (reel.barVel + accel * dt) * REEL.damping;
+  reel.barPos += reel.barVel * dt;
+
+  const half = reel.barSize / 2;
+  if (reel.barPos < half) { reel.barPos = half; reel.barVel = Math.max(reel.barVel, 0); }
+  else if (reel.barPos > 1 - half) { reel.barPos = 1 - half; reel.barVel = Math.min(reel.barVel, 0); }
+
+  reel.retargetIn -= dt;
+  if (reel.retargetIn <= 0) {
+    reel.retargetIn = Math.random() * 0.9 / reel.fishSpeed + 0.2;
+    reel.fishTarget = Math.random();
+  }
+  const travel = reel.fishSpeed * 1.35 * dt;
+  reel.fishPos += clamp(reel.fishTarget - reel.fishPos, -travel, travel);
+  reel.fishPos = clamp(reel.fishPos, 0.02, 0.98);
+
+  const inside = Math.abs(reel.fishPos - reel.barPos) <= half;
+  reel.progress = clamp(reel.progress + (inside ? reel.fillRate : -reel.drainRate) * dt, 0, 1);
+
+  paintReel(reelEl, inside);
+  paintReel(document.getElementById("mount-reel").firstElementChild, inside);
+
+  if (reel.progress >= 1) finishReel(true);
+  else if (reel.progress <= 0) finishReel(false);
+}
+
+function paintReel(node, inside) {
+  if (!node || !node._parts) return;
+  const { catchBar, fish, meterFill } = node._parts;
+  const good = { r: 88, g: 216, b: 140 }, bad = { r: 255, g: 96, b: 108 }, warn = { r: 255, g: 186, b: 76 };
+  const color = inside ? good : bad;
+  catchBar.style.top = `${(1 - reel.barPos - reel.barSize / 2) * 100}%`;
+  catchBar.style.background = `linear-gradient(180deg, ${css(mix(color, {r:255,g:255,b:255}, .4))}, ${css(color)})`;
+  catchBar.style.boxShadow = `0 0 0 1.6px ${css(color)}${inside ? `, 0 0 18px ${rgba(color, .55)}` : ""}`;
+  catchBar.style.opacity = inside ? ".72" : ".55";
+  fish.style.top = `calc(${(1 - reel.fishPos) * 100}% - 8px)`;
+  fish.style.boxShadow = `0 0 0 1.4px ${inside ? css(good) : "var(--fg)"}, 0 0 12px rgb(255 255 255 / .45)`;
+  const meterColor = inside ? good : warn;
+  meterFill.style.height = `${reel.progress * 100}%`;
+  meterFill.style.background = `linear-gradient(180deg, ${css(mix(meterColor, {r:255,g:255,b:255}, .4))}, ${css(meterColor)})`;
+}
+
+function finishReel(won) {
+  reel = null;
+  if (reelEl) { reelEl.remove(); reelEl = null; }
+
+  const landed = state.bobber;
+  if (landed) state.ripples.push({ x: landed.x, y: landed.y, born: performance.now(), scale: 0.8 });
+  state.bobber = null;
+  state.phase = "idle";
+  setPrompt();
+
+  if (!won) { note("It slipped the hook.", "bad"); return; }
+
+  const result = state.pending;
+  state.coins += result.value;
+  state.lifetime += result.value;
+  state.bag = Math.min(state.bag + 1, 250);
+  state.bagValue += result.value;
+  state.xp = (state.xp + 0.06 + Math.min(result.rarityIndex * 0.02, 0.3)) % 1;
+
+  if (result.rarityIndex >= 6 || result.mutationIndex >= 5) {
+    state.feed.push({ player: "you", fish: result.name, rarity: result.rarity, mutation: result.mutation });
+    if (state.feed.length > 12) state.feed.shift();
+  }
+
+  showCatch(result);
+  rebuildHud();
+  mountHeader();
+}
+
+function showCatch(result) {
+  if (cardEl) cardEl.remove();
+  cardEl = buildCatchCard(result);
+  Object.assign(cardEl.style, { left: `${(1280 - 326) / 2}px`, top: `${360 + 96 - 73}px`, zIndex: "30" });
+  hud.appendChild(cardEl);
+
+  const peak = Math.max(result.rarityIndex, result.mutationIndex);
+  if (peak >= 6) {
+    const color = catchColor(result);
+    const flash = el("div", "", { position: "absolute", inset: "0", background: css(color), opacity: String(0.14 + (peak - 6) * 0.06), zIndex: "40", pointerEvents: "none" });
+    hud.appendChild(flash);
+    flash.animate([{ opacity: flash.style.opacity }, { opacity: 0 }], { duration: 760, fill: "both" }).finished.then(() => flash.remove());
+  }
+
+  const card = cardEl;
+  setTimeout(() => {
+    if (card !== cardEl) return;
+    card.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 320, fill: "both" }).finished.then(() => { card.remove(); if (cardEl === card) cardEl = null; });
+  }, 3600);
+
+  state.cardTier = result;
+  mountCard(result);
+  syncTierTabs();
+}
+
+// ---------------------------------------------------------------------------
+// Component gallery mounts
+// ---------------------------------------------------------------------------
+function mountHeader() {
+  const slot = document.getElementById("mount-header");
+  slot.innerHTML = "";
+  const node = buildHeader();
+  Object.assign(node.style, { position: "relative", left: "0", top: "0" });
+  slot.appendChild(node);
+}
+function mountCard(result) {
+  const slot = document.getElementById("mount-card");
+  slot.innerHTML = "";
+  const node = buildCatchCard(result);
+  Object.assign(node.style, { position: "relative", left: "0", top: "0" });
+  slot.appendChild(node);
+}
+function mountReel() {
+  const slot = document.getElementById("mount-reel");
+  slot.innerHTML = "";
+  const node = buildReel(reel ?? { barSize: RODS[state.rod].barSize });
+  Object.assign(node.style, { position: "relative", left: "0", top: "0", transform: "scale(.78)", transformOrigin: "top center", marginBottom: "-84px" });
+  slot.appendChild(node);
+}
+
+// A representative catch at a given tier, for previewing the card.
+function sampleAt(rarity) {
+  const zoneWithTier = ZONE_ORDER.find((z) => TIERS[z][rarity]) ?? "pond";
+  const pool = POOL[zoneWithTier][rarity];
+  const record = pool[Math.floor(Math.random() * pool.length)];
+  const mutation = rarity === "Secret" ? "Golden" : "None";
+  const mut = MUTATIONS[mutation], tier = RARITIES[rarity];
+  const [minKg, maxKg] = record.kg;
+  const weight = minKg + (maxKg - minKg) * 0.62;
+  return {
+    baseName: record.name,
+    name: mut.prefix ? `${mut.prefix} ${record.name}` : record.name,
+    rarity, mutation, weight,
+    value: Math.max(1, Math.floor(record.value * tier.valueMult * mut.valueMult * 1.31)),
+    odds: effectiveOdds(rarity, luckFor(state.rod, zoneWithTier, state.level), TIERS[zoneWithTier]),
+    rarityIndex: RARITY_ORDER.indexOf(rarity) + 1,
+    mutationIndex: MUTATION_ORDER.indexOf(mutation) + 1,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Tabs
+// ---------------------------------------------------------------------------
+function buildTabs(host, items, isActive, onPick) {
+  host.innerHTML = "";
+  for (const item of items) {
+    const button = el("button", "chip");
+    button.type = "button";
+    button.textContent = item.label;
+    button.setAttribute("aria-pressed", String(isActive(item)));
+    if (item.accent) button.style.setProperty("--zone-accent", css(item.accent));
+    button.addEventListener("click", () => onPick(item));
+    host.appendChild(button);
+  }
+}
+
+function syncZoneTabs() {
+  buildTabs(
+    document.getElementById("zone-tabs"),
+    ZONE_ORDER.map((id) => ({ id, label: ZONES[id].name, accent: VISUALS[id].ambient.color })),
+    (item) => item.id === state.zone,
+    (item) => { setZone(item.id); }
+  );
+}
+function syncRodTabs() {
+  buildTabs(
+    document.getElementById("rod-tabs"),
+    ROD_ORDER.map((id) => ({ id, label: RODS[id].name.replace(" Rod", "") })),
+    (item) => item.id === state.rod,
+    (item) => {
+      state.rod = item.id;
+      syncRodTabs(); rebuildHud(); mountHeader(); mountReel(); renderMeta(); renderLadders();
+    }
+  );
+}
+function syncTierTabs() {
+  buildTabs(
+    document.getElementById("tier-tabs"),
+    RARITY_ORDER.map((id) => ({ id, label: id, accent: RARITIES[id].color })),
+    (item) => state.cardTier?.rarity === item.id,
+    (item) => { state.cardTier = sampleAt(item.id); mountCard(state.cardTier); syncTierTabs(); }
+  );
+}
+
+function setZone(id) {
+  state.zone = id;
+  if (!TIERS[id]) return;
+  clearTimeout(biteTimer);
+  reel = null;
+  if (reelEl) { reelEl.remove(); reelEl = null; }
+  state.phase = "idle";
+  state.bobber = null;
+  seedParticles();
+  applyGrade();
+  syncZoneTabs();
+  rebuildHud();
+  mountHeader();
+  renderMeta();
+  renderLadders();
+}
+
+// ---------------------------------------------------------------------------
+// Readouts
+// ---------------------------------------------------------------------------
+function renderMeta() {
+  const zone = ZONES[state.zone], v = VISUALS[state.zone], rod = RODS[state.rod];
+  const luck = luckFor(state.rod, state.zone, state.level);
+  const species = FISH.filter((f) => f.zone === state.zone).length;
+  document.getElementById("stage-meta").innerHTML = [
+    `<span><b>Luck</b> ×${luck.toFixed(2)} &nbsp;(rod ×${rod.luck} · zone ×${zone.luckBonus} · lv ${state.level})</span>`,
+    `<span><b>Species here</b> ${species}</span>`,
+    `<span><b>Bite</b> ${(zone.biteRange.min * rod.biteSpeed).toFixed(1)}–${(zone.biteRange.max * rod.biteSpeed).toFixed(1)}s</span>`,
+    `<span><b>Catch bar</b> ${Math.round(rod.barSize * 100)}% of track</span>`,
+    `<span><b>Unlocks at</b> ${zone.unlockCoins === 0 ? "start" : abbreviate(zone.unlockCoins) + " lifetime"}</span>`,
+    `<span><b>Grade</b> sat ${v.correction.saturation >= 0 ? "+" : ""}${v.correction.saturation} · bloom ${v.bloom.intensity}</span>`,
+  ].join("");
+}
+
+let observed = null;
+
+function renderLadders() {
+  const available = TIERS[state.zone];
+  const luck = luckFor(state.rod, state.zone, state.level);
+
+  const rarityRows = RARITY_ORDER.map((name) => {
+    const tier = RARITIES[name];
+    const here = !!available[name];
+    const eff = here ? effectiveOdds(name, luck, available) : Infinity;
+    const seen = observed?.rarity?.[name] ?? 0;
+    return `<tr>
+      <td class="tier" style="color:${css(tier.color)}"><span class="swatch" style="background:${css(tier.color)}"></span>${name}</td>
+      <td class="dim">1 in ${abbreviate(tier.chance)}</td>
+      <td${here ? "" : ' class="dim"'}>${here ? fmtOdds(eff) : "—"}</td>
+      <td class="dim">×${abbreviate(tier.valueMult)}</td>
+      <td class="dim">${observed ? (here ? seen.toLocaleString("en-US") : "—") : ""}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("rarity-table").innerHTML = `
+    <caption>Fish rarity — ${ZONES[state.zone].name}</caption>
+    <thead><tr><th>Tier</th><th>Headline</th><th>Effective</th><th>Value</th><th>Observed</th></tr></thead>
+    <tbody>${rarityRows}</tbody>`;
+
+  const mutationRows = MUTATION_ORDER.map((name) => {
+    const mut = MUTATIONS[name];
+    const seen = observed?.mutation?.[name] ?? 0;
+    return `<tr>
+      <td class="tier" style="color:${css(mut.color)}"><span class="swatch" style="background:${css(mut.color)}"></span>${name}</td>
+      <td class="dim">1 in ${abbreviate(mut.chance)}</td>
+      <td>${fmtOdds(mutationOdds(name, luck))}</td>
+      <td class="dim">×${abbreviate(mut.valueMult)}</td>
+      <td class="dim">${observed ? seen.toLocaleString("en-US") : ""}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("mutation-table").innerHTML = `
+    <caption>Mutation — independent roll</caption>
+    <thead><tr><th>Tier</th><th>Headline</th><th>Effective</th><th>Value</th><th>Observed</th></tr></thead>
+    <tbody>${mutationRows}</tbody>`;
+}
+
+document.getElementById("sim-btn").addEventListener("click", () => {
+  const luck = luckFor(state.rod, state.zone, state.level);
+  const rarity = {}, mutation = {};
+  let coins = 0;
+  const runs = 20000;
+  for (let i = 0; i < runs; i++) {
+    const c = rollCatch(state.zone, luck);
+    rarity[c.rarity] = (rarity[c.rarity] ?? 0) + 1;
+    mutation[c.mutation] = (mutation[c.mutation] ?? 0) + 1;
+    coins += c.value;
+  }
+  observed = { rarity, mutation };
+  document.getElementById("sim-status").textContent =
+    `${runs.toLocaleString("en-US")} rolls · ${commas(Math.round(coins / runs))} coins per catch average`;
+  renderLadders();
+});
+
+function renderZoneCards() {
+  document.getElementById("zone-cards").innerHTML = ZONE_ORDER.map((id) => {
+    const zone = ZONES[id], v = VISUALS[id];
+    return `<div class="zone-card">
+      <div class="swatches">
+        <i style="background:${css(v.water.color)}"></i>
+        <i style="background:${css(v.atmosphere.color)}"></i>
+        <i style="background:${css(v.clouds.color)}"></i>
+        <i style="background:${css(v.ambient.color)}"></i>
+      </div>
+      <h4>${zone.name}</h4>
+      <dl>
+        <dt>light</dt><dd>${v.lighting.clockTime}h · ${v.lighting.brightness}</dd>
+        <dt>haze</dt><dd>${v.atmosphere.haze}</dd>
+        <dt>cloud</dt><dd>${Math.round(v.clouds.cover * 100)}%</dd>
+        <dt>bloom</dt><dd>${v.bloom.intensity}</dd>
+        <dt>ambient</dt><dd>${v.ambient.kind}</dd>
+      </dl>
+    </div>`;
+  }).join("");
+}
+
+// ---------------------------------------------------------------------------
+// Boot
+// ---------------------------------------------------------------------------
+const sheet = new CSSStyleSheet();
+sheet.replaceSync("@keyframes sweep { from { transform: translateX(-40%) } to { transform: translateX(40%) } }");
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+
+state.cardTier = sampleAt("Legendary");
+state.feed = [
+  { player: "kaz", fish: "Golden Wishing Coin", rarity: "Mythic", mutation: "Golden" },
+  { player: "mireille", fish: "Abyssal Eye", rarity: "Exotic", mutation: "None" },
+  { player: "tavi", fish: "Void Trench Wyrm", rarity: "Legendary", mutation: "Void" },
+];
+
+seedParticles();
+applyGrade();
+resize();
+syncZoneTabs();
+syncRodTabs();
+syncTierTabs();
+rebuildHud();
+mountHeader();
+mountCard(state.cardTier);
+mountReel();
+renderMeta();
+renderLadders();
+renderZoneCards();
+
+function frame(now) {
+  drawScene(now);
+  if (reel) stepReel(now);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>

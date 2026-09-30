@@ -9,6 +9,7 @@ local Rods = require(Shared.Config.Rods)
 local Zones = require(Shared.Config.Zones)
 local GameConfig = require(Shared.Config.GameConfig)
 local Format = require(Shared.Util.Format)
+local Visuals = require(Shared.Config.Visuals)
 local CatchRoll = require(Shared.CatchRoll)
 
 local passed, failed = 0, 0
@@ -170,6 +171,76 @@ check("Commas(999)", Format.Commas(999) == "999", Format.Commas(999))
 check("Commas(1234567)", Format.Commas(1234567) == "1,234,567", Format.Commas(1234567))
 check("Weight(0.5)", Format.Weight(0.5) == "500 g", Format.Weight(0.5))
 check("Odds(1200)", Format.Odds(1200) == "1 in 1.2K", Format.Odds(1200))
+
+print("== visuals ==")
+
+-- Every zone must have a complete visual profile, or it renders as an untinted
+-- grey void with no water.
+local REQUIRED_SECTIONS = { "water", "lighting", "atmosphere", "clouds", "bloom", "sunRays", "correction", "dof", "ambient" }
+local REQUIRED_MATERIALS = { "ground", "shore", "underwater", "prop" }
+
+for _, zoneId in Zones.Order do
+	local profile = Visuals.Data[zoneId]
+	check(zoneId .. " has a visual profile", profile ~= nil)
+
+	if profile then
+		for _, section in REQUIRED_SECTIONS do
+			check(
+				string.format("%s.%s present", zoneId, section),
+				type(profile[section]) == "table",
+				"missing or not a table"
+			)
+		end
+
+		for _, field in REQUIRED_MATERIALS do
+			check(
+				string.format("%s.%s names a material", zoneId, field),
+				type(profile[field]) == "string" and #profile[field] > 0,
+				tostring(profile[field])
+			)
+		end
+
+		-- The ambient kind is the one cross-module reference in the visuals:
+		-- Atmosphere looks the zone's kind up in Visuals.AmbientStyles.
+		check(
+			string.format("%s ambient kind %q resolves", zoneId, tostring(profile.ambient.kind)),
+			Visuals.AmbientStyles[profile.ambient.kind] ~= nil
+		)
+
+		check(
+			zoneId .. " water transparency in range",
+			profile.water.transparency >= 0 and profile.water.transparency <= 1,
+			tostring(profile.water.transparency)
+		)
+		check(
+			zoneId .. " atmosphere density in range",
+			profile.atmosphere.density >= 0 and profile.atmosphere.density <= 1,
+			tostring(profile.atmosphere.density)
+		)
+		check(
+			zoneId .. " clouds cover in range",
+			profile.clouds.cover >= 0 and profile.clouds.cover <= 1,
+			tostring(profile.clouds.cover)
+		)
+		check(zoneId .. " bloom is positive", profile.bloom.intensity > 0)
+	end
+end
+
+-- The deeper zones should be visibly darker than the shallow ones; a flat
+-- brightness curve is the clearest sign the profiles got shuffled.
+check(
+	"the abyss is the darkest zone",
+	(function()
+		local darkest, lowest = nil, math.huge
+		for zoneId, profile in Visuals.Data do
+			if profile.lighting.brightness < lowest then
+				lowest = profile.lighting.brightness
+				darkest = zoneId
+			end
+		end
+		return darkest == "abyss"
+	end)()
+)
 
 print("== progression ==")
 

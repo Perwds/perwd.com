@@ -37,6 +37,13 @@ function Vector3.new(x, y, z)
 	return setmetatable({ X = x or 0, Y = y or 0, Z = z or 0 }, Vector3)
 end
 
+local NumberRange = {}
+NumberRange.__index = NumberRange
+
+function NumberRange.new(min, max)
+	return setmetatable({ Min = min, Max = max or min }, NumberRange)
+end
+
 local RandomProto = {}
 RandomProto.__index = RandomProto
 

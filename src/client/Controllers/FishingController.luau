@@ -1,76 +1,38 @@
 --!nonstrict
--- Casting input and the bobber. Owns the client half of the fishing state
--- machine: idle -> waiting for a bite -> reeling -> idle.
+-- Casting input. Owns the client half of the fishing state machine:
+-- idle -> waiting for a bite -> reeling -> idle.
 
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local Net = require(Shared.Net)
+local Zones = require(Shared.Config.Zones)
+local Rarities = require(Shared.Config.Rarities)
+local Mutations = require(Shared.Config.Mutations)
+local GameConfig = require(Shared.Config.GameConfig)
 
 local ReelBar = require(script.Parent.Parent.UI.ReelBar)
+local Theme = require(script.Parent.Parent.UI.Theme)
+local Tackle = require(script.Parent.Parent.Effects.Tackle)
+local CatchFx = require(script.Parent.Parent.Effects.CatchFx)
 
 local FishingController = {}
 
+local MAX_CAST_DISTANCE = 140
+
 local player = Players.LocalPlayer
-local camera = Workspace.CurrentCamera
 
 local state = "idle"
 local activeCastId = nil
-local bobber: BasePart? = nil
-local bobberStart = 0
-local bobberConnection: RBXScriptConnection? = nil
+local castedAt = 0
+local zoneId = Zones.Default()
 
 local hud = nil
 local panels = nil
 local waterTag = "FishingWater"
-
-local function clearBobber()
-	if bobberConnection then
-		bobberConnection:Disconnect()
-		bobberConnection = nil
-	end
-	if bobber then
-		bobber:Destroy()
-		bobber = nil
-	end
-end
-
-local function spawnBobber(position: Vector3)
-	clearBobber()
-
-	local part = Instance.new("Part")
-	part.Name = "Bobber"
-	part.Shape = Enum.PartType.Ball
-	part.Size = Vector3.new(1.2, 1.2, 1.2)
-	part.Color = Color3.fromRGB(255, 96, 96)
-	part.Material = Enum.Material.Neon
-	part.Anchored = true
-	part.CanCollide = false
-	part.CanQuery = false
-	part.CanTouch = false
-	part.Position = position
-	part.Parent = Workspace
-
-	bobber = part
-	bobberStart = os.clock()
-
-	bobberConnection = RunService.RenderStepped:Connect(function()
-		if not bobber then
-			return
-		end
-		local t = os.clock() - bobberStart
-		local bob = math.sin(t * 3) * 0.25
-		-- Twitchier once something is on the line.
-		if state == "reeling" then
-			bob = math.sin(t * 22) * 0.55
-		end
-		bobber.Position = Vector3.new(position.X, position.Y + bob, position.Z)
-	end)
-end
 
 local function setState(next: string)
 	state = next
@@ -82,30 +44,42 @@ local function setState(next: string)
 	if state == "idle" then
 		hud:SetPrompt("Click the water to cast")
 	elseif state == "waiting" then
-		hud:SetPrompt("Waiting for a bite…")
+		hud:SetPrompt("Waiting for a bite…", Theme.TextDim)
 	elseif state == "reeling" then
-		hud:SetPrompt("Hold to reel!")
+		hud:SetPrompt("Hold to reel!", Theme.Good)
 	end
 end
 
-local function waterUnderMouse(): (BasePart?, Vector3?)
+-- Terrain water is what the zones are actually made of now, so a raycast hit is
+-- identified by its material rather than by the instance it struck. The tag
+-- check is a fallback for any part-built water.
+local function waterUnderMouse(): Vector3?
+	local camera = Workspace.CurrentCamera
+	if not camera then
+		return nil
+	end
+
 	local mouse = UserInputService:GetMouseLocation()
 	local ray = camera:ViewportPointToRay(mouse.X, mouse.Y)
 
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Exclude
 	params.FilterDescendantsInstances = { player.Character }
+	params.IgnoreWater = false
 
-	local result = Workspace:Raycast(ray.Origin, ray.Direction * 400, params)
+	local result = Workspace:Raycast(ray.Origin, ray.Direction * 500, params)
 	if not result then
-		return nil, nil
+		return nil
 	end
 
-	if not CollectionService:HasTag(result.Instance, waterTag) then
-		return nil, nil
+	local isWater = result.Material == Enum.Material.Water
+		or CollectionService:HasTag(result.Instance, waterTag)
+
+	if not isWater then
+		return nil
 	end
 
-	return result.Instance, result.Position
+	return result.Position
 end
 
 local function tryCast()
@@ -117,13 +91,34 @@ local function tryCast()
 		return
 	end
 
-	local water, position = waterUnderMouse()
-	if not water or not position then
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root then
 		return
 	end
 
+	local position = waterUnderMouse()
+	if not position then
+		return
+	end
+
+	-- Mirror the server's checks so the failure is explained here rather than
+	-- silently dropped. The server still re-validates both.
+	if (root.Position - position).Magnitude > MAX_CAST_DISTANCE then
+		hud:Notify("Too far — get closer to the water.", "warn")
+		return
+	end
+
+	local zone = Zones.Get(zoneId)
+	local flat = Vector3.new(position.X - zone.origin.X, 0, position.Z - zone.origin.Z)
+	if flat.Magnitude > zone.radius then
+		hud:Notify("Cast into the water in your zone.", "warn")
+		return
+	end
+
+	castedAt = os.clock()
 	setState("waiting")
-	spawnBobber(position)
+	Tackle.Cast(position)
 	Net.Event(Net.Events.RequestCast):FireServer(position)
 end
 
@@ -134,6 +129,7 @@ local function onBite(config)
 
 	activeCastId = config.castId
 	setState("reeling")
+	Tackle.SetTense(true)
 
 	ReelBar.Start(FishingController.gui, config, function(won)
 		if activeCastId == nil then
@@ -144,9 +140,11 @@ local function onBite(config)
 end
 
 local function onCatchResult(result)
+	local landed = Tackle.Landed()
+
 	activeCastId = nil
 	ReelBar.Cancel()
-	clearBobber()
+	Tackle.Clear(true)
 	setState("idle")
 
 	if not hud then
@@ -155,9 +153,27 @@ local function onCatchResult(result)
 
 	if result.escaped then
 		hud:Notify(result.reason == "timeout" and "It got away." or "It slipped the hook.", "bad")
-	else
-		hud:ShowCatch(result)
+		return
 	end
+
+	local tier = Rarities.Data[result.rarity]
+	local mutation = Mutations.Data[result.mutation]
+	local color = (result.mutation ~= "None" and mutation and mutation.color)
+		or (tier and tier.color)
+		or Theme.Text
+
+	CatchFx.Play(
+		landed,
+		color,
+		Rarities.IndexOf(result.rarity),
+		Mutations.IndexOf(result.mutation)
+	)
+
+	hud:ShowCatch(result)
+end
+
+function FishingController.SetZone(nextZone: string)
+	zoneId = nextZone
 end
 
 function FishingController.Start(config)
@@ -185,13 +201,13 @@ function FishingController.Start(config)
 	Net.Event(Net.Events.CatchResult).OnClientEvent:Connect(onCatchResult)
 
 	-- A cast that never resolves (server restart, dropped packet) should not
-	-- strand the player in a state where they cannot cast again.
+	-- strand the player unable to cast again.
 	task.spawn(function()
 		while true do
 			task.wait(5)
-			if state == "waiting" and bobber and os.clock() - bobberStart > 95 then
+			if state == "waiting" and os.clock() - castedAt > GameConfig.CastLifetime + 5 then
 				Net.Event(Net.Events.CancelCast):FireServer()
-				clearBobber()
+				Tackle.Clear()
 				setState("idle")
 			end
 		end
@@ -200,7 +216,8 @@ function FishingController.Start(config)
 	player.CharacterAdded:Connect(function()
 		activeCastId = nil
 		ReelBar.Cancel()
-		clearBobber()
+		Tackle.Clear()
+		CatchFx.Reset()
 		setState("idle")
 	end)
 end

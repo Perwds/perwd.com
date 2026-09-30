@@ -2,9 +2,7 @@
 -- Client bootstrap: build the UI, pull the profile once, then keep it in sync
 -- from ProfileChanged. The client renders state; it never decides it.
 
-local Lighting = game:GetService("Lighting")
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 
 local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local Net = require(Shared.Net)
@@ -12,6 +10,7 @@ local Zones = require(Shared.Config.Zones)
 
 local Hud = require(script.UI.Hud)
 local Panels = require(script.UI.Panels)
+local Atmosphere = require(script.Effects.Atmosphere)
 local FishingController = require(script.Controllers.FishingController)
 
 local player = Players.LocalPlayer
@@ -23,6 +22,8 @@ screenGui.ResetOnSpawn = false
 screenGui.IgnoreGuiInset = true
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
+
+Atmosphere.Start()
 
 local hud = Hud.new(screenGui)
 
@@ -46,30 +47,16 @@ hud.onPanelRequested = function(id)
 	panels:Open(id)
 end
 
--- Zone atmosphere ---------------------------------------------------------------
-
-local currentZone = nil
-
-local function applyZoneAtmosphere(zoneId: string)
-	if currentZone == zoneId then
-		return
-	end
-	currentZone = zoneId
-
-	local zone = Zones.Get(zoneId)
-	local info = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
-	TweenService:Create(Lighting, info, {
-		FogColor = zone.fogColor,
-		FogEnd = zoneId == "abyss" and 320 or 1600,
-		OutdoorAmbient = zone.fogColor:Lerp(Color3.new(0, 0, 0), 0.45),
-	}):Play()
-end
-
 -- Profile sync ------------------------------------------------------------------
 
+local firstProfile = true
+
 local function applyProfile(profile)
-	applyZoneAtmosphere(profile.zone)
+	-- Snap the look on the first payload, cross-fade it on every later change.
+	Atmosphere.Apply(profile.zone, firstProfile)
+	firstProfile = false
+
+	FishingController.SetZone(profile.zone)
 	hud:SetProfile(profile, Zones.Get(profile.zone).name)
 	panels:SetProfile(profile)
 end

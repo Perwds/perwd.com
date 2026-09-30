@@ -10,6 +10,7 @@ local Zones = require(Shared.Config.Zones)
 local Format = require(Shared.Util.Format)
 
 local DataService = require(script.Parent.DataService)
+local MapBuilder = require(script.Parent.Parent.World.MapBuilder)
 
 local EconomyService = {}
 
@@ -155,8 +156,9 @@ function EconomyService.TeleportToZone(player: Player, zoneId: string)
 		return
 	end
 
-	local zone = Zones.Get(zoneId)
-	root.CFrame = CFrame.new(zone.origin + Vector3.new(0, 8, zone.radius * 0.72))
+	-- Face out over the water from the head of the pier.
+	local arrival = MapBuilder.ArrivalPoint(zoneId)
+	root.CFrame = CFrame.new(arrival, arrival + Vector3.new(0, -0.2, 1))
 end
 
 function EconomyService.Start()

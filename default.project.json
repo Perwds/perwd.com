@@ -1,23 +1,23 @@
 {
   "name": "perwd-fishing-rng",
-  "globIgnorePaths": ["**/.git/**", "**/node_modules/**"],
+  "globIgnorePaths": [
+    "**/.git/**",
+    "**/node_modules/**"
+  ],
   "tree": {
     "$className": "DataModel",
-
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
       "Shared": {
         "$path": "src/shared"
       }
     },
-
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "Server": {
         "$path": "src/server"
       }
     },
-
     "StarterPlayer": {
       "$className": "StarterPlayer",
       "StarterPlayerScripts": {
@@ -27,28 +27,37 @@
         }
       }
     },
-
     "Workspace": {
       "$className": "Workspace",
       "$properties": {
-        "Gravity": 196.2
+        "Gravity": 196.2,
+        "StreamingEnabled": false
       }
     },
-
     "Lighting": {
       "$className": "Lighting",
       "$properties": {
-        "Ambient": [0, 0, 0],
-        "Brightness": 2,
-        "ClockTime": 15,
+        "Technology": "Future",
+        "GlobalShadows": true,
+        "ShadowSoftness": 0.3,
+        "Ambient": [
+          0,
+          0,
+          0
+        ],
+        "Brightness": 2.4,
+        "ClockTime": 14.4,
+        "ExposureCompensation": 0,
         "GeographicLatitude": 12,
-        "OutdoorAmbient": [90, 100, 120],
-        "EnvironmentDiffuseScale": 0.6,
-        "EnvironmentSpecularScale": 0.4,
-        "Technology": "ShadowMap"
+        "OutdoorAmbient": [
+          122,
+          134,
+          152
+        ],
+        "EnvironmentDiffuseScale": 1,
+        "EnvironmentSpecularScale": 1
       }
     },
-
     "SoundService": {
       "$className": "SoundService",
       "$properties": {

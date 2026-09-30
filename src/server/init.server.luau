@@ -15,6 +15,7 @@ local EconomyService = require(script.Services.EconomyService)
 local LeaderboardService = require(script.Services.LeaderboardService)
 local ProfileView = require(script.Services.ProfileView)
 local MapBuilder = require(script.World.MapBuilder)
+local RodModel = require(script.World.RodModel)
 
 MapBuilder.Build()
 
@@ -69,14 +70,30 @@ local function onPlayerAdded(player: Player)
 		-- Wait a beat so the character is fully assembled before moving it.
 		task.wait(0.2)
 		EconomyService.TeleportToZone(player, profile.zone)
+		RodModel.Equip(player, profile.equippedRod)
 	end)
 
 	if player.Character then
 		EconomyService.TeleportToZone(player, profile.zone)
+		RodModel.Equip(player, profile.equippedRod)
 	end
 
 	DataService.MarkChanged(player)
 end
+
+-- Swap the held rod when the equipped one changes.
+local heldRod: { [Player]: string } = {}
+
+DataService.OnChanged(function(player, profile)
+	if heldRod[player] ~= profile.equippedRod then
+		heldRod[player] = profile.equippedRod
+		RodModel.Equip(player, profile.equippedRod)
+	end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	heldRod[player] = nil
+end)
 
 DataService.OnChanged(function(player, profile)
 	local stats = player:FindFirstChild("leaderstats")

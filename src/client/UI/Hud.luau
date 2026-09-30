@@ -1,5 +1,5 @@
 --!nonstrict
--- Persistent on-screen furniture: stat header, panel buttons, the cast prompt,
+-- Persistent on-screen furniture: stat header, panel buttons, cast prompt,
 -- notifications, the rare-catch feed, and the catch card.
 
 local TweenService = game:GetService("TweenService")
@@ -16,19 +16,21 @@ local Hud = {}
 Hud.__index = Hud
 
 local PANEL_BUTTONS = {
-	{ id = "bag", text = "Bag" },
-	{ id = "rods", text = "Rods" },
-	{ id = "zones", text = "Zones" },
-	{ id = "index", text = "Index" },
-	{ id = "board", text = "Board" },
+	{ id = "bag", text = "BAG" },
+	{ id = "rods", text = "RODS" },
+	{ id = "zones", text = "ZONES" },
+	{ id = "index", text = "INDEX" },
+	{ id = "board", text = "BOARD" },
 }
+
+local HEADER_WIDTH = 286
 
 function Hud.new(screenGui: ScreenGui)
 	local self = setmetatable({}, Hud)
 	self.gui = screenGui
-	self.notifications = {}
 	self.onPanelRequested = nil
 
+	self:BuildFlash()
 	self:BuildHeader()
 	self:BuildPanelButtons()
 	self:BuildPrompt()
@@ -38,68 +40,95 @@ function Hud.new(screenGui: ScreenGui)
 	return self
 end
 
+-- Full-screen tint, used only for the genuinely rare catches.
+function Hud:BuildFlash()
+	self.flash = Widgets.Frame({
+		parent = self.gui,
+		name = "Flash",
+		size = UDim2.fromScale(1, 1),
+		color = Color3.new(1, 1, 1),
+		transparency = 1,
+		zIndex = 40,
+	})
+	self.flash.Active = false
+end
+
 -- Header ------------------------------------------------------------------------
 
 function Hud:BuildHeader()
-	local header = Widgets.Frame({
+	local header = Widgets.Glass({
 		parent = self.gui,
 		name = "Header",
-		size = UDim2.fromOffset(268, 96),
-		position = UDim2.fromOffset(16, 16),
-		color = Theme.Background,
-		transparency = 0.12,
+		size = UDim2.fromOffset(HEADER_WIDTH, 104),
+		position = UDim2.fromOffset(18, 18),
+		tint = Theme.Accent,
 	})
-	Widgets.Corner(header)
-	Widgets.Stroke(header)
-	Widgets.Padding(header, 12)
+	Widgets.Padding(header, 14)
+
+	-- Coin readout.
+	local coinDot = Widgets.Frame({
+		parent = header,
+		name = "CoinDot",
+		size = UDim2.fromOffset(14, 14),
+		position = UDim2.fromOffset(0, 7),
+		color = Color3.new(1, 1, 1),
+	})
+	Widgets.Gradient(coinDot, { Theme.Coin:Lerp(Color3.new(1, 1, 1), 0.5), Theme.Coin }, 90)
+	Widgets.Corner(coinDot, Theme.CornerPill)
 
 	self.coinLabel = Widgets.Text({
 		parent = header,
 		name = "Coins",
 		text = "0",
-		font = Theme.FontBold,
-		textSize = 22,
+		font = Theme.FontBlack,
+		textSize = 25,
 		color = Theme.Coin,
-		size = UDim2.new(1, 0, 0, 26),
+		size = UDim2.new(1, -22, 0, 28),
+		position = UDim2.fromOffset(22, 0),
+		glow = Theme.Coin,
+		glowTransparency = 0.78,
 	})
 
 	self.zoneLabel = Widgets.Text({
 		parent = header,
 		name = "Zone",
 		text = "Starter Pond",
+		font = Theme.FontMedium,
 		textSize = 12,
 		color = Theme.TextDim,
 		size = UDim2.new(1, 0, 0, 16),
-		position = UDim2.fromOffset(0, 28),
+		position = UDim2.fromOffset(0, 30),
 	})
 
 	self.levelLabel = Widgets.Text({
 		parent = header,
 		name = "Level",
-		text = "Lv 1",
-		font = Theme.FontMedium,
+		text = "LV 1",
+		font = Theme.FontBold,
 		textSize = 12,
 		size = UDim2.new(0.5, 0, 0, 16),
-		position = UDim2.fromOffset(0, 48),
+		position = UDim2.fromOffset(0, 52),
 	})
 
 	self.luckLabel = Widgets.Text({
 		parent = header,
 		name = "Luck",
-		text = "x1.00 luck",
-		font = Theme.FontMedium,
+		text = "×1.00 LUCK",
+		font = Theme.FontBold,
 		textSize = 12,
 		color = Theme.Accent,
 		align = Enum.TextXAlignment.Right,
 		size = UDim2.new(0.5, 0, 0, 16),
-		position = UDim2.new(0.5, 0, 0, 48),
+		position = UDim2.new(0.5, 0, 0, 52),
+		glow = Theme.Accent,
+		glowTransparency = 0.82,
 	})
 
 	local _, fill = Widgets.Bar({
 		parent = header,
 		name = "XpBar",
-		size = UDim2.new(1, 0, 0, 6),
-		position = UDim2.fromOffset(0, 70),
+		size = UDim2.new(1, 0, 0, 7),
+		position = UDim2.fromOffset(0, 72),
 		fillColor = Theme.Accent,
 	})
 	self.xpFill = fill
@@ -107,11 +136,11 @@ function Hud:BuildHeader()
 	self.bagLabel = Widgets.Text({
 		parent = header,
 		name = "Bag",
-		text = "Bag 0/250",
+		text = "BAG 0/250",
 		textSize = 11,
-		color = Theme.TextDim,
+		color = Theme.TextFaint,
 		size = UDim2.new(1, 0, 0, 14),
-		position = UDim2.fromOffset(0, 80),
+		position = UDim2.fromOffset(0, 84),
 	})
 end
 
@@ -119,20 +148,21 @@ function Hud:BuildPanelButtons()
 	local holder = Widgets.Frame({
 		parent = self.gui,
 		name = "PanelButtons",
-		size = UDim2.fromOffset(96, #PANEL_BUTTONS * 38),
-		position = UDim2.new(0, 16, 0, 128),
-		color = Theme.Background,
+		size = UDim2.fromOffset(104, #PANEL_BUTTONS * 40),
+		position = UDim2.fromOffset(18, 136),
 		transparency = 1,
 	})
-	Widgets.List(holder, 6)
+	Widgets.List(holder, 7)
 
 	for order, entry in PANEL_BUTTONS do
 		Widgets.Button({
 			parent = holder,
 			name = entry.id,
 			text = entry.text,
+			textSize = 12,
 			order = order,
-			size = UDim2.fromOffset(96, 32),
+			size = UDim2.fromOffset(104, 33),
+			color = Theme.PanelRaised,
 			onClick = function()
 				if self.onPanelRequested then
 					self.onPanelRequested(entry.id)
@@ -145,23 +175,20 @@ end
 -- Cast prompt --------------------------------------------------------------------
 
 function Hud:BuildPrompt()
-	local prompt = Widgets.Frame({
+	local prompt = Widgets.Glass({
 		parent = self.gui,
 		name = "Prompt",
-		size = UDim2.fromOffset(340, 38),
-		position = UDim2.new(0.5, 0, 1, -48),
+		size = UDim2.fromOffset(330, 40),
+		position = UDim2.new(0.5, 0, 1, -42),
 		anchor = Vector2.new(0.5, 1),
-		color = Theme.Background,
-		transparency = 0.2,
+		corner = Theme.CornerPill,
 	})
-	Widgets.Corner(prompt)
-	Widgets.Stroke(prompt)
 
 	self.promptLabel = Widgets.Text({
 		parent = prompt,
 		name = "Label",
 		text = "Click the water to cast",
-		font = Theme.FontMedium,
+		font = Theme.FontBold,
 		textSize = 14,
 		align = Enum.TextXAlignment.Center,
 	})
@@ -180,13 +207,14 @@ function Hud:BuildNotifications()
 	local holder = Widgets.Frame({
 		parent = self.gui,
 		name = "Notifications",
-		size = UDim2.fromOffset(320, 180),
-		position = UDim2.new(0.5, 0, 0, 16),
+		size = UDim2.fromOffset(340, 200),
+		position = UDim2.new(0.5, 0, 0, 18),
 		anchor = Vector2.new(0.5, 0),
 		transparency = 1,
+		zIndex = 20,
 	})
 
-	local layout = Widgets.List(holder, 6)
+	local layout = Widgets.List(holder, 7)
 	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 	self.notifyHolder = holder
@@ -195,15 +223,14 @@ end
 function Hud:Notify(text: string, kind: string?)
 	local color = Theme.NotifyColors[kind or "info"] or Theme.Accent
 
-	local card = Widgets.Frame({
+	local card = Widgets.Glass({
 		parent = self.notifyHolder,
 		name = "Notification",
-		size = UDim2.fromOffset(300, 32),
-		color = Theme.Background,
-		transparency = 0.1,
+		size = UDim2.fromOffset(318, 34),
+		corner = Theme.CornerSmall,
+		tint = color,
+		zIndex = 20,
 	})
-	Widgets.Corner(card, Theme.CornerSmall)
-	Widgets.Stroke(card, color)
 
 	Widgets.Text({
 		parent = card,
@@ -214,10 +241,19 @@ function Hud:Notify(text: string, kind: string?)
 		align = Enum.TextXAlignment.Center,
 	})
 
+	Widgets.PopIn(card, 0.9)
+
 	task.delay(3.2, function()
 		if card.Parent then
 			Widgets.Tween(card, 0.25, { BackgroundTransparency = 1 })
-			task.wait(0.25)
+			for _, child in card:GetDescendants() do
+				if child:IsA("TextLabel") then
+					Widgets.Tween(child, 0.25, { TextTransparency = 1 })
+				elseif child:IsA("UIStroke") then
+					Widgets.Tween(child, 0.25, { Transparency = 1 })
+				end
+			end
+			task.wait(0.28)
 			card:Destroy()
 		end
 	end)
@@ -229,44 +265,49 @@ function Hud:BuildFeed()
 	local holder = Widgets.Frame({
 		parent = self.gui,
 		name = "Feed",
-		size = UDim2.fromOffset(300, 150),
-		position = UDim2.new(0, 16, 1, -16),
+		size = UDim2.fromOffset(330, 170),
+		position = UDim2.new(0, 18, 1, -18),
 		anchor = Vector2.new(0, 1),
 		transparency = 1,
 	})
 
-	local layout = Widgets.List(holder, 4)
+	local layout = Widgets.List(holder, 5)
 	layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-
+	self.feedLayout = layout
 	self.feedHolder = holder
 end
 
 function Hud:SetFeed(entries)
-	self.feedHolder:ClearAllChildren()
-	Widgets.List(self.feedHolder, 4).VerticalAlignment = Enum.VerticalAlignment.Bottom
+	for _, child in self.feedHolder:GetChildren() do
+		if not child:IsA("UIListLayout") then
+			child:Destroy()
+		end
+	end
 
-	-- Newest at the bottom, oldest trimmed off the top.
 	local start = math.max(#entries - 5, 0) + 1
 	for index = start, #entries do
 		local entry = entries[index]
 		local tier = Rarities.Data[entry.rarity]
-		local color = tier and tier.color or Theme.Text
+		local mutation = Mutations.Data[entry.mutation]
+		local color = (mutation and entry.mutation ~= "None" and mutation.color)
+			or (tier and tier.color)
+			or Theme.Text
 
-		local row = Widgets.Frame({
+		local row = Widgets.Glass({
 			parent = self.feedHolder,
 			name = "FeedRow",
-			size = UDim2.fromOffset(300, 22),
-			color = Theme.Background,
-			transparency = 0.35,
+			size = UDim2.fromOffset(330, 26),
+			corner = Theme.CornerSmall,
+			tint = color,
+			transparency = 0.18,
 			order = index,
 		})
-		Widgets.Corner(row, Theme.CornerSmall)
-		Widgets.Padding(row, 6)
+		Widgets.Padding(row, 4, 9)
 
 		Widgets.Text({
 			parent = row,
 			text = string.format(
-				'<font color="#%s">%s</font>  caught  <font color="#%s">%s</font>',
+				'<font color="#%s">%s</font>  hooked  <font color="#%s"><b>%s</b></font>',
 				Theme.TextDim:ToHex(),
 				entry.player,
 				color:ToHex(),
@@ -288,85 +329,140 @@ function Hud:ShowCatch(result)
 
 	local tier = Rarities.Data[result.rarity]
 	local mutation = Mutations.Data[result.mutation]
-	local color = (mutation and result.mutation ~= "None" and mutation.color)
-		or (tier and tier.color)
-		or Theme.Text
+	local mutated = result.mutation ~= "None"
+	local color = (mutated and mutation and mutation.color) or (tier and tier.color) or Theme.Text
 
-	local card = Widgets.Frame({
+	local rarityIndex = Rarities.IndexOf(result.rarity)
+	local mutationIndex = Mutations.IndexOf(result.mutation)
+	local peak = math.max(rarityIndex, mutationIndex)
+
+	local card = Widgets.Glass({
 		parent = self.gui,
 		name = "CatchCard",
-		size = UDim2.fromOffset(300, 128),
-		position = UDim2.new(0.5, 0, 0.5, 40),
+		size = UDim2.fromOffset(326, 146),
+		position = UDim2.new(0.5, 0, 0.5, 96),
 		anchor = Vector2.new(0.5, 0.5),
-		color = Theme.Background,
-		transparency = 0.08,
+		tint = color,
+		strokeThickness = 2,
+		zIndex = 30,
 	})
-	Widgets.Corner(card)
-	Widgets.Stroke(card, color, 2)
-	Widgets.Padding(card, 12)
+	Widgets.Padding(card, 14)
 	self.catchCard = card
+
+	-- A light sweep across the card. Only for the top tiers, where it reads as
+	-- an event rather than noise.
+	if peak >= 6 then
+		local sweep = Widgets.Frame({
+			parent = card,
+			name = "Sweep",
+			size = UDim2.fromScale(1, 1),
+			color = Color3.new(1, 1, 1),
+			transparency = 0.86,
+			zIndex = 1,
+		})
+		Widgets.Corner(sweep, Theme.Corner)
+
+		local gradient = Widgets.Gradient(sweep, { color, color }, 18, NumberSequence.new({
+			NumberSequenceKeypoint.new(0, 1),
+			NumberSequenceKeypoint.new(0.45, 0.55),
+			NumberSequenceKeypoint.new(0.5, 0.35),
+			NumberSequenceKeypoint.new(0.55, 0.55),
+			NumberSequenceKeypoint.new(1, 1),
+		}))
+		gradient.Offset = Vector2.new(-1, 0)
+
+		TweenService:Create(
+			gradient,
+			TweenInfo.new(1.6, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, -1),
+			{ Offset = Vector2.new(1, 0) }
+		):Play()
+	end
 
 	Widgets.Text({
 		parent = card,
 		text = result.name,
-		font = Theme.FontBold,
-		textSize = 19,
+		font = Theme.FontBlack,
+		textSize = 21,
 		color = color,
 		align = Enum.TextXAlignment.Center,
-		size = UDim2.new(1, 0, 0, 24),
+		size = UDim2.new(1, 0, 0, 26),
+		zIndex = 3,
+		glow = color,
+		glowTransparency = peak >= 5 and 0.45 or 0.75,
 	})
 
 	Widgets.Text({
 		parent = card,
-		text = string.format("%s · %s", result.rarity, Format.Odds(result.odds)),
-		font = Theme.FontMedium,
-		textSize = 12,
+		text = string.format(
+			"%s%s  ·  %s",
+			mutated and (string.upper(result.mutation) .. "  ·  ") or "",
+			string.upper(result.rarity),
+			Format.Odds(result.odds)
+		),
+		font = Theme.FontBold,
+		textSize = 11,
 		color = Theme.TextDim,
 		align = Enum.TextXAlignment.Center,
-		size = UDim2.new(1, 0, 0, 16),
-		position = UDim2.fromOffset(0, 28),
+		size = UDim2.new(1, 0, 0, 14),
+		position = UDim2.fromOffset(0, 30),
+		zIndex = 3,
 	})
 
 	Widgets.Text({
 		parent = card,
 		text = Format.Weight(result.weight),
 		font = Theme.FontMedium,
-		textSize = 14,
+		textSize = 15,
 		align = Enum.TextXAlignment.Center,
-		size = UDim2.new(1, 0, 0, 18),
-		position = UDim2.fromOffset(0, 50),
+		size = UDim2.new(1, 0, 0, 20),
+		position = UDim2.fromOffset(0, 52),
+		zIndex = 3,
 	})
 
 	Widgets.Text({
 		parent = card,
-		text = string.format("+%s coins", Format.Commas(result.value)),
-		font = Theme.FontBold,
-		textSize = 16,
+		text = string.format("+%s", Format.Commas(result.value)),
+		font = Theme.FontBlack,
+		textSize = 19,
 		color = Theme.Coin,
 		align = Enum.TextXAlignment.Center,
-		size = UDim2.new(1, 0, 0, 20),
-		position = UDim2.fromOffset(0, 72),
+		size = UDim2.new(1, 0, 0, 24),
+		position = UDim2.fromOffset(0, 76),
+		zIndex = 3,
+		glow = Theme.Coin,
+		glowTransparency = 0.7,
 	})
 
-	if result.autoSold then
-		Widgets.Text({
-			parent = card,
-			text = "bag full — sold automatically",
-			textSize = 11,
-			color = Theme.Warn,
-			align = Enum.TextXAlignment.Center,
-			size = UDim2.new(1, 0, 0, 14),
-			position = UDim2.fromOffset(0, 92),
-		})
+	Widgets.Text({
+		parent = card,
+		text = result.autoSold and "bag full — sold automatically" or "added to your bag",
+		textSize = 11,
+		color = result.autoSold and Theme.Warn or Theme.TextFaint,
+		align = Enum.TextXAlignment.Center,
+		size = UDim2.new(1, 0, 0, 14),
+		position = UDim2.fromOffset(0, 102),
+		zIndex = 3,
+	})
+
+	Widgets.PopIn(card, 0.8)
+
+	if peak >= 6 then
+		self:Flash(color, 0.16 + (peak - 6) * 0.06)
 	end
 
-	card.BackgroundTransparency = 1
-	TweenService:Create(card, TweenInfo.new(0.18), { BackgroundTransparency = 0.08 }):Play()
-
-	task.delay(3.4, function()
+	task.delay(3.6, function()
 		if card.Parent then
 			Widgets.Tween(card, 0.3, { BackgroundTransparency = 1 })
-			task.wait(0.3)
+			for _, child in card:GetDescendants() do
+				if child:IsA("TextLabel") then
+					Widgets.Tween(child, 0.3, { TextTransparency = 1 })
+				elseif child:IsA("UIStroke") then
+					Widgets.Tween(child, 0.3, { Transparency = 1 })
+				elseif child:IsA("Frame") then
+					Widgets.Tween(child, 0.3, { BackgroundTransparency = 1 })
+				end
+			end
+			task.wait(0.34)
 			card:Destroy()
 			if self.catchCard == card then
 				self.catchCard = nil
@@ -375,22 +471,28 @@ function Hud:ShowCatch(result)
 	end)
 end
 
+function Hud:Flash(color: Color3, strength: number)
+	self.flash.BackgroundColor3 = color
+	self.flash.BackgroundTransparency = 1 - math.clamp(strength, 0, 0.5)
+	Widgets.Tween(self.flash, 0.75, { BackgroundTransparency = 1 })
+end
+
 -- Stats --------------------------------------------------------------------
 
 function Hud:SetProfile(profile, zoneName: string)
 	self.coinLabel.Text = Format.Commas(profile.coins)
 	self.zoneLabel.Text = zoneName
-	self.levelLabel.Text = string.format("Lv %d", profile.level)
-	self.luckLabel.Text = string.format("x%.2f luck", profile.luck)
+	self.levelLabel.Text = string.format("LV %d", profile.level)
+	self.luckLabel.Text = string.format("×%.2f LUCK", profile.luck)
 	self.bagLabel.Text = string.format(
-		"Bag %d/%d · worth %s",
+		"BAG %d/%d  ·  WORTH %s",
 		#profile.inventory,
 		profile.bagLimit,
 		Format.Abbreviate(profile.bagValue)
 	)
 
 	local ratio = profile.xpForLevel > 0 and profile.xpInLevel / profile.xpForLevel or 0
-	Widgets.Tween(self.xpFill, 0.2, { Size = UDim2.fromScale(math.clamp(ratio, 0, 1), 1) })
+	Widgets.Tween(self.xpFill, 0.3, { Size = UDim2.fromScale(math.clamp(ratio, 0, 1), 1) })
 end
 
 return Hud

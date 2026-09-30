@@ -73,72 +73,93 @@ function ReelBar.Start(parent: ScreenGui, config, onFinished: (boolean) -> ())
 end
 
 function ReelBar:BuildUi(parent: ScreenGui)
-	local root = Widgets.Frame({
+	local root = Widgets.Glass({
 		parent = parent,
 		name = "ReelBar",
-		size = UDim2.fromOffset(TRACK_WIDTH + 96, TRACK_HEIGHT + 56),
-		position = UDim2.new(1, -40, 0.5, 0),
+		size = UDim2.fromOffset(TRACK_WIDTH + 104, TRACK_HEIGHT + 68),
+		position = UDim2.new(1, -34, 0.5, 0),
 		anchor = Vector2.new(1, 0.5),
-		color = Theme.Background,
-		transparency = 0.15,
+		tint = Theme.Accent,
+		strokeThickness = 1.8,
+		zIndex = 10,
 	})
-	Widgets.Corner(root)
-	Widgets.Stroke(root)
 	self.root = root
+	Widgets.PopIn(root, 0.88)
 
 	Widgets.Text({
 		parent = root,
 		text = "REEL IT IN",
-		font = Theme.FontBold,
-		textSize = 13,
+		font = Theme.FontBlack,
+		textSize = 12,
 		color = Theme.TextDim,
 		align = Enum.TextXAlignment.Center,
-		size = UDim2.new(1, 0, 0, 28),
+		size = UDim2.new(1, 0, 0, 30),
 	})
 
-	-- The track the fish swims in ---------------------------------------------
+	-- The track the fish swims in.
 	local track = Widgets.Frame({
 		parent = root,
 		name = "Track",
 		size = UDim2.fromOffset(TRACK_WIDTH, TRACK_HEIGHT),
-		position = UDim2.new(0, 16, 0, 40),
-		color = Theme.Panel,
+		position = UDim2.new(0, 18, 0, 46),
+		color = Color3.new(1, 1, 1),
+		transparency = 0.08,
+		clip = true,
+		zIndex = 2,
 	})
+	Widgets.Gradient(track, { Theme.Background, Theme.Panel }, 90)
 	Widgets.Corner(track)
-	Widgets.Stroke(track)
+	local trackStroke = Widgets.Stroke(track, nil, 1.2)
+	Widgets.StrokeGradient(trackStroke)
 	self.track = track
 
+	-- The player's catch bar.
 	self.catchBar = Widgets.Frame({
 		parent = track,
 		name = "CatchBar",
-		size = UDim2.new(1, -8, self.barSize, 0),
+		size = UDim2.new(1, -10, self.barSize, 0),
 		position = UDim2.new(0.5, 0, 0.5, 0),
 		anchor = Vector2.new(0.5, 0.5),
-		color = Theme.Good,
-		transparency = 0.55,
+		color = Color3.new(1, 1, 1),
+		transparency = 0.38,
+		zIndex = 3,
 	})
+	self.catchGradient = Widgets.Gradient(
+		self.catchBar,
+		{ Theme.Good:Lerp(Color3.new(1, 1, 1), 0.4), Theme.Good },
+		90
+	)
 	Widgets.Corner(self.catchBar, Theme.CornerSmall)
+	self.catchStroke = Widgets.Stroke(self.catchBar, Theme.Good, 1.6)
 
+	-- The fish.
 	self.fish = Widgets.Frame({
 		parent = track,
 		name = "Fish",
-		size = UDim2.fromOffset(TRACK_WIDTH - 22, 18),
+		size = UDim2.fromOffset(TRACK_WIDTH - 26, 16),
 		position = UDim2.new(0.5, 0, 0.5, 0),
 		anchor = Vector2.new(0.5, 0.5),
-		color = Theme.Text,
+		color = Color3.new(1, 1, 1),
+		zIndex = 5,
 	})
-	Widgets.Corner(self.fish, Theme.CornerSmall)
+	Widgets.Gradient(self.fish, { Color3.fromRGB(255, 255, 255), Color3.fromRGB(198, 214, 240) }, 90)
+	Widgets.Corner(self.fish, Theme.CornerPill)
+	self.fishStroke = Widgets.Stroke(self.fish, Theme.Text, 1.4)
 
-	-- Progress meter ----------------------------------------------------------
+	-- Progress meter.
 	local meter = Widgets.Frame({
 		parent = root,
 		name = "Meter",
-		size = UDim2.fromOffset(18, TRACK_HEIGHT),
-		position = UDim2.new(0, TRACK_WIDTH + 34, 0, 40),
-		color = Theme.Panel,
+		size = UDim2.fromOffset(20, TRACK_HEIGHT),
+		position = UDim2.new(0, TRACK_WIDTH + 40, 0, 46),
+		color = Color3.new(1, 1, 1),
+		transparency = 0.08,
+		clip = true,
+		zIndex = 2,
 	})
+	Widgets.Gradient(meter, { Theme.Background, Theme.Panel }, 90)
 	Widgets.Corner(meter, Theme.CornerSmall)
-	Widgets.Stroke(meter)
+	Widgets.StrokeGradient(Widgets.Stroke(meter, nil, 1.2))
 
 	self.meterFill = Widgets.Frame({
 		parent = meter,
@@ -146,18 +167,25 @@ function ReelBar:BuildUi(parent: ScreenGui)
 		size = UDim2.fromScale(1, START_PROGRESS),
 		position = UDim2.fromScale(0, 1),
 		anchor = Vector2.new(0, 1),
-		color = Theme.Accent,
+		color = Color3.new(1, 1, 1),
+		zIndex = 3,
 	})
+	self.meterGradient = Widgets.Gradient(
+		self.meterFill,
+		{ Theme.Accent:Lerp(Color3.new(1, 1, 1), 0.4), Theme.Accent },
+		90
+	)
 	Widgets.Corner(self.meterFill, Theme.CornerSmall)
 
 	self.hint = Widgets.Text({
 		parent = root,
 		text = "hold to reel",
+		font = Theme.FontMedium,
 		textSize = 11,
-		color = Theme.TextDim,
+		color = Theme.TextFaint,
 		align = Enum.TextXAlignment.Center,
 		size = UDim2.new(1, 0, 0, 16),
-		position = UDim2.new(0, 0, 1, -20),
+		position = UDim2.new(0, 0, 1, -24),
 	})
 end
 
@@ -235,8 +263,17 @@ function ReelBar:Render(inside: boolean)
 	self.meterFill.Size = UDim2.fromScale(1, self.progress)
 
 	local color = inside and Theme.Good or Theme.Bad
-	self.catchBar.BackgroundColor3 = color
-	self.meterFill.BackgroundColor3 = inside and Theme.Good or Theme.Warn
+	self.catchGradient.Color = ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), 0.4), color)
+	self.catchStroke.Color = color
+	-- Tightens up when you are on the fish, loosens when you are losing it.
+	self.catchStroke.Transparency = inside and 0 or 0.45
+	self.catchBar.BackgroundTransparency = inside and 0.3 or 0.48
+
+	local meterColor = inside and Theme.Good or Theme.Warn
+	self.meterGradient.Color =
+		ColorSequence.new(meterColor:Lerp(Color3.new(1, 1, 1), 0.4), meterColor)
+
+	self.fishStroke.Color = inside and Theme.Good or Theme.Text
 end
 
 function ReelBar:Finish(won: boolean)
