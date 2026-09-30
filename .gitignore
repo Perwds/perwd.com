@@ -1,0 +1,25 @@
+# ---------------------------------------------------------------------------
+# SECRETS — never commit these. This repository is PUBLIC.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+**/apikey*
+**/api_key*
+
+# Roblox build output
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+*.rbxl.lock
+build/
+out/
+
+# Tooling
+node_modules/
+.DS_Store
+sourcemap.json

@@ -1,0 +1,59 @@
+{
+  "name": "perwd-fishing-rng",
+  "globIgnorePaths": ["**/.git/**", "**/node_modules/**"],
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    },
+
+    "Workspace": {
+      "$className": "Workspace",
+      "$properties": {
+        "Gravity": 196.2
+      }
+    },
+
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "Ambient": [0, 0, 0],
+        "Brightness": 2,
+        "ClockTime": 15,
+        "GeographicLatitude": 12,
+        "OutdoorAmbient": [90, 100, 120],
+        "EnvironmentDiffuseScale": 0.6,
+        "EnvironmentSpecularScale": 0.4,
+        "Technology": "ShadowMap"
+      }
+    },
+
+    "SoundService": {
+      "$className": "SoundService",
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+}
