@@ -29,15 +29,36 @@ experience only, and set an IP allowlist if you can.
 
 ## Running it
 
+### Straight into Studio, nothing to install
+
+```bash
+python3 scripts/build_place.py    # -> build/perwd-fishing.rbxlx
+```
+
+Double-click the `.rbxlx`. Studio opens it with the whole game in place; press
+Play. Then **Lighting → Technology → Future** — that one property is an enum
+token the builder deliberately does not guess, and the game is built around
+Future lighting.
+
+To put it online: **File → Publish to Roblox As…**, fill in a name, publish.
+That creates the experience and gives you its link. Open Cloud cannot create an
+experience, only update one, so this first publish has to happen in Studio.
+
+### The actual development loop
+
 ```bash
 aftman install                    # rojo, selene, stylua
 rojo serve                        # then connect from Roblox Studio
 ```
 
 Sync into a new baseplate and press Play. There is nothing to place by hand —
-the server builds the map, the remotes, and the UI on boot.
+the server builds the map, the remotes, and the UI on boot. Rojo live-syncs as
+you edit, which `build_place.py` does not; that script is a one-shot subset of
+Rojo for getting the game into Studio without a toolchain.
 
-To publish:
+### Publishing updates after that
+
+Once the experience exists, later builds can go up without opening Studio:
 
 ```bash
 cp .env.example .env              # then fill in your own credentials
@@ -45,9 +66,8 @@ node scripts/publish.mjs          # build + publish live
 node scripts/publish.mjs --saved  # build + save a version without going live
 ```
 
-Publishing needs an existing experience. Open Cloud updates a place, it cannot
-create one — make the experience once in Studio or on the creator dashboard, then
-take its universe and place ids from the URL.
+The universe and place ids are in the experience's URL on the creator dashboard.
+This path needs Rojo, since it builds the place before uploading.
 
 ---
 
@@ -203,7 +223,8 @@ src/client/
 
 tests/               runs the shared modules outside Roblox
 preview/             browser reproduction of the UI, plus the species sheet
-scripts/             config export, preview and sheet builds, Open Cloud publish
+scripts/             place build, config export, preview and sheet builds,
+                     Open Cloud publish
 ```
 
 ### How a catch works
