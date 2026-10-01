@@ -12,6 +12,7 @@ local Format = require(Shared.Util.Format)
 local Theme = require(script.Parent.Theme)
 local Widgets = require(script.Parent.Widgets)
 local HudScale = require(script.Parent.HudScale)
+local FishView = require(script.Parent.FishView)
 
 local Hud = {}
 Hud.__index = Hud
@@ -345,7 +346,7 @@ function Hud:ShowCatch(result)
 	local card = Widgets.Glass({
 		parent = self.gui,
 		name = "CatchCard",
-		size = UDim2.fromOffset(326, 146),
+		size = UDim2.fromOffset(330, 236),
 		position = UDim2.new(0.5, 0, 0.5, 96),
 		anchor = Vector2.new(0.5, 0.5),
 		tint = color,
@@ -385,6 +386,21 @@ function Hud:ShowCatch(result)
 		):Play()
 	end
 
+	-- The fish itself, slowly turning.
+	FishView.Create({
+		parent = card,
+		name = "Catch",
+		fishId = result.fishId,
+		mutation = result.mutation,
+		weight = result.weight,
+		size = UDim2.new(1, 0, 0, 100),
+		position = UDim2.fromOffset(0, 2),
+		spin = true,
+		spinSpeed = 0.55,
+		tint = color,
+		zIndex = 3,
+	})
+
 	Widgets.Text({
 		parent = card,
 		text = result.name,
@@ -393,6 +409,7 @@ function Hud:ShowCatch(result)
 		color = color,
 		align = Enum.TextXAlignment.Center,
 		size = UDim2.new(1, 0, 0, 26),
+		position = UDim2.fromOffset(0, 108),
 		zIndex = 3,
 		glow = color,
 		glowTransparency = peak >= 5 and 0.45 or 0.75,
@@ -411,7 +428,7 @@ function Hud:ShowCatch(result)
 		color = Theme.TextDim,
 		align = Enum.TextXAlignment.Center,
 		size = UDim2.new(1, 0, 0, 14),
-		position = UDim2.fromOffset(0, 30),
+		position = UDim2.fromOffset(0, 138),
 		zIndex = 3,
 	})
 
@@ -422,7 +439,7 @@ function Hud:ShowCatch(result)
 		textSize = 15,
 		align = Enum.TextXAlignment.Center,
 		size = UDim2.new(1, 0, 0, 20),
-		position = UDim2.fromOffset(0, 52),
+		position = UDim2.fromOffset(0, 158),
 		zIndex = 3,
 	})
 
@@ -434,7 +451,7 @@ function Hud:ShowCatch(result)
 		color = Theme.Coin,
 		align = Enum.TextXAlignment.Center,
 		size = UDim2.new(1, 0, 0, 24),
-		position = UDim2.fromOffset(0, 76),
+		position = UDim2.fromOffset(0, 182),
 		zIndex = 3,
 		glow = Theme.Coin,
 		glowTransparency = 0.7,
@@ -447,7 +464,7 @@ function Hud:ShowCatch(result)
 		color = result.autoSold and Theme.Warn or Theme.TextFaint,
 		align = Enum.TextXAlignment.Center,
 		size = UDim2.new(1, 0, 0, 14),
-		position = UDim2.fromOffset(0, 102),
+		position = UDim2.fromOffset(0, 208),
 		zIndex = 3,
 	})
 

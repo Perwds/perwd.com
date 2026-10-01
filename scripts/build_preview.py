@@ -18,16 +18,24 @@ ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "preview" / "template.html"
 OUTPUT = ROOT / "preview" / "index.html"
 
-PLACEHOLDER = "__GAME_DATA__"
+DATA_PLACEHOLDER = "__GAME_DATA__"
+SVG_PLACEHOLDER = "__FISH_SVG__"
+FISH_SVG = ROOT / "preview" / "fish-svg.js"
 
 
 def main() -> None:
     template = TEMPLATE.read_text()
-    if PLACEHOLDER not in template:
-        raise SystemExit(f"{TEMPLATE} is missing the {PLACEHOLDER} placeholder")
+    for placeholder in (DATA_PLACEHOLDER, SVG_PLACEHOLDER):
+        if placeholder not in template:
+            raise SystemExit(f"{TEMPLATE} is missing the {placeholder} placeholder")
 
     data = json.dumps(export(), separators=(",", ":"))
-    OUTPUT.write_text(template.replace(PLACEHOLDER, data))
+    page = template.replace(DATA_PLACEHOLDER, data)
+    # The silhouette module is shared with the static sheet generator; its
+    # CommonJS export tail is meaningless in a browser, so drop it.
+    svg = FISH_SVG.read_text().split("if (typeof module !==")[0].rstrip()
+    page = page.replace(SVG_PLACEHOLDER, svg)
+    OUTPUT.write_text(page)
 
     print(f"wrote {OUTPUT.relative_to(ROOT)} ({len(OUTPUT.read_text()) / 1024:.0f} KB)")
 

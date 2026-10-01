@@ -20,6 +20,7 @@ local CatchRoll = require(Shared.CatchRoll)
 local Format = require(Shared.Util.Format)
 
 local DataService = require(script.Parent.DataService)
+local Trophy = require(script.Parent.Parent.World.Trophy)
 
 local MAX_CAST_DISTANCE = 140
 
@@ -117,6 +118,7 @@ local function award(player: Player, catch)
 	end
 
 	DataService.MarkChanged(player)
+	Trophy.Show(player, catch.fishId, catch.mutation, catch.weight)
 
 	Net.Event(Net.Events.CatchResult):FireClient(player, {
 		escaped = false,

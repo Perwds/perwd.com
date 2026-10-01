@@ -221,6 +221,41 @@
   .zone-card dt { color: var(--fg-faint); }
   .zone-card dd { margin: 0; text-align: right; color: var(--fg-dim); }
 
+  .zone-group { margin-top: 26px; }
+  .zone-group > h3 {
+    margin: 0 0 12px;
+    font: 700 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase;
+    color: var(--fg-faint);
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .zone-group > h3 i { flex: 1; height: 1px; background: var(--rule); }
+
+  .species {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .fishcard {
+    background: var(--page-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 10px 11px 11px;
+    min-width: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .fishcard .art {
+    height: 76px; margin: -4px 0 2px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fishcard .art svg { max-width: 100%; height: auto; }
+  .fishcard .nm { font-size: 12px; font-weight: 700; line-height: 1.25; }
+  .fishcard .meta {
+    font: 500 9.5px/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .fishcard .meta i { width: 6px; height: 6px; border-radius: 2px; flex: none; }
+  .fishcard .kg { font: 400 9.5px/1.4 var(--mono); color: var(--fg-faint); }
+
   footer { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--rule); font: 400 11.5px/1.7 var(--mono); color: var(--fg-faint); }
   footer code { color: var(--fg-dim); }
 
@@ -228,6 +263,15 @@
     * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
   }
 </style>
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <defs>
+    <filter id="fish-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+</svg>
 
 <div class="wrap">
   <header>
@@ -237,7 +281,8 @@
       builds them. The rarity rolls, luck maths and coin values come straight out
       of <code>src/shared/Config</code>, so what you see here is what the game does.
       Tap the water to cast, then hold anywhere to reel. The screen picker runs
-      the game's own HUD scaling, so pick a phone to see what a phone gets.
+      the game's own HUD scaling, so pick a phone to see what a phone gets, and
+      every species is drawn further down.
     </p>
   </header>
 
@@ -301,6 +346,22 @@
       colour grade. Swatches are the actual values the client tweens to.
     </p>
     <div class="zone-cards" id="zone-cards"></div>
+  </section>
+
+  <section>
+    <h2>Every species</h2>
+    <p class="note">
+      All 55, drawn from each one's own colour and silhouette archetype — the
+      same eight archetypes the game assembles out of primitives, so no fish
+      needs an uploaded model. Switch the mutation to see what the rare rolls
+      repaint: Golden turns the whole fish to gold metal, Void makes it
+      something that should not exist.
+    </p>
+    <div class="controls">
+      <span class="label">Mutation</span>
+      <div class="seg" id="mutation-tabs"></div>
+    </div>
+    <div id="species"></div>
   </section>
 
   <section>
@@ -385,6 +446,9 @@ const DEVICES = [
 ];
 
 // Pools, mirroring Fish.luau's build step.
+const FISH_BY_ID = {};
+for (const fish of FISH) FISH_BY_ID[fish.id] = fish;
+
 const POOL = {}, TIERS = {};
 for (const fish of FISH) {
   (POOL[fish.zone] ??= {});
@@ -487,6 +551,8 @@ function rollCatch(zoneId, luck) {
 }
 const catchColor = (c) => c.mutation !== "None" ? MUTATIONS[c.mutation].color : RARITIES[c.rarity].color;
 
+__FISH_SVG__
+
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
@@ -506,6 +572,7 @@ const state = {
   bobber: null,
   ripples: [],
   cardTier: null,
+  speciesMutation: "None",
 };
 
 const vp = () => state.device;
@@ -662,7 +729,7 @@ function buildCatchCard(result) {
   const coin = { r: 255, g: 202, b: 84 };
   const peak = Math.max(result.rarityIndex, result.mutationIndex);
 
-  const card = glassPanel({ w: 326, h: 146, radius: 14, tint: color });
+  const card = glassPanel({ w: 330, h: 236, radius: 14, tint: color });
   card.style.boxShadow = `inset 0 0 0 2px ${rgba(color, .8)}, 0 18px 50px -20px ${rgba(color, .5)}`;
 
   if (peak >= 6) {
@@ -678,14 +745,26 @@ function buildCatchCard(result) {
     card.appendChild(sweep);
   }
 
-  hudText(card, { text: result.name, x: 14, y: 14, w: 298, h: 26, size: 21, weight: 900, color: css(color), align: "center", glow: color, glowAlpha: peak >= 5 ? .45 : .75 });
+  // The fish itself, which is the whole point of the card.
+  const record = FISH_BY_ID[result.fishId];
+  if (record) {
+    const art = el("div", "", {
+      position: "absolute", left: "0", top: "6px", width: "330px", height: "100px",
+      display: "flex", alignItems: "center", justifyContent: "center", zIndex: "3",
+      animation: "bob 3.4s ease-in-out infinite",
+    });
+    art.innerHTML = fishSvg(record, result.mutation, 212, 127);
+    card.appendChild(art);
+  }
+
+  hudText(card, { text: result.name, x: 14, y: 108, w: 302, h: 26, size: 21, weight: 900, color: css(color), align: "center", glow: color, glowAlpha: peak >= 5 ? .45 : .75 });
   hudText(card, {
     text: `${result.mutation !== "None" ? result.mutation.toUpperCase() + " &nbsp;·&nbsp; " : ""}${result.rarity.toUpperCase()} &nbsp;·&nbsp; ${fmtOdds(result.odds)}`,
-    x: 14, y: 44, w: 298, h: 14, size: 11, weight: 700, color: "var(--fg-dim)", align: "center",
+    x: 14, y: 138, w: 302, h: 14, size: 11, weight: 700, color: "var(--fg-dim)", align: "center",
   });
-  hudText(card, { text: fmtWeight(result.weight), x: 14, y: 66, w: 298, h: 20, size: 15, weight: 500, align: "center" });
-  hudText(card, { text: `+${commas(result.value)}`, x: 14, y: 90, w: 298, h: 24, size: 19, weight: 900, color: "var(--coin)", align: "center", glow: coin, glowAlpha: .7 });
-  hudText(card, { text: "added to your bag", x: 14, y: 116, w: 298, h: 14, size: 11, weight: 500, color: "var(--fg-faint)", align: "center" });
+  hudText(card, { text: fmtWeight(result.weight), x: 14, y: 158, w: 302, h: 20, size: 15, weight: 500, align: "center" });
+  hudText(card, { text: `+${commas(result.value)}`, x: 14, y: 182, w: 302, h: 24, size: 19, weight: 900, color: "var(--coin)", align: "center", glow: coin, glowAlpha: .7 });
+  hudText(card, { text: "added to your bag", x: 14, y: 208, w: 302, h: 14, size: 11, weight: 500, color: "var(--fg-faint)", align: "center" });
 
   requestAnimationFrame(() => {
     const base = card._base ?? "";
@@ -1203,7 +1282,7 @@ function finishReel(won) {
 function showCatch(result) {
   if (cardEl) cardEl.remove();
   cardEl = buildCatchCard(result);
-  place(cardEl, 0.5, 0.5, vp().w / 2, vp().h / 2 + 96 * hudScale());
+  place(cardEl, 0.5, 0.5, vp().w / 2, vp().h / 2 + 60 * hudScale());
   cardEl.style.zIndex = "30";
   hud.appendChild(cardEl);
 
@@ -1257,6 +1336,7 @@ function sampleAt(rarity) {
   const [minKg, maxKg] = record.kg;
   const weight = minKg + (maxKg - minKg) * 0.62;
   return {
+    fishId: record.id,
     baseName: record.name,
     name: mut.prefix ? `${mut.prefix} ${record.name}` : record.name,
     rarity, mutation, weight,
@@ -1437,6 +1517,41 @@ document.getElementById("sim-btn").addEventListener("click", () => {
   renderLadders();
 });
 
+function renderSpecies() {
+  const mutation = state.speciesMutation;
+  document.getElementById("species").innerHTML = ZONE_ORDER.map((zoneId) => {
+    const members = FISH.filter((f) => f.zone === zoneId);
+    const cards = members.map((record) => {
+      const tier = RARITIES[record.rarity];
+      const [lo, hi] = record.kg;
+      return `<div class="fishcard">
+        <div class="art">${fishSvg(record, mutation, 150, 90)}</div>
+        <span class="nm" style="color:${css(fishPalette(record, mutation).body)}">${
+          MUTATIONS[mutation].prefix ? MUTATIONS[mutation].prefix + " " : ""
+        }${record.name}</span>
+        <span class="meta" style="color:${css(tier.color)}">
+          <i style="background:${css(tier.color)}"></i>${record.rarity}
+        </span>
+        <span class="kg">${fmtWeight(lo)} – ${fmtWeight(hi)} · ${record.shape}</span>
+      </div>`;
+    }).join("");
+
+    return `<div class="zone-group">
+      <h3>${ZONES[zoneId].name} <i></i> ${members.length} species</h3>
+      <div class="species">${cards}</div>
+    </div>`;
+  }).join("");
+}
+
+function syncMutationTabs() {
+  buildTabs(
+    document.getElementById("mutation-tabs"),
+    MUTATION_ORDER.map((id) => ({ id, label: id === "None" ? "Plain" : id, accent: MUTATIONS[id].color })),
+    (item) => item.id === state.speciesMutation,
+    (item) => { state.speciesMutation = item.id; syncMutationTabs(); renderSpecies(); }
+  );
+}
+
 function renderZoneCards() {
   document.getElementById("zone-cards").innerHTML = ZONE_ORDER.map((id) => {
     const zone = ZONES[id], v = VISUALS[id];
@@ -1463,7 +1578,13 @@ function renderZoneCards() {
 // Boot
 // ---------------------------------------------------------------------------
 const sheet = new CSSStyleSheet();
-sheet.replaceSync("@keyframes sweep { from { transform: translateX(-40%) } to { transform: translateX(40%) } }");
+sheet.replaceSync(`
+  @keyframes sweep { from { transform: translateX(-40%) } to { transform: translateX(40%) } }
+  @keyframes bob {
+    0%, 100% { transform: translateY(-3px) rotate(-1.5deg) }
+    50% { transform: translateY(3px) rotate(1.5deg) }
+  }
+`);
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
 state.cardTier = sampleAt("Legendary");
@@ -1486,12 +1607,14 @@ syncZoneTabs();
 syncRodTabs();
 syncDeviceTabs();
 syncTierTabs();
+syncMutationTabs();
 rebuildHud();
 mountHeader();
 mountCard(state.cardTier);
 mountReel();
 renderMeta();
 renderLadders();
+renderSpecies();
 renderZoneCards();
 
 function frame(now) {

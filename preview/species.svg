@@ -1,0 +1,919 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1096" height="2918"
+  viewBox="0 0 1096 2918"><rect width="1096" height="2918" fill="#0a0c12"/>
+<text x="28" y="48" font-family="Helvetica,Arial,sans-serif" font-size="30"
+  font-weight="800" fill="#eef2fa">Fishing RNG — every species</text>
+<text x="28" y="74" font-family="ui-monospace,Menlo,monospace" font-size="13"
+  fill="#5e677a">55 fish across 6 zones · plain · built from 8 silhouette archetypes, no uploaded models</text>
+<text x="28" y="144" font-family="ui-monospace,Menlo,monospace"
+    font-size="12" font-weight="600" letter-spacing="2" fill="#8d97ac">STARTER POND</text>
+<line x1="28" y1="158" x2="1068" y2="158" stroke="#1e2330"/>
+<rect x="32" y="182" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 196) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(130 139 148)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(130 139 148)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(130 139 148)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(176 188 200)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(203 211 219)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="46" y="307.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(176,188,200)">Minnow</text>
+<rect x="46" y="317.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="59" y="324.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="46" y="340.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">50 g – 600 g · round</text>
+<rect x="240" y="182" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 196) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(80 115 138)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(80 115 138)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(80 115 138)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(108 156 186)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(158 190 209)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="254" y="307.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(108,156,186)">Bluegill</text>
+<rect x="254" y="317.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="267" y="324.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="254" y="340.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">200 g – 1.40 kg · round</text>
+<rect x="448" y="182" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 196) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(117 105 71)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(117 105 71)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(117 105 71)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(158 142 96)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(191 180 150)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="462" y="307.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(158,142,96)">Common Carp</text>
+<rect x="462" y="317.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="475" y="324.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="462" y="340.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.00 kg – 6.00 kg · round</text>
+<rect x="656" y="182" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 196) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(152 130 55)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(152 130 55)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(152 130 55)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(206 176 74)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(223 203 136)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="670" y="307.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(206,176,74)">Yellow Perch</text>
+<rect x="670" y="317.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="683" y="324.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="670" y="340.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">300 g – 2.20 kg · round</text>
+<rect x="864" y="182" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(888, 196) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(77 110 68)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(77 110 68)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(77 110 68)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(104 148 92)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(155 184 147)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="878" y="307.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(104,148,92)">Largemouth Bass</text>
+<rect x="878" y="317.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="891" y="324.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="878" y="340.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.20 kg – 7.00 kg · round</text>
+<rect x="32" y="368" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 382) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(92 132 82)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(68 98 61)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="46" y="493.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(92,132,82)">Northern Pike</text>
+<rect x="46" y="503.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="59" y="510.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="46" y="526.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">3.00 kg – 16.00 kg · long</text>
+<rect x="240" y="368" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 382) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(181 130 46)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(181 130 46)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(181 130 46)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(244 176 62)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(248 203 128)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="254" y="493.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(244,176,62)">Golden Koi</text>
+<rect x="254" y="503.2" width="7" height="7" rx="2" fill="rgb(172,108,255)"/>
+<text x="267" y="510.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(172,108,255)">EPIC</text>
+<text x="254" y="526.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">2.00 kg – 9.00 kg · round</text>
+<rect x="448" y="368" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 382) scale(1.2667)">
+    <path d="M16 38 L2 24 L5 38 L2 52 Z" fill="rgb(55 71 58)"/>
+    <ellipse cx="30" cy="38" rx="15" ry="13" fill="rgb(74 96 78)"/>
+    <ellipse cx="62" cy="37" rx="29" ry="26" fill="rgb(74 96 78)"/>
+    <path d="M56 50 Q 76 62 90 48 L 87 42 Q 70 52 54 46 Z" fill="rgb(136 150 138)"/>
+    <path d="M62 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M68 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M74 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M80 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M86 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/>
+    <path d="M70 13 Q 88 1 97 11" stroke="rgb(55 71 58)" stroke-width="2.6" fill="none"/>
+    <circle cx="98" cy="12" r="6.4" fill="rgb(165 176 167)"/>
+    <circle cx="76" cy="28" r="6" fill="#f7fafd"/><circle cx="78.16" cy="28" r="2.7600000000000002" fill="#11121a"/></g>
+<text x="462" y="493.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(74,96,78)">Pond Leviathan</text>
+<rect x="462" y="503.2" width="7" height="7" rx="2" fill="rgb(255,176,54)"/>
+<text x="475" y="510.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,176,54)">LEGENDARY</text>
+<text x="462" y="526.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">40.00 kg – 180 kg · bulb</text>
+<rect x="656" y="368" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 382) scale(1.2667)">
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="rgb(244 232 192)" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="rgb(232 208 128)"/>
+    <circle cx="66" cy="30" r="7" fill="rgb(244 232 192)" opacity=".9"/></g>
+<text x="670" y="493.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(232,208,128)">Wishing Coin</text>
+<rect x="670" y="503.2" width="7" height="7" rx="2" fill="rgb(255,84,110)"/>
+<text x="683" y="510.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,84,110)">MYTHIC</text>
+<text x="670" y="526.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">10 g – 30 g · orb</text>
+<text x="28" y="574" font-family="ui-monospace,Menlo,monospace"
+    font-size="12" font-weight="600" letter-spacing="2" fill="#8d97ac">CORAL REEF</text>
+<line x1="28" y1="588" x2="1068" y2="588" stroke="#1e2330"/>
+<rect x="32" y="612" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 626) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(181 102 40)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(181 102 40)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(181 102 40)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(244 138 54)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(248 178 122)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="46" y="737.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(244,138,54)">Clownfish</text>
+<rect x="46" y="747.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="59" y="754.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="46" y="770.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">50 g – 400 g · round</text>
+<rect x="240" y="612" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 626) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(68 147 124)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(68 147 124)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(68 147 124)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(92 198 168)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(147 217 198)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="254" y="737.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(92,198,168)">Parrotfish</text>
+<rect x="254" y="747.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="267" y="754.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="254" y="770.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">800 g – 4.00 kg · round</text>
+<rect x="448" y="612" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 626) scale(1.2667)">
+    <path d="M52 34 Q 26 33 4 30 Q 26 38 52 38 Z" fill="rgb(178 155 65)"/>
+    <path d="M104 36
+             C 94 18, 66 2, 18 9
+             C 40 22, 50 30, 52 36
+             C 50 42, 40 50, 18 63
+             C 66 70, 94 54, 104 36 Z" fill="rgb(240 210 88)"/>
+    <path d="M96 36 C 86 24, 66 16, 44 20 C 56 28, 60 32, 61 36
+             C 60 40, 56 44, 44 52 C 66 56, 86 48, 96 36 Z"
+          fill="rgb(245 225 145)" opacity=".28"/>
+    <circle cx="90" cy="30" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="30" r="1.4720000000000002" fill="#11121a"/><circle cx="90" cy="42" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="42" r="1.4720000000000002" fill="#11121a"/></g>
+<text x="462" y="737.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(240,210,88)">Emperor Angelfish</text>
+<rect x="462" y="747.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="475" y="754.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="462" y="770.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">400 g – 2.60 kg · flat</text>
+<rect x="656" y="612" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 626) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(167 83 89)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(167 83 89)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(167 83 89)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(226 112 120)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(236 161 166)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="670" y="737.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(226,112,120)">Lionfish</text>
+<rect x="670" y="747.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="683" y="754.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="670" y="770.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">500 g – 2.00 kg · round</text>
+<rect x="864" y="612" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(888, 626) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(132 146 158)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(98 108 117)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="878" y="737.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(132,146,158)">Reef Shark</text>
+<rect x="878" y="747.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="891" y="754.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="878" y="770.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">20.00 kg – 70.00 kg · long</text>
+<rect x="32" y="798" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 812) scale(1.2667)">
+    <path d="M52 34 Q 26 33 4 30 Q 26 38 52 38 Z" fill="rgb(49 62 77)"/>
+    <path d="M104 36
+             C 94 18, 66 2, 18 9
+             C 40 22, 50 30, 52 36
+             C 50 42, 40 50, 18 63
+             C 66 70, 94 54, 104 36 Z" fill="rgb(66 84 104)"/>
+    <path d="M96 36 C 86 24, 66 16, 44 20 C 56 28, 60 32, 61 36
+             C 60 40, 56 44, 44 52 C 66 56, 86 48, 96 36 Z"
+          fill="rgb(130 142 155)" opacity=".28"/>
+    <circle cx="90" cy="30" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="30" r="1.4720000000000002" fill="#11121a"/><circle cx="90" cy="42" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="42" r="1.4720000000000002" fill="#11121a"/></g>
+<text x="46" y="923.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(66,84,104)">Manta Ray</text>
+<rect x="46" y="933.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="59" y="940.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="46" y="956.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">60.00 kg – 300 kg · flat</text>
+<rect x="240" y="798" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 812) scale(1.2667)">
+    <path d="M58 11 Q 78 16 73 32 Q 68 46 53 47 Q 39 49 43 60 Q 47 69 58 64"
+          stroke="rgb(248 172 196)" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <path d="M60 8 L80 3" stroke="rgb(250 200 216)" stroke-width="5.5" stroke-linecap="round"/>
+    <path d="M64 16 l6 -4 l-1 6 Z" fill="rgb(184 127 145)"/><path d="M60 25 l6 -4 l-1 6 Z" fill="rgb(184 127 145)"/><path d="M56 34 l6 -4 l-1 6 Z" fill="rgb(184 127 145)"/>
+    <circle cx="66" cy="13" r="3.4" fill="#f7fafd"/><circle cx="67.224" cy="13" r="1.564" fill="#11121a"/></g>
+<text x="254" y="923.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(248,172,196)">Seahorse King</text>
+<rect x="254" y="933.2" width="7" height="7" rx="2" fill="rgb(172,108,255)"/>
+<text x="267" y="940.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(172,108,255)">EPIC</text>
+<text x="254" y="956.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">100 g – 500 g · seahorse</text>
+<rect x="448" y="798" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 812) scale(1.2667)">
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="rgb(255 194 202)" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="rgb(255 132 148)"/>
+    <circle cx="66" cy="30" r="7" fill="rgb(255 194 202)" opacity=".9"/></g>
+<text x="462" y="923.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(255,132,148)">Coral Crown</text>
+<rect x="462" y="933.2" width="7" height="7" rx="2" fill="rgb(255,176,54)"/>
+<text x="475" y="940.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,176,54)">LEGENDARY</text>
+<text x="462" y="956.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">3.00 kg – 12.00 kg · orb</text>
+<rect x="656" y="798" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 812) scale(1.2667)">
+    <path d="M52 27 Q 30 16 8 10"
+                    stroke="rgb(95 49 111)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 29.57142857142857 Q 30 21.714285714285715 8 17.428571428571427"
+                    stroke="rgb(95 49 111)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 32.142857142857146 Q 30 27.42857142857143 8 24.857142857142858"
+                    stroke="rgb(95 49 111)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 34.714285714285715 Q 30 33.142857142857146 8 32.285714285714285"
+                    stroke="rgb(95 49 111)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 37.285714285714285 Q 30 38.857142857142854 8 39.714285714285715"
+                    stroke="rgb(95 49 111)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 39.857142857142854 Q 30 44.57142857142857 8 47.14285714285714"
+                    stroke="rgb(95 49 111)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 42.42857142857143 Q 30 50.285714285714285 8 54.57142857142857"
+                    stroke="rgb(95 49 111)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 45 Q 30 56 8 62"
+                    stroke="rgb(95 49 111)" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="74" cy="36" rx="26" ry="18" fill="rgb(128 66 150)"/>
+    <path d="M98 36 Q 112 27 112 36 Q 112 45 98 36 Z" fill="rgb(128 66 150)"/>
+    <circle cx="62" cy="28" r="5" fill="#f7fafd"/><circle cx="63.8" cy="28" r="2.3000000000000003" fill="#11121a"/><circle cx="62" cy="44" r="5" fill="#f7fafd"/><circle cx="63.8" cy="44" r="2.3000000000000003" fill="#11121a"/></g>
+<text x="670" y="923.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(128,66,150)">Kraken Spawn</text>
+<rect x="670" y="933.2" width="7" height="7" rx="2" fill="rgb(255,84,110)"/>
+<text x="683" y="940.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,84,110)">MYTHIC</text>
+<text x="670" y="956.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">80.00 kg – 400 kg · squid</text>
+<text x="28" y="1004" font-family="ui-monospace,Menlo,monospace"
+    font-size="12" font-weight="600" letter-spacing="2" fill="#8d97ac">FROSTBITE LAKE</text>
+<line x1="28" y1="1018" x2="1068" y2="1018" stroke="#1e2330"/>
+<rect x="32" y="1042" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 1056) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(138 149 158)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(138 149 158)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(138 149 158)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(186 202 214)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(209 220 228)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="46" y="1167.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(186,202,214)">Frozen Herring</text>
+<rect x="46" y="1177.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="59" y="1184.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="46" y="1200.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">200 g – 1.00 kg · round</text>
+<rect x="240" y="1042" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 1056) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(114 126 135)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(114 126 135)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(114 126 135)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(154 170 182)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(188 199 207)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="254" y="1167.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(154,170,182)">Arctic Cod</text>
+<rect x="254" y="1177.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="267" y="1184.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="254" y="1200.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.00 kg – 5.00 kg · round</text>
+<rect x="448" y="1042" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 1056) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(161 98 86)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(161 98 86)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(161 98 86)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(218 132 116)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(231 174 163)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="462" y="1167.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(218,132,116)">Arctic Char</text>
+<rect x="462" y="1177.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="475" y="1184.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="462" y="1200.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.50 kg – 8.00 kg · round</text>
+<rect x="656" y="1042" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 1056) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(124 152 167)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(124 152 167)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(124 152 167)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(168 206 226)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(198 223 236)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="670" y="1167.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(168,206,226)">Ice Trout</text>
+<rect x="670" y="1177.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="683" y="1184.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="670" y="1200.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">2.00 kg – 10.00 kg · round</text>
+<rect x="864" y="1042" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(888, 1056) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(132 178 198)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(98 132 147)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="878" y="1167.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(132,178,198)">Glacier Eel</text>
+<rect x="878" y="1177.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="891" y="1184.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="878" y="1200.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">6.00 kg – 24.00 kg · long</text>
+<rect x="32" y="1228" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 1242) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(116 140 156)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(86 104 115)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="46" y="1353.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(116,140,156)">Frost Sturgeon</text>
+<rect x="46" y="1363.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="59" y="1370.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="46" y="1386.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">30.00 kg – 140 kg · long</text>
+<rect x="240" y="1228" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 1242) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(190 222 238)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(141 164 176)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="254" y="1353.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(190,222,238)">Permafrost Pike</text>
+<rect x="254" y="1363.2" width="7" height="7" rx="2" fill="rgb(172,108,255)"/>
+<text x="267" y="1370.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(172,108,255)">EPIC</text>
+<text x="254" y="1386.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">12.00 kg – 48.00 kg · long</text>
+<rect x="448" y="1228" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 1242) scale(1.2667)">
+    <path d="M52 34 Q 26 33 4 30 Q 26 38 52 38 Z" fill="rgb(167 176 182)"/>
+    <path d="M104 36
+             C 94 18, 66 2, 18 9
+             C 40 22, 50 30, 52 36
+             C 50 42, 40 50, 18 63
+             C 66 70, 94 54, 104 36 Z" fill="rgb(226 238 246)"/>
+    <path d="M96 36 C 86 24, 66 16, 44 20 C 56 28, 60 32, 61 36
+             C 60 40, 56 44, 44 52 C 66 56, 86 48, 96 36 Z"
+          fill="rgb(236 244 249)" opacity=".28"/>
+    <circle cx="90" cy="30" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="30" r="1.4720000000000002" fill="#11121a"/><circle cx="90" cy="42" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="42" r="1.4720000000000002" fill="#11121a"/></g>
+<text x="462" y="1353.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(226,238,246)">Wendigo Fin</text>
+<rect x="462" y="1363.2" width="7" height="7" rx="2" fill="rgb(255,176,54)"/>
+<text x="475" y="1370.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,176,54)">LEGENDARY</text>
+<text x="462" y="1386.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">20.00 kg – 90.00 kg · flat</text>
+<rect x="656" y="1228" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 1242) scale(1.2667)">
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="rgb(201 240 255)" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="rgb(146 224 255)"/>
+    <circle cx="66" cy="30" r="7" fill="rgb(201 240 255)" opacity=".9"/></g>
+<text x="670" y="1353.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(146,224,255)">Heart of Winter</text>
+<rect x="670" y="1363.2" width="7" height="7" rx="2" fill="rgb(255,84,110)"/>
+<text x="683" y="1370.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,84,110)">MYTHIC</text>
+<text x="670" y="1386.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">500 g – 3.00 kg · orb</text>
+<text x="28" y="1434" font-family="ui-monospace,Menlo,monospace"
+    font-size="12" font-weight="600" letter-spacing="2" fill="#8d97ac">VOLCANIC DEPTHS</text>
+<line x1="28" y1="1448" x2="1068" y2="1448" stroke="#1e2330"/>
+<rect x="32" y="1472" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 1486) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(178 98 44)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(178 98 44)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(178 98 44)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(240 132 60)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(245 174 126)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="46" y="1597.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(240,132,60)">Ember Minnow</text>
+<rect x="46" y="1607.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="59" y="1614.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="46" y="1630.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">100 g – 800 g · round</text>
+<rect x="240" y="1472" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 1486) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(95 83 80)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(95 83 80)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(95 83 80)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(128 112 108)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(171 161 158)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="254" y="1597.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(128,112,108)">Ashfin</text>
+<rect x="254" y="1607.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="267" y="1614.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="254" y="1630.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.00 kg – 6.00 kg · round</text>
+<rect x="448" y="1472" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 1486) scale(1.2667)">
+    <path d="M47 24 q 4 -11 -16 -13"
+             stroke="rgb(158 61 36)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M47 48 q -4 11 -16 13"
+             stroke="rgb(158 61 36)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M60 24 q 4 -11 -16 -13"
+             stroke="rgb(158 61 36)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M60 48 q -4 11 -16 13"
+             stroke="rgb(158 61 36)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M73 24 q 4 -11 -16 -13"
+             stroke="rgb(158 61 36)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M73 48 q -4 11 -16 13"
+             stroke="rgb(158 61 36)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="60" cy="36" rx="26" ry="16" fill="rgb(214 82 48)"/>
+    <ellipse cx="90" cy="25" rx="9" ry="6" fill="rgb(235 169 152)"
+                transform="rotate(-22 90 25)"/><ellipse cx="90" cy="47" rx="9" ry="6" fill="rgb(235 169 152)"
+                transform="rotate(22 90 47)"/>
+    <circle cx="66" cy="29" r="3.4" fill="#f7fafd"/><circle cx="67.224" cy="29" r="1.564" fill="#11121a"/><circle cx="66" cy="43" r="3.4" fill="#f7fafd"/><circle cx="67.224" cy="43" r="1.564" fill="#11121a"/></g>
+<text x="462" y="1597.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(214,82,48)">Magma Crab</text>
+<rect x="462" y="1607.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="475" y="1614.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="462" y="1630.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">2.00 kg – 11.00 kg · crab</text>
+<rect x="656" y="1472" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 1486) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(48 44 52)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(36 33 38)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="670" y="1597.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(48,44,52)">Obsidian Eel</text>
+<rect x="670" y="1607.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="683" y="1614.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="670" y="1630.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">5.00 kg – 22.00 kg · long</text>
+<rect x="864" y="1472" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(888, 1486) scale(1.2667)">
+    <path d="M52 34 Q 26 33 4 30 Q 26 38 52 38 Z" fill="rgb(130 52 33)"/>
+    <path d="M104 36
+             C 94 18, 66 2, 18 9
+             C 40 22, 50 30, 52 36
+             C 50 42, 40 50, 18 63
+             C 66 70, 94 54, 104 36 Z" fill="rgb(176 70 44)"/>
+    <path d="M96 36 C 86 24, 66 16, 44 20 C 56 28, 60 32, 61 36
+             C 60 40, 56 44, 44 52 C 66 56, 86 48, 96 36 Z"
+          fill="rgb(203 133 116)" opacity=".28"/>
+    <circle cx="90" cy="30" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="30" r="1.4720000000000002" fill="#11121a"/><circle cx="90" cy="42" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="42" r="1.4720000000000002" fill="#11121a"/></g>
+<text x="878" y="1597.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(176,70,44)">Cinder Ray</text>
+<rect x="878" y="1607.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="891" y="1614.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="878" y="1630.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">30.00 kg – 120 kg · flat</text>
+<rect x="32" y="1658" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 1672) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(226 108 44)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(167 80 33)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="46" y="1783.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(226,108,44)">Lava Sturgeon</text>
+<rect x="46" y="1793.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="59" y="1800.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="46" y="1816.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">45.00 kg – 200 kg · long</text>
+<rect x="240" y="1658" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 1672) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(189 115 36)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(189 115 36)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(189 115 36)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(255 156 48)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(255 190 118)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="254" y="1783.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(255,156,48)">Pyroclast</text>
+<rect x="254" y="1793.2" width="7" height="7" rx="2" fill="rgb(172,108,255)"/>
+<text x="267" y="1800.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(172,108,255)">EPIC</text>
+<text x="254" y="1816.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">15.00 kg – 70.00 kg · round</text>
+<rect x="448" y="1658" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 1672) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(255 108 40)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(189 80 30)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="462" y="1783.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(255,108,40)">Forge Serpent</text>
+<rect x="462" y="1793.2" width="7" height="7" rx="2" fill="rgb(255,176,54)"/>
+<text x="475" y="1800.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,176,54)">LEGENDARY</text>
+<text x="462" y="1816.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">90.00 kg – 420 kg · long</text>
+<rect x="656" y="1658" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 1672) scale(1.2667)">
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="rgb(255 226 174)" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="rgb(255 196 92)"/>
+    <circle cx="66" cy="30" r="7" fill="rgb(255 226 174)" opacity=".9"/></g>
+<text x="670" y="1783.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(255,196,92)">Phoenix Roe</text>
+<rect x="670" y="1793.2" width="7" height="7" rx="2" fill="rgb(255,84,110)"/>
+<text x="683" y="1800.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,84,110)">MYTHIC</text>
+<text x="670" y="1816.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">20 g – 200 g · orb</text>
+<rect x="864" y="1658" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(888, 1672) scale(1.2667)">
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="rgb(255 244 188)" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="rgb(255 232 120)"/>
+    <circle cx="66" cy="30" r="7" fill="rgb(255 244 188)" opacity=".9"/></g>
+<text x="878" y="1783.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(255,232,120)">Molten Core</text>
+<rect x="878" y="1793.2" width="7" height="7" rx="2" fill="rgb(80,245,230)"/>
+<text x="891" y="1800.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(80,245,230)">EXOTIC</text>
+<text x="878" y="1816.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">5.00 kg – 30.00 kg · orb</text>
+<text x="28" y="1864" font-family="ui-monospace,Menlo,monospace"
+    font-size="12" font-weight="600" letter-spacing="2" fill="#8d97ac">THE ABYSS</text>
+<line x1="28" y1="1878" x2="1068" y2="1878" stroke="#1e2330"/>
+<rect x="32" y="1902" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 1916) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(68 87 108)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(68 87 108)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(68 87 108)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(92 118 146)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(147 165 183)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="46" y="2027.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(92,118,146)">Lanternfish</text>
+<rect x="46" y="2037.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="59" y="2044.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="46" y="2060.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">50 g – 500 g · round</text>
+<rect x="240" y="1902" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 1916) scale(1.2667)">
+    <path d="M16 38 L2 24 L5 38 L2 52 Z" fill="rgb(40 44 61)"/>
+    <ellipse cx="30" cy="38" rx="15" ry="13" fill="rgb(54 60 82)"/>
+    <ellipse cx="62" cy="37" rx="29" ry="26" fill="rgb(54 60 82)"/>
+    <path d="M56 50 Q 76 62 90 48 L 87 42 Q 70 52 54 46 Z" fill="rgb(122 126 141)"/>
+    <path d="M62 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M68 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M74 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M80 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M86 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/>
+    <path d="M70 13 Q 88 1 97 11" stroke="rgb(40 44 61)" stroke-width="2.6" fill="none"/>
+    <circle cx="98" cy="12" r="6.4" fill="rgb(155 158 169)"/>
+    <circle cx="76" cy="28" r="6" fill="#f7fafd"/><circle cx="78.16" cy="28" r="2.7600000000000002" fill="#11121a"/></g>
+<text x="254" y="2027.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(54,60,82)">Gulper Eel</text>
+<rect x="254" y="2037.2" width="7" height="7" rx="2" fill="rgb(198,205,216)"/>
+<text x="267" y="2044.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(198,205,216)">COMMON</text>
+<text x="254" y="2060.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">2.00 kg – 9.00 kg · bulb</text>
+<rect x="448" y="1902" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 1916) scale(1.2667)">
+    <path d="M16 38 L2 24 L5 38 L2 52 Z" fill="rgb(52 61 80)"/>
+    <ellipse cx="30" cy="38" rx="15" ry="13" fill="rgb(70 82 108)"/>
+    <ellipse cx="62" cy="37" rx="29" ry="26" fill="rgb(70 82 108)"/>
+    <path d="M56 50 Q 76 62 90 48 L 87 42 Q 70 52 54 46 Z" fill="rgb(133 141 158)"/>
+    <path d="M62 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M68 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M74 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M80 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M86 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/>
+    <path d="M70 13 Q 88 1 97 11" stroke="rgb(52 61 80)" stroke-width="2.6" fill="none"/>
+    <circle cx="98" cy="12" r="6.4" fill="rgb(163 169 182)"/>
+    <circle cx="76" cy="28" r="6" fill="#f7fafd"/><circle cx="78.16" cy="28" r="2.7600000000000002" fill="#11121a"/></g>
+<text x="462" y="2027.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(70,82,108)">Anglerfish</text>
+<rect x="462" y="2037.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="475" y="2044.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="462" y="2060.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">3.00 kg – 16.00 kg · bulb</text>
+<rect x="656" y="1902" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 1916) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(86 96 128)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(64 71 95)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="670" y="2027.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(86,96,128)">Viperfish</text>
+<rect x="670" y="2037.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="683" y="2044.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="670" y="2060.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.00 kg – 6.00 kg · long</text>
+<rect x="864" y="1902" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(888, 1916) scale(1.2667)">
+    <path d="M52 34 Q 26 33 4 30 Q 26 38 52 38 Z" fill="rgb(152 151 141)"/>
+    <path d="M104 36
+             C 94 18, 66 2, 18 9
+             C 40 22, 50 30, 52 36
+             C 50 42, 40 50, 18 63
+             C 66 70, 94 54, 104 36 Z" fill="rgb(206 204 190)"/>
+    <path d="M96 36 C 86 24, 66 16, 44 20 C 56 28, 60 32, 61 36
+             C 60 40, 56 44, 44 52 C 66 56, 86 48, 96 36 Z"
+          fill="rgb(223 221 212)" opacity=".28"/>
+    <circle cx="90" cy="30" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="30" r="1.4720000000000002" fill="#11121a"/><circle cx="90" cy="42" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="42" r="1.4720000000000002" fill="#11121a"/></g>
+<text x="878" y="2027.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(206,204,190)">Bone Ray</text>
+<rect x="878" y="2037.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="891" y="2044.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="878" y="2060.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">40.00 kg – 180 kg · flat</text>
+<rect x="32" y="2088" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 2102) scale(1.2667)">
+    <path d="M52 27 Q 30 16 8 10"
+                    stroke="rgb(95 67 118)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 29.57142857142857 Q 30 21.714285714285715 8 17.428571428571427"
+                    stroke="rgb(95 67 118)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 32.142857142857146 Q 30 27.42857142857143 8 24.857142857142858"
+                    stroke="rgb(95 67 118)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 34.714285714285715 Q 30 33.142857142857146 8 32.285714285714285"
+                    stroke="rgb(95 67 118)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 37.285714285714285 Q 30 38.857142857142854 8 39.714285714285715"
+                    stroke="rgb(95 67 118)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 39.857142857142854 Q 30 44.57142857142857 8 47.14285714285714"
+                    stroke="rgb(95 67 118)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 42.42857142857143 Q 30 50.285714285714285 8 54.57142857142857"
+                    stroke="rgb(95 67 118)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M52 45 Q 30 56 8 62"
+                    stroke="rgb(95 67 118)" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="74" cy="36" rx="26" ry="18" fill="rgb(128 90 160)"/>
+    <path d="M98 36 Q 112 27 112 36 Q 112 45 98 36 Z" fill="rgb(128 90 160)"/>
+    <circle cx="62" cy="28" r="5" fill="#f7fafd"/><circle cx="63.8" cy="28" r="2.3000000000000003" fill="#11121a"/><circle cx="62" cy="44" r="5" fill="#f7fafd"/><circle cx="63.8" cy="44" r="2.3000000000000003" fill="#11121a"/></g>
+<text x="46" y="2213.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(128,90,160)">Hadal Squid</text>
+<rect x="46" y="2223.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="59" y="2230.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="46" y="2246.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">25.00 kg – 140 kg · squid</text>
+<rect x="240" y="2088" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 2102) scale(1.2667)">
+    <path d="M16 38 L2 24 L5 38 L2 52 Z" fill="rgb(164 163 167)"/>
+    <ellipse cx="30" cy="38" rx="15" ry="13" fill="rgb(222 220 226)"/>
+    <ellipse cx="62" cy="37" rx="29" ry="26" fill="rgb(222 220 226)"/>
+    <path d="M56 50 Q 76 62 90 48 L 87 42 Q 70 52 54 46 Z" fill="rgb(233 232 236)"/>
+    <path d="M62 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M68 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M74 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M80 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M86 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/>
+    <path d="M70 13 Q 88 1 97 11" stroke="rgb(164 163 167)" stroke-width="2.6" fill="none"/>
+    <circle cx="98" cy="12" r="6.4" fill="rgb(239 238 241)"/>
+    <circle cx="76" cy="28" r="6" fill="#f7fafd"/><circle cx="78.16" cy="28" r="2.7600000000000002" fill="#11121a"/></g>
+<text x="254" y="2213.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(222,220,226)">Pale Colossus</text>
+<rect x="254" y="2223.2" width="7" height="7" rx="2" fill="rgb(172,108,255)"/>
+<text x="267" y="2230.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(172,108,255)">EPIC</text>
+<text x="254" y="2246.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">200 kg – 900 kg · bulb</text>
+<rect x="448" y="2088" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 2102) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(62 74 132)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(46 55 98)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="462" y="2213.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(62,74,132)">Trench Wyrm</text>
+<rect x="462" y="2223.2" width="7" height="7" rx="2" fill="rgb(255,176,54)"/>
+<text x="475" y="2230.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,176,54)">LEGENDARY</text>
+<text x="462" y="2246.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">300 kg – 1.4 t · long</text>
+<rect x="656" y="2088" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 2102) scale(1.2667)">
+    <path d="M16 38 L2 24 L5 38 L2 52 Z" fill="rgb(24 28 52)"/>
+    <ellipse cx="30" cy="38" rx="15" ry="13" fill="rgb(32 38 70)"/>
+    <ellipse cx="62" cy="37" rx="29" ry="26" fill="rgb(32 38 70)"/>
+    <path d="M56 50 Q 76 62 90 48 L 87 42 Q 70 52 54 46 Z" fill="rgb(108 112 133)"/>
+    <path d="M62 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M68 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M74 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M80 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M86 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/>
+    <path d="M70 13 Q 88 1 97 11" stroke="rgb(24 28 52)" stroke-width="2.6" fill="none"/>
+    <circle cx="98" cy="12" r="6.4" fill="rgb(144 147 163)"/>
+    <circle cx="76" cy="28" r="6" fill="#f7fafd"/><circle cx="78.16" cy="28" r="2.7600000000000002" fill="#11121a"/></g>
+<text x="670" y="2213.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(32,38,70)">The Unnamed</text>
+<rect x="670" y="2223.2" width="7" height="7" rx="2" fill="rgb(255,84,110)"/>
+<text x="683" y="2230.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,84,110)">MYTHIC</text>
+<text x="670" y="2246.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">500 kg – 2.6 t · bulb</text>
+<rect x="864" y="2088" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(888, 2102) scale(1.2667)">
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="rgb(252 247 233)" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="rgb(248 238 210)"/>
+    <circle cx="66" cy="30" r="7" fill="rgb(252 247 233)" opacity=".9"/></g>
+<text x="878" y="2213.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(248,238,210)">Abyssal Eye</text>
+<rect x="878" y="2223.2" width="7" height="7" rx="2" fill="rgb(80,245,230)"/>
+<text x="891" y="2230.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(80,245,230)">EXOTIC</text>
+<text x="878" y="2246.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">8.00 kg – 40.00 kg · orb</text>
+<rect x="32" y="2274" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 2288) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(24 200 196)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(18 148 145)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="46" y="2399.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(24,200,196)">Leviathan Prime</text>
+<rect x="46" y="2409.2" width="7" height="7" rx="2" fill="rgb(255,255,255)"/>
+<text x="59" y="2416.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,255,255)">SECRET</text>
+<text x="46" y="2432.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">2.0 t – 9.0 t · long</text>
+<text x="28" y="2480" font-family="ui-monospace,Menlo,monospace"
+    font-size="12" font-weight="600" letter-spacing="2" fill="#8d97ac">CELESTIAL RIFT</text>
+<line x1="28" y1="2494" x2="1068" y2="2494" stroke="#1e2330"/>
+<rect x="32" y="2518" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 2532) scale(1.2667)">
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="rgb(250 248 228)" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="rgb(244 240 200)"/>
+    <circle cx="66" cy="30" r="7" fill="rgb(250 248 228)" opacity=".9"/></g>
+<text x="46" y="2643.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(244,240,200)">Starlet</text>
+<rect x="46" y="2653.2" width="7" height="7" rx="2" fill="rgb(116,210,124)"/>
+<text x="59" y="2660.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(116,210,124)">UNCOMMON</text>
+<text x="46" y="2676.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">100 g – 1.00 kg · orb</text>
+<rect x="240" y="2518" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 2532) scale(1.2667)">
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="rgb(138 104 181)"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="rgb(138 104 181)"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="rgb(138 104 181)" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="rgb(186 140 244)"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="rgb(209 179 248)" opacity=".8"/>
+    <circle cx="76" cy="31" r="4.2" fill="#f7fafd"/><circle cx="77.512" cy="31" r="1.9320000000000002" fill="#11121a"/></g>
+<text x="254" y="2643.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(186,140,244)">Nebula Dart</text>
+<rect x="254" y="2653.2" width="7" height="7" rx="2" fill="rgb(88,158,255)"/>
+<text x="267" y="2660.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(88,158,255)">RARE</text>
+<text x="254" y="2676.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.00 kg – 8.00 kg · round</text>
+<rect x="448" y="2518" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(472, 2532) scale(1.2667)">
+    <path d="M52 34 Q 26 33 4 30 Q 26 38 52 38 Z" fill="rgb(104 141 189)"/>
+    <path d="M104 36
+             C 94 18, 66 2, 18 9
+             C 40 22, 50 30, 52 36
+             C 50 42, 40 50, 18 63
+             C 66 70, 94 54, 104 36 Z" fill="rgb(140 190 255)"/>
+    <path d="M96 36 C 86 24, 66 16, 44 20 C 56 28, 60 32, 61 36
+             C 60 40, 56 44, 44 52 C 66 56, 86 48, 96 36 Z"
+          fill="rgb(179 212 255)" opacity=".28"/>
+    <circle cx="90" cy="30" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="30" r="1.4720000000000002" fill="#11121a"/><circle cx="90" cy="42" r="3.2" fill="#f7fafd"/><circle cx="91.152" cy="42" r="1.4720000000000002" fill="#11121a"/></g>
+<text x="462" y="2643.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(140,190,255)">Quasar Ray</text>
+<rect x="462" y="2653.2" width="7" height="7" rx="2" fill="rgb(172,108,255)"/>
+<text x="475" y="2660.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(172,108,255)">EPIC</text>
+<text x="462" y="2676.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">20.00 kg – 110 kg · flat</text>
+<rect x="656" y="2518" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(680, 2532) scale(1.2667)">
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="rgb(210 226 255)"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="rgb(155 167 189)"/>
+    <circle cx="97" cy="31" r="3.6" fill="#f7fafd"/><circle cx="98.296" cy="31" r="1.6560000000000001" fill="#11121a"/></g>
+<text x="670" y="2643.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(210,226,255)">Comet Serpent</text>
+<rect x="670" y="2653.2" width="7" height="7" rx="2" fill="rgb(255,176,54)"/>
+<text x="683" y="2660.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,176,54)">LEGENDARY</text>
+<text x="670" y="2676.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">60.00 kg – 320 kg · long</text>
+<rect x="864" y="2518" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(888, 2532) scale(1.2667)">
+    <path d="M16 38 L2 24 L5 38 L2 52 Z" fill="rgb(87 110 175)"/>
+    <ellipse cx="30" cy="38" rx="15" ry="13" fill="rgb(118 148 236)"/>
+    <ellipse cx="62" cy="37" rx="29" ry="26" fill="rgb(118 148 236)"/>
+    <path d="M56 50 Q 76 62 90 48 L 87 42 Q 70 52 54 46 Z" fill="rgb(165 184 242)"/>
+    <path d="M62 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M68 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M74 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M80 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M86 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/>
+    <path d="M70 13 Q 88 1 97 11" stroke="rgb(87 110 175)" stroke-width="2.6" fill="none"/>
+    <circle cx="98" cy="12" r="6.4" fill="rgb(187 202 246)"/>
+    <circle cx="76" cy="28" r="6" fill="#f7fafd"/><circle cx="78.16" cy="28" r="2.7600000000000002" fill="#11121a"/></g>
+<text x="878" y="2643.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(118,148,236)">Astral Whale</text>
+<rect x="878" y="2653.2" width="7" height="7" rx="2" fill="rgb(255,84,110)"/>
+<text x="891" y="2660.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,84,110)">MYTHIC</text>
+<text x="878" y="2676.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.2 t – 6.0 t · bulb</text>
+<rect x="32" y="2704" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(56, 2718) scale(1.2667)">
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="rgb(143 141 150)" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="rgb(30 26 44)"/>
+    <circle cx="66" cy="30" r="7" fill="rgb(143 141 150)" opacity=".9"/></g>
+<text x="46" y="2829.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(30,26,44)">Singularity</text>
+<rect x="46" y="2839.2" width="7" height="7" rx="2" fill="rgb(80,245,230)"/>
+<text x="59" y="2846.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(80,245,230)">EXOTIC</text>
+<text x="46" y="2862.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">1.0 g – 10 g · orb</text>
+<rect x="240" y="2704" width="200" height="174"
+      rx="12" fill="#0e1017" stroke="#1e2330"/>
+<g transform="translate(264, 2718) scale(1.2667)">
+    <path d="M16 38 L2 24 L5 38 L2 52 Z" fill="rgb(189 186 175)"/>
+    <ellipse cx="30" cy="38" rx="15" ry="13" fill="rgb(255 252 236)"/>
+    <ellipse cx="62" cy="37" rx="29" ry="26" fill="rgb(255 252 236)"/>
+    <path d="M56 50 Q 76 62 90 48 L 87 42 Q 70 52 54 46 Z" fill="rgb(255 253 242)"/>
+    <path d="M62 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M68 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M74 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M80 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/><path d="M86 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/>
+    <path d="M70 13 Q 88 1 97 11" stroke="rgb(189 186 175)" stroke-width="2.6" fill="none"/>
+    <circle cx="98" cy="12" r="6.4" fill="rgb(255 254 246)"/>
+    <circle cx="76" cy="28" r="6" fill="#f7fafd"/><circle cx="78.16" cy="28" r="2.7600000000000002" fill="#11121a"/></g>
+<text x="254" y="2829.2" font-family="Helvetica,Arial,sans-serif"
+      font-size="13" font-weight="700" fill="rgb(255,252,236)">God of Still Water</text>
+<rect x="254" y="2839.2" width="7" height="7" rx="2" fill="rgb(255,255,255)"/>
+<text x="267" y="2846.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" letter-spacing="1" fill="rgb(255,255,255)">SECRET</text>
+<text x="254" y="2862.2" font-family="ui-monospace,Menlo,monospace"
+      font-size="10" fill="#5e677a">8.0 t – 40.0 t · bulb</text></svg>

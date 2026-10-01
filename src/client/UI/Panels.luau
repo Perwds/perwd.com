@@ -13,6 +13,7 @@ local Format = require(Shared.Util.Format)
 local Theme = require(script.Parent.Theme)
 local Widgets = require(script.Parent.Widgets)
 local HudScale = require(script.Parent.HudScale)
+local FishView = require(script.Parent.FishView)
 
 local Panels = {}
 Panels.__index = Panels
@@ -409,7 +410,19 @@ function Panels:RenderIndex()
 			order += 1
 			local found = profile.index[record.id]
 			local tier = Rarities.Get(record.rarity)
-			local row = self:Row(order, 38, found and tier.color or nil)
+			local row = self:Row(order, 46, found and tier.color or nil)
+
+			if found then
+				FishView.Icon({
+					parent = row,
+					fishId = record.id,
+					mutation = "None",
+					weight = found.best,
+					size = UDim2.fromOffset(42, 30),
+					position = UDim2.new(0, 0, 0.5, 0),
+					anchor = Vector2.new(0, 0.5),
+				})
+			end
 
 			Widgets.Text({
 				parent = row,
@@ -417,7 +430,8 @@ function Panels:RenderIndex()
 				font = Theme.FontMedium,
 				textSize = 13,
 				color = found and tier.color or Theme.TextDim,
-				size = UDim2.new(0.5, 0, 1, 0),
+				size = UDim2.new(0.5, -52, 1, 0),
+				position = UDim2.fromOffset(52, 0),
 			})
 
 			Widgets.Text({

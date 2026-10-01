@@ -16,6 +16,7 @@ local LeaderboardService = require(script.Services.LeaderboardService)
 local ProfileView = require(script.Services.ProfileView)
 local MapBuilder = require(script.World.MapBuilder)
 local RodModel = require(script.World.RodModel)
+local Trophy = require(script.World.Trophy)
 
 MapBuilder.Build()
 
@@ -23,6 +24,7 @@ DataService.Start()
 FishingService.Start()
 EconomyService.Start()
 LeaderboardService.Start()
+Trophy.Start()
 
 local profileChanged = Net.Event(Net.Events.ProfileChanged)
 

@@ -11,6 +11,7 @@ local GameConfig = require(Shared.Config.GameConfig)
 local Format = require(Shared.Util.Format)
 local Visuals = require(Shared.Config.Visuals)
 local CatchRoll = require(Shared.CatchRoll)
+local FishModel = require(Shared.FishModel)
 
 local passed, failed = 0, 0
 
@@ -298,6 +299,206 @@ do
 		"reel timeout is longer than any honest reel",
 		GameConfig.MaxReelSeconds > fastestLegitimate * 10
 	)
+end
+
+print("== fish models ==")
+
+-- The roster's archetype list and FishModel's builder list must agree exactly,
+-- in both directions: a fish with no builder renders as nothing, and a builder
+-- nothing uses is dead code.
+do
+	local declared = Fish.Shapes()
+
+	for shape in declared do
+		check(
+			string.format("shape %q has a builder", shape),
+			type(FishModel.Shapes[shape]) == "function"
+		)
+	end
+
+	for shape in FishModel.Shapes do
+		check(string.format("builder %q is declared in the roster", shape), declared[shape] == true)
+	end
+
+	local used = {}
+	for _, record in Fish.All do
+		used[record.shape] = true
+	end
+	for shape in declared do
+		check(string.format("shape %q is used by at least one fish", shape), used[shape] == true)
+	end
+end
+
+-- Build every species in every mutation. These models cannot be eyeballed from
+-- here, so the geometry is checked instead: nothing degenerate, nothing
+-- infinite, and no part flung away from the body.
+do
+	local builds, worstParts, worstReach = 0, 0, 0
+	local degenerate, flung, nonFinite, noPrimary, tooManyParts, collapsed = 0, 0, 0, 0, 0, 0
+	local thinnest, thinnestId = math.huge, ""
+
+	for _, record in Fish.All do
+		for _, mutation in Mutations.Order do
+			local weight = (record.minWeight + record.maxWeight) / 2
+			local ok, model = pcall(FishModel.Build, record.id, mutation, weight)
+
+			if not ok then
+				check(
+					string.format("%s / %s builds", record.id, mutation),
+					false,
+					tostring(model)
+				)
+				continue
+			end
+
+			builds += 1
+			local length = FishModel.DisplayLength(record, weight)
+
+			if model.PrimaryPart == nil then
+				noPrimary += 1
+			end
+
+			local parts = 0
+			local reach = 0
+			local low = { math.huge, math.huge, math.huge }
+			local high = { -math.huge, -math.huge, -math.huge }
+
+			for _, child in model:GetChildren() do
+				if child.ClassName ~= "Part" then
+					continue
+				end
+				parts += 1
+
+				local size = child.Size
+				local position = child.CFrame.Position
+
+				if
+					size.X ~= size.X or size.Y ~= size.Y or size.Z ~= size.Z
+					or position.X ~= position.X or position.Y ~= position.Y or position.Z ~= position.Z
+					or size.X == math.huge or size.Y == math.huge or size.Z == math.huge
+				then
+					nonFinite += 1
+				end
+
+				if size.X <= 0 or size.Y <= 0 or size.Z <= 0 then
+					degenerate += 1
+				end
+
+				local distance = position.Magnitude
+				reach = math.max(reach, distance)
+				if distance > length * 1.2 then
+					flung += 1
+				end
+
+				local axes = { position.X, position.Y, position.Z }
+				for axis = 1, 3 do
+					low[axis] = math.min(low[axis], axes[axis])
+					high[axis] = math.max(high[axis], axes[axis])
+				end
+			end
+
+			worstParts = math.max(worstParts, parts)
+			worstReach = math.max(worstReach, reach / length)
+
+			if parts > FishModel.MaxParts then
+				tooManyParts += 1
+			end
+
+			-- A fish should have real extent along its longest axis. Measured
+			-- per axis rather than front-to-back, because an upright shape like
+			-- the seahorse is legitimately shallow in Z.
+			local span = 0
+			for axis = 1, 3 do
+				span = math.max(span, high[axis] - low[axis])
+			end
+
+			if span / length < thinnest then
+				thinnest = span / length
+				thinnestId = record.id .. "/" .. mutation
+			end
+
+			if record.shape ~= "orb" and span < length * 0.3 then
+				collapsed += 1
+			end
+		end
+	end
+
+	check("every species builds in every mutation", builds == Fish.Count() * #Mutations.Order,
+		string.format("%d of %d", builds, Fish.Count() * #Mutations.Order))
+	check("every model has a PrimaryPart", noPrimary == 0, string.format("%d without", noPrimary))
+	check("no part has a zero or negative dimension", degenerate == 0, string.format("%d bad", degenerate))
+	check("no model collapses to a blob", collapsed == 0, string.format("%d collapsed", collapsed))
+	check("no part size or position is NaN or infinite", nonFinite == 0, string.format("%d bad", nonFinite))
+	check("no part sits further than 1.2x the body length from the origin", flung == 0,
+		string.format("%d flung, worst reach %.2fx", flung, worstReach))
+	check("every model stays within the part budget", tooManyParts == 0,
+		string.format("%d over, worst %d of %d", tooManyParts, worstParts, FishModel.MaxParts))
+
+	print(string.format(
+		"  %d models built · worst %d/%d parts · worst reach %.2fx · thinnest %s at %.2fx length",
+		builds, worstParts, FishModel.MaxParts, worstReach, thinnestId, thinnest
+	))
+end
+
+-- Display length is log-mapped, so check the mapping behaves rather than the
+-- raw weights.
+do
+	local minnow = Fish.Get("minnow")
+	local god = Fish.Get("god_of_still_water")
+
+	check(
+		"a 40-tonne fish is bigger than a 50g one",
+		FishModel.DisplayLength(god, 20000) > FishModel.DisplayLength(minnow, 0.3),
+		string.format(
+			"%.2f vs %.2f",
+			FishModel.DisplayLength(god, 20000),
+			FishModel.DisplayLength(minnow, 0.3)
+		)
+	)
+	check(
+		"but not 100,000x bigger, or it would not fit on screen",
+		FishModel.DisplayLength(god, 20000) / FishModel.DisplayLength(minnow, 0.3) < 8
+	)
+	check(
+		"a heavier catch of the same species is longer",
+		FishModel.DisplayLength(minnow, minnow.maxWeight) > FishModel.DisplayLength(minnow, minnow.minWeight)
+	)
+
+	local shortest, longest = math.huge, 0
+	for _, record in Fish.All do
+		for _, weight in { record.minWeight, record.maxWeight } do
+			local length = FishModel.DisplayLength(record, weight)
+			shortest = math.min(shortest, length)
+			longest = math.max(longest, length)
+		end
+	end
+	check("every species lands in a usable size range", shortest > 0.4 and longest < 12,
+		string.format("%.2f to %.2f studs", shortest, longest))
+	print(string.format("  display length spans %.2f to %.2f studs", shortest, longest))
+end
+
+-- A mutation must visibly repaint the fish, or the rarest rolls look identical
+-- to a plain one.
+do
+	local record = Fish.Get("carp")
+	local plain = FishModel.Palette(record, "None")
+
+	for _, mutation in Mutations.Order do
+		if mutation == "None" then
+			continue
+		end
+		local palette = FishModel.Palette(record, mutation)
+		local shift = math.abs(palette.body.R - plain.body.R)
+			+ math.abs(palette.body.G - plain.body.G)
+			+ math.abs(palette.body.B - plain.body.B)
+		local repainted = shift > 0.05 or palette.material ~= plain.material
+
+		check(string.format("%s visibly changes the fish", mutation), repainted,
+			string.format("colour shift %.3f, same material", shift))
+	end
+
+	check("the top mutations glow", FishModel.Palette(record, "Glitched").glow ~= nil)
+	check("a plain fish does not glow", plain.glow == nil)
 end
 
 print("== hud scaling ==")

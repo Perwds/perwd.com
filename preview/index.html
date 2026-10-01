@@ -221,6 +221,41 @@
   .zone-card dt { color: var(--fg-faint); }
   .zone-card dd { margin: 0; text-align: right; color: var(--fg-dim); }
 
+  .zone-group { margin-top: 26px; }
+  .zone-group > h3 {
+    margin: 0 0 12px;
+    font: 700 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase;
+    color: var(--fg-faint);
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .zone-group > h3 i { flex: 1; height: 1px; background: var(--rule); }
+
+  .species {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .fishcard {
+    background: var(--page-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 10px 11px 11px;
+    min-width: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .fishcard .art {
+    height: 76px; margin: -4px 0 2px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fishcard .art svg { max-width: 100%; height: auto; }
+  .fishcard .nm { font-size: 12px; font-weight: 700; line-height: 1.25; }
+  .fishcard .meta {
+    font: 500 9.5px/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .fishcard .meta i { width: 6px; height: 6px; border-radius: 2px; flex: none; }
+  .fishcard .kg { font: 400 9.5px/1.4 var(--mono); color: var(--fg-faint); }
+
   footer { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--rule); font: 400 11.5px/1.7 var(--mono); color: var(--fg-faint); }
   footer code { color: var(--fg-dim); }
 
@@ -228,6 +263,15 @@
     * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
   }
 </style>
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <defs>
+    <filter id="fish-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+</svg>
 
 <div class="wrap">
   <header>
@@ -237,7 +281,8 @@
       builds them. The rarity rolls, luck maths and coin values come straight out
       of <code>src/shared/Config</code>, so what you see here is what the game does.
       Tap the water to cast, then hold anywhere to reel. The screen picker runs
-      the game's own HUD scaling, so pick a phone to see what a phone gets.
+      the game's own HUD scaling, so pick a phone to see what a phone gets, and
+      every species is drawn further down.
     </p>
   </header>
 
@@ -304,6 +349,22 @@
   </section>
 
   <section>
+    <h2>Every species</h2>
+    <p class="note">
+      All 55, drawn from each one's own colour and silhouette archetype — the
+      same eight archetypes the game assembles out of primitives, so no fish
+      needs an uploaded model. Switch the mutation to see what the rare rolls
+      repaint: Golden turns the whole fish to gold metal, Void makes it
+      something that should not exist.
+    </p>
+    <div class="controls">
+      <span class="label">Mutation</span>
+      <div class="seg" id="mutation-tabs"></div>
+    </div>
+    <div id="species"></div>
+  </section>
+
+  <section>
     <h2>The two ladders</h2>
     <p class="note">
       Fish rarity and mutation roll independently, which is why a Glitched Minnow
@@ -337,7 +398,7 @@
 // ---------------------------------------------------------------------------
 // Data, extracted from the Luau config at build time.
 // ---------------------------------------------------------------------------
-const DATA = {"Rarities":{"Order":["Common","Uncommon","Rare","Epic","Legendary","Mythic","Exotic","Secret"],"Data":{"Common":{"chance":2,"color":{"r":198,"g":205,"b":216},"valueMult":1,"luckExponent":0,"score":1},"Uncommon":{"chance":8,"color":{"r":116,"g":210,"b":124},"valueMult":2.2,"luckExponent":0.25,"score":5},"Rare":{"chance":40,"color":{"r":88,"g":158,"b":255},"valueMult":5.5,"luckExponent":0.45,"score":25},"Epic":{"chance":250,"color":{"r":172,"g":108,"b":255},"valueMult":16,"luckExponent":0.6,"score":150},"Legendary":{"chance":1500,"color":{"r":255,"g":176,"b":54},"valueMult":60,"luckExponent":0.75,"score":900},"Mythic":{"chance":12000,"color":{"r":255,"g":84,"b":110},"valueMult":240,"luckExponent":0.85,"score":7000},"Exotic":{"chance":100000,"color":{"r":80,"g":245,"b":230},"valueMult":1400,"luckExponent":0.95,"score":60000},"Secret":{"chance":1000000,"color":{"r":255,"g":255,"b":255},"valueMult":9000,"luckExponent":1,"score":600000}}},"Mutations":{"Order":["None","Shiny","Albino","Golden","Radioactive","Void","Celestial","Glitched"],"Data":{"None":{"chance":1,"valueMult":1,"scoreMult":1,"color":{"r":215,"g":220,"b":230},"prefix":"","luckExponent":0},"Shiny":{"chance":50,"valueMult":3,"scoreMult":2.5,"color":{"r":255,"g":236,"b":130},"prefix":"Shiny","luckExponent":0.3},"Albino":{"chance":200,"valueMult":6,"scoreMult":5,"color":{"r":246,"g":246,"b":250},"prefix":"Albino","luckExponent":0.4},"Golden":{"chance":1000,"valueMult":15,"scoreMult":12,"color":{"r":255,"g":190,"b":40},"prefix":"Golden","luckExponent":0.55},"Radioactive":{"chance":5000,"valueMult":45,"scoreMult":40,"color":{"r":140,"g":255,"b":70},"prefix":"Radioactive","luckExponent":0.7},"Void":{"chance":25000,"valueMult":150,"scoreMult":140,"color":{"r":120,"g":60,"b":220},"prefix":"Void","luckExponent":0.8},"Celestial":{"chance":250000,"valueMult":800,"scoreMult":900,"color":{"r":120,"g":230,"b":255},"prefix":"Celestial","luckExponent":0.9},"Glitched":{"chance":1000000,"valueMult":4000,"scoreMult":5000,"color":{"r":255,"g":60,"b":220},"prefix":"Glitched","luckExponent":1}}},"Rods":{"Order":["wooden","fiberglass","carbon","enchanted","abyssal","celestial","eventide"],"Data":{"wooden":{"name":"Wooden Rod","cost":0,"luck":1,"barSize":0.22,"fillRate":0.55,"drainRate":0.38,"fishSpeed":1,"biteSpeed":1,"color":{"r":146,"g":110,"b":68}},"fiberglass":{"name":"Fiberglass Rod","cost":750,"luck":1.15,"barSize":0.24,"fillRate":0.6,"drainRate":0.36,"fishSpeed":0.95,"biteSpeed":0.92,"color":{"r":120,"g":168,"b":196}},"carbon":{"name":"Carbon Rod","cost":12000,"luck":1.4,"barSize":0.26,"fillRate":0.65,"drainRate":0.34,"fishSpeed":0.9,"biteSpeed":0.85,"color":{"r":70,"g":74,"b":82}},"enchanted":{"name":"Enchanted Rod","cost":180000,"luck":1.9,"barSize":0.28,"fillRate":0.72,"drainRate":0.3,"fishSpeed":0.85,"biteSpeed":0.78,"color":{"r":150,"g":116,"b":224}},"abyssal":{"name":"Abyssal Rod","cost":2500000,"luck":2.8,"barSize":0.3,"fillRate":0.8,"drainRate":0.27,"fishSpeed":0.8,"biteSpeed":0.7,"color":{"r":48,"g":62,"b":118}},"celestial":{"name":"Celestial Rod","cost":30000000,"luck":4.2,"barSize":0.33,"fillRate":0.9,"drainRate":0.24,"fishSpeed":0.75,"biteSpeed":0.6,"color":{"r":186,"g":168,"b":255}},"eventide":{"name":"Eventide Rod","cost":150000000,"luck":7,"barSize":0.36,"fillRate":1,"drainRate":0.2,"fishSpeed":0.7,"biteSpeed":0.5,"color":{"r":255,"g":244,"b":196}}}},"Zones":{"Order":["pond","reef","frost","volcano","abyss","rift"],"Data":{"pond":{"name":"Starter Pond","blurb":"Still water, friendly fish, no surprises.","unlockCoins":0,"luckBonus":1,"biteRange":{"min":1.4,"max":4.2},"origin":{"x":0,"y":0,"z":0},"waterColor":{"r":58,"g":132,"b":168},"accentColor":{"r":126,"g":200,"b":120},"fogColor":{"r":176,"g":202,"b":216},"radius":90},"reef":{"name":"Coral Reef","blurb":"Warm shallows. The colours here are worth money.","unlockCoins":2500,"luckBonus":1.15,"biteRange":{"min":1.6,"max":4.8},"origin":{"x":520,"y":0,"z":-140},"waterColor":{"r":40,"g":186,"b":190},"accentColor":{"r":255,"g":142,"b":156},"fogColor":{"r":168,"g":226,"b":226},"radius":100},"frost":{"name":"Frostbite Lake","blurb":"Cut a hole, drop a line, hope something is still alive.","unlockCoins":25000,"luckBonus":1.35,"biteRange":{"min":2.2,"max":6},"origin":{"x":-480,"y":0,"z":-420},"waterColor":{"r":122,"g":190,"b":214},"accentColor":{"r":226,"g":244,"b":255},"fogColor":{"r":214,"g":232,"b":242},"radius":105},"volcano":{"name":"Volcanic Depths","blurb":"The water boils. Whatever lives in it is angry.","unlockCoins":150000,"luckBonus":1.7,"biteRange":{"min":2.4,"max":6.5},"origin":{"x":300,"y":0,"z":620},"waterColor":{"r":198,"g":78,"b":40},"accentColor":{"r":255,"g":122,"b":40},"fogColor":{"r":96,"g":52,"b":44},"radius":100},"abyss":{"name":"The Abyss","blurb":"No light reaches the bottom. Something down there has teeth.","unlockCoins":1500000,"luckBonus":2.4,"biteRange":{"min":3,"max":8},"origin":{"x":-700,"y":0,"z":480},"waterColor":{"r":18,"g":26,"b":54},"accentColor":{"r":76,"g":108,"b":220},"fogColor":{"r":12,"g":16,"b":32},"radius":115},"rift":{"name":"Celestial Rift","blurb":"Not water. Not really. It still takes bait.","unlockCoins":6000000,"luckBonus":3.5,"biteRange":{"min":3.5,"max":9},"origin":{"x":120,"y":0,"z":-860},"waterColor":{"r":96,"g":68,"b":200},"accentColor":{"r":180,"g":160,"b":255},"fogColor":{"r":48,"g":32,"b":96},"radius":120}}},"Visuals":{"Data":{"pond":{"ground":"Grass","shore":"Sand","underwater":"Mud","prop":"Wood","propColor":{"r":96,"g":128,"b":72},"water":{"color":{"r":28,"g":104,"b":130},"transparency":0.62,"reflectance":0.28,"waveSize":0.11,"waveSpeed":7},"lighting":{"clockTime":14.4,"brightness":2.4,"exposure":0,"ambient":{"r":58,"g":64,"b":74},"outdoorAmbient":{"r":122,"g":134,"b":152},"shadowSoftness":0.22},"atmosphere":{"density":0.32,"offset":0.1,"color":{"r":202,"g":216,"b":226},"decay":{"r":122,"g":140,"b":158},"glare":0.2,"haze":1.1},"clouds":{"cover":0.52,"density":0.55,"color":{"r":240,"g":246,"b":252}},"bloom":{"intensity":0.55,"size":22,"threshold":1.05},"sunRays":{"intensity":0.1,"spread":0.9},"correction":{"brightness":0.015,"contrast":0.07,"saturation":0.1,"tint":{"r":255,"g":252,"b":244}},"dof":{"far":0.08,"focus":90,"radius":60,"near":0},"ambient":{"kind":"pollen","color":{"r":255,"g":244,"b":200},"rate":14}},"reef":{"ground":"Sand","shore":"Sand","underwater":"Sand","prop":"Sandstone","propColor":{"r":255,"g":152,"b":162},"water":{"color":{"r":16,"g":180,"b":186},"transparency":0.74,"reflectance":0.34,"waveSize":0.14,"waveSpeed":9},"lighting":{"clockTime":13.2,"brightness":3,"exposure":0.08,"ambient":{"r":64,"g":76,"b":82},"outdoorAmbient":{"r":140,"g":168,"b":176},"shadowSoftness":0.18},"atmosphere":{"density":0.28,"offset":0.16,"color":{"r":216,"g":240,"b":240},"decay":{"r":128,"g":180,"b":186},"glare":0.45,"haze":1.3},"clouds":{"cover":0.36,"density":0.4,"color":{"r":255,"g":255,"b":255}},"bloom":{"intensity":0.85,"size":26,"threshold":0.95},"sunRays":{"intensity":0.2,"spread":1},"correction":{"brightness":0.03,"contrast":0.1,"saturation":0.26,"tint":{"r":246,"g":255,"b":255}},"dof":{"far":0.1,"focus":110,"radius":70,"near":0},"ambient":{"kind":"pollen","color":{"r":190,"g":255,"b":250},"rate":10}},"frost":{"ground":"Snow","shore":"Glacier","underwater":"Slate","prop":"Ice","propColor":{"r":222,"g":240,"b":252},"water":{"color":{"r":96,"g":150,"b":176},"transparency":0.5,"reflectance":0.42,"waveSize":0.05,"waveSpeed":4},"lighting":{"clockTime":9.4,"brightness":2,"exposure":0.05,"ambient":{"r":74,"g":82,"b":92},"outdoorAmbient":{"r":150,"g":166,"b":182},"shadowSoftness":0.5},"atmosphere":{"density":0.44,"offset":0.05,"color":{"r":226,"g":236,"b":246},"decay":{"r":150,"g":168,"b":190},"glare":0.1,"haze":2.4},"clouds":{"cover":0.86,"density":0.72,"color":{"r":228,"g":236,"b":246}},"bloom":{"intensity":0.7,"size":30,"threshold":1},"sunRays":{"intensity":0.06,"spread":0.7},"correction":{"brightness":0.02,"contrast":0.04,"saturation":-0.22,"tint":{"r":236,"g":246,"b":255}},"dof":{"far":0.16,"focus":70,"radius":45,"near":0},"ambient":{"kind":"snow","color":{"r":246,"g":252,"b":255},"rate":60}},"volcano":{"ground":"Basalt","shore":"CrackedLava","underwater":"Basalt","prop":"Rock","propColor":{"r":58,"g":48,"b":48},"water":{"color":{"r":150,"g":44,"b":18},"transparency":0.3,"reflectance":0.2,"waveSize":0.09,"waveSpeed":5},"lighting":{"clockTime":19.4,"brightness":1.5,"exposure":-0.05,"ambient":{"r":58,"g":34,"b":28},"outdoorAmbient":{"r":84,"g":48,"b":38},"shadowSoftness":0.35},"atmosphere":{"density":0.52,"offset":0.02,"color":{"r":150,"g":96,"b":74},"decay":{"r":96,"g":44,"b":30},"glare":0.6,"haze":3.2},"clouds":{"cover":0.94,"density":0.9,"color":{"r":90,"g":62,"b":58}},"bloom":{"intensity":1.5,"size":34,"threshold":0.82},"sunRays":{"intensity":0.3,"spread":1},"correction":{"brightness":-0.01,"contrast":0.2,"saturation":0.2,"tint":{"r":255,"g":226,"b":206}},"dof":{"far":0.24,"focus":55,"radius":35,"near":0},"ambient":{"kind":"embers","color":{"r":255,"g":142,"b":52},"rate":34}},"abyss":{"ground":"Rock","shore":"Slate","underwater":"Rock","prop":"Marble","propColor":{"r":44,"g":56,"b":96},"water":{"color":{"r":6,"g":14,"b":40},"transparency":0.18,"reflectance":0.12,"waveSize":0.04,"waveSpeed":3},"lighting":{"clockTime":0.6,"brightness":0.7,"exposure":0.22,"ambient":{"r":16,"g":22,"b":44},"outdoorAmbient":{"r":26,"g":34,"b":62},"shadowSoftness":0.85},"atmosphere":{"density":0.62,"offset":0,"color":{"r":38,"g":52,"b":96},"decay":{"r":10,"g":16,"b":36},"glare":0.05,"haze":5},"clouds":{"cover":1,"density":0.95,"color":{"r":20,"g":26,"b":48}},"bloom":{"intensity":1.9,"size":40,"threshold":0.6},"sunRays":{"intensity":0,"spread":0.4},"correction":{"brightness":0.04,"contrast":0.26,"saturation":-0.1,"tint":{"r":196,"g":214,"b":255}},"dof":{"far":0.5,"focus":34,"radius":20,"near":0.02},"ambient":{"kind":"motes","color":{"r":98,"g":150,"b":255},"rate":26}},"rift":{"ground":"Marble","shore":"Glacier","underwater":"Marble","prop":"Neon","propColor":{"r":176,"g":150,"b":255},"water":{"color":{"r":78,"g":46,"b":180},"transparency":0.46,"reflectance":0.6,"waveSize":0.08,"waveSpeed":6},"lighting":{"clockTime":2.4,"brightness":1.1,"exposure":0.2,"ambient":{"r":38,"g":28,"b":66},"outdoorAmbient":{"r":62,"g":48,"b":104},"shadowSoftness":0.6},"atmosphere":{"density":0.48,"offset":0.24,"color":{"r":128,"g":104,"b":220},"decay":{"r":52,"g":34,"b":104},"glare":1.2,"haze":3.6},"clouds":{"cover":0.7,"density":0.6,"color":{"r":150,"g":126,"b":226}},"bloom":{"intensity":2.2,"size":44,"threshold":0.55},"sunRays":{"intensity":0.36,"spread":1},"correction":{"brightness":0.05,"contrast":0.22,"saturation":0.3,"tint":{"r":226,"g":214,"b":255}},"dof":{"far":0.3,"focus":80,"radius":50,"near":0},"ambient":{"kind":"sparks","color":{"r":198,"g":172,"b":255},"rate":40}}},"AmbientStyles":{"pollen":{"lifetime":{"min":5,"max":9},"speed":{"min":0.4,"max":1.6},"size":0.22,"acceleration":{"x":0.6,"y":0.35,"z":0},"lightEmission":0.55,"spin":{"min":-20,"max":20},"transparency":0.45},"snow":{"lifetime":{"min":6,"max":10},"speed":{"min":0.5,"max":1.4},"size":0.32,"acceleration":{"x":2.2,"y":-7.5,"z":0.8},"lightEmission":0.35,"spin":{"min":-45,"max":45},"transparency":0.2},"embers":{"lifetime":{"min":3.2,"max":6},"speed":{"min":1.4,"max":3.6},"size":0.26,"acceleration":{"x":0.8,"y":5.5,"z":0},"lightEmission":1,"spin":{"min":-90,"max":90},"transparency":0.1},"motes":{"lifetime":{"min":7,"max":12},"speed":{"min":0.2,"max":0.9},"size":0.3,"acceleration":{"x":0,"y":0.4,"z":0},"lightEmission":0.9,"spin":{"min":-10,"max":10},"transparency":0.25},"sparks":{"lifetime":{"min":2.4,"max":5},"speed":{"min":2,"max":5},"size":0.22,"acceleration":{"x":0,"y":1.4,"z":0},"lightEmission":1,"spin":{"min":-180,"max":180},"transparency":0.05}}},"Fish":[{"id":"minnow","name":"Minnow","zone":"pond","rarity":"Common","value":4,"kg":[0.05,0.6],"color":[176,188,200]},{"id":"bluegill","name":"Bluegill","zone":"pond","rarity":"Common","value":6,"kg":[0.2,1.4],"color":[108,156,186]},{"id":"carp","name":"Common Carp","zone":"pond","rarity":"Common","value":7,"kg":[1,6],"color":[158,142,96]},{"id":"perch","name":"Yellow Perch","zone":"pond","rarity":"Uncommon","value":12,"kg":[0.3,2.2],"color":[206,176,74]},{"id":"bass","name":"Largemouth Bass","zone":"pond","rarity":"Uncommon","value":15,"kg":[1.2,7],"color":[104,148,92]},{"id":"pike","name":"Northern Pike","zone":"pond","rarity":"Rare","value":26,"kg":[3,16],"color":[92,132,82]},{"id":"golden_koi","name":"Golden Koi","zone":"pond","rarity":"Epic","value":48,"kg":[2,9],"color":[244,176,62]},{"id":"pond_leviathan","name":"Pond Leviathan","zone":"pond","rarity":"Legendary","value":110,"kg":[40,180],"color":[74,96,78]},{"id":"wishing_coin","name":"Wishing Coin","zone":"pond","rarity":"Mythic","value":260,"kg":[0.01,0.03],"color":[232,208,128]},{"id":"clownfish","name":"Clownfish","zone":"reef","rarity":"Common","value":9,"kg":[0.05,0.4],"color":[244,138,54]},{"id":"parrotfish","name":"Parrotfish","zone":"reef","rarity":"Common","value":11,"kg":[0.8,4],"color":[92,198,168]},{"id":"angelfish","name":"Emperor Angelfish","zone":"reef","rarity":"Uncommon","value":18,"kg":[0.4,2.6],"color":[240,210,88]},{"id":"lionfish","name":"Lionfish","zone":"reef","rarity":"Uncommon","value":21,"kg":[0.5,2],"color":[226,112,120]},{"id":"reef_shark","name":"Reef Shark","zone":"reef","rarity":"Rare","value":34,"kg":[20,70],"color":[132,146,158]},{"id":"manta_ray","name":"Manta Ray","zone":"reef","rarity":"Rare","value":38,"kg":[60,300],"color":[66,84,104]},{"id":"seahorse_king","name":"Seahorse King","zone":"reef","rarity":"Epic","value":62,"kg":[0.1,0.5],"color":[248,172,196]},{"id":"coral_crown","name":"Coral Crown","zone":"reef","rarity":"Legendary","value":140,"kg":[3,12],"color":[255,132,148]},{"id":"kraken_spawn","name":"Kraken Spawn","zone":"reef","rarity":"Mythic","value":300,"kg":[80,400],"color":[128,66,150]},{"id":"herring","name":"Frozen Herring","zone":"frost","rarity":"Common","value":12,"kg":[0.2,1],"color":[186,202,214]},{"id":"arctic_cod","name":"Arctic Cod","zone":"frost","rarity":"Common","value":14,"kg":[1,5],"color":[154,170,182]},{"id":"char","name":"Arctic Char","zone":"frost","rarity":"Uncommon","value":24,"kg":[1.5,8],"color":[218,132,116]},{"id":"ice_trout","name":"Ice Trout","zone":"frost","rarity":"Uncommon","value":27,"kg":[2,10],"color":[168,206,226]},{"id":"glacier_eel","name":"Glacier Eel","zone":"frost","rarity":"Rare","value":44,"kg":[6,24],"color":[132,178,198]},{"id":"frost_sturgeon","name":"Frost Sturgeon","zone":"frost","rarity":"Rare","value":47,"kg":[30,140],"color":[116,140,156]},{"id":"permafrost_pike","name":"Permafrost Pike","zone":"frost","rarity":"Epic","value":78,"kg":[12,48],"color":[190,222,238]},{"id":"wendigo_fin","name":"Wendigo Fin","zone":"frost","rarity":"Legendary","value":170,"kg":[20,90],"color":[226,238,246]},{"id":"heart_of_winter","name":"Heart of Winter","zone":"frost","rarity":"Mythic","value":340,"kg":[0.5,3],"color":[146,224,255]},{"id":"ember_minnow","name":"Ember Minnow","zone":"volcano","rarity":"Common","value":20,"kg":[0.1,0.8],"color":[240,132,60]},{"id":"ashfin","name":"Ashfin","zone":"volcano","rarity":"Common","value":22,"kg":[1,6],"color":[128,112,108]},{"id":"magma_crab","name":"Magma Crab","zone":"volcano","rarity":"Uncommon","value":34,"kg":[2,11],"color":[214,82,48]},{"id":"obsidian_eel","name":"Obsidian Eel","zone":"volcano","rarity":"Uncommon","value":38,"kg":[5,22],"color":[48,44,52]},{"id":"cinder_ray","name":"Cinder Ray","zone":"volcano","rarity":"Rare","value":58,"kg":[30,120],"color":[176,70,44]},{"id":"lava_sturgeon","name":"Lava Sturgeon","zone":"volcano","rarity":"Rare","value":62,"kg":[45,200],"color":[226,108,44]},{"id":"pyroclast","name":"Pyroclast","zone":"volcano","rarity":"Epic","value":100,"kg":[15,70],"color":[255,156,48]},{"id":"forge_serpent","name":"Forge Serpent","zone":"volcano","rarity":"Legendary","value":210,"kg":[90,420],"color":[255,108,40]},{"id":"phoenix_roe","name":"Phoenix Roe","zone":"volcano","rarity":"Mythic","value":420,"kg":[0.02,0.2],"color":[255,196,92]},{"id":"molten_core","name":"Molten Core","zone":"volcano","rarity":"Exotic","value":900,"kg":[5,30],"color":[255,232,120]},{"id":"lanternfish","name":"Lanternfish","zone":"abyss","rarity":"Common","value":30,"kg":[0.05,0.5],"color":[92,118,146]},{"id":"gulper_eel","name":"Gulper Eel","zone":"abyss","rarity":"Common","value":32,"kg":[2,9],"color":[54,60,82]},{"id":"anglerfish","name":"Anglerfish","zone":"abyss","rarity":"Uncommon","value":52,"kg":[3,16],"color":[70,82,108]},{"id":"viperfish","name":"Viperfish","zone":"abyss","rarity":"Uncommon","value":55,"kg":[1,6],"color":[86,96,128]},{"id":"bone_ray","name":"Bone Ray","zone":"abyss","rarity":"Rare","value":82,"kg":[40,180],"color":[206,204,190]},{"id":"hadal_squid","name":"Hadal Squid","zone":"abyss","rarity":"Rare","value":88,"kg":[25,140],"color":[128,90,160]},{"id":"pale_colossus","name":"Pale Colossus","zone":"abyss","rarity":"Epic","value":140,"kg":[200,900],"color":[222,220,226]},{"id":"trench_wyrm","name":"Trench Wyrm","zone":"abyss","rarity":"Legendary","value":290,"kg":[300,1400],"color":[62,74,132]},{"id":"the_unnamed","name":"The Unnamed","zone":"abyss","rarity":"Mythic","value":560,"kg":[500,2600],"color":[32,38,70]},{"id":"abyssal_eye","name":"Abyssal Eye","zone":"abyss","rarity":"Exotic","value":1200,"kg":[8,40],"color":[248,238,210]},{"id":"leviathan_prime","name":"Leviathan Prime","zone":"abyss","rarity":"Secret","value":3200,"kg":[2000,9000],"color":[24,200,196]},{"id":"starlet","name":"Starlet","zone":"rift","rarity":"Uncommon","value":80,"kg":[0.1,1],"color":[244,240,200]},{"id":"nebula_dart","name":"Nebula Dart","zone":"rift","rarity":"Rare","value":120,"kg":[1,8],"color":[186,140,244]},{"id":"quasar_ray","name":"Quasar Ray","zone":"rift","rarity":"Epic","value":200,"kg":[20,110],"color":[140,190,255]},{"id":"comet_serpent","name":"Comet Serpent","zone":"rift","rarity":"Legendary","value":400,"kg":[60,320],"color":[210,226,255]},{"id":"astral_whale","name":"Astral Whale","zone":"rift","rarity":"Mythic","value":780,"kg":[1200,6000],"color":[118,148,236]},{"id":"singularity","name":"Singularity","zone":"rift","rarity":"Exotic","value":1700,"kg":[0.001,0.01],"color":[30,26,44]},{"id":"god_of_still_water","name":"God of Still Water","zone":"rift","rarity":"Secret","value":5000,"kg":[8000,40000],"color":[255,252,236]}]};
+const DATA = {"Rarities":{"Order":["Common","Uncommon","Rare","Epic","Legendary","Mythic","Exotic","Secret"],"Data":{"Common":{"chance":2,"color":{"r":198,"g":205,"b":216},"valueMult":1,"luckExponent":0,"score":1},"Uncommon":{"chance":8,"color":{"r":116,"g":210,"b":124},"valueMult":2.2,"luckExponent":0.25,"score":5},"Rare":{"chance":40,"color":{"r":88,"g":158,"b":255},"valueMult":5.5,"luckExponent":0.45,"score":25},"Epic":{"chance":250,"color":{"r":172,"g":108,"b":255},"valueMult":16,"luckExponent":0.6,"score":150},"Legendary":{"chance":1500,"color":{"r":255,"g":176,"b":54},"valueMult":60,"luckExponent":0.75,"score":900},"Mythic":{"chance":12000,"color":{"r":255,"g":84,"b":110},"valueMult":240,"luckExponent":0.85,"score":7000},"Exotic":{"chance":100000,"color":{"r":80,"g":245,"b":230},"valueMult":1400,"luckExponent":0.95,"score":60000},"Secret":{"chance":1000000,"color":{"r":255,"g":255,"b":255},"valueMult":9000,"luckExponent":1,"score":600000}}},"Mutations":{"Order":["None","Shiny","Albino","Golden","Radioactive","Void","Celestial","Glitched"],"Data":{"None":{"chance":1,"valueMult":1,"scoreMult":1,"color":{"r":215,"g":220,"b":230},"prefix":"","luckExponent":0},"Shiny":{"chance":50,"valueMult":3,"scoreMult":2.5,"color":{"r":255,"g":236,"b":130},"prefix":"Shiny","luckExponent":0.3},"Albino":{"chance":200,"valueMult":6,"scoreMult":5,"color":{"r":246,"g":246,"b":250},"prefix":"Albino","luckExponent":0.4},"Golden":{"chance":1000,"valueMult":15,"scoreMult":12,"color":{"r":255,"g":190,"b":40},"prefix":"Golden","luckExponent":0.55},"Radioactive":{"chance":5000,"valueMult":45,"scoreMult":40,"color":{"r":140,"g":255,"b":70},"prefix":"Radioactive","luckExponent":0.7},"Void":{"chance":25000,"valueMult":150,"scoreMult":140,"color":{"r":120,"g":60,"b":220},"prefix":"Void","luckExponent":0.8},"Celestial":{"chance":250000,"valueMult":800,"scoreMult":900,"color":{"r":120,"g":230,"b":255},"prefix":"Celestial","luckExponent":0.9},"Glitched":{"chance":1000000,"valueMult":4000,"scoreMult":5000,"color":{"r":255,"g":60,"b":220},"prefix":"Glitched","luckExponent":1}}},"Rods":{"Order":["wooden","fiberglass","carbon","enchanted","abyssal","celestial","eventide"],"Data":{"wooden":{"name":"Wooden Rod","cost":0,"luck":1,"barSize":0.22,"fillRate":0.55,"drainRate":0.38,"fishSpeed":1,"biteSpeed":1,"color":{"r":146,"g":110,"b":68}},"fiberglass":{"name":"Fiberglass Rod","cost":750,"luck":1.15,"barSize":0.24,"fillRate":0.6,"drainRate":0.36,"fishSpeed":0.95,"biteSpeed":0.92,"color":{"r":120,"g":168,"b":196}},"carbon":{"name":"Carbon Rod","cost":12000,"luck":1.4,"barSize":0.26,"fillRate":0.65,"drainRate":0.34,"fishSpeed":0.9,"biteSpeed":0.85,"color":{"r":70,"g":74,"b":82}},"enchanted":{"name":"Enchanted Rod","cost":180000,"luck":1.9,"barSize":0.28,"fillRate":0.72,"drainRate":0.3,"fishSpeed":0.85,"biteSpeed":0.78,"color":{"r":150,"g":116,"b":224}},"abyssal":{"name":"Abyssal Rod","cost":2500000,"luck":2.8,"barSize":0.3,"fillRate":0.8,"drainRate":0.27,"fishSpeed":0.8,"biteSpeed":0.7,"color":{"r":48,"g":62,"b":118}},"celestial":{"name":"Celestial Rod","cost":30000000,"luck":4.2,"barSize":0.33,"fillRate":0.9,"drainRate":0.24,"fishSpeed":0.75,"biteSpeed":0.6,"color":{"r":186,"g":168,"b":255}},"eventide":{"name":"Eventide Rod","cost":150000000,"luck":7,"barSize":0.36,"fillRate":1,"drainRate":0.2,"fishSpeed":0.7,"biteSpeed":0.5,"color":{"r":255,"g":244,"b":196}}}},"Zones":{"Order":["pond","reef","frost","volcano","abyss","rift"],"Data":{"pond":{"name":"Starter Pond","blurb":"Still water, friendly fish, no surprises.","unlockCoins":0,"luckBonus":1,"biteRange":{"min":1.4,"max":4.2},"origin":{"x":0,"y":0,"z":0},"waterColor":{"r":58,"g":132,"b":168},"accentColor":{"r":126,"g":200,"b":120},"fogColor":{"r":176,"g":202,"b":216},"radius":90},"reef":{"name":"Coral Reef","blurb":"Warm shallows. The colours here are worth money.","unlockCoins":2500,"luckBonus":1.15,"biteRange":{"min":1.6,"max":4.8},"origin":{"x":520,"y":0,"z":-140},"waterColor":{"r":40,"g":186,"b":190},"accentColor":{"r":255,"g":142,"b":156},"fogColor":{"r":168,"g":226,"b":226},"radius":100},"frost":{"name":"Frostbite Lake","blurb":"Cut a hole, drop a line, hope something is still alive.","unlockCoins":25000,"luckBonus":1.35,"biteRange":{"min":2.2,"max":6},"origin":{"x":-480,"y":0,"z":-420},"waterColor":{"r":122,"g":190,"b":214},"accentColor":{"r":226,"g":244,"b":255},"fogColor":{"r":214,"g":232,"b":242},"radius":105},"volcano":{"name":"Volcanic Depths","blurb":"The water boils. Whatever lives in it is angry.","unlockCoins":150000,"luckBonus":1.7,"biteRange":{"min":2.4,"max":6.5},"origin":{"x":300,"y":0,"z":620},"waterColor":{"r":198,"g":78,"b":40},"accentColor":{"r":255,"g":122,"b":40},"fogColor":{"r":96,"g":52,"b":44},"radius":100},"abyss":{"name":"The Abyss","blurb":"No light reaches the bottom. Something down there has teeth.","unlockCoins":1500000,"luckBonus":2.4,"biteRange":{"min":3,"max":8},"origin":{"x":-700,"y":0,"z":480},"waterColor":{"r":18,"g":26,"b":54},"accentColor":{"r":76,"g":108,"b":220},"fogColor":{"r":12,"g":16,"b":32},"radius":115},"rift":{"name":"Celestial Rift","blurb":"Not water. Not really. It still takes bait.","unlockCoins":6000000,"luckBonus":3.5,"biteRange":{"min":3.5,"max":9},"origin":{"x":120,"y":0,"z":-860},"waterColor":{"r":96,"g":68,"b":200},"accentColor":{"r":180,"g":160,"b":255},"fogColor":{"r":48,"g":32,"b":96},"radius":120}}},"Visuals":{"Data":{"pond":{"ground":"Grass","shore":"Sand","underwater":"Mud","prop":"Wood","propColor":{"r":96,"g":128,"b":72},"water":{"color":{"r":28,"g":104,"b":130},"transparency":0.62,"reflectance":0.28,"waveSize":0.11,"waveSpeed":7},"lighting":{"clockTime":14.4,"brightness":2.4,"exposure":0,"ambient":{"r":58,"g":64,"b":74},"outdoorAmbient":{"r":122,"g":134,"b":152},"shadowSoftness":0.22},"atmosphere":{"density":0.32,"offset":0.1,"color":{"r":202,"g":216,"b":226},"decay":{"r":122,"g":140,"b":158},"glare":0.2,"haze":1.1},"clouds":{"cover":0.52,"density":0.55,"color":{"r":240,"g":246,"b":252}},"bloom":{"intensity":0.55,"size":22,"threshold":1.05},"sunRays":{"intensity":0.1,"spread":0.9},"correction":{"brightness":0.015,"contrast":0.07,"saturation":0.1,"tint":{"r":255,"g":252,"b":244}},"dof":{"far":0.08,"focus":90,"radius":60,"near":0},"ambient":{"kind":"pollen","color":{"r":255,"g":244,"b":200},"rate":14}},"reef":{"ground":"Sand","shore":"Sand","underwater":"Sand","prop":"Sandstone","propColor":{"r":255,"g":152,"b":162},"water":{"color":{"r":16,"g":180,"b":186},"transparency":0.74,"reflectance":0.34,"waveSize":0.14,"waveSpeed":9},"lighting":{"clockTime":13.2,"brightness":3,"exposure":0.08,"ambient":{"r":64,"g":76,"b":82},"outdoorAmbient":{"r":140,"g":168,"b":176},"shadowSoftness":0.18},"atmosphere":{"density":0.28,"offset":0.16,"color":{"r":216,"g":240,"b":240},"decay":{"r":128,"g":180,"b":186},"glare":0.45,"haze":1.3},"clouds":{"cover":0.36,"density":0.4,"color":{"r":255,"g":255,"b":255}},"bloom":{"intensity":0.85,"size":26,"threshold":0.95},"sunRays":{"intensity":0.2,"spread":1},"correction":{"brightness":0.03,"contrast":0.1,"saturation":0.26,"tint":{"r":246,"g":255,"b":255}},"dof":{"far":0.1,"focus":110,"radius":70,"near":0},"ambient":{"kind":"pollen","color":{"r":190,"g":255,"b":250},"rate":10}},"frost":{"ground":"Snow","shore":"Glacier","underwater":"Slate","prop":"Ice","propColor":{"r":222,"g":240,"b":252},"water":{"color":{"r":96,"g":150,"b":176},"transparency":0.5,"reflectance":0.42,"waveSize":0.05,"waveSpeed":4},"lighting":{"clockTime":9.4,"brightness":2,"exposure":0.05,"ambient":{"r":74,"g":82,"b":92},"outdoorAmbient":{"r":150,"g":166,"b":182},"shadowSoftness":0.5},"atmosphere":{"density":0.44,"offset":0.05,"color":{"r":226,"g":236,"b":246},"decay":{"r":150,"g":168,"b":190},"glare":0.1,"haze":2.4},"clouds":{"cover":0.86,"density":0.72,"color":{"r":228,"g":236,"b":246}},"bloom":{"intensity":0.7,"size":30,"threshold":1},"sunRays":{"intensity":0.06,"spread":0.7},"correction":{"brightness":0.02,"contrast":0.04,"saturation":-0.22,"tint":{"r":236,"g":246,"b":255}},"dof":{"far":0.16,"focus":70,"radius":45,"near":0},"ambient":{"kind":"snow","color":{"r":246,"g":252,"b":255},"rate":60}},"volcano":{"ground":"Basalt","shore":"CrackedLava","underwater":"Basalt","prop":"Rock","propColor":{"r":58,"g":48,"b":48},"water":{"color":{"r":150,"g":44,"b":18},"transparency":0.3,"reflectance":0.2,"waveSize":0.09,"waveSpeed":5},"lighting":{"clockTime":19.4,"brightness":1.5,"exposure":-0.05,"ambient":{"r":58,"g":34,"b":28},"outdoorAmbient":{"r":84,"g":48,"b":38},"shadowSoftness":0.35},"atmosphere":{"density":0.52,"offset":0.02,"color":{"r":150,"g":96,"b":74},"decay":{"r":96,"g":44,"b":30},"glare":0.6,"haze":3.2},"clouds":{"cover":0.94,"density":0.9,"color":{"r":90,"g":62,"b":58}},"bloom":{"intensity":1.5,"size":34,"threshold":0.82},"sunRays":{"intensity":0.3,"spread":1},"correction":{"brightness":-0.01,"contrast":0.2,"saturation":0.2,"tint":{"r":255,"g":226,"b":206}},"dof":{"far":0.24,"focus":55,"radius":35,"near":0},"ambient":{"kind":"embers","color":{"r":255,"g":142,"b":52},"rate":34}},"abyss":{"ground":"Rock","shore":"Slate","underwater":"Rock","prop":"Marble","propColor":{"r":44,"g":56,"b":96},"water":{"color":{"r":6,"g":14,"b":40},"transparency":0.18,"reflectance":0.12,"waveSize":0.04,"waveSpeed":3},"lighting":{"clockTime":0.6,"brightness":0.7,"exposure":0.22,"ambient":{"r":16,"g":22,"b":44},"outdoorAmbient":{"r":26,"g":34,"b":62},"shadowSoftness":0.85},"atmosphere":{"density":0.62,"offset":0,"color":{"r":38,"g":52,"b":96},"decay":{"r":10,"g":16,"b":36},"glare":0.05,"haze":5},"clouds":{"cover":1,"density":0.95,"color":{"r":20,"g":26,"b":48}},"bloom":{"intensity":1.9,"size":40,"threshold":0.6},"sunRays":{"intensity":0,"spread":0.4},"correction":{"brightness":0.04,"contrast":0.26,"saturation":-0.1,"tint":{"r":196,"g":214,"b":255}},"dof":{"far":0.5,"focus":34,"radius":20,"near":0.02},"ambient":{"kind":"motes","color":{"r":98,"g":150,"b":255},"rate":26}},"rift":{"ground":"Marble","shore":"Glacier","underwater":"Marble","prop":"Neon","propColor":{"r":176,"g":150,"b":255},"water":{"color":{"r":78,"g":46,"b":180},"transparency":0.46,"reflectance":0.6,"waveSize":0.08,"waveSpeed":6},"lighting":{"clockTime":2.4,"brightness":1.1,"exposure":0.2,"ambient":{"r":38,"g":28,"b":66},"outdoorAmbient":{"r":62,"g":48,"b":104},"shadowSoftness":0.6},"atmosphere":{"density":0.48,"offset":0.24,"color":{"r":128,"g":104,"b":220},"decay":{"r":52,"g":34,"b":104},"glare":1.2,"haze":3.6},"clouds":{"cover":0.7,"density":0.6,"color":{"r":150,"g":126,"b":226}},"bloom":{"intensity":2.2,"size":44,"threshold":0.55},"sunRays":{"intensity":0.36,"spread":1},"correction":{"brightness":0.05,"contrast":0.22,"saturation":0.3,"tint":{"r":226,"g":214,"b":255}},"dof":{"far":0.3,"focus":80,"radius":50,"near":0},"ambient":{"kind":"sparks","color":{"r":198,"g":172,"b":255},"rate":40}}},"AmbientStyles":{"pollen":{"lifetime":{"min":5,"max":9},"speed":{"min":0.4,"max":1.6},"size":0.22,"acceleration":{"x":0.6,"y":0.35,"z":0},"lightEmission":0.55,"spin":{"min":-20,"max":20},"transparency":0.45},"snow":{"lifetime":{"min":6,"max":10},"speed":{"min":0.5,"max":1.4},"size":0.32,"acceleration":{"x":2.2,"y":-7.5,"z":0.8},"lightEmission":0.35,"spin":{"min":-45,"max":45},"transparency":0.2},"embers":{"lifetime":{"min":3.2,"max":6},"speed":{"min":1.4,"max":3.6},"size":0.26,"acceleration":{"x":0.8,"y":5.5,"z":0},"lightEmission":1,"spin":{"min":-90,"max":90},"transparency":0.1},"motes":{"lifetime":{"min":7,"max":12},"speed":{"min":0.2,"max":0.9},"size":0.3,"acceleration":{"x":0,"y":0.4,"z":0},"lightEmission":0.9,"spin":{"min":-10,"max":10},"transparency":0.25},"sparks":{"lifetime":{"min":2.4,"max":5},"speed":{"min":2,"max":5},"size":0.22,"acceleration":{"x":0,"y":1.4,"z":0},"lightEmission":1,"spin":{"min":-180,"max":180},"transparency":0.05}}},"Fish":[{"id":"minnow","name":"Minnow","zone":"pond","rarity":"Common","value":4,"kg":[0.05,0.6],"color":[176,188,200],"shape":"round"},{"id":"bluegill","name":"Bluegill","zone":"pond","rarity":"Common","value":6,"kg":[0.2,1.4],"color":[108,156,186],"shape":"round"},{"id":"carp","name":"Common Carp","zone":"pond","rarity":"Common","value":7,"kg":[1,6],"color":[158,142,96],"shape":"round"},{"id":"perch","name":"Yellow Perch","zone":"pond","rarity":"Uncommon","value":12,"kg":[0.3,2.2],"color":[206,176,74],"shape":"round"},{"id":"bass","name":"Largemouth Bass","zone":"pond","rarity":"Uncommon","value":15,"kg":[1.2,7],"color":[104,148,92],"shape":"round"},{"id":"pike","name":"Northern Pike","zone":"pond","rarity":"Rare","value":26,"kg":[3,16],"color":[92,132,82],"shape":"long"},{"id":"golden_koi","name":"Golden Koi","zone":"pond","rarity":"Epic","value":48,"kg":[2,9],"color":[244,176,62],"shape":"round"},{"id":"pond_leviathan","name":"Pond Leviathan","zone":"pond","rarity":"Legendary","value":110,"kg":[40,180],"color":[74,96,78],"shape":"bulb"},{"id":"wishing_coin","name":"Wishing Coin","zone":"pond","rarity":"Mythic","value":260,"kg":[0.01,0.03],"color":[232,208,128],"shape":"orb"},{"id":"clownfish","name":"Clownfish","zone":"reef","rarity":"Common","value":9,"kg":[0.05,0.4],"color":[244,138,54],"shape":"round"},{"id":"parrotfish","name":"Parrotfish","zone":"reef","rarity":"Common","value":11,"kg":[0.8,4],"color":[92,198,168],"shape":"round"},{"id":"angelfish","name":"Emperor Angelfish","zone":"reef","rarity":"Uncommon","value":18,"kg":[0.4,2.6],"color":[240,210,88],"shape":"flat"},{"id":"lionfish","name":"Lionfish","zone":"reef","rarity":"Uncommon","value":21,"kg":[0.5,2],"color":[226,112,120],"shape":"round"},{"id":"reef_shark","name":"Reef Shark","zone":"reef","rarity":"Rare","value":34,"kg":[20,70],"color":[132,146,158],"shape":"long"},{"id":"manta_ray","name":"Manta Ray","zone":"reef","rarity":"Rare","value":38,"kg":[60,300],"color":[66,84,104],"shape":"flat"},{"id":"seahorse_king","name":"Seahorse King","zone":"reef","rarity":"Epic","value":62,"kg":[0.1,0.5],"color":[248,172,196],"shape":"seahorse"},{"id":"coral_crown","name":"Coral Crown","zone":"reef","rarity":"Legendary","value":140,"kg":[3,12],"color":[255,132,148],"shape":"orb"},{"id":"kraken_spawn","name":"Kraken Spawn","zone":"reef","rarity":"Mythic","value":300,"kg":[80,400],"color":[128,66,150],"shape":"squid"},{"id":"herring","name":"Frozen Herring","zone":"frost","rarity":"Common","value":12,"kg":[0.2,1],"color":[186,202,214],"shape":"round"},{"id":"arctic_cod","name":"Arctic Cod","zone":"frost","rarity":"Common","value":14,"kg":[1,5],"color":[154,170,182],"shape":"round"},{"id":"char","name":"Arctic Char","zone":"frost","rarity":"Uncommon","value":24,"kg":[1.5,8],"color":[218,132,116],"shape":"round"},{"id":"ice_trout","name":"Ice Trout","zone":"frost","rarity":"Uncommon","value":27,"kg":[2,10],"color":[168,206,226],"shape":"round"},{"id":"glacier_eel","name":"Glacier Eel","zone":"frost","rarity":"Rare","value":44,"kg":[6,24],"color":[132,178,198],"shape":"long"},{"id":"frost_sturgeon","name":"Frost Sturgeon","zone":"frost","rarity":"Rare","value":47,"kg":[30,140],"color":[116,140,156],"shape":"long"},{"id":"permafrost_pike","name":"Permafrost Pike","zone":"frost","rarity":"Epic","value":78,"kg":[12,48],"color":[190,222,238],"shape":"long"},{"id":"wendigo_fin","name":"Wendigo Fin","zone":"frost","rarity":"Legendary","value":170,"kg":[20,90],"color":[226,238,246],"shape":"flat"},{"id":"heart_of_winter","name":"Heart of Winter","zone":"frost","rarity":"Mythic","value":340,"kg":[0.5,3],"color":[146,224,255],"shape":"orb"},{"id":"ember_minnow","name":"Ember Minnow","zone":"volcano","rarity":"Common","value":20,"kg":[0.1,0.8],"color":[240,132,60],"shape":"round"},{"id":"ashfin","name":"Ashfin","zone":"volcano","rarity":"Common","value":22,"kg":[1,6],"color":[128,112,108],"shape":"round"},{"id":"magma_crab","name":"Magma Crab","zone":"volcano","rarity":"Uncommon","value":34,"kg":[2,11],"color":[214,82,48],"shape":"crab"},{"id":"obsidian_eel","name":"Obsidian Eel","zone":"volcano","rarity":"Uncommon","value":38,"kg":[5,22],"color":[48,44,52],"shape":"long"},{"id":"cinder_ray","name":"Cinder Ray","zone":"volcano","rarity":"Rare","value":58,"kg":[30,120],"color":[176,70,44],"shape":"flat"},{"id":"lava_sturgeon","name":"Lava Sturgeon","zone":"volcano","rarity":"Rare","value":62,"kg":[45,200],"color":[226,108,44],"shape":"long"},{"id":"pyroclast","name":"Pyroclast","zone":"volcano","rarity":"Epic","value":100,"kg":[15,70],"color":[255,156,48],"shape":"round"},{"id":"forge_serpent","name":"Forge Serpent","zone":"volcano","rarity":"Legendary","value":210,"kg":[90,420],"color":[255,108,40],"shape":"long"},{"id":"phoenix_roe","name":"Phoenix Roe","zone":"volcano","rarity":"Mythic","value":420,"kg":[0.02,0.2],"color":[255,196,92],"shape":"orb"},{"id":"molten_core","name":"Molten Core","zone":"volcano","rarity":"Exotic","value":900,"kg":[5,30],"color":[255,232,120],"shape":"orb"},{"id":"lanternfish","name":"Lanternfish","zone":"abyss","rarity":"Common","value":30,"kg":[0.05,0.5],"color":[92,118,146],"shape":"round"},{"id":"gulper_eel","name":"Gulper Eel","zone":"abyss","rarity":"Common","value":32,"kg":[2,9],"color":[54,60,82],"shape":"bulb"},{"id":"anglerfish","name":"Anglerfish","zone":"abyss","rarity":"Uncommon","value":52,"kg":[3,16],"color":[70,82,108],"shape":"bulb"},{"id":"viperfish","name":"Viperfish","zone":"abyss","rarity":"Uncommon","value":55,"kg":[1,6],"color":[86,96,128],"shape":"long"},{"id":"bone_ray","name":"Bone Ray","zone":"abyss","rarity":"Rare","value":82,"kg":[40,180],"color":[206,204,190],"shape":"flat"},{"id":"hadal_squid","name":"Hadal Squid","zone":"abyss","rarity":"Rare","value":88,"kg":[25,140],"color":[128,90,160],"shape":"squid"},{"id":"pale_colossus","name":"Pale Colossus","zone":"abyss","rarity":"Epic","value":140,"kg":[200,900],"color":[222,220,226],"shape":"bulb"},{"id":"trench_wyrm","name":"Trench Wyrm","zone":"abyss","rarity":"Legendary","value":290,"kg":[300,1400],"color":[62,74,132],"shape":"long"},{"id":"the_unnamed","name":"The Unnamed","zone":"abyss","rarity":"Mythic","value":560,"kg":[500,2600],"color":[32,38,70],"shape":"bulb"},{"id":"abyssal_eye","name":"Abyssal Eye","zone":"abyss","rarity":"Exotic","value":1200,"kg":[8,40],"color":[248,238,210],"shape":"orb"},{"id":"leviathan_prime","name":"Leviathan Prime","zone":"abyss","rarity":"Secret","value":3200,"kg":[2000,9000],"color":[24,200,196],"shape":"long"},{"id":"starlet","name":"Starlet","zone":"rift","rarity":"Uncommon","value":80,"kg":[0.1,1],"color":[244,240,200],"shape":"orb"},{"id":"nebula_dart","name":"Nebula Dart","zone":"rift","rarity":"Rare","value":120,"kg":[1,8],"color":[186,140,244],"shape":"round"},{"id":"quasar_ray","name":"Quasar Ray","zone":"rift","rarity":"Epic","value":200,"kg":[20,110],"color":[140,190,255],"shape":"flat"},{"id":"comet_serpent","name":"Comet Serpent","zone":"rift","rarity":"Legendary","value":400,"kg":[60,320],"color":[210,226,255],"shape":"long"},{"id":"astral_whale","name":"Astral Whale","zone":"rift","rarity":"Mythic","value":780,"kg":[1200,6000],"color":[118,148,236],"shape":"bulb"},{"id":"singularity","name":"Singularity","zone":"rift","rarity":"Exotic","value":1700,"kg":[0.001,0.01],"color":[30,26,44],"shape":"orb"},{"id":"god_of_still_water","name":"God of Still Water","zone":"rift","rarity":"Secret","value":5000,"kg":[8000,40000],"color":[255,252,236],"shape":"bulb"}]};
 
 const RARITIES = DATA.Rarities.Data;
 const RARITY_ORDER = DATA.Rarities.Order;
@@ -385,6 +446,9 @@ const DEVICES = [
 ];
 
 // Pools, mirroring Fish.luau's build step.
+const FISH_BY_ID = {};
+for (const fish of FISH) FISH_BY_ID[fish.id] = fish;
+
 const POOL = {}, TIERS = {};
 for (const fish of FISH) {
   (POOL[fish.zone] ??= {});
@@ -487,6 +551,142 @@ function rollCatch(zoneId, luck) {
 }
 const catchColor = (c) => c.mutation !== "None" ? MUTATIONS[c.mutation].color : RARITIES[c.rarity].color;
 
+// Fish silhouettes, shared by the preview page and the static species sheet.
+// One builder per archetype, matching the geometry FishModel.luau assembles out
+// of primitives, so both are a fair likeness of what the game renders.
+//
+// Self-contained: its own colour helpers, so the sheet generator can load it
+// without the page around it.
+
+const _mix = (a, b, t) => ({ r: a.r + (b.r - a.r) * t, g: a.g + (b.g - a.g) * t, b: a.b + (b.b - a.b) * t });
+const _css = (c) => `rgb(${Math.round(c.r)} ${Math.round(c.g)} ${Math.round(c.b)})`;
+const _rgba = (c, a) => `rgb(${Math.round(c.r)} ${Math.round(c.g)} ${Math.round(c.b)} / ${a})`;
+
+// Port of FishModel.TREATMENTS: a mutation repaints the whole fish.
+const TREATMENTS = {
+  None: {},
+  Shiny: { lighten: 0.18 },
+  Albino: { toward: { r: 248, g: 246, b: 250 }, blend: 0.86 },
+  Golden: { toward: { r: 255, g: 190, b: 40 }, blend: 0.92, metal: true },
+  Radioactive: { toward: { r: 140, g: 255, b: 70 }, blend: 0.64, glow: true },
+  Void: { toward: { r: 44, g: 18, b: 78 }, blend: 0.8, glow: true, accent: { r: 150, g: 90, b: 255 } },
+  Celestial: { toward: { r: 150, g: 230, b: 255 }, blend: 0.7, glow: true, accent: { r: 240, g: 250, b: 255 } },
+  Glitched: { toward: { r: 255, g: 60, b: 220 }, blend: 0.95, glow: true, accent: { r: 90, g: 255, b: 230 } },
+};
+
+function fishPalette(record, mutation) {
+  const t = TREATMENTS[mutation] ?? TREATMENTS.None;
+  let body = { r: record.color[0], g: record.color[1], b: record.color[2] };
+  if (t.toward) body = _mix(body, t.toward, t.blend);
+  if (t.lighten) body = _mix(body, { r: 255, g: 255, b: 255 }, t.lighten);
+  return {
+    body,
+    fin: t.accent ?? _mix(body, { r: 0, g: 0, b: 0 }, 0.26),
+    belly: _mix(body, { r: 255, g: 255, b: 255 }, 0.34),
+    accent: t.accent ?? _mix(body, { r: 255, g: 255, b: 255 }, 0.5),
+    glow: t.glow ? (t.accent ?? body) : null,
+    metal: !!t.metal,
+  };
+}
+
+const EYE = (x, y, r = 4.2) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="#f7fafd"/>` +
+  `<circle cx="${x + r * 0.36}" cy="${y}" r="${r * 0.46}" fill="#11121a"/>`;
+
+// Drawn in a 120x72 box, nose to the right.
+const SILHOUETTE = {
+  round: (p) => `
+    <path d="M30 36 L6 18 L11 36 L6 54 Z" fill="${_css(p.fin)}"/>
+    <path d="M50 20 L66 7 L74 21 Z" fill="${_css(p.fin)}"/>
+    <path d="M58 47 L50 63 L72 51 Z" fill="${_css(p.fin)}" opacity=".9"/>
+    <ellipse cx="58" cy="36" rx="30" ry="17" fill="${_css(p.body)}"/>
+    <ellipse cx="56" cy="43" rx="23" ry="8" fill="${_css(p.belly)}" opacity=".8"/>
+    ${EYE(76, 31)}`,
+
+  long: (p) => `
+    <path d="M110 34 Q 92 23 66 28 Q 40 33 18 35 L10 25 L7 47 L18 38
+             Q 40 41 66 44 Q 92 47 110 34 Z" fill="${_css(p.body)}"/>
+    <path d="M66 28 Q 68 21 76 20 Q 72 26 72 29 Z" fill="${_css(p.fin)}"/>
+    ${EYE(97, 31, 3.6)}`,
+
+  flat: (p) => `
+    <path d="M52 34 Q 26 33 4 30 Q 26 38 52 38 Z" fill="${_css(p.fin)}"/>
+    <path d="M104 36
+             C 94 18, 66 2, 18 9
+             C 40 22, 50 30, 52 36
+             C 50 42, 40 50, 18 63
+             C 66 70, 94 54, 104 36 Z" fill="${_css(p.body)}"/>
+    <path d="M96 36 C 86 24, 66 16, 44 20 C 56 28, 60 32, 61 36
+             C 60 40, 56 44, 44 52 C 66 56, 86 48, 96 36 Z"
+          fill="${_css(p.belly)}" opacity=".28"/>
+    ${EYE(90, 30, 3.2)}${EYE(90, 42, 3.2)}`,
+
+  bulb: (p) => `
+    <path d="M16 38 L2 24 L5 38 L2 52 Z" fill="${_css(p.fin)}"/>
+    <ellipse cx="30" cy="38" rx="15" ry="13" fill="${_css(p.body)}"/>
+    <ellipse cx="62" cy="37" rx="29" ry="26" fill="${_css(p.body)}"/>
+    <path d="M56 50 Q 76 62 90 48 L 87 42 Q 70 52 54 46 Z" fill="${_css(p.belly)}"/>
+    ${[0, 1, 2, 3, 4].map((i) => `<path d="M${62 + i * 6} 50 l2.6 6 l2.6 -6 Z" fill="#f2f0e6"/>`).join("")}
+    <path d="M70 13 Q 88 1 97 11" stroke="${_css(p.fin)}" stroke-width="2.6" fill="none"/>
+    <circle cx="98" cy="12" r="6.4" fill="${_css(p.accent)}"/>
+    ${EYE(76, 28, 6)}`,
+
+  orb: (p) => `
+    <ellipse cx="60" cy="36" rx="31" ry="12" fill="none"
+             stroke="${_css(p.accent)}" stroke-width="2.6" opacity=".65"/>
+    <circle cx="60" cy="36" r="20" fill="${_css(p.body)}"/>
+    <circle cx="66" cy="30" r="7" fill="${_css(p.accent)}" opacity=".9"/>`,
+
+  crab: (p) => `
+    ${[-1, 0, 1].flatMap((row) => [-1, 1].map((side) =>
+      `<path d="M${60 + row * 13} ${36 + side * 12} q ${side * -4} ${side * 11} ${-16} ${side * 13}"
+             stroke="${_css(p.fin)}" stroke-width="3" fill="none" stroke-linecap="round"/>`)).join("")}
+    <ellipse cx="60" cy="36" rx="26" ry="16" fill="${_css(p.body)}"/>
+    ${[-1, 1].map((side) =>
+      `<ellipse cx="90" cy="${36 + side * 11}" rx="9" ry="6" fill="${_css(p.accent)}"
+                transform="rotate(${side * 22} 90 ${36 + side * 11})"/>`).join("")}
+    ${EYE(66, 29, 3.4)}${EYE(66, 43, 3.4)}`,
+
+  squid: (p) => `
+    ${[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+      const spread = (i - 3.5) / 3.5;
+      return `<path d="M52 ${36 + spread * 9} Q 30 ${36 + spread * 20} 8 ${36 + spread * 26}"
+                    stroke="${_css(p.fin)}" stroke-width="3.4" fill="none" stroke-linecap="round"/>`;
+    }).join("")}
+    <ellipse cx="74" cy="36" rx="26" ry="18" fill="${_css(p.body)}"/>
+    <path d="M98 36 Q 112 27 112 36 Q 112 45 98 36 Z" fill="${_css(p.body)}"/>
+    ${EYE(62, 28, 5)}${EYE(62, 44, 5)}`,
+
+  seahorse: (p) => `
+    <path d="M58 11 Q 78 16 73 32 Q 68 46 53 47 Q 39 49 43 60 Q 47 69 58 64"
+          stroke="${_css(p.body)}" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <path d="M60 8 L80 3" stroke="${_css(p.belly)}" stroke-width="5.5" stroke-linecap="round"/>
+    ${[0, 1, 2].map((i) =>
+      `<path d="M${64 - i * 4} ${16 + i * 9} l6 -4 l-1 6 Z" fill="${_css(p.fin)}"/>`).join("")}
+    ${EYE(66, 13, 3.4)}`,
+};
+
+// Returns the inner markup only, so callers can wrap it in their own <svg>
+// or <g> at whatever size they need.
+function fishShapeMarkup(record, mutation) {
+  const builder = SILHOUETTE[record.shape];
+  return builder ? builder(fishPalette(record, mutation)) : "";
+}
+
+// w/h are CSS pixels; the art is drawn in a 120x72 box.
+function fishSvg(record, mutation, w, h) {
+  const markup = fishShapeMarkup(record, mutation);
+  if (!markup) return "";
+
+  const palette = fishPalette(record, mutation);
+  const glow = palette.glow
+    ? ` style="filter: drop-shadow(0 0 ${Math.max(w / 18, 3)}px ${_rgba(palette.glow, 0.75)})"`
+    : "";
+
+  return `<svg viewBox="0 0 120 72" width="${w}" height="${h}" role="img"
+    aria-label="${record.name}"${glow}>${markup}</svg>`;
+}
+
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
@@ -506,6 +706,7 @@ const state = {
   bobber: null,
   ripples: [],
   cardTier: null,
+  speciesMutation: "None",
 };
 
 const vp = () => state.device;
@@ -662,7 +863,7 @@ function buildCatchCard(result) {
   const coin = { r: 255, g: 202, b: 84 };
   const peak = Math.max(result.rarityIndex, result.mutationIndex);
 
-  const card = glassPanel({ w: 326, h: 146, radius: 14, tint: color });
+  const card = glassPanel({ w: 330, h: 236, radius: 14, tint: color });
   card.style.boxShadow = `inset 0 0 0 2px ${rgba(color, .8)}, 0 18px 50px -20px ${rgba(color, .5)}`;
 
   if (peak >= 6) {
@@ -678,14 +879,26 @@ function buildCatchCard(result) {
     card.appendChild(sweep);
   }
 
-  hudText(card, { text: result.name, x: 14, y: 14, w: 298, h: 26, size: 21, weight: 900, color: css(color), align: "center", glow: color, glowAlpha: peak >= 5 ? .45 : .75 });
+  // The fish itself, which is the whole point of the card.
+  const record = FISH_BY_ID[result.fishId];
+  if (record) {
+    const art = el("div", "", {
+      position: "absolute", left: "0", top: "6px", width: "330px", height: "100px",
+      display: "flex", alignItems: "center", justifyContent: "center", zIndex: "3",
+      animation: "bob 3.4s ease-in-out infinite",
+    });
+    art.innerHTML = fishSvg(record, result.mutation, 212, 127);
+    card.appendChild(art);
+  }
+
+  hudText(card, { text: result.name, x: 14, y: 108, w: 302, h: 26, size: 21, weight: 900, color: css(color), align: "center", glow: color, glowAlpha: peak >= 5 ? .45 : .75 });
   hudText(card, {
     text: `${result.mutation !== "None" ? result.mutation.toUpperCase() + " &nbsp;·&nbsp; " : ""}${result.rarity.toUpperCase()} &nbsp;·&nbsp; ${fmtOdds(result.odds)}`,
-    x: 14, y: 44, w: 298, h: 14, size: 11, weight: 700, color: "var(--fg-dim)", align: "center",
+    x: 14, y: 138, w: 302, h: 14, size: 11, weight: 700, color: "var(--fg-dim)", align: "center",
   });
-  hudText(card, { text: fmtWeight(result.weight), x: 14, y: 66, w: 298, h: 20, size: 15, weight: 500, align: "center" });
-  hudText(card, { text: `+${commas(result.value)}`, x: 14, y: 90, w: 298, h: 24, size: 19, weight: 900, color: "var(--coin)", align: "center", glow: coin, glowAlpha: .7 });
-  hudText(card, { text: "added to your bag", x: 14, y: 116, w: 298, h: 14, size: 11, weight: 500, color: "var(--fg-faint)", align: "center" });
+  hudText(card, { text: fmtWeight(result.weight), x: 14, y: 158, w: 302, h: 20, size: 15, weight: 500, align: "center" });
+  hudText(card, { text: `+${commas(result.value)}`, x: 14, y: 182, w: 302, h: 24, size: 19, weight: 900, color: "var(--coin)", align: "center", glow: coin, glowAlpha: .7 });
+  hudText(card, { text: "added to your bag", x: 14, y: 208, w: 302, h: 14, size: 11, weight: 500, color: "var(--fg-faint)", align: "center" });
 
   requestAnimationFrame(() => {
     const base = card._base ?? "";
@@ -1203,7 +1416,7 @@ function finishReel(won) {
 function showCatch(result) {
   if (cardEl) cardEl.remove();
   cardEl = buildCatchCard(result);
-  place(cardEl, 0.5, 0.5, vp().w / 2, vp().h / 2 + 96 * hudScale());
+  place(cardEl, 0.5, 0.5, vp().w / 2, vp().h / 2 + 60 * hudScale());
   cardEl.style.zIndex = "30";
   hud.appendChild(cardEl);
 
@@ -1257,6 +1470,7 @@ function sampleAt(rarity) {
   const [minKg, maxKg] = record.kg;
   const weight = minKg + (maxKg - minKg) * 0.62;
   return {
+    fishId: record.id,
     baseName: record.name,
     name: mut.prefix ? `${mut.prefix} ${record.name}` : record.name,
     rarity, mutation, weight,
@@ -1437,6 +1651,41 @@ document.getElementById("sim-btn").addEventListener("click", () => {
   renderLadders();
 });
 
+function renderSpecies() {
+  const mutation = state.speciesMutation;
+  document.getElementById("species").innerHTML = ZONE_ORDER.map((zoneId) => {
+    const members = FISH.filter((f) => f.zone === zoneId);
+    const cards = members.map((record) => {
+      const tier = RARITIES[record.rarity];
+      const [lo, hi] = record.kg;
+      return `<div class="fishcard">
+        <div class="art">${fishSvg(record, mutation, 150, 90)}</div>
+        <span class="nm" style="color:${css(fishPalette(record, mutation).body)}">${
+          MUTATIONS[mutation].prefix ? MUTATIONS[mutation].prefix + " " : ""
+        }${record.name}</span>
+        <span class="meta" style="color:${css(tier.color)}">
+          <i style="background:${css(tier.color)}"></i>${record.rarity}
+        </span>
+        <span class="kg">${fmtWeight(lo)} – ${fmtWeight(hi)} · ${record.shape}</span>
+      </div>`;
+    }).join("");
+
+    return `<div class="zone-group">
+      <h3>${ZONES[zoneId].name} <i></i> ${members.length} species</h3>
+      <div class="species">${cards}</div>
+    </div>`;
+  }).join("");
+}
+
+function syncMutationTabs() {
+  buildTabs(
+    document.getElementById("mutation-tabs"),
+    MUTATION_ORDER.map((id) => ({ id, label: id === "None" ? "Plain" : id, accent: MUTATIONS[id].color })),
+    (item) => item.id === state.speciesMutation,
+    (item) => { state.speciesMutation = item.id; syncMutationTabs(); renderSpecies(); }
+  );
+}
+
 function renderZoneCards() {
   document.getElementById("zone-cards").innerHTML = ZONE_ORDER.map((id) => {
     const zone = ZONES[id], v = VISUALS[id];
@@ -1463,7 +1712,13 @@ function renderZoneCards() {
 // Boot
 // ---------------------------------------------------------------------------
 const sheet = new CSSStyleSheet();
-sheet.replaceSync("@keyframes sweep { from { transform: translateX(-40%) } to { transform: translateX(40%) } }");
+sheet.replaceSync(`
+  @keyframes sweep { from { transform: translateX(-40%) } to { transform: translateX(40%) } }
+  @keyframes bob {
+    0%, 100% { transform: translateY(-3px) rotate(-1.5deg) }
+    50% { transform: translateY(3px) rotate(1.5deg) }
+  }
+`);
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
 state.cardTier = sampleAt("Legendary");
@@ -1486,12 +1741,14 @@ syncZoneTabs();
 syncRodTabs();
 syncDeviceTabs();
 syncTierTabs();
+syncMutationTabs();
 rebuildHud();
 mountHeader();
 mountCard(state.cardTier);
 mountReel();
 renderMeta();
 renderLadders();
+renderSpecies();
 renderZoneCards();
 
 function frame(now) {
