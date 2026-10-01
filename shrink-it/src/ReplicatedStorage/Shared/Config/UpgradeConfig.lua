@@ -1,0 +1,116 @@
+--[[
+	📍 LOCATION: ReplicatedStorage > Shared > Config > UpgradeConfig (ModuleScript)
+
+	Coin upgrades, Rebirth settings and Rebirth-Token upgrades.
+	Cost to go from level L to L+1 = floor(BaseCost * CostGrowth ^ (L - 1))
+]]
+
+local UpgradeConfig = {}
+
+UpgradeConfig.Order = { "RayPower", "ChargeSpeed", "Range", "Luck", "MultiShrink", "MuseumSize" }
+
+UpgradeConfig.Upgrades = {
+	RayPower = {
+		Name = "Ray Power",
+		Description = "Shrink bigger objects. Unlocks new size tiers.",
+		Emoji = "⚡",
+		MaxLevel = 30, -- reaching max also unlocks Museum Raids
+		BaseCost = 100,
+		CostGrowth = 2.2,
+		Value = function(level)
+			return level
+		end,
+		Format = function(v)
+			return "Lv " .. v
+		end,
+	},
+	ChargeSpeed = {
+		Name = "Charge Speed",
+		Description = "Charge your ray faster.",
+		Emoji = "⏱️",
+		MaxLevel = 20,
+		BaseCost = 50,
+		CostGrowth = 1.9,
+		Value = function(level) -- seconds to fully charge
+			return math.max(0.25, 2.0 * 0.9 ^ (level - 1))
+		end,
+		Format = function(v)
+			return string.format("%.2fs", v)
+		end,
+	},
+	Range = {
+		Name = "Range",
+		Description = "Zap objects from further away.",
+		Emoji = "🎯",
+		MaxLevel = 20,
+		BaseCost = 75,
+		CostGrowth = 1.85,
+		Value = function(level)
+			return 35 + 6 * (level - 1)
+		end,
+		Format = function(v)
+			return math.floor(v) .. " studs"
+		end,
+	},
+	Luck = {
+		Name = "Luck",
+		Description = "More Golden, Diamond, Rainbow & Cosmic spawns near you.",
+		Emoji = "🍀",
+		MaxLevel = 25,
+		BaseCost = 200,
+		CostGrowth = 2.0,
+		Value = function(level)
+			return 1 + 0.12 * (level - 1)
+		end,
+		Format = function(v)
+			return string.format("x%.2f", v)
+		end,
+	},
+	MultiShrink = {
+		Name = "Multi-Shrink",
+		Description = "Zap several nearby objects at once.",
+		Emoji = "✨",
+		MaxLevel = 5,
+		BaseCost = 5_000,
+		CostGrowth = 12,
+		Value = function(level)
+			return level
+		end,
+		Format = function(v)
+			return v .. " target" .. (v == 1 and "" or "s")
+		end,
+	},
+	MuseumSize = {
+		Name = "Museum Size",
+		Description = "More pedestals = more displayed objects = more coins.",
+		Emoji = "🏛️",
+		MaxLevel = 20,
+		BaseCost = 300,
+		CostGrowth = 2.1,
+		Value = function(level)
+			return 8 + 4 * (level - 1)
+		end,
+		Format = function(v)
+			return v .. " pedestals"
+		end,
+	},
+}
+
+-- ── Rebirth ─────────────────────────────────────────────────────────
+UpgradeConfig.Rebirth = {
+	BaseCost = 5_000_000,
+	CostGrowth = 4,
+	MultiplierPerRebirth = 0.5, -- permanent income multiplier = 1 + rebirths * this
+	GemsBase = 100, -- gems = GemsBase * (rebirths after this one)
+	TokensBase = 1, -- tokens = TokensBase + floor(rebirths / 2)
+}
+
+-- ── Rebirth Token upgrades (permanent, survive rebirth) ─────────────
+UpgradeConfig.TokenOrder = { "Income", "Luck", "Charge" }
+UpgradeConfig.TokenUpgrades = {
+	Income = { Name = "Eternal Income", Emoji = "💰", Description = "+10% income per level", MaxLevel = 50, Cost = function(l) return 1 + math.floor(l / 3) end, PerLevel = 0.10 },
+	Luck = { Name = "Eternal Luck", Emoji = "🍀", Description = "+10% luck per level", MaxLevel = 50, Cost = function(l) return 1 + math.floor(l / 3) end, PerLevel = 0.10 },
+	Charge = { Name = "Eternal Charge", Emoji = "⚡", Description = "-3% charge time per level", MaxLevel = 15, Cost = function(l) return 2 + math.floor(l / 2) end, PerLevel = 0.03 },
+}
+
+return UpgradeConfig

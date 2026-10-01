@@ -1,0 +1,33 @@
+{
+  "name": "ShrinkIt",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared": {
+        "$path": "src/ReplicatedStorage/Shared"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Main": {
+        "$path": "src/ServerScriptService/Main.server.lua"
+      },
+      "Services": {
+        "$path": "src/ServerScriptService/Services"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "ClientMain": {
+          "$path": "src/StarterPlayerScripts/ClientMain.client.lua"
+        },
+        "ClientModules": {
+          "$path": "src/StarterPlayerScripts/ClientModules"
+        }
+      }
+    }
+  }
+}
