@@ -133,9 +133,19 @@ local function refresh()
 end
 
 function LeaderboardService.Start()
+	local available = true
 	for _, board in ipairs(BOARDS) do
-		stores[board.Stat] = DataStoreService:GetOrderedDataStore("ShrinkIt_LB_" .. board.Stat)
 		render(board, {})
+		local ok, store = pcall(DataStoreService.GetOrderedDataStore, DataStoreService, "ShrinkIt_LB_" .. board.Stat)
+		if ok then
+			stores[board.Stat] = store
+		else
+			available = false
+		end
+	end
+	if not available then
+		warn("[Leaderboard] DataStores unavailable (publish the place + enable API access). Leaderboards disabled for this session.")
+		return
 	end
 	task.spawn(function()
 		task.wait(10)

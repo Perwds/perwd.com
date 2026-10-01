@@ -22,6 +22,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local TierConfig = require(Shared.Config.TierConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local GameConfig = require(Shared.Config.GameConfig)
+local MapDecor = require(script.Parent.MapDecor)
 
 local MapService = {}
 MapService.Areas = {} -- [tier] = { Tier, Model, Floor, Gate, SpawnPoints = {Part} }
@@ -97,6 +98,7 @@ local function buildMap()
 	spawn.Color = Color3.fromRGB(90, 200, 255)
 	spawn.Material = Enum.Material.Neon
 	spawn.Parent = lobby
+	MapDecor.Lobby(lobby, LOBBY_DEPTH)
 
 	-- VIP lounge (corner of the lobby)
 	local vipCenter = Vector3.new(120, 0, 52)
@@ -149,7 +151,9 @@ local function buildMap()
 		area:SetAttribute("AreaName", t.Area)
 		area.Parent = areas
 		local depth = t.AreaDepth
-		part({ Name = "Floor", Size = Vector3.new(WIDTH, 2, depth), CFrame = CFrame.new(0, -1, z + depth / 2), Color = t.Color, Material = Enum.Material.Grass, Parent = area })
+		local style = MapDecor.FloorStyle[tier] or { Material = Enum.Material.Grass, Color = t.Color }
+		part({ Name = "Floor", Size = Vector3.new(WIDTH, 2, depth), CFrame = CFrame.new(0, -1, z + depth / 2), Color = style.Color, Material = style.Material, Parent = area })
+		MapDecor.Area(area, tier, z, depth, WIDTH)
 		local sign = part({ Name = "AreaSign", Size = Vector3.new(40, 8, 1), CFrame = CFrame.new(0, 30, z + 2), Transparency = 1, CanCollide = false, CanQuery = false, Parent = area })
 		surfaceText(sign, Enum.NormalId.Front, t.Area .. " · " .. t.Name, t.Color)
 		if tier > 1 then
@@ -169,11 +173,12 @@ local function buildMap()
 		local size = maxObjectSize(tier)
 		local spacing = size + 10
 		local margin = size / 2 + 8
+		local halfX = math.max(10, MapDecor.SpawnHalfWidth - size / 2) -- keep clear of border scenery
 		local placed = {}
 		local tries = 0
 		while #placed < t.SpawnPoints and tries < 2000 do
 			tries += 1
-			local px = rng:NextNumber(-WIDTH / 2 + margin, WIDTH / 2 - margin)
+			local px = rng:NextNumber(-halfX, halfX)
 			local pz = rng:NextNumber(z + margin + 10, z + depth - margin)
 			local okSpot = true
 			for _, p in ipairs(placed) do
@@ -241,10 +246,13 @@ local function buildMap()
 		end
 	end
 
+	MapDecor.Plaza(plotsFolder, -LOBBY_DEPTH / 2 - 170, 640, 340)
+
 	local live = Instance.new("Folder")
 	live.Name = "LiveObjects"
 	live.Parent = map
 
+	MapDecor.Lighting()
 	map.Parent = workspace
 	return map
 end

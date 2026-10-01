@@ -20,10 +20,10 @@ local RewardUtil = {}
 function RewardUtil.Describe(reward, incomePerSec)
 	local t = reward.Type
 	if t == "Coins" then
-		return Format.Coins(reward.Amount), "🪙"
+		return Format.Coins(reward.Amount), "💵"
 	elseif t == "CoinsMinutes" then
 		local amount = Formulas.CoinsFromMinutes(incomePerSec or 0, reward.Minutes, reward.Floor)
-		return Format.Coins(amount), "🪙"
+		return Format.Coins(amount), "💵"
 	elseif t == "Gems" then
 		return Format.Abbrev(reward.Amount) .. " Gems", "💎"
 	elseif t == "Tokens" then

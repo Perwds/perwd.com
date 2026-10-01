@@ -19,7 +19,7 @@ local State = require(Modules.State)
 
 local IndexMenu = {}
 
-local VARIANT_EMOJI = { Normal = "⚪", Golden = "🟡", Diamond = "🔷", Rainbow = "🌈", Cosmic = "🌌" }
+local VARIANT_EMOJI = { Normal = "⚪", Golden = "⭐", Diamond = "🔷", Rainbow = "🌈", Cosmic = "🌌" }
 
 function IndexMenu.Build(ctx)
 	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "The Index", Emoji = "📖", Size = UDim2.fromOffset(940, 620), Colors = UIKit.Colors.Blue })

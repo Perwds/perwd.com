@@ -31,7 +31,7 @@ ObjectConfig.Objects = {
 	GardenGnome = { Name = "Garden Gnome", Tier = 1, Rarity = "Rare", BaseIncome = 12, Size = V(1.8, 3, 1.8), Color = C(60, 160, 60), Shape = "Block", Emoji = "🧙" },
 
 	-- ── Tier 2 · Small · Park ───────────────────────────────────────
-	Bench = { Name = "Bench", Tier = 2, Rarity = "Common", BaseIncome = 25, Size = V(7, 3.5, 2.5), Color = C(140, 90, 50), Shape = "Block", Emoji = "🪑" },
+	Bench = { Name = "Bench", Tier = 2, Rarity = "Common", BaseIncome = 25, Size = V(7, 3.5, 2.5), Color = C(140, 90, 50), Shape = "Block", Emoji = "🛋️" },
 	TrashBin = { Name = "Trash Bin", Tier = 2, Rarity = "Common", BaseIncome = 30, Size = V(3, 4.5, 3), Color = C(70, 110, 70), Shape = "Cylinder", Emoji = "🗑️" },
 	Bike = { Name = "Bike", Tier = 2, Rarity = "Uncommon", BaseIncome = 40, Size = V(1.5, 4, 6), Color = C(30, 170, 220), Shape = "Block", Emoji = "🚲" },
 	VendingMachine = { Name = "Vending Machine", Tier = 2, Rarity = "Rare", BaseIncome = 90, Size = V(4, 7, 3), Color = C(220, 30, 90), Shape = "Block", Emoji = "🥤" },
@@ -60,7 +60,7 @@ ObjectConfig.Objects = {
 	-- ── Tier 6 · Colossal · Summit ──────────────────────────────────
 	Mountain = { Name = "Mountain", Tier = 6, Rarity = "Epic", BaseIncome = 10_000_000, Size = V(85, 70, 85), Color = C(120, 110, 100), Shape = "Ball", Emoji = "⛰️" },
 	Volcano = { Name = "Volcano", Tier = 6, Rarity = "Legendary", BaseIncome = 25_000_000, Size = V(80, 65, 80), Color = C(90, 40, 30), Shape = "Ball", Emoji = "🌋" },
-	Glacier = { Name = "Glacier", Tier = 6, Rarity = "Mythic", BaseIncome = 80_000_000, Size = V(80, 45, 70), Color = C(170, 230, 255), Shape = "Block", Emoji = "🧊" },
+	Glacier = { Name = "Glacier", Tier = 6, Rarity = "Mythic", BaseIncome = 80_000_000, Size = V(80, 45, 70), Color = C(170, 230, 255), Shape = "Block", Emoji = "❄️" },
 	TheMoon = { Name = "The Moon", Tier = 6, Rarity = "Secret", BaseIncome = 500_000_000, Size = V(60, 60, 60), Color = C(220, 220, 210), Shape = "Ball", FloatHeight = 70, Emoji = "🌕" },
 
 	-- ── Exclusives (never spawn; rewards & Robux only, kept through Rebirth) ──

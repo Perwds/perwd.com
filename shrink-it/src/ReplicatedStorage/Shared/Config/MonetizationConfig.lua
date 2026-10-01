@@ -45,7 +45,7 @@ MonetizationConfig.ProductOrder = {
 }
 
 MonetizationConfig.Products = {
-	CoinsSmall = { Id = 0, Name = "Pile of Coins", Emoji = "🪙", Image = "rbxassetid://0", PriceLabel = "R$ 49", Grant = { Type = "CoinsMinutes", Minutes = 30, Floor = 2_500 } }, -- 🔧 REPLACE Id
+	CoinsSmall = { Id = 0, Name = "Pile of Coins", Emoji = "💵", Image = "rbxassetid://0", PriceLabel = "R$ 49", Grant = { Type = "CoinsMinutes", Minutes = 30, Floor = 2_500 } }, -- 🔧 REPLACE Id
 	CoinsMedium = { Id = 0, Name = "Bag of Coins", Emoji = "💰", Image = "rbxassetid://0", PriceLabel = "R$ 149", Grant = { Type = "CoinsMinutes", Minutes = 120, Floor = 15_000 } }, -- 🔧 REPLACE Id
 	CoinsLarge = { Id = 0, Name = "Vault of Coins", Emoji = "🏦", Image = "rbxassetid://0", PriceLabel = "R$ 399", Grant = { Type = "CoinsMinutes", Minutes = 480, Floor = 100_000 } }, -- 🔧 REPLACE Id
 	GemsSmall = { Id = 0, Name = "Handful of Gems", Emoji = "💎", Image = "rbxassetid://0", PriceLabel = "R$ 49", Grant = { Type = "Gems", Amount = 100 } }, -- 🔧 REPLACE Id
@@ -78,7 +78,7 @@ MonetizationConfig.RaySkins = {
 MonetizationConfig.GemShop = {
 	{ Key = "Luck10", Name = "Luck Potion (10m)", Emoji = "🧪", Cost = 150, Reward = { Type = "LuckPotion", Minutes = 10 } },
 	{ Key = "Income10", Name = "2x Income Potion (10m)", Emoji = "⚗️", Cost = 150, Reward = { Type = "IncomePotion", Minutes = 10 } },
-	{ Key = "Coins60", Name = "1 Hour of Coins", Emoji = "🪙", Cost = 250, Reward = { Type = "CoinsMinutes", Minutes = 60, Floor = 5_000 } },
+	{ Key = "Coins60", Name = "1 Hour of Coins", Emoji = "💵", Cost = 250, Reward = { Type = "CoinsMinutes", Minutes = 60, Floor = 5_000 } },
 	{ Key = "SkinBubblegum", Name = "Bubblegum Ray", Emoji = "🍬", Cost = 400, Reward = { Type = "RaySkin", Skin = "Bubblegum" } },
 	{ Key = "SkinToxic", Name = "Toxic Ray", Emoji = "☢️", Cost = 600, Reward = { Type = "RaySkin", Skin = "Toxic" } },
 	{ Key = "SkinSunset", Name = "Sunset Ray", Emoji = "🌅", Cost = 900, Reward = { Type = "RaySkin", Skin = "Sunset" } },

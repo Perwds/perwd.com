@@ -292,7 +292,7 @@ local function buildCurrencies()
 	local rows = {
 		{ Key = "Tokens", Emoji = "♻️", Color = Color3.fromRGB(140, 255, 170), Y = 0 },
 		{ Key = "Gems", Emoji = "💎", Color = Color3.fromRGB(120, 220, 255), Y = 58 },
-		{ Key = "Coins", Emoji = "🪙", Color = Color3.fromRGB(255, 220, 70), Y = 116 },
+		{ Key = "Coins", Emoji = "💵", Color = Color3.fromRGB(255, 220, 70), Y = 116 },
 	}
 	for _, r in ipairs(rows) do
 		local big = r.Key == "Coins"

@@ -56,7 +56,18 @@ local TEMPLATE = {
 -- keys never sent to the client
 local PRIVATE = { Receipts = true, ReceiptOrder = true }
 
-local store = DataStoreService:GetDataStore(GameConfig.DataStoreName)
+-- Fetched lazily: GetDataStore THROWS in an unpublished place, which would crash the whole server.
+local store = nil
+local function getStore()
+	if not store then
+		local ok, result = pcall(DataStoreService.GetDataStore, DataStoreService, GameConfig.DataStoreName)
+		if not ok then
+			error(result)
+		end
+		store = result
+	end
+	return store
+end
 local profiles = {} -- [player] = { Data, Key, SessionId, Saving, Released, NoSave }
 local dirty = {}
 local syncProviders = {}
@@ -101,7 +112,7 @@ function DataService.Load(player)
 		end
 		local state = "error"
 		local ok, err = pcall(function()
-			store:UpdateAsync(key, function(old)
+			getStore():UpdateAsync(key, function(old)
 				old = old or {}
 				local lock = old.Lock
 				if lock and lock.SessionId ~= sessionId and (os.time() - (lock.Time or 0)) < GameConfig.SessionLockStale then
@@ -120,6 +131,9 @@ function DataService.Load(player)
 		end
 		loaded = nil
 		lastError = ok and state or err
+		if RunService:IsStudio() and not ok then
+			break -- no DataStore access in Studio: don't make the tester wait
+		end
 		task.wait(attempt <= 2 and 2 or 5)
 	end
 
@@ -191,7 +205,7 @@ function DataService.Save(player, release)
 	p.Saving = true
 	local stolen = false
 	local ok, err = pcall(function()
-		store:UpdateAsync(p.Key, function(old)
+		getStore():UpdateAsync(p.Key, function(old)
 			old = old or {}
 			local lock = old.Lock
 			if lock and lock.SessionId ~= p.SessionId and (os.time() - (lock.Time or 0)) < GameConfig.SessionLockStale then

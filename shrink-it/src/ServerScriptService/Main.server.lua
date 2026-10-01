@@ -33,15 +33,25 @@ local ORDER = {
 	"Leaderboard",
 }
 
+-- Every step is pcall-wrapped so one broken service can't take the whole server down.
 local Registry = {}
 for _, name in ipairs(ORDER) do
-	Registry[name] = require(ServicesFolder:WaitForChild(name .. "Service"))
+	local ok, result = pcall(require, ServicesFolder:WaitForChild(name .. "Service"))
+	if ok then
+		Registry[name] = result
+	else
+		warn("[ShrinkIt] Failed to load " .. name .. "Service: " .. tostring(result))
+		Registry[name] = {}
+	end
 end
 
 for _, name in ipairs(ORDER) do
 	local svc = Registry[name]
 	if svc.Init then
-		svc.Init(Registry)
+		local ok, err = pcall(svc.Init, Registry)
+		if not ok then
+			warn("[ShrinkIt] " .. name .. "Service.Init failed: " .. tostring(err))
+		end
 	end
 end
 
