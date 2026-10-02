@@ -25,7 +25,7 @@ MonetizationConfig.GamePasses = {
 	AutoShrink = { Id = 0, Name = "Auto Shrink", Emoji = "🤖", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "Automatically zaps the nearest valid object." }, -- 🔧 REPLACE Id
 	InstantCharge = { Id = 0, Name = "Instant Charge", Emoji = "⚡", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Your ray charges instantly." }, -- 🔧 REPLACE Id
 	MultiShrink3 = { Id = 0, Name = "Multi-Shrink x3", Emoji = "✨", Image = "rbxassetid://0", PriceLabel = "R$ 349", Description = "Triple your carry capacity." }, -- 🔧 REPLACE Id
-	ExtraPedestals = { Id = 0, Name = "+20 Pedestals", Emoji = "🏛️", Image = "rbxassetid://0", PriceLabel = "R$ 249", Description = "20 extra museum pedestals." }, -- 🔧 REPLACE Id
+	ExtraPedestals = { Id = 0, Name = "+20 Display Spots", Emoji = "🏛️", Image = "rbxassetid://0", PriceLabel = "R$ 249", Description = "20 extra spots in your plot." }, -- 🔧 REPLACE Id
 	GoldenRay = { Id = 0, Name = "Golden Ray", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "2x Golden & Diamond chance." }, -- 🔧 REPLACE Id
 	CosmicHunter = { Id = 0, Name = "Cosmic Hunter", Emoji = "🌌", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "2x Cosmic chance." }, -- 🔧 REPLACE Id
 	LongRange = { Id = 0, Name = "Long Range Ray", Emoji = "🔭", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "+50% ray range." }, -- 🔧 REPLACE Id

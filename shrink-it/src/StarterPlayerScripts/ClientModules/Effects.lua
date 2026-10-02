@@ -400,9 +400,17 @@ local function pedestalLoop()
 			local base = pedestal.PrimaryPart
 			if base then
 				-- only the owner sees (and can use) the Place / Open now / Pick up prompt
+				local mine = pedestal:GetAttribute("OwnerUserId") == player.UserId
+				local empty = pedestal:GetAttribute("State") == "Empty"
 				local prompt = base:FindFirstChild("PedestalPrompt")
 				if prompt then
-					prompt.Enabled = pedestal:GetAttribute("OwnerUserId") == player.UserId
+					prompt.Enabled = mine and not empty -- empty spots: use F / the Place button instead
+				end
+				-- glowing rings show your free spots while you're carrying something
+				local marker = pedestal:FindFirstChild("Marker")
+				if marker then
+					local carrying = State.Data and State.Data.Carry and State.Data.Carry.Count > 0
+					marker.Transparency = (mine and empty and carrying) and (0.45 + math.sin(os.clock() * 4) * 0.15) or 1
 				end
 				local timer = base:FindFirstChild("BoxTimer")
 				local readyAt = pedestal:GetAttribute("State") == "Box" and pedestal:GetAttribute("BoxReadyAt")
@@ -411,7 +419,7 @@ local function pedestalLoop()
 						timer = Instance.new("BillboardGui")
 						timer.Name = "BoxTimer"
 						timer.Size = UDim2.fromOffset(110, 36)
-						timer.StudsOffsetWorldSpace = Vector3.new(0, 7.6, 0)
+						timer.StudsOffsetWorldSpace = Vector3.new(0, 5, 0)
 						timer.LightInfluence = 0
 						timer.MaxDistance = 160
 						timer.Parent = base

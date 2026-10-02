@@ -1,10 +1,11 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > MuseumService (ModuleScript)
 
-	Pocket Museum. Each player owns a plot full of pedestals. YOU decide what goes on them:
+	Pocket Museum. Each player owns a plot with spots on the ground (no pedestals). YOU decide what goes there:
 
 	  • Shrinking a mystery BOX in a zone puts it above your head.
-	  • Walk up to an EMPTY pedestal on your plot → "Place": the box is set down and starts opening
+	  • Inside your plot press F (or the 📦 Place button): the box is set on the ground at the free spot
+	    nearest to you and starts opening
 	    (time depends on box rarity / zone / variant, see GameConfig.Boxes).
 	  • "Open now 💎" on an opening box skips the wait for Gems.
 	  • When it opens, a RANDOM object is rolled (SpawnService.RollContents: object, variant, SIZE),
@@ -42,8 +43,6 @@ local COLS = 8
 local SPACING_X = 7.6
 local SPACING_Z = 7
 
-local MARBLE = Color3.fromRGB(246, 243, 236)
-local GOLD = Color3.fromRGB(240, 190, 60)
 
 function MuseumService.Init(registry)
 	Svc = registry
@@ -113,19 +112,12 @@ local function makePedestal(player, plot, i)
 		p.Parent = model
 		return p
 	end
-	-- "Base" spans the full pedestal height (displays sit on its top) and is the PrimaryPart
-	local base = piece("Base", Vector3.new(3.6, 2.4, 3.6), Vector3.new(0, 1.2, 0), MARBLE, Enum.Material.Marble)
-	piece("Plinth", Vector3.new(4.6, 0.5, 4.6), Vector3.new(0, 0.25, 0), Color3.fromRGB(70, 65, 80), Enum.Material.Marble)
-	piece("Top", Vector3.new(4.4, 0.3, 4.4), Vector3.new(0, 2.3, 0), MARBLE, Enum.Material.Marble)
-	piece("Trim", Vector3.new(4.5, 0.12, 4.5), Vector3.new(0, 2.5, 0), GOLD, Enum.Material.Metal, { CanCollide = false })
-	piece("Glass", Vector3.new(3.9, 3.9, 3.9), Vector3.new(0, 4.55, 0), Color3.fromRGB(205, 240, 255), Enum.Material.Glass, { CanCollide = false, Transparency = 0.85, Reflectance = 0.15 })
-	for _, x in ipairs({ -1.95, 1.95 }) do
-		for _, z in ipairs({ -1.95, 1.95 }) do
-			piece("Post", Vector3.new(0.18, 4, 0.18), Vector3.new(x, 4.55, z), GOLD, Enum.Material.Metal, { CanCollide = false })
-		end
-		piece("Frame", Vector3.new(0.18, 0.18, 4.08), Vector3.new(x, 6.55, 0), GOLD, Enum.Material.Metal, { CanCollide = false })
-		piece("Frame", Vector3.new(4.08, 0.18, 0.18), Vector3.new(0, 6.55, x), GOLD, Enum.Material.Metal, { CanCollide = false })
-	end
+	-- No pedestal: just an invisible spot on the ground ("Base" is the PrimaryPart; things sit on top of it)
+	-- plus a ring marker the owner sees while carrying something (Effects).
+	local base = piece("Base", Vector3.new(4.2, 0.1, 4.2), Vector3.new(0, 0.05, 0), Color3.fromRGB(255, 255, 255), Enum.Material.SmoothPlastic, { Transparency = 1, CanCollide = false, CanQuery = false })
+	local marker = piece("Marker", Vector3.new(0.06, 3.8, 3.8), Vector3.new(0, 0.08, 0), Color3.fromRGB(120, 230, 255), Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false, CastShadow = false })
+	marker.Shape = Enum.PartType.Cylinder
+	marker.CFrame = origin * CFrame.new(0, 0.08, 0) * CFrame.Angles(0, 0, math.rad(90))
 	model.PrimaryPart = base
 	model:SetAttribute("PedestalSlot", i)
 	model:SetAttribute("OwnerUserId", player.UserId)
@@ -139,7 +131,7 @@ local function makePedestal(player, plot, i)
 	prompt.ActionText = "Place"
 	prompt.ObjectText = ""
 	prompt.HoldDuration = 0
-	prompt.MaxActivationDistance = 9
+	prompt.MaxActivationDistance = 8
 	prompt.RequiresLineOfSight = false
 	prompt.KeyboardKeyCode = Enum.KeyCode.E
 	prompt.Parent = base
@@ -176,7 +168,7 @@ local function setDisplay(pedestal, slot, data)
 	pedestal:SetAttribute("SizeName", nil)
 	pedestal:SetAttribute("Income", 0)
 	local base = pedestal.PrimaryPart
-	local top = base.Position + Vector3.new(0, base.Size.Y / 2 + 0.3, 0)
+	local top = base.Position + Vector3.new(0, base.Size.Y / 2, 0) -- right on the ground
 
 	if slot and slot.Box then
 		local box = ModelFactory.CreateBox(slot.Box)
@@ -762,6 +754,37 @@ function MuseumService.Start()
 		end
 		MuseumService.Recompute(player)
 		return { ok = true, msg = placed > 0 and ("⭐ Equipped your best " .. placed .. " object" .. (placed == 1 and "" or "s") .. "!") or "Nothing to equip yet!" }
+	end)
+
+	-- PLACE ON THE GROUND (F key / Place button): puts what you carry on the free spot nearest to you
+	Svc.Net.Handle("PlaceGround", function(player)
+		local plot = plotOf[player]
+		local s = Svc.Session.Get(player)
+		local data = Svc.Data.Get(player)
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if not plot or not s or not data or not root then
+			return { ok = false }
+		end
+		if not Svc.Map.IsInPart(plot.Floor, root.Position) then
+			return { ok = false, msg = "🏠 Go inside YOUR plot to put things down!" }
+		end
+		if not Svc.Carry.IsCarrying(player) then
+			return { ok = false, msg = "🎒 You're not carrying anything." }
+		end
+		local best, bestDist
+		for i = 1, s.PedestalCount or 0 do
+			if not data.Slots[tostring(i)] then
+				local d = (pedestalCFrame(plot, i).Position - root.Position) * Vector3.new(1, 0, 1)
+				if not bestDist or d.Magnitude < bestDist then
+					best, bestDist = i, d.Magnitude
+				end
+			end
+		end
+		if not best then
+			return { ok = false, msg = "🏛️ Your plot is full! Upgrade Museum Size or sell something." }
+		end
+		onPrompt(player, best)
+		return { ok = true }
 	end)
 
 	Svc.Net.Handle("TeleportMuseum", function(player)

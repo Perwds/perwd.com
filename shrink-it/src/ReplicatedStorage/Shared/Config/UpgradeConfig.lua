@@ -96,7 +96,7 @@ UpgradeConfig.Upgrades = {
 	},
 	MuseumSize = {
 		Name = "Museum Size",
-		Description = "More pedestals = more displayed objects = more coins.",
+		Description = "More spots on your plot = more objects on display = more coins.",
 		Emoji = "🏛️",
 		MaxLevel = 20,
 		BaseCost = 300,
@@ -105,7 +105,7 @@ UpgradeConfig.Upgrades = {
 			return 8 + 2 * (level - 1) -- max 46 (+20 with the pass = 66 = 11 x 6 grid)
 		end,
 		Format = function(v)
-			return v .. " pedestals"
+			return v .. " spots"
 		end,
 	},
 }

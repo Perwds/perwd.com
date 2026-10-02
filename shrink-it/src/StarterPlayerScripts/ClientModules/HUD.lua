@@ -29,6 +29,7 @@ local menus = {} -- [name] = menu
 local menuOrder = {}
 local badgeSetters = {}
 local carryFrame, carryLabel, splashLabel, dropButton
+local placeButton
 local speedLabel
 local splashToken = 0
 
@@ -487,7 +488,7 @@ local function refreshTimers()
 		carryFrame.Visible = true
 		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
 		local what = carry.TopKind == "Item" and "it" or "your box"
-		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and ("Press E on an empty pedestal to place " .. what) or "Bring it to YOUR pedestals ⬇")
+		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and ("Press F to put " .. what .. " on the ground") or "Bring it to YOUR plot ⬇")
 		if (carry.Rage or 0) > 0 then
 			goal = string.rep("😡", carry.Rage) .. " " .. goal
 		end
@@ -496,10 +497,16 @@ local function refreshTimers()
 		if dropButton then
 			dropButton.Visible = true
 		end
+		if placeButton then
+			placeButton.Visible = carry.AtPlot == true
+		end
 	else
 		carryFrame.Visible = false
 		if dropButton then
 			dropButton.Visible = false
+		end
+		if placeButton then
+			placeButton.Visible = false
 		end
 	end
 	-- speed (trained on the treadmill)
@@ -607,6 +614,31 @@ function HUD.Init()
 		HUD.Result(State.Action("TeleportMuseum"))
 	end })
 	speedLabel = UIKit.Label({ Name = "Speed", Text = "", TextXAlignment = Enum.TextXAlignment.Right, StrokeThickness = 3, Size = UDim2.fromOffset(190, 40), LayoutOrder = 3, Parent = right })
+
+	-- Place button (in your plot while carrying) + F key: puts it on the ground at the nearest free spot
+	local function placeOnGround()
+		HUD.Result(State.Action("PlaceGround"))
+	end
+	placeButton = UIKit.Button({
+		Name = "Place",
+		Text = "📦 Place (F)",
+		Colors = UIKit.Colors.Green,
+		Size = UDim2.fromOffset(260, 72),
+		AnchorPoint = Vector2.new(0.5, 1),
+		Position = UDim2.new(0.5, 0, 1, -100),
+		Parent = screen,
+		OnClick = placeOnGround,
+	})
+	placeButton.Visible = false
+	UIKit.AutoScale(placeButton)
+	UserInputService.InputBegan:Connect(function(input, processed)
+		if not processed and input.KeyCode == Enum.KeyCode.F then
+			local carry = State.Data and State.Data.Carry
+			if carry and carry.Count > 0 and carry.AtPlot then
+				placeOnGround()
+			end
+		end
+	end)
 
 	-- Drop button (only while carrying)
 	dropButton = UIKit.Button({

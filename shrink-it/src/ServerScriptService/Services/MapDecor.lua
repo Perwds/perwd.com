@@ -314,18 +314,6 @@ local function bush(parent, pos, scale, color)
 end
 
 -- A few SMALL props along the walls only, so the middle of every zone stays wide open.
-local ZONE_PROPS = {
-	[1] = { "bush", "flowers", "bush", "sunflower" },
-	[2] = { "bush", "mailbox", "flowers", "bush" },
-	[3] = { "cone", "lamp", "cone", "bush" },
-	[4] = { "crate", "barrel", "crate", "rock" },
-	[5] = { "cactus", "rock", "cactus", "bones" },
-	[6] = { "bush", "palm", "bush", "flowers" },
-	[7] = { "lamp", "cone", "crate", "lamp" },
-	[8] = { "rock", "lava", "rock", "lava" },
-	[9] = { "pine", "snowrock", "pine", "snowrock" },
-	[10] = { "crystal", "moonrock", "crystal", "moonrock" },
-}
 
 local function smallProp(decor, kind, pos)
 	if kind == "bush" then
@@ -385,23 +373,286 @@ local function smallProp(decor, kind, pos)
 	end
 end
 
+-- ── more props (v10.4) ─────────────────────────────────────────────────
+local function extraProp(decor, kind, pos)
+	local rotY = math.rad(math.random(0, 359))
+	if kind == "bench" then
+		prop(decor, pos, 0.55, math.random(0, 1) * 180 + 90, function(m)
+			for i = 0, 2 do
+				part(m, Vector3.new(6, 0.25, 0.5), CFrame.new(0, 1.7, -0.6 + i * 0.6), RGB(150, 100, 60), Enum.Material.Wood)
+			end
+			part(m, Vector3.new(6, 1.2, 0.25), CFrame.new(0, 2.6, 0.75) * CFrame.Angles(math.rad(-10), 0, 0), RGB(150, 100, 60), Enum.Material.Wood)
+			for _, x in ipairs({ -2.6, 2.6 }) do
+				part(m, Vector3.new(0.3, 1.7, 1.6), CFrame.new(x, 0.85, 0), RGB(40, 40, 45), Enum.Material.Metal)
+			end
+		end)
+	elseif kind == "hydrant" then
+		part(decor, Vector3.new(1.4, 1, 1), CFrame.new(pos + Vector3.new(0, 0.7, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(200, 30, 30), Enum.Material.Metal, Enum.PartType.Cylinder)
+		deco(decor, Vector3.new(0.8, 0.8, 0.8), CFrame.new(pos + Vector3.new(0, 1.5, 0)), RGB(200, 30, 30), Enum.Material.Metal, Enum.PartType.Ball)
+	elseif kind == "hay" then
+		part(decor, Vector3.new(3, 2.2, 2.2), CFrame.new(pos + Vector3.new(0, 1.1, 0)) * CFrame.Angles(0, rotY, 0), RGB(225, 190, 90), Enum.Material.Fabric)
+		deco(decor, Vector3.new(0.2, 2.25, 2.25), CFrame.new(pos + Vector3.new(0, 1.1, 0)) * CFrame.Angles(0, rotY, 0), RGB(150, 110, 60), Enum.Material.Fabric)
+	elseif kind == "fern" then
+		for i = 0, 5 do
+			local a = i / 6 * math.pi * 2
+			deco(decor, Vector3.new(0.2, 2.2, 0.8), CFrame.new(pos + Vector3.new(math.cos(a) * 0.6, 1, math.sin(a) * 0.6)) * CFrame.Angles(0, -a, math.rad(35)), RGB(50, 140, 60), Enum.Material.Plastic)
+		end
+	elseif kind == "torch" then
+		part(decor, Vector3.new(0.4, 4, 0.4), CFrame.new(pos + Vector3.new(0, 2, 0)), RGB(110, 75, 45), Enum.Material.Wood)
+		local flame = deco(decor, Vector3.new(0.7, 0.9, 0.7), CFrame.new(pos + Vector3.new(0, 4.3, 0)), RGB(255, 170, 50), Enum.Material.Neon)
+		local fire = Instance.new("Fire")
+		fire.Size = 2
+		fire.Heat = 4
+		fire.Parent = flame
+		local light = Instance.new("PointLight")
+		light.Color = RGB(255, 170, 80)
+		light.Range = 14
+		light.Parent = flame
+	elseif kind == "sign" then
+		part(decor, Vector3.new(0.3, 4, 0.3), CFrame.new(pos + Vector3.new(0, 2, 0)), RGB(110, 80, 50), Enum.Material.Wood)
+		part(decor, Vector3.new(2.6, 1.2, 0.2), CFrame.new(pos + Vector3.new(0, 3.5, 0)) * CFrame.Angles(0, rotY, math.rad(4)), RGB(160, 115, 70), Enum.Material.WoodPlanks)
+	elseif kind == "flowerpot" then
+		part(decor, Vector3.new(1.6, 1.2, 1.6), CFrame.new(pos + Vector3.new(0, 0.6, 0)), RGB(190, 100, 70), Enum.Material.Brick)
+		for i = 0, 3 do
+			deco(decor, Vector3.new(0.6, 0.6, 0.6), CFrame.new(pos + Vector3.new(math.cos(i * 1.6) * 0.4, 1.5, math.sin(i * 1.6) * 0.4)), ({ RGB(255, 90, 120), RGB(255, 220, 60), RGB(170, 110, 255), RGB(255, 255, 255) })[i + 1], Enum.Material.Plastic, Enum.PartType.Ball)
+		end
+	elseif kind == "rockcluster" then
+		for i = 0, 2 do
+			rock(decor, pos + Vector3.new(i * 1.4 - 1.4, 0.6, (i % 2) * 1.2), Vector3.new(1.8, 1.4, 1.6) * (1 - i * 0.2), RGB(125, 118, 112))
+		end
+	elseif kind == "barrelstack" then
+		prop(decor, pos, 0.55, math.random(0, 90), function(m)
+			barrel(m, Vector3.new(-1.7, 0, 0))
+			barrel(m, Vector3.new(1.7, 0, 0))
+			barrel(m, Vector3.new(0, 4.5, 0))
+		end)
+	elseif kind == "trashcan" then
+		part(decor, Vector3.new(2.6, 1.6, 1.6), CFrame.new(pos + Vector3.new(0, 1.3, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(90, 95, 100), Enum.Material.DiamondPlate, Enum.PartType.Cylinder)
+		deco(decor, Vector3.new(0.3, 1.8, 1.8), CFrame.new(pos + Vector3.new(0, 2.7, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(70, 75, 80), Enum.Material.Metal, Enum.PartType.Cylinder)
+	elseif kind == "tire" then
+		part(decor, Vector3.new(0.9, 2.4, 2.4), CFrame.new(pos + Vector3.new(0, 0.45, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(30, 30, 32), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+	elseif kind == "anchor" then
+		part(decor, Vector3.new(0.5, 4, 0.5), CFrame.new(pos + Vector3.new(0, 2, 0)) * CFrame.Angles(0, rotY, math.rad(15)), RGB(70, 70, 78), Enum.Material.Metal)
+		part(decor, Vector3.new(3, 0.5, 0.5), CFrame.new(pos + Vector3.new(0, 0.4, 0)) * CFrame.Angles(0, rotY, 0), RGB(70, 70, 78), Enum.Material.Metal)
+	elseif kind == "skull" then
+		deco(decor, Vector3.new(1.4, 1.2, 1.5), CFrame.new(pos + Vector3.new(0, 0.6, 0)) * CFrame.Angles(0, rotY, 0), RGB(245, 240, 225), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+		deco(decor, Vector3.new(3, 0.3, 0.3), CFrame.new(pos + Vector3.new(1, 0.15, 0.8)) * CFrame.Angles(0, rotY, 0), RGB(245, 240, 225))
+	elseif kind == "snowman" then
+		for i, d in ipairs({ 2.6, 2.0, 1.4 }) do
+			part(decor, Vector3.new(d, d, d), CFrame.new(pos + Vector3.new(0, 1.1 + (i - 1) * 1.7, 0)), RGB(250, 252, 255), Enum.Material.Snow, Enum.PartType.Ball)
+		end
+		deco(decor, Vector3.new(0.25, 0.25, 0.8), CFrame.new(pos + Vector3.new(0, 4.5, -0.8)), RGB(255, 140, 40))
+		deco(decor, Vector3.new(1.3, 0.8, 1.3), CFrame.new(pos + Vector3.new(0, 5.6, 0)), RGB(30, 30, 35))
+	elseif kind == "icicle" then
+		local c = deco(decor, Vector3.new(1, 3, 1), CFrame.new(pos + Vector3.new(0, 1.5, 0)) * CFrame.Angles(0, rotY, math.rad(8)), RGB(190, 230, 255), Enum.Material.Ice)
+		c.CanCollide = true
+	elseif kind == "satdish" then
+		part(decor, Vector3.new(0.4, 2.5, 0.4), CFrame.new(pos + Vector3.new(0, 1.25, 0)), RGB(170, 170, 180), Enum.Material.Metal)
+		local dish = part(decor, Vector3.new(0.4, 3, 3), CFrame.new(pos + Vector3.new(0, 3, 0)) * CFrame.Angles(0, rotY, math.rad(-35)), RGB(220, 220, 230), Enum.Material.Metal, Enum.PartType.Cylinder)
+		dish.CanCollide = false
+	elseif kind == "meteor" then
+		rock(decor, pos + Vector3.new(0, 1, 0), Vector3.new(3, 2.4, 2.8), RGB(70, 60, 80))
+		local glow = deco(decor, Vector3.new(1.2, 1.2, 1.2), CFrame.new(pos + Vector3.new(0.6, 1.8, -0.6)), RGB(170, 110, 255), Enum.Material.Neon, Enum.PartType.Ball)
+		local light = Instance.new("PointLight")
+		light.Color = RGB(170, 110, 255)
+		light.Range = 10
+		light.Parent = glow
+	else
+		smallProp(decor, kind, pos)
+	end
+end
+
+local EDGE_PROPS = {
+	[1] = { "bush", "flowerpot", "hay", "flowers", "bench", "sunflower", "sign", "bush" },
+	[2] = { "bush", "mailbox", "trashcan", "flowerpot", "bench", "hydrant", "flowers", "lamp" },
+	[3] = { "cone", "lamp", "hydrant", "trashcan", "bench", "tire", "cone", "flowerpot" },
+	[4] = { "crate", "barrel", "barrelstack", "anchor", "rock", "crate", "tire", "lamp" },
+	[5] = { "cactus", "rock", "skull", "rockcluster", "cactus", "torch", "bones", "hay" },
+	[6] = { "fern", "palm", "bush", "torch", "fern", "flowers", "rockcluster", "palm" },
+	[7] = { "lamp", "cone", "crate", "trashcan", "bench", "satdish", "barrelstack", "lamp" },
+	[8] = { "rock", "lava", "torch", "rockcluster", "skull", "lava", "rock", "torch" },
+	[9] = { "pine", "snowrock", "snowman", "icicle", "pine", "rockcluster", "snowrock", "icicle" },
+	[10] = { "crystal", "moonrock", "satdish", "meteor", "crystal", "moonrock", "meteor", "crystal" },
+}
+
+-- Things mounted on the walls (inner face), themed per zone.
+local function wallPiece(decor, tier, side, x, y, z)
+	local face = CFrame.new(x, y, z) * CFrame.Angles(0, side > 0 and -math.pi / 2 or math.pi / 2, 0) -- -Z faces into the corridor
+	if tier == 1 or tier == 6 then -- ivy
+		for i = 0, 3 do
+			deco(decor, Vector3.new(0.9, 3 + i, 0.2), face * CFrame.new(i * 0.9 - 1.3, -i * 0.5, -0.1), RGB(60, 140, 60):Lerp(RGB(30, 90, 40), i / 4), Enum.Material.Plastic)
+		end
+	elseif tier == 2 or tier == 3 or tier == 7 then -- wall lamp
+		deco(decor, Vector3.new(0.6, 0.6, 1.2), face * CFrame.new(0, 0, -0.6), RGB(50, 50, 55), Enum.Material.Metal)
+		local bulb = deco(decor, Vector3.new(0.9, 0.9, 0.9), face * CFrame.new(0, -0.5, -1.2), tier == 7 and RGB(200, 120, 255) or RGB(255, 235, 170), Enum.Material.Neon, Enum.PartType.Ball)
+		local light = Instance.new("PointLight")
+		light.Color = bulb.Color
+		light.Range = 14
+		light.Parent = bulb
+		if tier == 7 then
+			deco(decor, Vector3.new(14, 0.3, 0.2), face * CFrame.new(0, 4, -0.1), RGB(80, 220, 255), Enum.Material.Neon)
+		end
+	elseif tier == 4 then -- life ring
+		deco(decor, Vector3.new(0.4, 2.4, 2.4), face * CFrame.new(0, 0, -0.2) * CFrame.Angles(0, math.rad(90), 0), RGB(240, 90, 40), Enum.Material.Plastic, Enum.PartType.Cylinder)
+		deco(decor, Vector3.new(0.45, 1.2, 1.2), face * CFrame.new(0, 0, -0.25) * CFrame.Angles(0, math.rad(90), 0), RGB(204, 146, 96), Enum.Material.Plastic, Enum.PartType.Cylinder)
+	elseif tier == 5 or tier == 8 then -- wall torch
+		deco(decor, Vector3.new(0.3, 1.6, 0.3), face * CFrame.new(0, 0, -0.5) * CFrame.Angles(math.rad(-25), 0, 0), RGB(110, 75, 45), Enum.Material.Wood)
+		local flame = deco(decor, Vector3.new(0.6, 0.8, 0.6), face * CFrame.new(0, 1.0, -0.9), RGB(255, 160, 50), Enum.Material.Neon)
+		local light = Instance.new("PointLight")
+		light.Color = RGB(255, 160, 80)
+		light.Range = 12
+		light.Parent = flame
+		if tier == 8 then
+			deco(decor, Vector3.new(0.4, 8, 0.15), face * CFrame.new(3, -2, -0.05) * CFrame.Angles(0, 0, math.rad(20)), RGB(255, 90, 20), Enum.Material.Neon)
+		end
+	elseif tier == 9 then -- icicles under the top
+		for i = -2, 2 do
+			deco(decor, Vector3.new(0.5, 1.6 + (i % 2), 0.5), face * CFrame.new(i * 1.4, 8, -0.3), RGB(200, 235, 255), Enum.Material.Ice)
+		end
+	elseif tier == 10 then -- glowing panel
+		deco(decor, Vector3.new(3, 1.6, 0.2), face * CFrame.new(0, 0, -0.1), RGB(40, 30, 80), Enum.Material.Metal)
+		deco(decor, Vector3.new(2.6, 0.3, 0.1), face * CFrame.new(0, 0.3, -0.22), RGB(90, 255, 200), Enum.Material.Neon)
+	end
+end
+
+-- One or two bigger set pieces per zone, tucked against a wall.
+local function landmark(decor, tier, pos, side)
+	local yaw = side > 0 and -90 or 90
+	if tier == 1 then -- doghouse
+		prop(decor, pos, 0.7, yaw, function(m)
+			part(m, Vector3.new(5, 4, 5), CFrame.new(0, 2, 0), RGB(170, 90, 60), Enum.Material.WoodPlanks)
+			for _, s in ipairs({ -1, 1 }) do
+				part(m, Vector3.new(5.6, 0.3, 3.4), CFrame.new(0, 5, s * 1.4) * CFrame.Angles(math.rad(s * 35), 0, 0), RGB(150, 50, 40), Enum.Material.Slate)
+			end
+			part(m, Vector3.new(2, 2.6, 0.2), CFrame.new(0, 1.3, -2.55), RGB(30, 20, 15))
+			part(m, Vector3.new(1.4, 0.4, 1.4), CFrame.new(1.5, 0.2, -4), RGB(200, 40, 40), Enum.Material.Metal)
+		end)
+	elseif tier == 2 then -- garden swing set
+		prop(decor, pos, 0.7, yaw, function(m)
+			for _, x in ipairs({ -4, 4 }) do
+				part(m, Vector3.new(0.4, 7, 0.4), CFrame.new(x, 3.4, -1) * CFrame.Angles(math.rad(-12), 0, 0), RGB(200, 60, 60), Enum.Material.Metal)
+				part(m, Vector3.new(0.4, 7, 0.4), CFrame.new(x, 3.4, 1) * CFrame.Angles(math.rad(12), 0, 0), RGB(200, 60, 60), Enum.Material.Metal)
+			end
+			part(m, Vector3.new(8.6, 0.4, 0.4), CFrame.new(0, 6.8, 0), RGB(200, 60, 60), Enum.Material.Metal)
+			for _, x in ipairs({ -1.6, 1.6 }) do
+				deco(m, Vector3.new(0.08, 4.5, 0.08), CFrame.new(x - 0.6, 4.5, 0), RGB(80, 80, 85), Enum.Material.Metal)
+				deco(m, Vector3.new(0.08, 4.5, 0.08), CFrame.new(x + 0.6, 4.5, 0), RGB(80, 80, 85), Enum.Material.Metal)
+				part(m, Vector3.new(1.6, 0.2, 0.8), CFrame.new(x, 2.2, 0), RGB(40, 40, 45))
+			end
+		end)
+	elseif tier == 3 then -- bus stop shelter
+		prop(decor, pos, 0.75, yaw, function(m)
+			part(m, Vector3.new(8, 0.3, 3.4), CFrame.new(0, 6, 0), RGB(60, 60, 66), Enum.Material.Metal)
+			local back = part(m, Vector3.new(8, 5, 0.2), CFrame.new(0, 3, 1.6), RGB(160, 200, 230), Enum.Material.Glass)
+			back.Transparency = 0.4
+			for _, x in ipairs({ -3.9, 3.9 }) do
+				part(m, Vector3.new(0.3, 6, 0.3), CFrame.new(x, 3, 1.5), RGB(60, 60, 66), Enum.Material.Metal)
+			end
+			part(m, Vector3.new(6, 0.3, 1), CFrame.new(0, 1.6, 1), RGB(150, 100, 60), Enum.Material.Wood)
+			deco(m, Vector3.new(1.4, 1.4, 0.2), CFrame.new(5, 6.5, 0), RGB(40, 120, 220), Enum.Material.Neon)
+		end)
+	elseif tier == 4 then -- rowboat on the shore
+		prop(decor, pos, 0.8, yaw + 20, function(m)
+			part(m, Vector3.new(3.4, 1.2, 8), CFrame.new(0, 0.6, 0), RGB(120, 80, 50), Enum.Material.WoodPlanks)
+			part(m, Vector3.new(3.6, 0.3, 8.2), CFrame.new(0, 1.3, 0), RGB(230, 230, 225), Enum.Material.Wood)
+			part(m, Vector3.new(3.2, 0.25, 0.8), CFrame.new(0, 1.2, 0), RGB(140, 95, 60), Enum.Material.Wood)
+			part(m, Vector3.new(0.25, 0.25, 5), CFrame.new(1.4, 1.5, 1) * CFrame.Angles(0, math.rad(10), 0), RGB(170, 120, 70), Enum.Material.Wood)
+		end)
+	elseif tier == 5 then -- covered wagon
+		prop(decor, pos, 0.75, yaw, function(m)
+			part(m, Vector3.new(4.4, 1.6, 8), CFrame.new(0, 2.2, 0), RGB(130, 90, 55), Enum.Material.WoodPlanks)
+			part(m, Vector3.new(4.6, 4.2, 8.2), CFrame.new(0, 4.6, 0), RGB(240, 230, 205), Enum.Material.Fabric, Enum.PartType.Cylinder).CFrame = CFrame.new(0, 4.2, 0) * CFrame.Angles(0, math.rad(90), 0)
+			for _, x in ipairs({ -2.4, 2.4 }) do
+				for _, z in ipairs({ -2.8, 2.8 }) do
+					part(m, Vector3.new(0.4, 2.6, 2.6), CFrame.new(x, 1.3, z), RGB(100, 70, 45), Enum.Material.Wood, Enum.PartType.Cylinder)
+				end
+			end
+		end)
+	elseif tier == 6 then -- giant jungle tree
+		prop(decor, pos, 0.9, 0, function(m)
+			tree(m, Vector3.zero, 1.2, RGB(45, 125, 50))
+		end)
+	elseif tier == 7 then -- billboard
+		prop(decor, pos, 0.8, yaw, function(m)
+			for _, x in ipairs({ -4, 4 }) do
+				part(m, Vector3.new(0.6, 10, 0.6), CFrame.new(x, 5, 0), RGB(70, 70, 78), Enum.Material.Metal)
+			end
+			local board = part(m, Vector3.new(12, 6, 0.4), CFrame.new(0, 12, 0), RGB(30, 30, 40))
+			local gui = Instance.new("SurfaceGui")
+			gui.Face = Enum.NormalId.Front
+			gui.LightInfluence = 0
+			gui.Parent = board
+			local t = Instance.new("TextLabel")
+			t.Size = UDim2.fromScale(1, 1)
+			t.BackgroundColor3 = RGB(255, 60, 160)
+			t.Font = Enum.Font.FredokaOne
+			t.TextScaled = true
+			t.TextColor3 = RGB(255, 255, 255)
+			t.Text = "SHRINK IT!"
+			t.Parent = gui
+		end)
+	elseif tier == 8 then -- lava pool with rocks
+		local pool = deco(decor, Vector3.new(0.3, 10, 10), CFrame.new(pos + Vector3.new(0, 0.15, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(255, 90, 20), Enum.Material.Neon, Enum.PartType.Cylinder)
+		local light = Instance.new("PointLight")
+		light.Color = RGB(255, 110, 40)
+		light.Range = 22
+		light.Brightness = 2
+		light.Parent = pool
+		for i = 0, 5 do
+			local a = i / 6 * math.pi * 2
+			rock(decor, pos + Vector3.new(math.cos(a) * 5.5, 0.8, math.sin(a) * 5.5), Vector3.new(2.4, 1.8, 2.2), RGB(50, 38, 35))
+		end
+	elseif tier == 9 then -- ski rack + snowmen
+		extraProp(decor, "snowman", pos)
+		extraProp(decor, "snowman", pos + Vector3.new(0, 0, 5))
+		for i = 0, 3 do
+			part(decor, Vector3.new(0.25, 5, 0.5), CFrame.new(pos + Vector3.new(-side * 3, 2.5, -3 + i * 0.8)) * CFrame.Angles(0, 0, math.rad(-side * 10)), ({ RGB(220, 40, 40), RGB(40, 120, 220), RGB(250, 200, 40), RGB(40, 180, 90) })[i + 1])
+		end
+	elseif tier == 10 then -- crashed rocket
+		prop(decor, pos, 0.7, yaw, function(m)
+			part(m, Vector3.new(10, 3, 3), CFrame.new(0, 2.6, 0) * CFrame.Angles(0, 0, math.rad(25)), RGB(230, 230, 235), Enum.Material.Metal, Enum.PartType.Cylinder)
+			part(m, Vector3.new(3, 3.2, 3.2), CFrame.new(4.3, 4.6, 0) * CFrame.Angles(0, 0, math.rad(25)), RGB(220, 40, 40), Enum.Material.Metal, Enum.PartType.Ball)
+			local fire = deco(m, Vector3.new(2, 2, 2), CFrame.new(-4.6, 0.8, 0), RGB(255, 140, 40), Enum.Material.Neon, Enum.PartType.Ball)
+			local smoke = Instance.new("Smoke")
+			smoke.Size = 3
+			smoke.Opacity = 0.2
+			smoke.Parent = fire
+		end)
+	end
+end
+
 function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 	local decor = folder(zoneModel, "Decor")
-	local kinds = ZONE_PROPS[tier] or ZONE_PROPS[1]
-	local edge = width / 2 - 6 -- props hug the walls
+	local kinds = EDGE_PROPS[tier] or EDGE_PROPS[1]
+	local edge = width / 2 - 5 -- props hug the walls; the middle stays open for running
 	local i = 0
-	for z = z0 + 18, z0 + depth - 10, 34 do
+	local function place(kind, pos)
+		local ok, err = pcall(extraProp, decor, kind, pos)
+		if not ok then
+			warn("[MapDecor] prop " .. kind .. " failed: " .. tostring(err))
+		end
+	end
+	-- front row along each wall (dense) + a second, sparser row a little further in
+	for z = z0 + 12, z0 + depth - 8, 16 do
 		for _, s in ipairs({ -1, 1 }) do
 			i += 1
-			local kind = kinds[(i % #kinds) + 1]
-			local ok, err = pcall(smallProp, decor, kind, Vector3.new(s * (edge - math.random(0, 6)), 0, z + math.random(-6, 6)))
-			if not ok then
-				warn("[MapDecor] prop " .. kind .. " failed: " .. tostring(err))
+			place(kinds[(i % #kinds) + 1], Vector3.new(s * (edge - math.random(0, 3)), 0, z + math.random(-4, 4)))
+			if i % 3 == 0 then
+				place(kinds[((i + 3) % #kinds) + 1], Vector3.new(s * (edge - 10 - math.random(0, 3)), 0, z + 8 + math.random(-3, 3)))
 			end
 		end
 	end
+	-- wall decorations
+	for z = z0 + 10, z0 + depth - 6, 24 do
+		for _, s in ipairs({ -1, 1 }) do
+			pcall(wallPiece, decor, tier, s, s * (width / 2 - 0.1), 9 + math.random(-1, 2), z + (s > 0 and 12 or 0))
+		end
+	end
+	-- landmarks against the walls
+	pcall(landmark, decor, tier, Vector3.new(-(edge - 4), 0, z0 + depth * 0.35), -1)
+	pcall(landmark, decor, tier, Vector3.new(edge - 4, 0, z0 + depth * 0.72), 1)
 	if tier == 10 then -- a starry sky feeling: little glowing dots on the walls
-		for _ = 1, 30 do
+		for _ = 1, 40 do
 			local s = math.random() < 0.5 and -1 or 1
 			deco(decor, Vector3.one * 0.6, CFrame.new(s * (width / 2 - 0.5), math.random(6, 36), math.random(z0 + 4, z0 + depth - 4)), RGB(255, 255, 255), Enum.Material.Neon, Enum.PartType.Ball)
 		end
@@ -710,6 +961,32 @@ function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 	flowers(decor, Vector3.new(22, 0, -48), 3)
 	for x = -width / 2 + 18, width / 2 - 18, 32 do
 		tree(decor, Vector3.new(x, 0, -depth + 9), 0.65)
+	end
+	-- trimmed hedges along both side walls, with flower pots between them
+	for z = -30, -depth + 20, -16 do
+		for _, s in ipairs({ -1, 1 }) do
+			local x = s * (width / 2 - 4)
+			part(decor, Vector3.new(3, 3, 10), CFrame.new(x, 1.5, z), RGB(60, 135, 55), Enum.Material.Plastic)
+			pcall(extraProp, decor, "flowerpot", Vector3.new(x, 0, z - 8))
+		end
+	end
+	-- slim lamp posts lining the main path (thin, out of the way)
+	for z = -20, -120, -25 do
+		for _, s in ipairs({ -1, 1 }) do
+			prop(decor, Vector3.new(s * 11, 0, z), 0.75, 0, function(m)
+				lamp(m, Vector3.zero, RGB(255, 235, 170))
+			end)
+		end
+	end
+	-- planters + benches beside every stand
+	for _, p in ipairs({ Vector3.new(-100, 0, -40), Vector3.new(-50, 0, -84), Vector3.new(48, 0, -82), Vector3.new(100, 0, -40) }) do
+		for _, s in ipairs({ -1, 1 }) do
+			pcall(extraProp, decor, "flowerpot", p + Vector3.new(s * 13, 0, 4))
+		end
+	end
+	-- flower beds near the gate (not on the path)
+	for _, x in ipairs({ -60, -40, 40, 60 }) do
+		flowers(decor, Vector3.new(x, 0, -10), 2.4)
 	end
 end
 

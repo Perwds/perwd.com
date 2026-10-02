@@ -158,7 +158,7 @@ function RaidService.TryStartRaid(raider, building, root)
 		Revenge = revenge,
 	})
 	Svc.Net.Notify(victim, "⚠️ " .. raider.DisplayName .. " is RAIDING your museum! (You lose nothing - they only copy)", "error")
-	Svc.Net.Notify(raider, "🏴‍☠️ Raid started! Zap their pedestals to copy objects!", "success")
+	Svc.Net.Notify(raider, "🏴‍☠️ Raid started! Zap their objects to copy them!", "success")
 	Svc.Data.MarkDirty(raider)
 	Svc.Data.MarkDirty(victim)
 	task.delay(CFG.Duration, function()
