@@ -106,7 +106,7 @@ local productHandlers = {
 			end
 		end
 		Svc.Museum.OpenReadyBoxes(player)
-		Svc.Net.Notify(player, "📦 Opened " .. n .. " box" .. (n == 1 and "" or "es") .. " instantly!", "success")
+		Svc.Net.Notify(player, "Opened " .. n .. " box" .. (n == 1 and "" or "es") .. " instantly!", "success")
 	end,
 	SpeedPoints = function(player, data, key)
 		local product = MonetizationConfig.Products[key]
@@ -201,7 +201,7 @@ local function processReceipt(info)
 		data.Receipts[oldest] = nil
 	end
 	Svc.Data.MarkDirty(player)
-	Svc.Net.Notify(player, "Thanks for your purchase! 💖", "success")
+	Svc.Net.Notify(player, "Thanks for your purchase!", "success")
 
 	if Svc.Data.Save(player) then
 		return Enum.ProductPurchaseDecision.PurchaseGranted

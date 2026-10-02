@@ -112,13 +112,13 @@ function IndexMenu.Build(ctx)
 			local claimed = data.IndexClaimed[selectedTier .. ":" .. kind]
 			local gems = row.Cfg.GemsPerTier * selectedTier
 			if claimed then
-				row.Label.Text = "✔ Claimed"
+				row.Label.Text = "Claimed"
 				UIKit.SetButtonColors(row.Button, UIKit.Colors.Gray)
 			elseif have >= need and need > 0 then
 				row.Label.Text = "CLAIM!"
 				UIKit.SetButtonColors(row.Button, UIKit.Colors.Green)
 			else
-				row.Label.Text = string.format("💎%d +%d%%", gems, row.Cfg.IncomeBonus * 100)
+				row.Label.Text = string.format("%d Gems  +%d%%", gems, row.Cfg.IncomeBonus * 100)
 				UIKit.SetButtonColors(row.Button, UIKit.Colors.Yellow)
 			end
 		end

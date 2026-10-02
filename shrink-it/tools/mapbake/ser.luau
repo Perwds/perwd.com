@@ -60,7 +60,9 @@ function serialize(inst)
 	local props = {}
 	local keys = {}
 	for k in pairs(inst) do
-		if type(k) == "string" and k:sub(1, 1) ~= "_" and not SKIP[k] then table.insert(keys, k) end
+		-- parts keep their position in CFrame; GUI objects need their UDim2 Position
+		local skip = SKIP[k] and not (k == "Position" and type(rawget(inst, k)) == "table" and rawget(inst, k).__t == "UDim2")
+		if type(k) == "string" and k:sub(1, 1) ~= "_" and not skip then table.insert(keys, k) end
 	end
 	table.sort(keys)
 	for _, k in ipairs(keys) do

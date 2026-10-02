@@ -41,7 +41,7 @@ function AreaService.Start()
 			return { ok = false }
 		end
 		if Svc.Carry.IsCarrying(player) then
-			return { ok = false, msg = "🎒 No teleporting while carrying loot — run it home!" }
+			return { ok = false, msg = "No teleporting while carrying loot — run it home!" }
 		end
 		if dest == "Lobby" or dest == "Base" then
 			character:PivotTo(baseCFrame())
@@ -76,7 +76,7 @@ function AreaService.Start()
 			end
 			data.VipFountainAt = os.time() + GameConfig.VIP.FountainCooldown
 			Svc.Economy.AddGems(player, GameConfig.VIP.FountainGems)
-			Svc.Net.Notify(player, "👑 VIP Fountain: +" .. GameConfig.VIP.FountainGems .. " Gems!", "success")
+			Svc.Net.Notify(player, "VIP Fountain: +" .. GameConfig.VIP.FountainGems .. " Gems!", "success")
 			Svc.Data.MarkDirty(player)
 		end)
 	end
@@ -90,7 +90,7 @@ function AreaService.Start()
 				local root = character and character:FindFirstChild("HumanoidRootPart")
 				if root and Svc.Map.VIPRoom and not Svc.Session.HasPass(player, "VIP") and Svc.Map.IsInPart(Svc.Map.VIPRoom, root.Position) then
 					character:PivotTo(baseCFrame())
-					Svc.Net.Notify(player, "👑 The VIP lounge is for VIP pass owners!", "error")
+					Svc.Net.Notify(player, "The VIP lounge is for VIP pass owners!", "error")
 				end
 			end
 		end

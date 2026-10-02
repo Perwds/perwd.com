@@ -31,11 +31,11 @@ function ShopMenu.Build(ctx)
 	local tabButtons = {}
 	local current = "Crates"
 	local TABS = {
-		{ Key = "Crates", Text = "👑 Crates", Colors = UIKit.Colors.Orange },
-		{ Key = "Passes", Text = "⭐ Passes", Colors = UIKit.Colors.Yellow },
-		{ Key = "Boosts", Text = "🧪 Boosts", Colors = UIKit.Colors.Green },
-		{ Key = "Gems", Text = "💎 Gems & Skins", Colors = UIKit.Colors.Blue },
-		{ Key = "Codes", Text = "🎟️ Codes", Colors = UIKit.Colors.Pink },
+		{ Key = "Crates", Text = "Crates", Colors = UIKit.Colors.Orange },
+		{ Key = "Passes", Text = "Passes", Colors = UIKit.Colors.Yellow },
+		{ Key = "Boosts", Text = "Boosts", Colors = UIKit.Colors.Green },
+		{ Key = "Gems", Text = "Gems & Skins", Colors = UIKit.Colors.Blue },
+		{ Key = "Codes", Text = "Codes", Colors = UIKit.Colors.Pink },
 	}
 
 	local function showTab(key)
@@ -92,7 +92,7 @@ function ShopMenu.Build(ctx)
 	-- ── Passes ─────────────────────────────────────────────────────
 	grid(pages.Passes, UDim2.fromOffset(204, 236))
 	local PALETTE = { UIKit.Colors.Blue, UIKit.Colors.Purple, UIKit.Colors.Pink, UIKit.Colors.Orange, UIKit.Colors.Green, UIKit.Colors.Cyan, UIKit.Colors.Red, UIKit.Colors.Yellow }
-	local POPULAR = { VIP = "🔥 POPULAR", DoubleCoins = "🔥 POPULAR", AutoShrink = "⭐ BEST" }
+	local POPULAR = { VIP = "POPULAR", DoubleCoins = "POPULAR", AutoShrink = "BEST" }
 
 	-- colorful shop card: gradient body, icon bubble, name, small description, price button
 	local function shopCard(parent, order, colors, emoji, image, name, description, ribbon, onClick)
@@ -125,7 +125,7 @@ function ShopMenu.Build(ctx)
 
 	-- ── Boosts (developer products) ─────────────────────────────────
 	grid(pages.Boosts, UDim2.fromOffset(204, 236))
-	local BEST = { CoinsLarge = "💰 BEST VALUE", GemsLarge = "💎 BEST VALUE", ServerLuck = "🌠 SERVER!" }
+	local BEST = { CoinsLarge = "BEST VALUE", GemsLarge = "BEST VALUE", ServerLuck = "SERVER!" }
 	local productCards = {}
 	for i, key in ipairs(MonetizationConfig.ProductOrder) do
 		local product = MonetizationConfig.Products[key]
@@ -138,7 +138,7 @@ function ShopMenu.Build(ctx)
 	-- ── Gems & Skins ────────────────────────────────────────────────
 	local gemsList = pages.Gems
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = gemsList })
-	UIKit.Label({ Text = "💎 Gem Shop", TextColor3 = Color3.fromRGB(90, 190, 255), StrokeThickness = 3, Size = UDim2.new(1, -20, 0, 36), LayoutOrder = 0, Parent = gemsList })
+	UIKit.Label({ Text = "Gem Shop", TextColor3 = Color3.fromRGB(90, 190, 255), StrokeThickness = 3, Size = UDim2.new(1, -20, 0, 36), LayoutOrder = 0, Parent = gemsList })
 	for i, item in ipairs(MonetizationConfig.GemShop) do
 		local row = UIKit.Card({ Size = UDim2.new(1, -24, 0, 58), LayoutOrder = i, Parent = gemsList, CornerRadius = 14 })
 		UIKit.Label({ Text = item.Emoji .. "  " .. item.Name, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = UIKit.Outline, StrokeThickness = 0, Size = UDim2.new(0.6, 0, 1, -16), Position = UDim2.fromOffset(14, 8), Parent = row })
@@ -146,7 +146,7 @@ function ShopMenu.Build(ctx)
 			ctx.HUD.Result(State.Action("GemShopBuy", item.Key))
 		end })
 	end
-	UIKit.Label({ Text = "🔫 Ray Skins", TextColor3 = Color3.fromRGB(255, 120, 200), StrokeThickness = 3, Size = UDim2.new(1, -20, 0, 36), LayoutOrder = 100, Parent = gemsList })
+	UIKit.Label({ Text = "Ray Skins", TextColor3 = Color3.fromRGB(255, 120, 200), StrokeThickness = 3, Size = UDim2.new(1, -20, 0, 36), LayoutOrder = 100, Parent = gemsList })
 	local skinButtons = {}
 	for i, skinKey in ipairs(MonetizationConfig.SkinOrder) do
 		local skin = MonetizationConfig.RaySkins[skinKey]
@@ -197,7 +197,7 @@ function ShopMenu.Build(ctx)
 			box.Text = ""
 		end
 	end })
-	UIKit.Label({ Text = "👍 Like the game! Like goals unlock new codes — check the sign in the lobby.", TextColor3 = Color3.fromRGB(220, 220, 235), StrokeThickness = 2, Size = UDim2.new(1, -40, 0, 50), Position = UDim2.fromOffset(20, 250), Parent = codesPage })
+	UIKit.Label({ Text = "Like the game! Like goals unlock new codes — check the sign in the lobby.", TextColor3 = Color3.fromRGB(220, 220, 235), StrokeThickness = 2, Size = UDim2.new(1, -40, 0, 50), Position = UDim2.fromOffset(20, 250), Parent = codesPage })
 
 	showTab(current)
 
@@ -210,7 +210,7 @@ function ShopMenu.Build(ctx)
 		end
 		for key, c in pairs(passCards) do
 			if State.HasPass(key) then
-				c.Label.Text = "OWNED ✔"
+				c.Label.Text = "OWNED"
 				UIKit.SetButtonColors(c.Button, UIKit.Colors.Gray)
 			else
 				c.Label.Text = Prices.Get(Enum.InfoType.GamePass, c.Pass.Id, c.Pass.PriceLabel)
@@ -243,7 +243,7 @@ function ShopMenu.Build(ctx)
 				c.Label.Text = "EQUIP"
 				UIKit.SetButtonColors(c.Button, UIKit.Colors.Green)
 			else
-				c.Label.Text = c.Skin.Pass and "🔒 Pass" or "🔒 Locked"
+				c.Label.Text = c.Skin.Pass and "Pass" or "Locked"
 				UIKit.SetButtonColors(c.Button, UIKit.Colors.Dark)
 			end
 		end

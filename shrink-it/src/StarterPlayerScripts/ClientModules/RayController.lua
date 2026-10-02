@@ -116,17 +116,17 @@ local function describe(target, kind)
 		return nil
 	end
 	if kind == "building" then
-		return "🏴‍☠️ RAID this museum (hold " .. GameConfig.Raid.BuildingChargeTime .. "s)", Color3.fromRGB(255, 90, 90)
+		return "RAID this museum (hold " .. GameConfig.Raid.BuildingChargeTime .. "s)", Color3.fromRGB(255, 90, 90)
 	elseif kind == "pedestal" then
 		local name = target:GetAttribute("ItemName")
-		return name and ("📋 Copy " .. name) or nil, Color3.fromRGB(255, 200, 80)
+		return name and ("Copy " .. name) or nil, Color3.fromRGB(255, 200, 80)
 	end
 	local variantName = target:GetAttribute("Variant")
 	local box = { R = target:GetAttribute("BoxRarity") or "Common", T = target:GetAttribute("Tier") or 1, V = variantName ~= "Normal" and variantName or nil }
 	local variant = RarityConfig.GetVariant(variantName)
 	local rarity = RarityConfig.GetRarity(box.R)
 	local charge = Formulas.ObjectChargeTime(stats, box.T)
-	local text = string.format("📦 %s · ⏱ %.1fs", Formulas.BoxName(box), charge)
+	local text = string.format("%s · %.1fs", Formulas.BoxName(box), charge)
 	if surfaceDistance(target) > stats.Range then
 		text ..= "  (too far)"
 	end
@@ -191,11 +191,11 @@ local function startCharge()
 	if kind == "object" then
 		local carry = State.Data.Carry
 		if carry and carry.Count >= carry.Capacity then
-			HUD.Notify("🎒 Hands full! Run back to base to drop off your loot.", "error")
+			HUD.Notify("Hands full! Run back to base to drop off your loot.", "error")
 			return
 		end
 		if surfaceDistance(target) > stats.Range then
-			HUD.Notify("Too far away! Upgrade Range ⚡", "error")
+			HUD.Notify("Too far away! Upgrade Range", "error")
 			return
 		end
 		local reserved = target:GetAttribute("ReservedFor")

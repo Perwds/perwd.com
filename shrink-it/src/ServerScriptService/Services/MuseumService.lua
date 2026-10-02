@@ -7,7 +7,7 @@
 	  • Inside your plot press F (or the 📦 Place button): the box is set on the ground at the free spot
 	    nearest to you and starts opening
 	    (time depends on box rarity / zone / variant, see GameConfig.Boxes).
-	  • "Open now 💎" on an opening box skips the wait for Gems.
+	  • "Open now" on an opening box skips the wait for Gems.
 	  • When it opens, a RANDOM object is rolled (SpawnService.RollContents: object, variant, SIZE),
 	    appears on the pedestal and earns coins every second.
 	  • "Pick up" (hold E) lifts the object above your head at its REAL size (bigger = bigger!).
@@ -204,7 +204,7 @@ local function setDisplay(pedestal, slot, data)
 		box.Parent = pedestal
 		pedestal:SetAttribute("State", "Box")
 		pedestal:SetAttribute("BoxReadyAt", slot.Box.ReadyAt)
-		setPrompt(pedestal, "Open now 💎", 0)
+		setPrompt(pedestal, "Open now", 0)
 		return
 	end
 
@@ -442,7 +442,7 @@ function onPrompt(player, i, placeAt)
 		else
 			local item = bestPocketItem(player, data)
 			if not item then
-				Svc.Net.Notify(player, "🎒 Shrink a box in the zones and bring it here!", "info")
+				Svc.Net.Notify(player, "Shrink a box in the zones and bring it here!", "info")
 				return
 			end
 			data.Slots[key] = { U = item.U, P = placeAt }
@@ -456,7 +456,7 @@ function onPrompt(player, i, placeAt)
 		end
 		local cost = Formulas.BoxSkipGems(left)
 		if not Svc.Economy.Spend(player, "Gems", cost) then
-			Svc.Net.Notify(player, "Need 💎" .. cost .. " to open it now (" .. Format.Clock(left) .. " left)", "error")
+			Svc.Net.Notify(player, "Need " .. cost .. " Gems to open it now (" .. Format.Clock(left) .. " left)", "error")
 			return
 		end
 		slot.Box.ReadyAt = os.time()
@@ -466,9 +466,9 @@ function onPrompt(player, i, placeAt)
 		local item = findItem(data, slot.U)
 		data.Slots[key] = nil
 		if item and Svc.Carry.Hold(player, item) then
-			Svc.Net.Notify(player, "🙌 Holding your " .. Formulas.ItemName(item) .. " (" .. Formulas.FormatWeight(Formulas.ItemWeight(item)) .. ")", "info")
+			Svc.Net.Notify(player, "Holding your " .. Formulas.ItemName(item) .. " (" .. Formulas.FormatWeight(Formulas.ItemWeight(item)) .. ")", "info")
 		else
-			Svc.Net.Notify(player, "🎒 Hands full — put it in your pocket.", "info")
+			Svc.Net.Notify(player, "Hands full — put it in your pocket.", "info")
 		end
 		MuseumService.Recompute(player)
 	end
@@ -725,7 +725,7 @@ function MuseumService.Start()
 		end
 		-- the fused object is as big as the average of the three
 		local item = MuseumService.AddItem(player, id, nextVariant, { Z = Formulas.SizeInfo(sizeSum / #remove).Mult })
-		return { ok = true, msg = "✨ Fused into " .. Formulas.ItemName(item) .. "! (in your pocket)" }
+		return { ok = true, msg = "Fused into " .. Formulas.ItemName(item) .. "! (in your pocket)" }
 	end)
 
 	-- SELL ALL: sells every pocket object that is NOT on a pedestal (exclusives are kept)
@@ -749,7 +749,7 @@ function MuseumService.Start()
 		data.Items = kept
 		Svc.Economy.AddCoins(player, total)
 		MuseumService.Recompute(player)
-		return { ok = true, msg = string.format("💰 Sold %d object%s for %s", count, count == 1 and "" or "s", Format.Coins(total)) }
+		return { ok = true, msg = string.format("Sold %d object%s for %s", count, count == 1 and "" or "s", Format.Coins(total)) }
 	end)
 
 	-- EQUIP BEST: fills every pedestal that isn't opening a box with your best objects
@@ -787,7 +787,7 @@ function MuseumService.Start()
 			placed += 1
 		end
 		MuseumService.Recompute(player)
-		return { ok = true, msg = placed > 0 and ("⭐ Equipped your best " .. placed .. " object" .. (placed == 1 and "" or "s") .. "!") or "Nothing to equip yet!" }
+		return { ok = true, msg = placed > 0 and ("Equipped your best " .. placed .. " object" .. (placed == 1 and "" or "s") .. "!") or "Nothing to equip yet!" }
 	end)
 
 	-- PLACE ANYWHERE (F key / Place button): puts what you carry exactly where you aim (or in front of you),
@@ -801,10 +801,10 @@ function MuseumService.Start()
 			return { ok = false }
 		end
 		if not Svc.Map.IsInPart(plot.Floor, root.Position) then
-			return { ok = false, msg = "🏠 Go inside YOUR plot to put things down!" }
+			return { ok = false, msg = "Go inside YOUR plot to put things down!" }
 		end
 		if not Svc.Carry.IsCarrying(player) then
-			return { ok = false, msg = "🎒 You're not carrying anything." }
+			return { ok = false, msg = "You're not carrying anything." }
 		end
 		local floor = plot.Floor
 		-- where: the aimed point (if it's close and on your floor) or 4 studs in front of you
@@ -834,7 +834,7 @@ function MuseumService.Start()
 			end
 		end
 		if not free then
-			return { ok = false, msg = "🏛️ Your plot is full! Upgrade Museum Size or sell something." }
+			return { ok = false, msg = "Your plot is full! Upgrade Museum Size or sell something." }
 		end
 		-- face the player who put it down
 		local toPlayer = floor.CFrame:PointToObjectSpace(root.Position) - Vector3.new(x, 0, z)
@@ -848,7 +848,7 @@ function MuseumService.Start()
 			return { ok = false, msg = "Slow down!" }
 		end
 		if Svc.Carry.IsCarrying(player) then
-			return { ok = false, msg = "🎒 No teleporting while carrying loot — run it home!" }
+			return { ok = false, msg = "No teleporting while carrying loot — run it home!" }
 		end
 		MuseumService.TeleportHome(player)
 		return { ok = true }

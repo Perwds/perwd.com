@@ -15,12 +15,12 @@ local RGB = Color3.fromRGB
 local VOLUMES = { 0, 0.25, 0.5, 0.75, 1 }
 
 local ROWS = {
-	{ Key = "Sfx", Label = "🔊 Sound Effects", Kind = "Volume" },
-	{ Key = "Ambient", Label = "🌳 Ambience", Kind = "Volume" },
-	{ Key = "Music", Label = "🎵 Music", Kind = "Volume" },
-	{ Key = "ShowTrails", Label = "🌈 Other players' trails", Kind = "Toggle" },
-	{ Key = "LowGraphics", Label = "📉 Low graphics (faster)", Kind = "Toggle" },
-	{ Key = "AutoShrink", Label = "🤖 Auto Shrink (gamepass)", Kind = "Toggle" },
+	{ Key = "Sfx", Label = "Sound Effects", Kind = "Volume" },
+	{ Key = "Ambient", Label = "Ambience", Kind = "Volume" },
+	{ Key = "Music", Label = "Music", Kind = "Volume" },
+	{ Key = "ShowTrails", Label = "Other players' trails", Kind = "Toggle" },
+	{ Key = "LowGraphics", Label = "Low graphics (faster)", Kind = "Toggle" },
+	{ Key = "AutoShrink", Label = "Auto Shrink (gamepass)", Kind = "Toggle" },
 }
 
 function SettingsMenu.Build(ctx)

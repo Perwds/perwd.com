@@ -56,8 +56,8 @@ function SellMenu.Build(ctx)
 				total += Formulas.ItemBaseIncome(item) * mult * GameConfig.SellSeconds
 			end
 		end
-		summary.Text = string.format("👜 %d object%s in your pocket (not on display)", #pocket, #pocket == 1 and "" or "s")
-		sellAllLabel.Text = #pocket > 0 and ("💰 SELL ALL for " .. Format.Coins(total)) or "Nothing to sell"
+		summary.Text = string.format("%d object%s in your pocket (not on display)", #pocket, #pocket == 1 and "" or "s")
+		sellAllLabel.Text = #pocket > 0 and ("SELL ALL for " .. Format.Coins(total)) or "Nothing to sell"
 		UIKit.SetButtonColors(sellAll, #pocket > 0 and UIKit.Colors.Green or UIKit.Colors.Gray)
 
 		local key = #data.Items .. ":" .. (data.NextUid or 0) .. ":" .. #pocket

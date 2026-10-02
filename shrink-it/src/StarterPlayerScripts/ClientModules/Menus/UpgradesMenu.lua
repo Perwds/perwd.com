@@ -33,7 +33,7 @@ local CARD_COLORS = {
 function UpgradesMenu.Build(ctx)
 	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Upgrades", Emoji = "⚡", Size = UDim2.fromOffset(920, 640), Colors = UIKit.Colors.Cyan })
 	-- BUY ALL: buys the cheapest affordable upgrade again and again until you run out of coins
-	local buyAll, buyAllLabel = UIKit.Button({ Name = "BuyAll", Text = "⚡ Buy All", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(240, 52), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), CornerRadius = 16, Parent = panel.Content, OnClick = function()
+	local buyAll, buyAllLabel = UIKit.Button({ Name = "BuyAll", Text = "Buy All", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(240, 52), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), CornerRadius = 16, Parent = panel.Content, OnClick = function()
 		local result = State.Action("BuyAllUpgrades")
 		if result.ok then
 			UIKit.PlaySound("Reward", 0.4)
@@ -94,12 +94,12 @@ function UpgradesMenu.Build(ctx)
 				anyAffordable = anyAffordable or State.Coins >= cost
 			else
 				c.Value.Text = now
-				c.ButtonLabel.Text = "⭐ MAX"
+				c.ButtonLabel.Text = "MAX"
 				UIKit.SetButtonColors(c.Button, UIKit.Colors.Yellow)
 			end
 		end
 		UIKit.SetButtonColors(buyAll, anyAffordable and UIKit.Colors.Green or UIKit.Colors.Gray)
-		buyAllLabel.Text = "⚡ Buy All"
+		buyAllLabel.Text = "Buy All"
 	end
 
 	menu.Tick = menu.Refresh

@@ -223,7 +223,7 @@ local function buildPlot(parent, id, cframe)
 		part({ Name = "Post", Size = Vector3.new(0.4, 3.4, 0.4), CFrame = tcf * CFrame.new(sx * 3.1, 2.6, -5.8), Color = Color3.fromRGB(200, 200, 210), Material = Enum.Material.Metal, Parent = treadmill })
 	end
 	local console = part({ Name = "Console", Size = Vector3.new(6.6, 1.6, 0.6), CFrame = tcf * CFrame.new(0, 4.6, -5.9) * CFrame.Angles(math.rad(-25), 0, 0), Color = Color3.fromRGB(40, 140, 255), Material = Enum.Material.Neon, CanQuery = false, Parent = treadmill })
-	surfaceText(console, Enum.NormalId.Back, "🏃 SPEED", Color3.new(1, 1, 1), 20)
+	surfaceText(console, Enum.NormalId.Back, "SPEED", Color3.new(1, 1, 1), 20)
 
 	local pedestals = Instance.new("Folder")
 	pedestals.Name = "Pedestals"
@@ -284,7 +284,7 @@ local function buildMap()
 	part({ Name = "VIPWall", Size = Vector3.new(9.5, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(11.25, 9, 13)), Color = gold, Material = Enum.Material.Marble, Parent = base })
 	part({ Name = "VIPRoof", Size = Vector3.new(34, 1.5, 28), CFrame = CFrame.new(vip + Vector3.new(0, 18.7, 0)), Color = gold, Material = Enum.Material.Marble, Parent = base })
 	local door = part({ Name = "VIPDoor", Size = Vector3.new(13, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(0, 9, 13)), Color = Color3.fromRGB(255, 230, 120), Material = Enum.Material.ForceField, Transparency = 0.3, Parent = base })
-	surfaceText(door, Enum.NormalId.Back, "👑 VIP", gold)
+	surfaceText(door, Enum.NormalId.Back, "VIP", gold)
 	part({ Name = "VIPFountain", Shape = Enum.PartType.Cylinder, Size = Vector3.new(2, 9, 9), CFrame = CFrame.new(vip + Vector3.new(0, 1, -3)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(120, 230, 255), Material = Enum.Material.Neon, Parent = base })
 
 	-- Like sign on the back wall, leaderboards on the front wall either side of the gate (facing in)

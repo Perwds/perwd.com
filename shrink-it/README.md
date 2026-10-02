@@ -182,6 +182,8 @@ Shopkeepers are added when the server starts.
 | Carry gamepasses: **2x Carry**, **5x Carry**, **Infinite Carry** (R$ 4999); also **Fast Boxes**, **Big Sizes** passes and **Open All Boxes Now** / **+30 Min of Training** products | `MonetizationConfig`, `Formulas.RayStats` |
 | You hold the top thing **in your hands** (rest on your back). Boxes are as big as the size inside them (sparkles + "HUGE!" tag); hover a box in a base to see its 🍀 luck | `CarryService`, `ModelFactory.CreateBox`, `Effects` |
 | Treadmill locks you in place and you run (jump to get off); 📍 area name top-right; studded menu backgrounds (animated in shops) | `Effects`, `HUD`, `UIKit.Studs` |
+| **Night** (like Steal an Egg): every 4 min a big wall closes off the zones, everyone inside goes back to base, ALL boxes are replaced, then the wall lifts (countdown on the wall + top-right) | `SpawnService` (night loop), `GameConfig.Night` |
+| Chasers are **blocky animals** (Chicken, Dog, Raccoon, Crab, Camel, Gorilla, Eagle, Lava Lizard, Yeti, Space Blob) with running legs | `ChaserModels`, `ChaserConfig`, `Effects` |
 | **Your own textures**: paste asset IDs into `TextureConfig` (ground per zone, plot floors, shop counters, box faces, menu backgrounds) | `TextureConfig`, `MapService.ApplyTextures` |
 | Rebirth (multiplier, Gems, Tokens) + permanent Token upgrades | `RebirthService` |
 | The Index with per-area completion rewards (Normal set + full variant set) | `IndexService`, `IndexMenu` |

@@ -27,7 +27,7 @@ InstMeta.__newindex = function(t, k, v)
 		if v then table.insert(rawget(v, "_children"), t) end
 		return
 	end
-	if k == "Position" then
+	if k == "Position" and BASEPART[rawget(t, "_class")] then
 		local cf = rawget(t, "CFrame") or CFrame.new()
 		rawset(t, "CFrame", CFrame.new(v) * cf.Rotation)
 		return

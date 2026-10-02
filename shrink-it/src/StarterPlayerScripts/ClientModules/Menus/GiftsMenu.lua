@@ -45,7 +45,7 @@ function GiftsMenu.Build(ctx)
 		local icon = UIKit.Label({ Text = "🎁", StrokeThickness = 0, Size = UDim2.fromScale(style.Icon, style.Icon), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 6), Parent = card })
 		local rewardText = UIKit.Label({ Text = "", Size = UDim2.new(1, -10, 0, 20), Position = UDim2.new(0, 5, 0.58, -8), StrokeThickness = 2, Parent = card })
 		if gift.HugeChance then
-			UIKit.Label({ Text = string.format("🎉 %g%% HUGE", gift.HugeChance * 100), TextColor3 = Color3.fromRGB(255, 230, 90), Size = UDim2.new(1, -10, 0, 18), Position = UDim2.fromOffset(5, 4), TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 2, Parent = card })
+			UIKit.Label({ Text = string.format("%g%% HUGE", gift.HugeChance * 100), TextColor3 = Color3.fromRGB(255, 230, 90), Size = UDim2.new(1, -10, 0, 18), Position = UDim2.fromOffset(5, 4), TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 2, Parent = card })
 		end
 		local button, buttonLabel = UIKit.Button({
 			Text = "",
@@ -91,7 +91,7 @@ function GiftsMenu.Build(ctx)
 			local isClaimed = data.GiftsClaimed and data.GiftsClaimed[tostring(i)]
 			cell.Reward.Text = (RewardUtil.Describe(cell.Gift.Reward, State.Income))
 			if isClaimed then
-				cell.ButtonLabel.Text = "✔ Claimed"
+				cell.ButtonLabel.Text = "Claimed"
 				UIKit.SetButtonColors(cell.Button, UIKit.Colors.Dark)
 				cell.Icon.Text = "📭"
 			elseif elapsed >= cell.Gift.Time then

@@ -63,7 +63,7 @@ end
 
 function EventService.ActivateServerLuck(minutes, byPlayer)
 	serverLuckUntil = math.max(serverLuckUntil, os.time()) + minutes * 60
-	Svc.Net.Announce(string.format("🌠 %s activated a %dm SERVER LUCK BOOST! 2x luck for everyone!", byPlayer and byPlayer.DisplayName or "Someone", minutes), Color3.fromRGB(120, 200, 255))
+	Svc.Net.Announce(string.format("%s activated a %dm SERVER LUCK BOOST! 2x luck for everyone!", byPlayer and byPlayer.DisplayName or "Someone", minutes), Color3.fromRGB(120, 200, 255))
 	broadcast()
 end
 
@@ -110,9 +110,9 @@ function EventService.Start()
 				currentKey = key
 				if key then
 					local ev = EventConfig.Events[key]
-					Svc.Net.Announce(ev.Emoji .. " " .. string.upper(ev.Name) .. " has begun! " .. ev.Description, ev.Color)
+					Svc.Net.Announce(string.upper(ev.Name) .. " has begun! " .. ev.Description, ev.Color)
 				elseif old then
-					Svc.Net.Announce(EventConfig.Events[old].Emoji .. " " .. EventConfig.Events[old].Name .. " has ended.", Color3.fromRGB(200, 200, 200))
+					Svc.Net.Announce(EventConfig.Events[old].Name .. " has ended.", Color3.fromRGB(200, 200, 200))
 				end
 				broadcast()
 			end

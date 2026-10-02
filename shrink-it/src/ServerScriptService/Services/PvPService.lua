@@ -215,7 +215,7 @@ function PvPService.Swing(player, tool)
 	end
 	local vRoot = rootOf(best)
 	if Svc.Map.IsInBase(vRoot.Position) or Svc.Map.IsInBase(root.Position) then
-		Svc.Net.Notify(player, "🛡️ No fighting in the safe zone!", "error")
+		Svc.Net.Notify(player, "No fighting in the safe zone!", "error")
 		return
 	end
 	-- knockback + stun
@@ -232,7 +232,7 @@ function PvPService.Swing(player, tool)
 		if ok then
 			local what = steal(player, best)
 			if what then
-				Svc.Net.Notify(player, "💰 You stole " .. what .. " from " .. best.DisplayName .. "! Run!", "success")
+				Svc.Net.Notify(player, "You stole " .. what .. " from " .. best.DisplayName .. "! Run!", "success")
 				Svc.Net.Notify(best, "😱 " .. player.DisplayName .. " stole your " .. what .. "!", "error")
 				Remotes.Event("PvPFX"):FireAllClients("Steal", { Victim = best, Attacker = player, What = what })
 			end
@@ -289,11 +289,11 @@ function PvPService.PlaceTrap(player)
 		return
 	end
 	if (lastTrap[player] or 0) + cfg.TrapCooldown > now then
-		Svc.Net.Notify(player, string.format("🪤 Trap ready in %ds", math.ceil(lastTrap[player] + cfg.TrapCooldown - now)), "error")
+		Svc.Net.Notify(player, string.format("Trap ready in %ds", math.ceil(lastTrap[player] + cfg.TrapCooldown - now)), "error")
 		return
 	end
 	if Svc.Map.IsInBase(root.Position) then
-		Svc.Net.Notify(player, "🛡️ No traps in the safe zone!", "error")
+		Svc.Net.Notify(player, "No traps in the safe zone!", "error")
 		return
 	end
 	lastTrap[player] = now
@@ -321,7 +321,7 @@ function PvPService.PlaceTrap(player)
 				stun(victim, cfg.TrapStunSeconds)
 				Svc.Net.Sound("Trap", nil, plate.Position)
 				Remotes.Event("PvPFX"):FireAllClients("Trap", { Victim = victim, Attacker = player, Position = plate.Position })
-				Svc.Net.Notify(victim, "🪤 You stepped in " .. player.DisplayName .. "'s trap!", "error")
+				Svc.Net.Notify(victim, "You stepped in " .. player.DisplayName .. "'s trap!", "error")
 				Svc.Net.Notify(player, "🪤 " .. victim.DisplayName .. " is stuck in your trap! Go get 'em!", "success")
 				task.delay(cfg.TrapStunSeconds, function()
 					model:Destroy()

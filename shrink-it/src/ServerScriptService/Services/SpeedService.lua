@@ -35,10 +35,51 @@ function SpeedService.IsTraining(player)
 		return false
 	end
 	local rel = belt.CFrame:PointToObjectSpace(root.Position)
-	return math.abs(rel.X) <= belt.Size.X / 2 + 0.5 and math.abs(rel.Z) <= belt.Size.Z / 2 + 0.5 and rel.Y > -1 and rel.Y < 8
+	-- generous area: anywhere on (or just next to) the belt counts
+	return math.abs(rel.X) <= belt.Size.X / 2 + 2 and math.abs(rel.Z) <= belt.Size.Z / 2 + 2 and rel.Y > -2 and rel.Y < 9
+end
+
+-- "Train" prompt on every treadmill: puts you straight onto the belt (yours only).
+local function setTraining(player, on)
+	local belt = treadmillOf(player)
+	player:SetAttribute("TreadmillCF", on and belt and belt.CFrame or nil)
+	player:SetAttribute("TreadmillTop", on and belt and belt.Size.Y / 2 or nil)
+	player:SetAttribute("TreadmillLen", on and belt and belt.Size.Z or nil)
+	player:SetAttribute("Training", on)
+end
+
+local function addTrainPrompts()
+	for _, plot in pairs(Svc.Map.Plots or {}) do
+		local model = plot.Model and plot.Model:FindFirstChild("Treadmill")
+		local belt = model and model:FindFirstChild("Belt")
+		if belt and not belt:FindFirstChild("TrainPrompt") then
+			local prompt = Instance.new("ProximityPrompt")
+			prompt.Name = "TrainPrompt"
+			prompt.ActionText = "Train Speed"
+			prompt.ObjectText = "Treadmill"
+			prompt.HoldDuration = 0
+			prompt.MaxActivationDistance = 16
+			prompt.RequiresLineOfSight = false
+			prompt.KeyboardKeyCode = Enum.KeyCode.E
+			prompt.Parent = belt
+			prompt.Triggered:Connect(function(player)
+				if treadmillOf(player) ~= belt then
+					Svc.Net.Notify(player, "That's not your treadmill! Yours is next to your plot.", "error")
+					return
+				end
+				local character = player.Character
+				local root = character and character:FindFirstChild("HumanoidRootPart")
+				if root then
+					character:PivotTo(belt.CFrame * CFrame.new(0, belt.Size.Y / 2 + 3, 0))
+				end
+				setTraining(player, true)
+			end)
+		end
+	end
 end
 
 function SpeedService.Start()
+	task.spawn(addTrainPrompts)
 	local tick = GameConfig.Training.Tick
 	task.spawn(function()
 		local beat = 0
@@ -52,11 +93,7 @@ function SpeedService.Start()
 					local training = SpeedService.IsTraining(player)
 					if player:GetAttribute("Training") ~= training then
 						-- the client locks you onto the belt and plays a running animation (Effects.treadmillLock)
-						local belt = treadmillOf(player)
-						player:SetAttribute("TreadmillCF", training and belt and belt.CFrame or nil)
-						player:SetAttribute("TreadmillTop", training and belt and belt.Size.Y / 2 or nil)
-						player:SetAttribute("TreadmillLen", training and belt and belt.Size.Z or nil)
-						player:SetAttribute("Training", training)
+						setTraining(player, training)
 					end
 					if training then
 						local rate = Formulas.TrainingRate(data, s.Passes)

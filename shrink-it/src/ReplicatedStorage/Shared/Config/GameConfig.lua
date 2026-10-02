@@ -7,9 +7,9 @@
 
 local GameConfig = {}
 
-GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v11.1 (fix invisible carried/placed items)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 12 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.GameName = "Shrink It!"
+GameConfig.Version = "v12 (night wall, animal chasers)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 13 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -54,6 +54,11 @@ GameConfig.Fuse = { Count = 3 }
 -- When it opens, a RANDOM object of that zone is rolled: better boxes (RarityBoost) make rarer
 -- objects more likely, your Luck makes Golden/Diamond/... variants and bigger sizes more likely.
 -- "Open now" on the pedestal skips the wait for 1 Gem per SecondsPerGem seconds left.
+-- ── Night (like Steal an Egg): a big wall closes off the zones while ALL boxes respawn ──
+-- Every `Every` seconds: warning `Warning` seconds before, then the wall stays up `Closed` seconds.
+-- Anyone still in the zones is sent back to the base (they keep what they carry).
+GameConfig.Night = { Every = 240, Warning = 15, Closed = 10 }
+
 GameConfig.Boxes = {
 	OpenSeconds = { Common = 8, Uncommon = 15, Rare = 30, Epic = 60, Legendary = 120, Mythic = 240, Secret = 480 },
 	SecondsPerTier = 4,

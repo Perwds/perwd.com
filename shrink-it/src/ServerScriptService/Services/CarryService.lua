@@ -30,6 +30,7 @@ local ChaserConfig = require(Shared.Config.ChaserConfig)
 local Formulas = require(Shared.Formulas)
 local Remotes = require(Shared.Remotes)
 local ModelFactory = require(ServerScriptService.Services.ModelFactory)
+local ChaserModels = require(ServerScriptService.Services.ChaserModels)
 
 local CarryService = {}
 local Svc
@@ -293,6 +294,8 @@ local function buildChaser(tier)
 	local model
 	if custom then
 		model = custom:Clone()
+	elseif ChaserModels.Has(cfg.Animal) then
+		model = ChaserModels.Build(cfg.Animal, cfg.Scale)
 	else
 		local desc = Instance.new("HumanoidDescription")
 		desc.HeadColor = cfg.Skin
@@ -448,7 +451,7 @@ local function setRage(player, ch, rage)
 		fire.Parent = ch.Root
 	end
 	Remotes.Event("ChaserFX"):FireClient(player, "Chase", { Name = ch.Cfg.Name, Emoji = ch.Cfg.Emoji, Rage = rage })
-	Svc.Net.Notify(player, ch.Cfg.Emoji .. " " .. ch.Cfg.Name .. (rage > 0 and (" is ENRAGED (x" .. rage .. ")!") or " is chasing you!") .. " RUN HOME! 🏃", "error")
+	Svc.Net.Notify(player, ch.Cfg.Name .. (rage > 0 and (" is ENRAGED (x" .. rage .. ")!") or " is chasing you!") .. " RUN HOME!", "error")
 end
 
 local function resumeChase(player, c, ch, rage)
@@ -493,6 +496,9 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 		root:SetNetworkOwner(nil)
 	end)
 	pcall(function()
+		if model:GetAttribute("Animal") then
+			return -- animals swing their legs on the client (Effects)
+		end
 		local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
 		local anim = Instance.new("Animation")
 		anim.AnimationId = ChaserConfig.RunAnimation
@@ -515,7 +521,7 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, Home = spawnPos, Rage = rage, Track = TRACKS[model], StartAt = os.clock() + (rage > 0 and 0.2 or ChaserConfig.HeadStart) }
 	TRACKS[model] = nil
 	Remotes.Event("ChaserFX"):FireClient(player, "Chase", { Name = cfg.Name, Emoji = cfg.Emoji, Rage = rage })
-	Svc.Net.Notify(player, cfg.Emoji .. " " .. cfg.Name .. (rage > 0 and (" is ENRAGED (x" .. rage .. ")!") or " is chasing you!") .. " RUN HOME! 🏃", "error")
+	Svc.Net.Notify(player, cfg.Name .. (rage > 0 and (" is ENRAGED (x" .. rage .. ")!") or " is chasing you!") .. " RUN HOME!", "error")
 end
 
 local function chaseIfNeeded(player, c, tier, fromPos, forceRage)
@@ -568,7 +574,7 @@ local function dropBoxOnGround(box, position, droppedBy)
 			return
 		end
 		if CarryService.Count(player) >= CarryService.Capacity(player) then
-			Svc.Net.Notify(player, "🎒 Your hands are full!", "error")
+			Svc.Net.Notify(player, "Your hands are full!", "error")
 			return
 		end
 		taken = true
@@ -681,14 +687,14 @@ function CarryService.DropAll(player, reason)
 	end
 	local ch = c.Chaser
 	if reason == "caught" and ch then
-		sendHome(c, ch.Cfg.Emoji .. " " .. ch.Cfg.CaughtLine)
+		sendHome(c, ch.Cfg.CaughtLine)
 		Remotes.Event("CarryFX"):FireClient(player, "Caught", { By = ch.Cfg.Name, Emoji = ch.Cfg.Emoji, Count = #boxes })
 		Svc.Net.Sound("Caught", player)
-		Svc.Net.Notify(player, ch.Cfg.Emoji .. " " .. ch.Cfg.Name .. " got you! Your boxes are on the ground — grab them back quick! (it'll make them MAD 😡)", "error")
+		Svc.Net.Notify(player, ch.Cfg.Name .. " got you! Your boxes are on the ground — grab them back quick! (it'll make them MAD )", "error")
 	else
 		despawnChaser(c, nil)
 		if reason == "died" and #boxes > 0 then
-			Svc.Net.Notify(player, "💀 You dropped what you were carrying!", "error")
+			Svc.Net.Notify(player, "You dropped what you were carrying!", "error")
 		end
 	end
 	if player.Parent then
@@ -775,8 +781,15 @@ local function spawnSleepers()
 					d.CanCollide = false
 				end
 			end
-			-- lying on its back, head toward the corridor center
-			model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
+			if model:GetAttribute("Animal") then
+				-- animals nap standing on the ground, facing the corridor
+				local rootPart = model.PrimaryPart
+				local up = rootPart and rootPart.Position.Y or size.Y / 2
+				model:PivotTo(CFrame.new(pos + Vector3.new(0, up, 0)) * CFrame.Angles(0, math.rad(-side * 90), 0))
+			else
+				-- lying on its back, head toward the corridor center
+				model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
+			end
 			model.Parent = Svc.Map.ChaserFolder
 			say(model, "💤", nil)
 		end
@@ -791,7 +804,7 @@ function CarryService.Start()
 			return { ok = false }
 		end
 		CarryService.DropAll(player, "dropped")
-		return { ok = true, msg = "🗑️ Dropped what you were carrying." }
+		return { ok = true, msg = "Dropped what you were carrying." }
 	end)
 
 	Svc.Data.AddSyncProvider(function(player, payload)
@@ -806,7 +819,7 @@ function CarryService.Start()
 			Boxes = CarryService.CountBoxes(player),
 			Capacity = CarryService.Capacity(player),
 			TopKind = top and top.Kind or nil,
-			Chaser = c and c.Chaser and (c.Chaser.Cfg.Emoji .. " " .. c.Chaser.Cfg.Name) or nil,
+			Chaser = c and c.Chaser and (c.Chaser.Cfg.Name) or nil,
 			Rage = c and c.Chaser and c.Chaser.Rage or 0,
 		}
 	end)

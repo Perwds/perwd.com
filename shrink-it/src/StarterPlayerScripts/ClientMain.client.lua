@@ -17,4 +17,4 @@ HUD.Init()
 Effects.Init()
 RayController.Init()
 
-print("[ShrinkIt] Client ready 🔬")
+print("[ShrinkIt] Client ready")

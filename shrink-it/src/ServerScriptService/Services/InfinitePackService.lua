@@ -65,10 +65,10 @@ function InfinitePackService.OnPurchased(player, productKey)
 	if tile.Paid and tile.Product == productKey then
 		local ok, text = claimNext(player, data)
 		if ok then
-			Svc.Net.Notify(player, "🎟️ Infinite Pack: " .. text, "success")
+			Svc.Net.Notify(player, "Infinite Pack: " .. text, "success")
 		end
 	else
-		Svc.Net.Notify(player, "🎟️ Pack credit saved! It will unlock your next matching paid tile.", "info")
+		Svc.Net.Notify(player, "Pack credit saved! It will unlock your next matching paid tile.", "info")
 	end
 	Svc.Data.MarkDirty(player)
 end

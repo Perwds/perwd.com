@@ -272,7 +272,7 @@ local function onFire(player, target, extras)
 
 	local room = stats.Carry - Svc.Carry.Count(player) - (s.PendingCarry or 0)
 	if room <= 0 then
-		Svc.Net.Notify(player, "🎒 Hands full! Run back to base to drop off your loot.", "error")
+		Svc.Net.Notify(player, "Hands full! Run back to base to drop off your loot.", "error")
 		return
 	end
 
@@ -283,7 +283,7 @@ local function onFire(player, target, extras)
 		elseif reason == "reserved" then
 			Svc.Net.Notify(player, "That one is reserved for someone else!", "error")
 		elseif reason == "locked" then
-			Svc.Net.Notify(player, "🔒 Unlock this area first!", "error")
+			Svc.Net.Notify(player, "Unlock this area first!", "error")
 		end
 		return
 	end

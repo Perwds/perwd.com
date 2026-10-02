@@ -17,17 +17,17 @@ local LeaderboardService = {}
 local Svc
 
 local BOARDS = {
-	{ Stat = "MuseumValue", Title = "🏛️ Museum Value", Suffix = "/s", Get = function(player)
+	{ Stat = "MuseumValue", Title = "Museum Value", Suffix = "/s", Get = function(player)
 		local s = Svc.Session.Get(player)
 		return s and s.IncomePerSec or 0
 	end },
-	{ Stat = "TotalShrinks", Title = "🔬 Total Shrinks", Suffix = "", Get = function(_, data)
+	{ Stat = "TotalShrinks", Title = "Total Shrinks", Suffix = "", Get = function(_, data)
 		return data.TotalShrinks
 	end },
-	{ Stat = "Rebirths", Title = "♻️ Rebirths", Suffix = "", Get = function(_, data)
+	{ Stat = "Rebirths", Title = "Rebirths", Suffix = "", Get = function(_, data)
 		return data.Rebirths
 	end },
-	{ Stat = "RaidsWon", Title = "🏴‍☠️ Raids Won", Suffix = "", Get = function(_, data)
+	{ Stat = "RaidsWon", Title = "Raids Won", Suffix = "", Get = function(_, data)
 		return data.RaidsWon
 	end },
 }

@@ -363,7 +363,7 @@ local function onCarryFX(kind, p)
 			root.AssemblyLinearVelocity = Vector3.new(0, 45, -55)
 		end
 	elseif kind == "Placed" then
-		HUD.Splash("📦 PLACED!  ⏳ " .. Format.Clock(p.Seconds), Color3.fromRGB(255, 220, 90))
+		HUD.Splash("PLACED! " .. Format.Clock(p.Seconds), Color3.fromRGB(255, 220, 90))
 		if root then
 			playSoundAt(root.Position, GameConfig.Sounds.Pop, 0.5)
 		end
@@ -559,7 +559,7 @@ local function treadmillLock()
 	hint.Font = Enum.Font.FredokaOne
 	hint.TextScaled = true
 	hint.TextColor3 = Color3.fromRGB(120, 255, 140)
-	hint.Text = "🏃 TRAINING SPEED!  Jump to get off"
+	hint.Text = "TRAINING SPEED! Jump to get off"
 	hint.Visible = false
 	hint.Parent = gui
 	local stroke = Instance.new("UIStroke")
@@ -623,6 +623,44 @@ local function treadmillLock()
 		root.AssemblyLinearVelocity = Vector3.zero
 		if track then
 			track:AdjustSpeed(math.clamp(hum.WalkSpeed / 24, 1, 2.5))
+		end
+	end)
+end
+
+-- ── blocky animal chasers: swing their legs while they run ─────────────
+local function animalLegs()
+	RunService.Stepped:Connect(function()
+		local t = os.clock()
+		for _, model in ipairs(CollectionService:GetTagged("AnimalChaser")) do
+			local root = model.PrimaryPart
+			if root then
+				local speed = (root.AssemblyLinearVelocity * Vector3.new(1, 0, 1)).Magnitude
+				local amp = math.clamp(speed / 30, 0, 1) * 0.9
+				local swing = math.sin(t * (6 + speed * 0.25)) * amp
+				for _, motor in ipairs(root:GetChildren()) do
+					if motor:IsA("Motor6D") then
+						motor.Transform = CFrame.Angles(motor.Name == "LegA" and swing or -swing, 0, 0)
+					end
+				end
+			end
+		end
+	end)
+end
+
+-- ── floating stand titles: gentle bob + a shine sliding across ─────────
+local function floatingTitles()
+	RunService.RenderStepped:Connect(function()
+		local t = os.clock()
+		for i, gui in ipairs(CollectionService:GetTagged("FloatingTitle")) do
+			local base = gui:GetAttribute("BaseHeight")
+			if base and gui:IsA("BillboardGui") then
+				gui.StudsOffsetWorldSpace = Vector3.new(0, base + math.sin(t * 1.6 + i) * 0.45, 0)
+				local title = gui:FindFirstChild("Title")
+				local shine = title and title:FindFirstChild("Shine")
+				if shine then
+					shine.Offset = Vector2.new(((t * 0.35 + i * 0.3) % 2.4) - 1.2, 0)
+				end
+			end
 		end
 	end)
 end
@@ -694,7 +732,7 @@ local function hoverInfo()
 			local luck = pedestal:GetAttribute("BoxLuck")
 			lines[1].Text = pedestal:GetAttribute("ItemName") or "Mystery Box"
 			lines[1].TextColor3 = Color3.fromRGB(255, 230, 120)
-			lines[2].Text = "🍀 Luck x" .. (luck and string.format("%.1f", luck) or "1.0")
+			lines[2].Text = "Luck x" .. (luck and string.format("%.1f", luck) or "1.0")
 			lines[2].TextColor3 = Color3.fromRGB(120, 255, 140)
 			local readyAt = pedestal:GetAttribute("BoxReadyAt")
 			local left = readyAt and math.max(0, readyAt - State.Now()) or 0
@@ -741,15 +779,15 @@ end
 local function onPvPFX(kind, p)
 	if kind == "Hit" then
 		burst(p.Position, Color3.fromRGB(255, 220, 80), 18, 1)
-		popText(p.Position, "💥 BONK!", Color3.fromRGB(255, 220, 80))
+		popText(p.Position, "BONK!", Color3.fromRGB(255, 220, 80))
 	elseif kind == "Steal" then
 		local root = p.Victim and p.Victim.Character and p.Victim.Character:FindFirstChild("HumanoidRootPart")
 		if root then
-			popText(root.Position, "💰 STOLEN!", Color3.fromRGB(255, 90, 90))
+			popText(root.Position, "STOLEN!", Color3.fromRGB(255, 90, 90))
 		end
 	elseif kind == "Trap" then
 		burst(p.Position, Color3.fromRGB(200, 200, 210), 20, 0.8)
-		popText(p.Position, "🪤 SNAP!", Color3.fromRGB(230, 230, 240))
+		popText(p.Position, "SNAP!", Color3.fromRGB(230, 230, 240))
 	end
 end
 
@@ -775,7 +813,7 @@ local function setupChat()
 		end)
 		Remotes.Event("GlobalChat").OnClientEvent:Connect(function(name, text)
 			pcall(function()
-				global:DisplaySystemMessage("<font color='#7FD4FF'>[🌍 " .. name .. "]</font> " .. text)
+				global:DisplaySystemMessage("<font color='#7FD4FF'>[ " .. name .. "]</font> " .. text)
 			end)
 		end)
 	end)
@@ -833,6 +871,8 @@ function Effects.Init()
 	task.spawn(watchBoxes)
 	task.spawn(hoverInfo)
 	task.spawn(treadmillLock)
+	task.spawn(floatingTitles)
+	task.spawn(animalLegs)
 	task.spawn(settingsLoop)
 	setupChat()
 	Remotes.Event("PvPFX").OnClientEvent:Connect(onPvPFX)
@@ -889,7 +929,7 @@ function Effects.Init()
 		local source = message.TextSource
 		local speaker = source and Players:GetPlayerByUserId(source.UserId)
 		if speaker and speaker:GetAttribute("VIP") then
-			props.PrefixText = "<font color='#FFD23F'>[👑 VIP]</font> " .. message.PrefixText
+			props.PrefixText = "<font color='#FFD23F'>[ VIP]</font> " .. message.PrefixText
 		end
 		return props
 	end

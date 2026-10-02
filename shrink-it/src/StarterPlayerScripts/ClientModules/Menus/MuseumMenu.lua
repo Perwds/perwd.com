@@ -43,11 +43,11 @@ function MuseumMenu.Build(ctx)
 	local raidButton, raidLabel = UIKit.Button({ Text = "", Colors = UIKit.Colors.Gray, Size = UDim2.fromOffset(200, 46), LayoutOrder = 2, Parent = controls, OnClick = function()
 		ctx.HUD.Result(State.Action("SetRaidEnabled", not State.Data.Settings.RaidEnabled))
 	end })
-	UIKit.Button({ Text = "🏠 My Museum", Colors = UIKit.Colors.Orange, Size = UDim2.fromOffset(190, 46), LayoutOrder = 3, Parent = controls, OnClick = function()
+	UIKit.Button({ Text = "My Museum", Colors = UIKit.Colors.Orange, Size = UDim2.fromOffset(190, 46), LayoutOrder = 3, Parent = controls, OnClick = function()
 		ctx.HUD.Result(State.Action("Teleport", "Museum"))
 		panel.Close()
 	end })
-	UIKit.Button({ Text = "🏠 Base", Colors = UIKit.Colors.Blue, Size = UDim2.fromOffset(150, 46), LayoutOrder = 4, Parent = controls, OnClick = function()
+	UIKit.Button({ Text = "Base", Colors = UIKit.Colors.Blue, Size = UDim2.fromOffset(150, 46), LayoutOrder = 4, Parent = controls, OnClick = function()
 		ctx.HUD.Result(State.Action("Teleport", "Lobby"))
 		panel.Close()
 	end })
@@ -107,7 +107,7 @@ function MuseumMenu.Build(ctx)
 			UIKit.Label({ Text = Formulas.ItemName(item) .. (item.S and " 📋" or ""), TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = variant.Color or rarity.Color, StrokeThickness = 2.5, Size = UDim2.fromOffset(330, 30), Position = UDim2.fromOffset(56, 4), Parent = row })
 			UIKit.Label({ Text = (def and def.Rarity or "?") .. "  ·  +" .. Format.Coins(Formulas.ItemBaseIncome(item) * mult) .. "/s", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(100, 100, 120), StrokeThickness = 0, Size = UDim2.fromOffset(330, 20), Position = UDim2.fromOffset(56, 32), Parent = row })
 			if onDisplay then
-				UIKit.Label({ Text = "🏛️ ON DISPLAY", TextColor3 = Color3.fromRGB(255, 170, 40), StrokeThickness = 2, Size = UDim2.fromOffset(170, 30), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -190, 0.5, 0), Parent = row })
+				UIKit.Label({ Text = "ON DISPLAY", TextColor3 = Color3.fromRGB(255, 170, 40), StrokeThickness = 2, Size = UDim2.fromOffset(170, 30), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -190, 0.5, 0), Parent = row })
 			end
 			if not (def and def.Exclusive) then
 				local value = Formulas.ItemBaseIncome(item) * mult * GameConfig.SellSeconds
@@ -129,16 +129,16 @@ function MuseumMenu.Build(ctx)
 			return
 		end
 		local stats = data.Stats
-		summary.Text = string.format("💰 %s/s   ·   🏛️ %d/%d displayed   ·   👜 %d/%d in pocket", Format.Coins(State.Income), math.min(#data.Items, stats.Pedestals), stats.Pedestals, #data.Items, GameConfig.MaxItems)
+		summary.Text = string.format("%s/s · %d/%d displayed · %d/%d in pocket", Format.Coins(State.Income), math.min(#data.Items, stats.Pedestals), stats.Pedestals, #data.Items, GameConfig.MaxItems)
 
 		if State.HasPass("AutoShrink") then
-			autoLabel.Text = "🤖 Auto: " .. (data.Settings.AutoShrink and "ON" or "OFF")
+			autoLabel.Text = "Auto: " .. (data.Settings.AutoShrink and "ON" or "OFF")
 			UIKit.SetButtonColors(autoButton, data.Settings.AutoShrink and UIKit.Colors.Green or UIKit.Colors.Gray)
 		else
-			autoLabel.Text = "🤖 Auto Shrink 🔒"
+			autoLabel.Text = "Auto Shrink"
 			UIKit.SetButtonColors(autoButton, UIKit.Colors.Dark)
 		end
-		raidLabel.Text = "🏴‍☠️ Raids: " .. (data.Settings.RaidEnabled and "ON" or "OFF")
+		raidLabel.Text = "Raids: " .. (data.Settings.RaidEnabled and "ON" or "OFF")
 		UIKit.SetButtonColors(raidButton, data.Settings.RaidEnabled and UIKit.Colors.Red or UIKit.Colors.Gray)
 
 		for tier, b in pairs(tpButtons) do
@@ -152,10 +152,10 @@ function MuseumMenu.Build(ctx)
 			table.insert(parts, "Raiding requires MAX Ray Power")
 		end
 		if data.Raid.ShieldUntil > now then
-			table.insert(parts, "🛡️ Shield " .. Format.Clock(data.Raid.ShieldUntil - now))
+			table.insert(parts, "Shield " .. Format.Clock(data.Raid.ShieldUntil - now))
 		end
 		for _, r in ipairs(data.RevengeTargets or {}) do
-			table.insert(parts, "😈 Revenge on " .. r.Name .. " " .. Format.Clock(r.Expires - now))
+			table.insert(parts, "Revenge on " .. r.Name .. " " .. Format.Clock(r.Expires - now))
 		end
 		raidInfo.Text = table.concat(parts, "   ·   ")
 

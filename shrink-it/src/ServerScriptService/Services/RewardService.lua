@@ -84,7 +84,7 @@ function RewardService.Grant(player, reward, source)
 		local rolled = rollMystery(reward.Pool)
 		if rolled then
 			local text = RewardService.Grant(player, rolled, source)
-			Svc.Net.Notify(player, "❓ Mystery → " .. text, "success")
+			Svc.Net.Notify(player, "Mystery → " .. text, "success")
 			return text
 		end
 	elseif t == "Bundle" then
@@ -172,7 +172,7 @@ local function updateLikeSign()
 		Instance.new("UIStroke", l).Thickness = 3
 		return l
 	end
-	label("👍 LIKE THE GAME!", 0.04, 0.16, Color3.fromRGB(120, 230, 120))
+	label("LIKE THE GAME!", 0.04, 0.16, Color3.fromRGB(120, 230, 120))
 	if goal then
 		label(string.format("%s / %s likes", Format.Abbrev(likes), Format.Abbrev(goal.Goal)), 0.22, 0.1)
 		local barBg = Instance.new("Frame")
@@ -188,7 +188,7 @@ local function updateLikeSign()
 		Instance.new("UICorner", fill).CornerRadius = UDim.new(0.5, 0)
 		label("Next goal unlocks a NEW CODE!", 0.46, 0.08, Color3.fromRGB(255, 220, 90))
 	else
-		label("ALL GOALS REACHED! THANK YOU! 💖", 0.24, 0.12, Color3.fromRGB(255, 220, 90))
+		label("ALL GOALS REACHED! THANK YOU!", 0.24, 0.12, Color3.fromRGB(255, 220, 90))
 	end
 	label("Unlocked codes:", 0.58, 0.08)
 	label(#reachedCodes > 0 and table.concat(reachedCodes, "  •  ") or "none yet...", 0.68, 0.12, Color3.fromRGB(120, 220, 255))
@@ -225,7 +225,7 @@ function RewardService.Start()
 		local text = RewardService.Grant(player, gift.Reward, "gift")
 		if gift.HugeChance and math.random() < gift.HugeChance then
 			RewardService.Grant(player, RewardConfig.GiftHuge, "gift")
-			text ..= " + 🎉 HUGE!"
+			text ..= " + HUGE!"
 		end
 		Svc.Data.MarkDirty(player)
 		return { ok = true, msg = "🎁 " .. text }

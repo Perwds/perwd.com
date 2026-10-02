@@ -45,7 +45,7 @@ function UpgradeService.Start()
 				Svc.Net.Notify(player, "⚡ " .. t.Name .. " objects in " .. t.Area .. " now shrink at full speed!", "success")
 			end
 			if data.Upgrades.RayPower >= u.MaxLevel then
-				Svc.Net.Notify(player, "🏴‍☠️ MAX RAY POWER! Museum Raids unlocked (opt-in in the Museum menu).", "success")
+				Svc.Net.Notify(player, "MAX RAY POWER! Museum Raids unlocked (opt-in in the Museum menu).", "success")
 			end
 		end
 		return true
@@ -93,7 +93,7 @@ function UpgradeService.Start()
 			return { ok = false, msg = "Not enough coins for any upgrade!" }
 		end
 		afterBuy(player, ids)
-		return { ok = true, msg = "⚡ Bought " .. bought .. " upgrade level" .. (bought == 1 and "" or "s") .. "!", Count = bought }
+		return { ok = true, msg = "Bought " .. bought .. " upgrade level" .. (bought == 1 and "" or "s") .. "!", Count = bought }
 	end)
 
 	Svc.Net.Handle("BuyTokenUpgrade", function(player, id)

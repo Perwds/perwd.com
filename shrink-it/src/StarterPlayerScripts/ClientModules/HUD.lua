@@ -186,13 +186,13 @@ end
 
 local function onPopup(kind, p)
 	if kind == "Daily" then
-		popup("Daily Reward!", "📅", { "Day " .. p.Streak .. " streak 🔥", "You got: " .. p.Text, "Come back tomorrow for more!" }, UIKit.Colors.Orange)
+		popup("Daily Reward!", "📅", { "Day " .. p.Streak .. " streak", "You got: " .. p.Text, "Come back tomorrow for more!" }, UIKit.Colors.Orange)
 	elseif kind == "Offline" then
 		popup("Welcome Back!", "😴", { "+" .. Format.Coins(p.Amount), "Earned while offline for " .. Format.Time(p.Seconds) }, UIKit.Colors.Blue)
 	elseif kind == "Rebirth" then
 		popup("REBIRTH " .. p.Rebirths .. "!", "♻️", { "x" .. string.format("%.1f", p.Multiplier) .. " income forever!", "+" .. p.Gems .. " Gems  •  +" .. p.Tokens .. " Rebirth Tokens" }, UIKit.Colors.Green)
 	elseif kind == "Crate" then
-		popup("Royal Crate!", "👑", { "You got a " .. p.Name .. "!", "It's in your pocket — press ⭐ Equip Best!" }, UIKit.Colors.Yellow)
+		popup("Royal Crate!", "👑", { "You got a " .. p.Name .. "!", "It's in your pocket — press Equip Best!" }, UIKit.Colors.Yellow)
 	end
 end
 
@@ -448,14 +448,14 @@ local function buildTopBits()
 	-- 📍 which area you're in (top-right)
 	local areaPill = UIKit.Card({ Name = "AreaPill", Size = UDim2.fromOffset(250, 44), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 12), Colors = UIKit.Colors.Dark, Parent = screen, CornerRadius = 22 })
 	UIKit.AutoScale(areaPill)
-	local areaLabel = UIKit.Label({ Text = "📍 Safe Zone", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = areaPill })
+	local areaLabel = UIKit.Label({ Text = "Safe Zone", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = areaPill })
 	local lastArea
 	task.spawn(function()
 		while true do
 			task.wait(0.4)
 			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 			if root then
-				local name, color = "🏠 Safe Zone", Color3.fromRGB(120, 230, 255)
+				local name, color = "Safe Zone", Color3.fromRGB(120, 230, 255)
 				if root.Position.Z >= 0 then
 					local z = 0
 					for _, t in ipairs(TierConfig.Tiers) do
@@ -465,6 +465,13 @@ local function buildTopBits()
 							break
 						end
 					end
+				end
+				-- night countdown takes over the pill
+				local nightIn, nightLeft = workspace:GetAttribute("NightIn"), workspace:GetAttribute("NightLeft")
+				if nightIn then
+					name, color = "Night in " .. nightIn .. "s", Color3.fromRGB(170, 180, 255)
+				elseif nightLeft then
+					name, color = "New boxes in " .. nightLeft .. "s", Color3.fromRGB(255, 220, 90)
 				end
 				if name ~= lastArea then
 					lastArea = name
@@ -509,11 +516,11 @@ local function refreshTimers()
 	if ev then
 		if ev.Current then
 			local cfg = EventConfig.Events[ev.Current]
-			eventLabel.Text = cfg.Emoji .. " " .. string.upper(cfg.Name) .. " · " .. Format.Clock(ev.EndsAt - now)
+			eventLabel.Text = string.upper(cfg.Name) .. " · " .. Format.Clock(ev.EndsAt - now)
 			UIKit.SetButtonColors(eventFrame, { cfg.Color:Lerp(Color3.new(1, 1, 1), 0.3), cfg.Color })
 		else
 			local nextCfg = EventConfig.Events[ev.Next]
-			eventLabel.Text = "Next: " .. nextCfg.Emoji .. " " .. nextCfg.Name .. " in " .. Format.Clock(ev.NextAt - now)
+			eventLabel.Text = "Next: " .. nextCfg.Name .. " in " .. Format.Clock(ev.NextAt - now)
 			UIKit.SetButtonColors(eventFrame, UIKit.Colors.Dark)
 		end
 	end
@@ -526,14 +533,14 @@ local function refreshTimers()
 	local data = State.Data
 	if data then
 		if data.Potions.Luck > now then
-			boostChip(1, "🍀 2x Luck " .. Format.Clock(data.Potions.Luck - now), UIKit.Colors.Green)
+			boostChip(1, "2x Luck " .. Format.Clock(data.Potions.Luck - now), UIKit.Colors.Green)
 		end
 		if data.Potions.Income > now then
-			boostChip(2, "⚗️ 2x Income " .. Format.Clock(data.Potions.Income - now), UIKit.Colors.Yellow)
+			boostChip(2, "2x Income " .. Format.Clock(data.Potions.Income - now), UIKit.Colors.Yellow)
 		end
 	end
 	if ev and ev.ServerLuckUntil and ev.ServerLuckUntil > now then
-		boostChip(3, "🌠 Server Luck " .. Format.Clock(ev.ServerLuckUntil - now), UIKit.Colors.Blue)
+		boostChip(3, "Server Luck " .. Format.Clock(ev.ServerLuckUntil - now), UIKit.Colors.Blue)
 	end
 	-- carry banner
 	local carry = data and data.Carry
@@ -541,11 +548,11 @@ local function refreshTimers()
 		carryFrame.Visible = true
 		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
 		local what = carry.TopKind == "Item" and "it" or "your box"
-		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and ("Press F to put " .. what .. " down anywhere") or "Bring it to YOUR plot ⬇")
+		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE" or (carry.AtPlot and ("Press F to put " .. what .. " down anywhere") or "Bring it to YOUR plot")
 		if (carry.Rage or 0) > 0 then
 			goal = string.rep("😡", carry.Rage) .. " " .. goal
 		end
-		carryLabel.Text = string.format("🎒 %d/%s  ·  %s%s", carry.Count, carry.Capacity >= 999 and "∞" or tostring(carry.Capacity), goal, chaser)
+		carryLabel.Text = string.format("%d/%s · %s%s", carry.Count, carry.Capacity >= 999 and "∞" or tostring(carry.Capacity), goal, chaser)
 		UIKit.SetButtonColors(carryFrame, carry.Chaser and UIKit.Colors.Red or UIKit.Colors.Orange)
 		if dropButton then
 			dropButton.Visible = true
@@ -565,13 +572,13 @@ local function refreshTimers()
 	-- speed (trained on the treadmill)
 	local speed = data and data.Speed
 	if speed and speedLabel then
-		speedLabel.Text = string.format("🏃 %.1f speed", speed.Walk) .. (speed.Training and string.format("  (+%s pts/s)", Format.Abbrev(speed.Rate)) or "")
+		speedLabel.Text = string.format("%.1f speed", speed.Walk) .. (speed.Training and string.format("  (+%s pts/s)", Format.Abbrev(speed.Rate)) or "")
 		speedLabel.TextColor3 = speed.Training and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(150, 220, 255)
 	end
 	-- raid banner
 	if data and data.ActiveRaid then
 		raidFrame.Visible = true
-		raidLabel.Text = string.format("🏴‍☠️ RAIDING %s · %s · %d/%d copies", data.ActiveRaid.VictimName, Format.Clock(data.ActiveRaid.EndsAt - now), data.ActiveRaid.Copies, data.ActiveRaid.Max)
+		raidLabel.Text = string.format("RAIDING %s · %s · %d/%d copies", data.ActiveRaid.VictimName, Format.Clock(data.ActiveRaid.EndsAt - now), data.ActiveRaid.Copies, data.ActiveRaid.Max)
 	elseif data and data.BeingRaidedBy then
 		raidFrame.Visible = true
 		raidLabel.Text = "⚠️ " .. data.BeingRaidedBy .. " is raiding you! (you lose nothing)"
@@ -660,10 +667,10 @@ function HUD.Init()
 	})
 	UIKit.AutoScale(right)
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 10), HorizontalAlignment = Enum.HorizontalAlignment.Right, SortOrder = Enum.SortOrder.LayoutOrder, Parent = right })
-	UIKit.Button({ Name = "EquipBest", Text = "⭐ Equip Best", Colors = UIKit.Colors.Yellow, Size = UDim2.fromOffset(190, 60), LayoutOrder = 1, CornerRadius = 18, Parent = right, OnClick = function()
+	UIKit.Button({ Name = "EquipBest", Text = "Equip Best", Colors = UIKit.Colors.Yellow, Size = UDim2.fromOffset(190, 60), LayoutOrder = 1, CornerRadius = 18, Parent = right, OnClick = function()
 		HUD.Result(State.Action("EquipBest"))
 	end })
-	UIKit.Button({ Name = "Home", Text = "🏠 My Plot", Colors = UIKit.Colors.Blue, Size = UDim2.fromOffset(190, 60), LayoutOrder = 2, CornerRadius = 18, Parent = right, OnClick = function()
+	UIKit.Button({ Name = "Home", Text = "My Plot", Colors = UIKit.Colors.Blue, Size = UDim2.fromOffset(190, 60), LayoutOrder = 2, CornerRadius = 18, Parent = right, OnClick = function()
 		HUD.Result(State.Action("TeleportMuseum"))
 	end })
 	speedLabel = UIKit.Label({ Name = "Speed", Text = "", TextXAlignment = Enum.TextXAlignment.Right, StrokeThickness = 3, Size = UDim2.fromOffset(190, 40), LayoutOrder = 3, Parent = right })
@@ -710,7 +717,7 @@ function HUD.Init()
 	end)
 	placeButton = UIKit.Button({
 		Name = "Place",
-		Text = "📦 Place (F)",
+		Text = "Place (F)",
 		Colors = UIKit.Colors.Green,
 		Size = UDim2.fromOffset(260, 72),
 		AnchorPoint = Vector2.new(0.5, 1),
@@ -734,7 +741,7 @@ function HUD.Init()
 	-- Drop button (only while carrying)
 	dropButton = UIKit.Button({
 		Name = "Drop",
-		Text = "🗑️ Drop",
+		Text = "Drop",
 		Colors = UIKit.Colors.Red,
 		Size = UDim2.fromOffset(220, 66),
 		AnchorPoint = Vector2.new(0.5, 1),

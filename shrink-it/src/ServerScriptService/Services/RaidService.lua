@@ -55,7 +55,7 @@ local function endRaid(raider, reason)
 		if raid.Revenge then
 			local gems = CFG.RevengeGemBonus * (Svc.Session.HasPass(raider, "RaidShield") and 2 or 1)
 			Svc.Economy.AddGems(raider, gems)
-			Svc.Net.Notify(raider, "😈 REVENGE! +" .. gems .. " Gems", "success")
+			Svc.Net.Notify(raider, "REVENGE! +" .. gems .. " Gems", "success")
 		end
 		Svc.Data.MarkDirty(raider)
 	end
@@ -68,7 +68,7 @@ local function endRaid(raider, reason)
 		victimData.Raid.ShieldUntil = os.time() + shield
 		if not raid.Revenge and raider.Parent then
 			victimData.Raid.Revenge[tostring(raider.UserId)] = os.time() + CFG.RevengeWindow
-			Svc.Net.Notify(victim, "🛡️ Raid over! You lost nothing. REVENGE window open on " .. raider.DisplayName .. " for " .. math.floor(CFG.RevengeWindow / 60) .. "m (bonus Gems!)", "info")
+			Svc.Net.Notify(victim, "Raid over! You lost nothing. REVENGE window open on " .. raider.DisplayName .. " for " .. math.floor(CFG.RevengeWindow / 60) .. "m (bonus Gems!)", "info")
 		end
 		Svc.Data.MarkDirty(victim)
 	end
@@ -158,7 +158,7 @@ function RaidService.TryStartRaid(raider, building, root)
 		Revenge = revenge,
 	})
 	Svc.Net.Notify(victim, "⚠️ " .. raider.DisplayName .. " is RAIDING your museum! (You lose nothing - they only copy)", "error")
-	Svc.Net.Notify(raider, "🏴‍☠️ Raid started! Zap their objects to copy them!", "success")
+	Svc.Net.Notify(raider, "Raid started! Zap their objects to copy them!", "success")
 	Svc.Data.MarkDirty(raider)
 	Svc.Data.MarkDirty(victim)
 	task.delay(CFG.Duration, function()
@@ -196,7 +196,7 @@ function RaidService.TryZap(raider, pedestal, root)
 		Remotes.Event("ShrinkFX"):FireAllClients(display, raider, item.V, true)
 	end
 	Remotes.Event("RaidSync"):FireAllClients({ Type = "Zap", Raider = raider, Victim = raid.Victim, Copies = raid.Copies, Max = raid.Max })
-	Svc.Net.Notify(raider, "📋 Copied " .. Formulas.ItemName(item) .. "! (" .. raid.Copies .. "/" .. raid.Max .. ")", "shrink")
+	Svc.Net.Notify(raider, "Copied " .. Formulas.ItemName(item) .. "! (" .. raid.Copies .. "/" .. raid.Max .. ")", "shrink")
 	if raid.Copies >= raid.Max then
 		endRaid(raider, "max")
 	end

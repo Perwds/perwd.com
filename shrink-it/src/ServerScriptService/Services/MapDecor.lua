@@ -683,38 +683,66 @@ local function screenText(target, face, text, color, ppS)
 	return label
 end
 
+-- Floating "hologram" title over a stand. Sized in STUDS (so far-away titles get small instead of
+-- piling on top of each other), with a soft drop shadow and a shine; the client makes it bob
+-- and shimmer (Effects, tag "FloatingTitle").
 local function floatingTitle(adornee, text, colors, height, sub)
+	local w = math.max(9, #text * 1.9 + 2)
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.fromOffset(380, sub and 130 or 84)
+	gui.Name = "FloatingTitle"
+	gui.Size = UDim2.fromScale(w, sub and 6.6 or 4.6)
 	gui.StudsOffsetWorldSpace = Vector3.new(0, height, 0)
 	gui.Adornee = adornee
-	gui.MaxDistance = 260
+	gui.MaxDistance = 320
 	gui.LightInfluence = 0
+	gui:SetAttribute("BaseHeight", height)
 	gui.Parent = adornee
-	local label = Instance.new("TextLabel")
-	label.Name = "Title"
-	label.Size = UDim2.new(1, 0, 0, 84)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.FredokaOne
-	label.TextScaled = true
-	label.TextColor3 = RGB(255, 255, 255)
-	label.Text = text
-	label.Parent = gui
+	game:GetService("CollectionService"):AddTag(gui, "FloatingTitle")
+	local function textLabel(name, pos, size, txt)
+		local label = Instance.new("TextLabel")
+		label.Name = name
+		label.Position = pos
+		label.Size = size
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.FredokaOne
+		label.TextScaled = true
+		label.TextColor3 = RGB(255, 255, 255)
+		label.Text = txt
+		label.Parent = gui
+		return label
+	end
+	local titleH = sub and 0.68 or 1
+	-- shadow: same text, dark, nudged down-right
+	local shadow = textLabel("Shadow", UDim2.fromScale(0.012, 0.05), UDim2.fromScale(1, titleH), text)
+	shadow.TextColor3 = RGB(20, 20, 35)
+	shadow.TextTransparency = 0.45
+	shadow.ZIndex = 1
+	local label = textLabel("Title", UDim2.fromScale(0, 0), UDim2.fromScale(1, titleH), text)
+	label.ZIndex = 2
 	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 5
+	stroke.Thickness = 4
+	stroke.Color = RGB(25, 25, 40)
+	stroke.LineJoinMode = Enum.LineJoinMode.Round
 	stroke.Parent = label
+	-- colour gradient with a bright shine band (the client slides the band across)
 	local grad = Instance.new("UIGradient")
-	grad.Color = ColorSequence.new(colors[1], colors[2])
-	grad.Rotation = 90
+	grad.Name = "Shine"
+	grad.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, colors[1]:Lerp(RGB(255, 255, 255), 0.35)),
+		ColorSequenceKeypoint.new(0.45, colors[1]),
+		ColorSequenceKeypoint.new(0.5, RGB(255, 255, 255)),
+		ColorSequenceKeypoint.new(0.55, colors[2]),
+		ColorSequenceKeypoint.new(1, colors[2]),
+	})
+	grad.Rotation = 75
 	grad.Parent = label
 	if sub then
-		local s = label:Clone()
-		s.Name = "Sub"
-		s.Text = sub
-		s.Position = UDim2.fromOffset(0, 84)
-		s.Size = UDim2.new(1, 0, 0, 46)
-		s:FindFirstChildOfClass("UIGradient"):Destroy()
-		s.Parent = gui
+		local sl = textLabel("Sub", UDim2.fromScale(0.15, 0.7), UDim2.fromScale(0.7, 0.28), sub)
+		sl.ZIndex = 2
+		local st = Instance.new("UIStroke")
+		st.Thickness = 3
+		st.Color = RGB(25, 25, 40)
+		st.Parent = sl
 	end
 	return gui
 end

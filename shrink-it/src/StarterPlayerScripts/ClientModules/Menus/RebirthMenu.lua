@@ -39,7 +39,7 @@ function RebirthMenu.Build(ctx)
 		ctx.HUD.Result(State.Action("BuyInstantRebirth"))
 	end })
 
-	UIKit.Label({ Text = "♻️ Rebirth Token Upgrades (permanent)", TextColor3 = Color3.fromRGB(120, 255, 160), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 304), Parent = content })
+	UIKit.Label({ Text = "Rebirth Token Upgrades (permanent)", TextColor3 = Color3.fromRGB(120, 255, 160), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 304), Parent = content })
 	local rows = {}
 	for i, id in ipairs(UpgradeConfig.TokenOrder) do
 		local u = UpgradeConfig.TokenUpgrades[id]
@@ -63,13 +63,13 @@ function RebirthMenu.Build(ctx)
 		local cost = Formulas.RebirthCost(data.Rebirths)
 		local r = Formulas.RebirthRewards(data.Rebirths)
 		title.Text = "Rebirths: " .. data.Rebirths
-		mult.Text = string.format("Income x%.1f  ➜  x%.1f", Formulas.RebirthMultiplier(data.Rebirths), Formulas.RebirthMultiplier(data.Rebirths + 1))
+		mult.Text = string.format("Income x%.1f ➜ x%.1f", Formulas.RebirthMultiplier(data.Rebirths), Formulas.RebirthMultiplier(data.Rebirths + 1))
 		bar.Set(State.Coins / cost, Format.Coins(State.Coins) .. " / " .. Format.Coins(cost))
 		rewards.Text = "Rewards: +" .. r.Gems .. " 💎   +" .. r.Tokens .. " ♻️"
 		local can = State.Coins >= cost
 		rebirthLabel.Text = can and "REBIRTH!" or "Need " .. Format.Coins(cost)
 		UIKit.SetButtonColors(rebirthButton, can and UIKit.Colors.Green or UIKit.Colors.Gray)
-		instantLabel.Text = "⚡ Instant " .. Prices.Get(Enum.InfoType.Product, instant.Id, instant.PriceLabel)
+		instantLabel.Text = "Instant " .. Prices.Get(Enum.InfoType.Product, instant.Id, instant.PriceLabel)
 		for id, row in pairs(rows) do
 			local level = data.TokenUpgrades[id]
 			local tcost = Formulas.TokenUpgradeCost(id, level)

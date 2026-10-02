@@ -65,7 +65,7 @@ function InfinitePackMenu.Build(ctx)
 	local content = panel.Content
 
 	local timer = UIKit.Label({ Text = "", TextColor3 = Color3.new(1, 1, 1), StrokeThickness = 3.5, Size = UDim2.new(1, 0, 0, 40), Position = UDim2.fromOffset(0, 12), Parent = content })
-	UIKit.Label({ Text = "✨ NEW Rewards & Buffed Odds! ✨", TextColor3 = Color3.fromRGB(255, 220, 70), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 30), Position = UDim2.fromOffset(0, 52), Parent = content })
+	UIKit.Label({ Text = "NEW Rewards & Buffed Odds!", TextColor3 = Color3.fromRGB(255, 220, 70), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 30), Position = UDim2.fromOffset(0, 52), Parent = content })
 
 	local chain = UIKit.Scroll({ Horizontal = true, Size = UDim2.new(1, 0, 0, 262), Position = UDim2.fromOffset(0, 92), Parent = content })
 	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder, Parent = chain })
@@ -78,7 +78,7 @@ function InfinitePackMenu.Build(ctx)
 	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center, Parent = preview })
 
 	UIKit.Label({
-		Text = "Claim a tile to unlock the next one. Paid tiles are repeatable Developer Products. Tiles with 🎲 show their odds.",
+		Text = "Claim a tile to unlock the next one. Paid tiles are repeatable Developer Products. Tiles with show their odds.",
 		TextColor3 = Color3.fromRGB(90, 90, 110),
 		StrokeThickness = 0,
 		Size = UDim2.new(1, 0, 0, 40),
@@ -120,10 +120,10 @@ function InfinitePackMenu.Build(ctx)
 		UIKit.Label({ Text = emoji, StrokeThickness = 0, Size = UDim2.fromOffset(84, 84), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 30), Parent = card })
 		UIKit.Label({ Text = text, Size = UDim2.new(1, -12, 0, 46), Position = UDim2.fromOffset(6, 118), StrokeThickness = 2.5, Parent = card })
 		if tile.Milestone then
-			UIKit.Label({ Text = "⭐ MILESTONE", TextColor3 = Color3.fromRGB(255, 240, 120), Size = UDim2.new(1, -12, 0, 20), Position = UDim2.fromOffset(6, 162), StrokeThickness = 2, Parent = card })
+			UIKit.Label({ Text = "MILESTONE", TextColor3 = Color3.fromRGB(255, 240, 120), Size = UDim2.new(1, -12, 0, 20), Position = UDim2.fromOffset(6, 162), StrokeThickness = 2, Parent = card })
 		end
 		if RewardUtil.IsRandom(tile.Reward) then
-			UIKit.Button({ Text = "🎲 Odds", Colors = UIKit.Colors.Orange, Size = UDim2.fromOffset(80, 28), Position = UDim2.new(1, -86, 0, 30), Parent = card, OnClick = function()
+			UIKit.Button({ Text = "Odds", Colors = UIKit.Colors.Orange, Size = UDim2.fromOffset(80, 28), Position = UDim2.new(1, -86, 0, 30), Parent = card, OnClick = function()
 				showOdds(ctx, tile.Reward)
 			end })
 		end
@@ -203,7 +203,7 @@ function InfinitePackMenu.Build(ctx)
 				end
 			end
 		end
-		credits.Text = #creditLines > 0 and ("🎟️ Saved credits: " .. table.concat(creditLines, ", ")) or ""
+		credits.Text = #creditLines > 0 and ("Saved credits: " .. table.concat(creditLines, ", ")) or ""
 	end
 
 	function menu.Refresh()
@@ -212,7 +212,7 @@ function InfinitePackMenu.Build(ctx)
 	end
 
 	function menu.Tick()
-		timer.Text = "⏰ Refreshes in " .. Format.Clock(Gen.SecondsUntilRefresh(math.floor(State.Now())))
+		timer.Text = "Refreshes in " .. Format.Clock(Gen.SecondsUntilRefresh(math.floor(State.Now())))
 		local season = Gen.Season(math.floor(State.Now()))
 		if State.Data and State.Data.InfinitePack.Season ~= season then
 			rebuild()

@@ -144,7 +144,7 @@ local function announceIfRare(box, tier)
 	local variant = RarityConfig.GetVariant(box.V)
 	if r.Order >= from.Order or variant.Order >= 3 then
 		local area = TierConfig.Tiers[tier] and TierConfig.Tiers[tier].Area or ("Zone " .. tier)
-		Svc.Net.Announce(string.format("📦 A %s spawned in %s!", Formulas.BoxName(box), area), variant.Color or r.Color)
+		Svc.Net.Announce(string.format("A %s spawned in %s!", Formulas.BoxName(box), area), variant.Color or r.Color)
 		Svc.Net.Sound("Alarm")
 	end
 end
@@ -292,10 +292,123 @@ function SpawnService.SpawnNear(player, variant)
 		ReservedUntil = os.clock() + 60,
 		Quiet = true,
 	})
-	Svc.Net.Notify(player, "🌟 A " .. variant .. " box appeared next to you! (Reserved for 60s)", "success")
+	Svc.Net.Notify(player, "A " .. variant .. " box appeared next to you! (Reserved for 60s)", "success")
+end
+
+-- ── NIGHT: the wall comes down over the zone entrance, every box is replaced, the wall goes up ──
+local function buildWall()
+	local area = Svc.Map.Areas[1]
+	local width = area and area.Floor and area.Floor.Size.X or 200
+	local wall = Instance.new("Part")
+	wall.Name = "NightWall"
+	wall.Anchored = true
+	wall.CanCollide = false
+	wall.Size = Vector3.new(width, 70, 3)
+	wall.Color = Color3.fromRGB(235, 236, 242)
+	wall.Material = Enum.Material.SmoothPlastic
+	wall.TopSurface = Enum.SurfaceType.Smooth
+	wall:SetAttribute("Down", Vector3.new(0, -36, 1.5))
+	wall:SetAttribute("Up", Vector3.new(0, 35, 1.5))
+	wall.CFrame = CFrame.new(wall:GetAttribute("Down"))
+	local gui = Instance.new("SurfaceGui")
+	gui.Name = "Countdown"
+	gui.Face = Enum.NormalId.Front -- faces the base (-Z)
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = 10
+	gui.LightInfluence = 0
+	gui.Parent = wall
+	local label = Instance.new("TextLabel")
+	label.Name = "Text"
+	label.BackgroundTransparency = 1
+	label.AnchorPoint = Vector2.new(0.5, 0.5)
+	label.Position = UDim2.fromScale(0.5, 0.45)
+	label.Size = UDim2.fromScale(0.6, 0.35)
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = Color3.fromRGB(60, 62, 75)
+	label.Text = "NIGHT"
+	label.Parent = gui
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 6
+	stroke.Color = Color3.fromRGB(25, 25, 35)
+	stroke.Parent = label
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	local back = gui:Clone()
+	back.Face = Enum.NormalId.Back
+	back.Parent = wall
+	wall.Parent = Svc.Map.LiveObjects
+	return wall
+end
+
+local function moveWall(wall, up)
+	local TweenService = game:GetService("TweenService")
+	local goal = CFrame.new(wall:GetAttribute(up and "Up" or "Down"))
+	wall.CanCollide = up
+	TweenService:Create(wall, TweenInfo.new(1.6, Enum.EasingStyle.Quad, up and Enum.EasingDirection.Out or Enum.EasingDirection.In), { CFrame = goal }):Play()
+end
+
+local function setWallText(wall, text)
+	for _, gui in ipairs(wall:GetChildren()) do
+		if gui:IsA("SurfaceGui") then
+			gui.Text.Text = text
+		end
+	end
+end
+
+-- replaces every box in every zone (spawned behind the wall, so it's fair for everyone)
+function SpawnService.ResetAll()
+	for model, info in pairs(active) do
+		if info.Point then
+			retire(model, info, 0)
+		end
+	end
+	for _, pt in ipairs(points) do
+		pt.RespawnAt = 0
+	end
+end
+
+local function nightLoop()
+	local cfg = GameConfig.Night
+	if not cfg or (cfg.Every or 0) <= 0 then
+		return
+	end
+	local wall = buildWall()
+	workspace:SetAttribute("NightAt", os.time() + cfg.Every)
+	while true do
+		task.wait(cfg.Every - cfg.Warning)
+		Svc.Net.Announce("Night is coming! The zones close in " .. cfg.Warning .. " seconds - get back to base!", Color3.fromRGB(150, 160, 255))
+		for i = cfg.Warning, 1, -1 do
+			workspace:SetAttribute("NightIn", i)
+			task.wait(1)
+		end
+		workspace:SetAttribute("NightIn", nil)
+		-- close: everyone still in the zones goes back to base (with what they carry)
+		moveWall(wall, true)
+		local spawn = Svc.Map.LobbySpawn
+		for _, player in ipairs(Players:GetPlayers()) do
+			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if root and spawn and root.Position.Z > 0 then
+				player.Character:PivotTo(spawn.CFrame * CFrame.new(math.random(-6, 6), 4, math.random(-6, 6)))
+				Svc.Net.Notify(player, "Night! You were sent back to the base.", "info")
+			end
+		end
+		SpawnService.ResetAll()
+		for i = cfg.Closed, 1, -1 do
+			setWallText(wall, "NIGHT  " .. i .. "s")
+			workspace:SetAttribute("NightLeft", i)
+			task.wait(1)
+		end
+		workspace:SetAttribute("NightLeft", nil)
+		setWallText(wall, "NIGHT")
+		moveWall(wall, false)
+		workspace:SetAttribute("NightAt", os.time() + cfg.Every)
+		Svc.Net.Announce("Morning! Fresh boxes in every zone!", Color3.fromRGB(255, 220, 90))
+		Svc.Net.Sound("Alarm")
+	end
 end
 
 function SpawnService.Start()
+	task.spawn(nightLoop)
 	for tier, area in pairs(Svc.Map.Areas) do
 		for _, part in ipairs(area.SpawnPoints) do
 			local pt = { Part = part, Tier = tier, Model = nil, RespawnAt = 0 }
