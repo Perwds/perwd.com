@@ -15,7 +15,6 @@ local SoundService = game:GetService("SoundService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
-local TierConfig = require(Shared.Config.TierConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local Formulas = require(Shared.Formulas)
@@ -124,12 +123,10 @@ local function describe(target, kind)
 	local variant = RarityConfig.GetVariant(target:GetAttribute("Variant"))
 	local rarity = RarityConfig.GetRarity(def.Rarity)
 	local tier = target:GetAttribute("Tier") or def.Tier
-	if tier > stats.MaxTier then
-		return "🚫 " .. variant.Prefix .. def.Name .. " — TOO BIG (Ray Power " .. TierConfig.Tiers[tier].RayPowerRequired .. ")", Color3.fromRGB(255, 80, 80)
-	end
 	local income = Formulas.ItemBaseIncome({ Id = id, V = target:GetAttribute("Variant") or "Normal" })
 	income *= (data.Multipliers and data.Multipliers.Income or 1)
-	local text = string.format("%s%s · %s · +%s/s", variant.Prefix, def.Name, def.Rarity, Format.Coins(income))
+	local charge = Formulas.ObjectChargeTime(stats, tier)
+	local text = string.format("%s%s · %s · +%s/s · ⏱ %.1fs", variant.Prefix, def.Name, def.Rarity, Format.Coins(income), charge)
 	if surfaceDistance(target) > stats.Range then
 		text ..= "  (too far)"
 	end
@@ -161,7 +158,7 @@ local function stopCharge(fire)
 				if model ~= c.Target and model:IsA("Model") and model:IsDescendantOf(workspace) then
 					local tier = model:GetAttribute("Tier") or 99
 					local d = (model:GetPivot().Position - origin).Magnitude
-					if tier <= stats.MaxTier and d <= GameConfig.MultiShrinkRadius and surfaceDistance(model) <= stats.Range then
+					if tier <= (c.Target:GetAttribute("Tier") or 1) and d <= GameConfig.MultiShrinkRadius and surfaceDistance(model) <= stats.Range then
 						table.insert(candidates, { Model = model, D = d })
 					end
 				end
@@ -197,11 +194,6 @@ local function startCharge()
 			HUD.Notify("🎒 Hands full! Run back to base to drop off your loot.", "error")
 			return
 		end
-		local tier = target:GetAttribute("Tier") or 1
-		if tier > stats.MaxTier then
-			HUD.ShowTooBig(TierConfig.Tiers[tier] and TierConfig.Tiers[tier].RayPowerRequired)
-			return
-		end
 		if surfaceDistance(target) > stats.Range then
 			HUD.Notify("Too far away! Upgrade Range ⚡", "error")
 			return
@@ -212,7 +204,12 @@ local function startCharge()
 			return
 		end
 	end
-	local chargeTime = kind == "building" and GameConfig.Raid.BuildingChargeTime or stats.ChargeTime
+	local chargeTime = stats.ChargeTime
+	if kind == "building" then
+		chargeTime = GameConfig.Raid.BuildingChargeTime
+	elseif kind == "object" then
+		chargeTime = Formulas.ObjectChargeTime(stats, target:GetAttribute("Tier") or 1)
+	end
 	local handle = tool and tool:FindFirstChild("Handle")
 	local tip = handle and (handle:FindFirstChild("Tip") or handle:FindFirstChildWhichIsA("Attachment"))
 	local beam = tip and Effects.CreateBeam(tip, State.Data.EquippedSkin) or nil
@@ -289,8 +286,9 @@ function RayController.Init()
 			local text, color = describe(target, kind)
 			HUD.SetHover(text, color)
 			selection.Adornee = target
-			local tooBig = kind == "object" and (target:GetAttribute("Tier") or 1) > State.Data.Stats.MaxTier
-			selection.Color3 = tooBig and Color3.fromRGB(255, 70, 70) or (color or Color3.fromRGB(90, 220, 255))
+			-- outline turns orange/red when your Ray Power is low for this object (slow charge)
+			local slow = kind == "object" and Formulas.PowerChargeMult(State.Data.Stats.RayPower or 1, target:GetAttribute("Tier") or 1) > 2
+			selection.Color3 = slow and Color3.fromRGB(255, 140, 60) or (color or Color3.fromRGB(90, 220, 255))
 			selection.SurfaceColor3 = selection.Color3
 		else
 			HUD.SetHover(nil)

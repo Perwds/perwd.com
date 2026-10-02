@@ -25,6 +25,12 @@ GameConfig.MaxPlayers = 8 -- one museum plot per player. ALSO set Max Players = 
 
 -- ── Shrink Ray ───────────────────────────────────────────────────────
 GameConfig.ShrinkCooldown = 0.25 -- min seconds between shots
+-- Any object can be shrunk at any Ray Power. Charge time is multiplied by
+--   (object's RayPowerRequired / your Ray Power) ^ PowerChargeExponent,
+-- clamped between MinChargeMult (way overpowered = fast) and MaxChargeMult (way underpowered = slow).
+GameConfig.PowerChargeExponent = 1.3
+GameConfig.MinChargeMult = 0.35
+GameConfig.MaxChargeMult = 45
 GameConfig.ChargeTolerance = 0.8 -- server accepts a shot after chargeTime * this (latency allowance)
 GameConfig.RangeTolerance = 8 -- extra studs the server allows over the client's range
 GameConfig.MultiShrinkRadius = 30

@@ -106,13 +106,27 @@ function Formulas.RayStats(data, passes)
 		ChargeTime = charge,
 		Range = range,
 		Multi = multi,
-		MaxTier = TierConfig.MaxTierForRayPower(up.RayPower),
+		MaxTier = TierConfig.MaxTierForRayPower(up.RayPower), -- tier you shrink at full (1x) speed
+		RayPower = up.RayPower,
 		Pedestals = pedestals,
 		RaidReady = up.RayPower >= UpgradeConfig.Upgrades.RayPower.MaxLevel,
 	}
 end
 
 -- Every zone is open to walk into (no gates). Kept as a hook in case you want locked zones later.
+-- How much slower (>1) or faster (<1) than normal your ray charges on an object of `tier`.
+function Formulas.PowerChargeMult(rayPower, tier)
+	local t = TierConfig.Tiers[tier]
+	local required = t and t.RayPowerRequired or 1
+	local mult = (required / math.max(1, rayPower)) ^ GameConfig.PowerChargeExponent
+	return math.clamp(mult, GameConfig.MinChargeMult, GameConfig.MaxChargeMult)
+end
+
+-- Seconds to fully charge the ray on an object of `tier` (stats from Formulas.RayStats).
+function Formulas.ObjectChargeTime(stats, tier)
+	return stats.ChargeTime * Formulas.PowerChargeMult(stats.RayPower or 1, tier or 1)
+end
+
 function Formulas.IsTierUnlocked(_data, _tier)
 	return true
 end

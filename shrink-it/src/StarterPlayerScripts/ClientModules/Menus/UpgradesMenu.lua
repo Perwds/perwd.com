@@ -64,7 +64,7 @@ function UpgradesMenu.Build(ctx)
 			end
 			if id == "RayPower" then
 				local tier = TierConfig.MaxTierForRayPower(level)
-				row.Info.Text ..= "  ·  shrinks " .. TierConfig.Tiers[tier].Name
+				row.Info.Text ..= "  ·  full speed up to " .. TierConfig.Tiers[tier].Name
 			end
 		end
 	end

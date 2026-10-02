@@ -16,7 +16,6 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
-local TierConfig = require(Shared.Config.TierConfig)
 local Formulas = require(Shared.Formulas)
 local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
@@ -171,9 +170,6 @@ function ShrinkService.CheckObject(player, model, stats, root)
 	if info.ReservedFor and info.ReservedFor ~= player.UserId then
 		return nil, "reserved"
 	end
-	if info.Tier > stats.MaxTier then
-		return nil, "toobig", info
-	end
 	local pos = model:GetPivot().Position
 	local areaTier = Svc.Map.GetAreaAt(pos)
 	if areaTier and not Svc.Area.IsTierUnlocked(player, areaTier) then
@@ -221,9 +217,12 @@ function ShrinkService.Capture(player, model)
 	return true
 end
 
-local function requiredChargeTime(kind, stats)
+local function requiredChargeTime(kind, stats, target)
 	if kind == "building" then
 		return GameConfig.Raid.BuildingChargeTime
+	elseif kind == "object" then
+		local info = Svc.Spawn.GetInfo(target)
+		return Formulas.ObjectChargeTime(stats, info and info.Tier or 1)
 	end
 	return stats.ChargeTime
 end
@@ -241,7 +240,7 @@ local function onChargeStart(player, target)
 	if not (player.Character and player.Character:FindFirstChild(TOOL_NAME)) then
 		return
 	end
-	s.Charge = { Target = target, Kind = kind, Start = os.clock(), Time = requiredChargeTime(kind, stats) }
+	s.Charge = { Target = target, Kind = kind, Start = os.clock(), Time = requiredChargeTime(kind, stats, target) }
 	Remotes.Event("ChargeFX"):FireAllClients(player, target, true)
 end
 
@@ -291,12 +290,9 @@ local function onFire(player, target, extras)
 		return
 	end
 
-	local info, reason, tooBigInfo = ShrinkService.CheckObject(player, target, stats, root)
+	local info, reason = ShrinkService.CheckObject(player, target, stats, root)
 	if not info then
-		if reason == "toobig" then
-			local need = TierConfig.Tiers[tooBigInfo.Tier].RayPowerRequired
-			Remotes.Event("TooBig"):FireClient(player, need)
-		elseif reason == "range" then
+		if reason == "range" then
 			Svc.Net.Notify(player, "Too far away!", "error")
 		elseif reason == "reserved" then
 			Svc.Net.Notify(player, "That one is reserved for someone else!", "error")
@@ -318,7 +314,7 @@ local function onFire(player, target, extras)
 				seen[extra] = true
 				if (extra:GetPivot().Position - origin).Magnitude <= GameConfig.MultiShrinkRadius + 10 then
 					local extraInfo = ShrinkService.CheckObject(player, extra, stats, root)
-					if extraInfo and count < room then
+					if extraInfo and extraInfo.Tier <= info.Tier and count < room then
 						count += 1
 						ShrinkService.Capture(player, extra)
 					end
@@ -340,20 +336,34 @@ local function autoShrinkLoop()
 				local root = rootOf(player)
 				local stats = ShrinkService.GetStats(player)
 				if root and stats then
-					local best, bestDist = nil, math.huge
+					local best, bestScore = nil, math.huge
 					Svc.Spawn.ForEachActive(function(model, _info)
 						local d = (model:GetPivot().Position - root.Position).Magnitude
-						if d < bestDist and d < stats.Range + 200 then
+						if d < stats.Range + 200 then
 							local info = ShrinkService.CheckObject(player, model, stats, root)
 							if info then
-								best, bestDist = model, d
+								local score = Formulas.ObjectChargeTime(stats, info.Tier) * 10 + d
+								if score < bestScore then
+									best, bestScore = model, score
+								end
 							end
 						end
 					end)
-					if best then
-						s.NextAuto = now + stats.ChargeTime + GameConfig.AutoShrinkExtraDelay
-						ShrinkService.Capture(player, best)
+					local locked = s.AutoTarget
+					if locked and locked.Model.Parent and Svc.Spawn.GetInfo(locked.Model) then
+						-- keep charging the locked target until its (power-scaled) charge time has passed
+						if now >= locked.ReadyAt then
+							s.AutoTarget = nil
+							if ShrinkService.CheckObject(player, locked.Model, stats, root) then
+								ShrinkService.Capture(player, locked.Model)
+							end
+							s.NextAuto = now + GameConfig.AutoShrinkExtraDelay
+						end
+					elseif best then
+						local info = Svc.Spawn.GetInfo(best)
+						s.AutoTarget = { Model = best, ReadyAt = now + Formulas.ObjectChargeTime(stats, info and info.Tier or 1) }
 					else
+						s.AutoTarget = nil
 						s.NextAuto = now + 1
 					end
 				end

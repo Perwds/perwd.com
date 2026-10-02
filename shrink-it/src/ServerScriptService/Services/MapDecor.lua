@@ -307,7 +307,7 @@ function MapDecor.ZoneArch(zone, tier, t, z, width)
 	end
 	local beam = part(arch, Vector3.new(width - 4, 14, 3), CFrame.new(0, 36, z), RGB(40, 40, 60), Enum.Material.SmoothPlastic)
 	beam.CanCollide = false
-	sign(beam, Enum.NormalId.Front, string.format("ZONE %d · %s\n%s Watch out for %s!  ·  Ray Power %d+", tier, string.upper(t.Area), chaser.Emoji, chaser.Name, t.RayPowerRequired), color:Lerp(RGB(255, 255, 255), 0.35), 8)
+	sign(beam, Enum.NormalId.Front, string.format("ZONE %d · %s\n%s Watch out for %s!  ·  Full speed at Ray Power %d", tier, string.upper(t.Area), chaser.Emoji, chaser.Name, t.RayPowerRequired), color:Lerp(RGB(255, 255, 255), 0.35), 8)
 	sign(beam, Enum.NormalId.Back, tier == 1 and "🏠 SAFE ZONE ⬇  drop off your loot!" or "⬇ BACK TO BASE ⬇", RGB(120, 255, 140), 8)
 	-- floor line
 	deco(arch, Vector3.new(width - 4, 0.25, 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(255, 60, 60) or color, Enum.Material.Neon)

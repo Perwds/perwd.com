@@ -7,7 +7,7 @@ Upgrade your ray and your run speed, push further down the corridor (all the way
 complete the Index, and raid other museums in the endgame.
 
 Everything is **server-authoritative**: the client only sends intent, and the server validates
-cooldowns, charge time, range, Ray Power vs. object size, carry capacity, ownership and costs.
+cooldowns, power-scaled charge time, range, carry capacity, ownership and costs.
 
 ---
 
@@ -130,7 +130,7 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 | Feature | Where |
 |---|---|
 | Hold-to-charge Shrink Ray, beam, squash + fly-to-pocket tween, pop sound, particles | `RayController`, `Effects`, `ShrinkService` |
-| "TOO BIG!" popup + charge bar near the crosshair + hover info | `HUD`, `RayController` |
+| Shrink ANY object at any Ray Power — more power = faster charge (hover shows the charge time) | `Formulas`, `RayController`, `ShrinkService` |
 | One long walled corridor: base (safe zone) → 6 themed zones, each longer than the last; no gates or fees | `MapService`, `MapDecor`, `TierConfig` |
 | Carry loop: shrunk objects stack above your head; run them back to base to put them on display | `CarryService` |
 | Chasers: each zone's owner chases you when you grab something; get caught = drop everything | `CarryService`, `ChaserConfig` |

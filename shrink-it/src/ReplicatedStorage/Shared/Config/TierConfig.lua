@@ -3,8 +3,9 @@
 
 	Size tiers. Each tier lives in its own map area.
 	The map is one long corridor: your base, then zone 1, zone 2 ... zone 6, each longer than the last.
-	Every zone is open to walk into. You can only SHRINK objects whose tier <= your Ray Power tier
-	(otherwise: "TOO BIG!"). Each zone has its own chaser (see ChaserConfig).
+	Every zone is open and EVERY object can be shrunk at any Ray Power. RayPowerRequired is the power
+	at which that tier charges at normal speed: less power = slower charge, more power = faster
+	(see GameConfig.PowerChargeExponent). Each zone has its own chaser (see ChaserConfig).
 ]]
 
 local TierConfig = {}

@@ -240,6 +240,12 @@ GameConfig.MaxPlayers = 8 -- one museum plot per player. ALSO set Max Players = 
 
 -- ── Shrink Ray ───────────────────────────────────────────────────────
 GameConfig.ShrinkCooldown = 0.25 -- min seconds between shots
+-- Any object can be shrunk at any Ray Power. Charge time is multiplied by
+--   (object's RayPowerRequired / your Ray Power) ^ PowerChargeExponent,
+-- clamped between MinChargeMult (way overpowered = fast) and MaxChargeMult (way underpowered = slow).
+GameConfig.PowerChargeExponent = 1.3
+GameConfig.MinChargeMult = 0.35
+GameConfig.MaxChargeMult = 45
 GameConfig.ChargeTolerance = 0.8 -- server accepts a shot after chargeTime * this (latency allowance)
 GameConfig.RangeTolerance = 8 -- extra studs the server allows over the client's range
 GameConfig.MultiShrinkRadius = 30
@@ -747,8 +753,9 @@ return RewardConfig
 
 	Size tiers. Each tier lives in its own map area.
 	The map is one long corridor: your base, then zone 1, zone 2 ... zone 6, each longer than the last.
-	Every zone is open to walk into. You can only SHRINK objects whose tier <= your Ray Power tier
-	(otherwise: "TOO BIG!"). Each zone has its own chaser (see ChaserConfig).
+	Every zone is open and EVERY object can be shrunk at any Ray Power. RayPowerRequired is the power
+	at which that tier charges at normal speed: less power = slower charge, more power = faster
+	(see GameConfig.PowerChargeExponent). Each zone has its own chaser (see ChaserConfig).
 ]]
 
 local TierConfig = {}
@@ -846,7 +853,7 @@ UpgradeConfig.Order = { "RayPower", "Speed", "MultiShrink", "ChargeSpeed", "Rang
 UpgradeConfig.Upgrades = {
 	RayPower = {
 		Name = "Ray Power",
-		Description = "Shrink bigger objects. Unlocks new size tiers.",
+		Description = "Shrink everything faster. Big objects charge MUCH faster with more power.",
 		Emoji = "⚡",
 		MaxLevel = 30, -- reaching max also unlocks Museum Raids
 		BaseCost = 100,
@@ -1160,13 +1167,27 @@ function Formulas.RayStats(data, passes)
 		ChargeTime = charge,
 		Range = range,
 		Multi = multi,
-		MaxTier = TierConfig.MaxTierForRayPower(up.RayPower),
+		MaxTier = TierConfig.MaxTierForRayPower(up.RayPower), -- tier you shrink at full (1x) speed
+		RayPower = up.RayPower,
 		Pedestals = pedestals,
 		RaidReady = up.RayPower >= UpgradeConfig.Upgrades.RayPower.MaxLevel,
 	}
 end
 
 -- Every zone is open to walk into (no gates). Kept as a hook in case you want locked zones later.
+-- How much slower (>1) or faster (<1) than normal your ray charges on an object of `tier`.
+function Formulas.PowerChargeMult(rayPower, tier)
+	local t = TierConfig.Tiers[tier]
+	local required = t and t.RayPowerRequired or 1
+	local mult = (required / math.max(1, rayPower)) ^ GameConfig.PowerChargeExponent
+	return math.clamp(mult, GameConfig.MinChargeMult, GameConfig.MaxChargeMult)
+end
+
+-- Seconds to fully charge the ray on an object of `tier` (stats from Formulas.RayStats).
+function Formulas.ObjectChargeTime(stats, tier)
+	return stats.ChargeTime * Formulas.PowerChargeMult(stats.RayPower or 1, tier or 1)
+end
+
 function Formulas.IsTierUnlocked(_data, _tier)
 	return true
 end
@@ -3592,7 +3613,7 @@ function MapDecor.ZoneArch(zone, tier, t, z, width)
 	end
 	local beam = part(arch, Vector3.new(width - 4, 14, 3), CFrame.new(0, 36, z), RGB(40, 40, 60), Enum.Material.SmoothPlastic)
 	beam.CanCollide = false
-	sign(beam, Enum.NormalId.Front, string.format("ZONE %d · %s\n%s Watch out for %s!  ·  Ray Power %d+", tier, string.upper(t.Area), chaser.Emoji, chaser.Name, t.RayPowerRequired), color:Lerp(RGB(255, 255, 255), 0.35), 8)
+	sign(beam, Enum.NormalId.Front, string.format("ZONE %d · %s\n%s Watch out for %s!  ·  Full speed at Ray Power %d", tier, string.upper(t.Area), chaser.Emoji, chaser.Name, t.RayPowerRequired), color:Lerp(RGB(255, 255, 255), 0.35), 8)
 	sign(beam, Enum.NormalId.Back, tier == 1 and "🏠 SAFE ZONE ⬇  drop off your loot!" or "⬇ BACK TO BASE ⬇", RGB(120, 255, 140), 8)
 	-- floor line
 	deco(arch, Vector3.new(width - 4, 0.25, 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(255, 60, 60) or color, Enum.Material.Neon)
@@ -6898,7 +6919,6 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
-local TierConfig = require(Shared.Config.TierConfig)
 local Formulas = require(Shared.Formulas)
 local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
@@ -7053,9 +7073,6 @@ function ShrinkService.CheckObject(player, model, stats, root)
 	if info.ReservedFor and info.ReservedFor ~= player.UserId then
 		return nil, "reserved"
 	end
-	if info.Tier > stats.MaxTier then
-		return nil, "toobig", info
-	end
 	local pos = model:GetPivot().Position
 	local areaTier = Svc.Map.GetAreaAt(pos)
 	if areaTier and not Svc.Area.IsTierUnlocked(player, areaTier) then
@@ -7103,9 +7120,12 @@ function ShrinkService.Capture(player, model)
 	return true
 end
 
-local function requiredChargeTime(kind, stats)
+local function requiredChargeTime(kind, stats, target)
 	if kind == "building" then
 		return GameConfig.Raid.BuildingChargeTime
+	elseif kind == "object" then
+		local info = Svc.Spawn.GetInfo(target)
+		return Formulas.ObjectChargeTime(stats, info and info.Tier or 1)
 	end
 	return stats.ChargeTime
 end
@@ -7123,7 +7143,7 @@ local function onChargeStart(player, target)
 	if not (player.Character and player.Character:FindFirstChild(TOOL_NAME)) then
 		return
 	end
-	s.Charge = { Target = target, Kind = kind, Start = os.clock(), Time = requiredChargeTime(kind, stats) }
+	s.Charge = { Target = target, Kind = kind, Start = os.clock(), Time = requiredChargeTime(kind, stats, target) }
 	Remotes.Event("ChargeFX"):FireAllClients(player, target, true)
 end
 
@@ -7173,12 +7193,9 @@ local function onFire(player, target, extras)
 		return
 	end
 
-	local info, reason, tooBigInfo = ShrinkService.CheckObject(player, target, stats, root)
+	local info, reason = ShrinkService.CheckObject(player, target, stats, root)
 	if not info then
-		if reason == "toobig" then
-			local need = TierConfig.Tiers[tooBigInfo.Tier].RayPowerRequired
-			Remotes.Event("TooBig"):FireClient(player, need)
-		elseif reason == "range" then
+		if reason == "range" then
 			Svc.Net.Notify(player, "Too far away!", "error")
 		elseif reason == "reserved" then
 			Svc.Net.Notify(player, "That one is reserved for someone else!", "error")
@@ -7200,7 +7217,7 @@ local function onFire(player, target, extras)
 				seen[extra] = true
 				if (extra:GetPivot().Position - origin).Magnitude <= GameConfig.MultiShrinkRadius + 10 then
 					local extraInfo = ShrinkService.CheckObject(player, extra, stats, root)
-					if extraInfo and count < room then
+					if extraInfo and extraInfo.Tier <= info.Tier and count < room then
 						count += 1
 						ShrinkService.Capture(player, extra)
 					end
@@ -7222,20 +7239,34 @@ local function autoShrinkLoop()
 				local root = rootOf(player)
 				local stats = ShrinkService.GetStats(player)
 				if root and stats then
-					local best, bestDist = nil, math.huge
+					local best, bestScore = nil, math.huge
 					Svc.Spawn.ForEachActive(function(model, _info)
 						local d = (model:GetPivot().Position - root.Position).Magnitude
-						if d < bestDist and d < stats.Range + 200 then
+						if d < stats.Range + 200 then
 							local info = ShrinkService.CheckObject(player, model, stats, root)
 							if info then
-								best, bestDist = model, d
+								local score = Formulas.ObjectChargeTime(stats, info.Tier) * 10 + d
+								if score < bestScore then
+									best, bestScore = model, score
+								end
 							end
 						end
 					end)
-					if best then
-						s.NextAuto = now + stats.ChargeTime + GameConfig.AutoShrinkExtraDelay
-						ShrinkService.Capture(player, best)
+					local locked = s.AutoTarget
+					if locked and locked.Model.Parent and Svc.Spawn.GetInfo(locked.Model) then
+						-- keep charging the locked target until its (power-scaled) charge time has passed
+						if now >= locked.ReadyAt then
+							s.AutoTarget = nil
+							if ShrinkService.CheckObject(player, locked.Model, stats, root) then
+								ShrinkService.Capture(player, locked.Model)
+							end
+							s.NextAuto = now + GameConfig.AutoShrinkExtraDelay
+						end
+					elseif best then
+						local info = Svc.Spawn.GetInfo(best)
+						s.AutoTarget = { Model = best, ReadyAt = now + Formulas.ObjectChargeTime(stats, info and info.Tier or 1) }
 					else
+						s.AutoTarget = nil
 						s.NextAuto = now + 1
 					end
 				end
@@ -7694,7 +7725,7 @@ function UpgradeService.Start()
 			local newTier = TierConfig.MaxTierForRayPower(data.Upgrades.RayPower)
 			if newTier > oldTier then
 				local t = TierConfig.Tiers[newTier]
-				Svc.Net.Notify(player, "⚡ You can now shrink " .. t.Name .. " objects in " .. t.Area .. "!", "success")
+				Svc.Net.Notify(player, "⚡ " .. t.Name .. " objects in " .. t.Area .. " now shrink at full speed!", "success")
 			end
 			if data.Upgrades.RayPower >= u.MaxLevel then
 				Svc.Net.Notify(player, "🏴‍☠️ MAX RAY POWER! Museum Raids unlocked (opt-in in the Museum menu).", "success")
@@ -9920,7 +9951,7 @@ function UpgradesMenu.Build(ctx)
 			end
 			if id == "RayPower" then
 				local tier = TierConfig.MaxTierForRayPower(level)
-				row.Info.Text ..= "  ·  shrinks " .. TierConfig.Tiers[tier].Name
+				row.Info.Text ..= "  ·  full speed up to " .. TierConfig.Tiers[tier].Name
 			end
 		end
 	end
@@ -10020,7 +10051,6 @@ local SoundService = game:GetService("SoundService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
-local TierConfig = require(Shared.Config.TierConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local Formulas = require(Shared.Formulas)
@@ -10129,12 +10159,10 @@ local function describe(target, kind)
 	local variant = RarityConfig.GetVariant(target:GetAttribute("Variant"))
 	local rarity = RarityConfig.GetRarity(def.Rarity)
 	local tier = target:GetAttribute("Tier") or def.Tier
-	if tier > stats.MaxTier then
-		return "🚫 " .. variant.Prefix .. def.Name .. " — TOO BIG (Ray Power " .. TierConfig.Tiers[tier].RayPowerRequired .. ")", Color3.fromRGB(255, 80, 80)
-	end
 	local income = Formulas.ItemBaseIncome({ Id = id, V = target:GetAttribute("Variant") or "Normal" })
 	income *= (data.Multipliers and data.Multipliers.Income or 1)
-	local text = string.format("%s%s · %s · +%s/s", variant.Prefix, def.Name, def.Rarity, Format.Coins(income))
+	local charge = Formulas.ObjectChargeTime(stats, tier)
+	local text = string.format("%s%s · %s · +%s/s · ⏱ %.1fs", variant.Prefix, def.Name, def.Rarity, Format.Coins(income), charge)
 	if surfaceDistance(target) > stats.Range then
 		text ..= "  (too far)"
 	end
@@ -10166,7 +10194,7 @@ local function stopCharge(fire)
 				if model ~= c.Target and model:IsA("Model") and model:IsDescendantOf(workspace) then
 					local tier = model:GetAttribute("Tier") or 99
 					local d = (model:GetPivot().Position - origin).Magnitude
-					if tier <= stats.MaxTier and d <= GameConfig.MultiShrinkRadius and surfaceDistance(model) <= stats.Range then
+					if tier <= (c.Target:GetAttribute("Tier") or 1) and d <= GameConfig.MultiShrinkRadius and surfaceDistance(model) <= stats.Range then
 						table.insert(candidates, { Model = model, D = d })
 					end
 				end
@@ -10202,11 +10230,6 @@ local function startCharge()
 			HUD.Notify("🎒 Hands full! Run back to base to drop off your loot.", "error")
 			return
 		end
-		local tier = target:GetAttribute("Tier") or 1
-		if tier > stats.MaxTier then
-			HUD.ShowTooBig(TierConfig.Tiers[tier] and TierConfig.Tiers[tier].RayPowerRequired)
-			return
-		end
 		if surfaceDistance(target) > stats.Range then
 			HUD.Notify("Too far away! Upgrade Range ⚡", "error")
 			return
@@ -10217,7 +10240,12 @@ local function startCharge()
 			return
 		end
 	end
-	local chargeTime = kind == "building" and GameConfig.Raid.BuildingChargeTime or stats.ChargeTime
+	local chargeTime = stats.ChargeTime
+	if kind == "building" then
+		chargeTime = GameConfig.Raid.BuildingChargeTime
+	elseif kind == "object" then
+		chargeTime = Formulas.ObjectChargeTime(stats, target:GetAttribute("Tier") or 1)
+	end
 	local handle = tool and tool:FindFirstChild("Handle")
 	local tip = handle and (handle:FindFirstChild("Tip") or handle:FindFirstChildWhichIsA("Attachment"))
 	local beam = tip and Effects.CreateBeam(tip, State.Data.EquippedSkin) or nil
@@ -10294,8 +10322,9 @@ function RayController.Init()
 			local text, color = describe(target, kind)
 			HUD.SetHover(text, color)
 			selection.Adornee = target
-			local tooBig = kind == "object" and (target:GetAttribute("Tier") or 1) > State.Data.Stats.MaxTier
-			selection.Color3 = tooBig and Color3.fromRGB(255, 70, 70) or (color or Color3.fromRGB(90, 220, 255))
+			-- outline turns orange/red when your Ray Power is low for this object (slow charge)
+			local slow = kind == "object" and Formulas.PowerChargeMult(State.Data.Stats.RayPower or 1, target:GetAttribute("Tier") or 1) > 2
+			selection.Color3 = slow and Color3.fromRGB(255, 140, 60) or (color or Color3.fromRGB(90, 220, 255))
 			selection.SurfaceColor3 = selection.Color3
 		else
 			HUD.SetHover(nil)
