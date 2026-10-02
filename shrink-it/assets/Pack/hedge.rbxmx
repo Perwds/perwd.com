@@ -1,0 +1,760 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXCCC6924CB91449BCA5E384C195E31A1C">
+    <Properties>
+      <string name="Name">Formal hedge</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIFAAAAaGVkZ2UMAAAAUGFja0NhdGVnb3J5AgQAAABiYXNlDQAAAFJldXNhYmxlQXNzZXQDAQ==</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX0E9351DAB73E4CA4B31CC33E3708D179">
+      <Properties>
+        <string name="Name">Dense hedge foliage 0</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">AQAAAA0AAABTb3VyY2VBc3NldElkAgoAAAA5MTg3MTE4Mzc3</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX3D11EAAD6FEF42C9994A4D9F489C468B">
+        <Properties>
+          <string name="Name">RhododendronVar02</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">RBX0DD060C65D1B4565B180E70E1A1CC133</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXE738BC3D9D01441E9FA9D15BE0629C6E">
+          <Properties>
+            <string name="Name">Leaves</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.12368089</X>
+              <Y>2.11215963</Y>
+              <Z>1.92400801</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>9.98382854</X>
+              <Y>5.11374187</Y>
+              <Z>12.2584438</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-5.07238525</X>
+              <Y>1.12326971</Y>
+              <Z>0</Z>
+              <R00>-0.116250217</R00>
+              <R01>0</R01>
+              <R02>0.993220508</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.993219435</R20>
+              <R21>0</R21>
+              <R22>-0.116250351</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://5547038674</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+          <Item class="SurfaceAppearance" referent="RBX15CF2983009B44AF9A82DA5FFACF2517">
+            <Properties>
+              <string name="Name">SurfaceAppearance</string>
+              <Content name="ColorMap"><url>rbxassetid://5164021540</url></Content>
+              <token name="AlphaMode">1</token>
+              <Content name="RoughnessMap"><url>rbxassetid://5164022409</url></Content>
+              <Color3 name="Color">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              <float name="EmissiveStrength">1</float>
+              <Content name="MetalnessMap"><url>rbxassetid://6036394111</url></Content>
+              <token name="ResampleMode">0</token>
+              <Color3 name="EmissiveTint">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              
+              <bool name="archivable">true</bool>
+              <Content name="NormalMap"><url>rbxassetid://5164022093</url></Content>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="MeshPart" referent="RBX0DD060C65D1B4565B180E70E1A1CC133">
+          <Properties>
+            <string name="Name">Trunk</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>2.31578324</X>
+              <Y>2.14239178</Y>
+              <Z>0.955266488</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>5.60673428</X>
+              <Y>5.18693686</Y>
+              <Z>6.08629513</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-4.96966895</X>
+              <Y>1.07119589</Y>
+              <Z>-0.034665</Z>
+              <R00>-0.116250217</R00>
+              <R01>0</R01>
+              <R02>0.993220508</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.993219435</R20>
+              <R21>0</R21>
+              <R22>-0.116250351</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://5547038630</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+          <Item class="SurfaceAppearance" referent="RBXC61E18F11F8342939DF6A028C5EE5408">
+            <Properties>
+              <string name="Name">SurfaceAppearance</string>
+              <Content name="ColorMap"><url>rbxassetid://5164022511</url></Content>
+              <token name="AlphaMode">0</token>
+              <Content name="RoughnessMap"><url>rbxassetid://5164022664</url></Content>
+              <Color3 name="Color">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              <float name="EmissiveStrength">1</float>
+              
+              <token name="ResampleMode">0</token>
+              <Color3 name="EmissiveTint">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              
+              <bool name="archivable">true</bool>
+              <Content name="NormalMap"><url>rbxassetid://5164022594</url></Content>
+            </Properties>
+          </Item>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXD9657F87294D4200AA4CEE9BD8D30C7F">
+      <Properties>
+        <string name="Name">Dense hedge foliage 1</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">AQAAAA0AAABTb3VyY2VBc3NldElkAgoAAAA5MTg3MTE4Mzc3</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX28F493ABA08A4BCD89F709A9712BF79B">
+        <Properties>
+          <string name="Name">RhododendronVar02</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">RBX6785E53CEF6E47BD8ED47943A4248B0B</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXB59F003743A64FB4B3A21A6C4A00EC2A">
+          <Properties>
+            <string name="Name">Leaves</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.12368089</X>
+              <Y>2.11215963</Y>
+              <Z>1.92400801</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>9.98382854</X>
+              <Y>5.11374187</Y>
+              <Z>12.2584438</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-1.69079505</X>
+              <Y>1.12326971</Y>
+              <Z>0</Z>
+              <R00>-0.116250217</R00>
+              <R01>0</R01>
+              <R02>0.993220508</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.993219435</R20>
+              <R21>0</R21>
+              <R22>-0.116250351</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://5547038674</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+          <Item class="SurfaceAppearance" referent="RBX217D95AE00CB41ED8F126B7E5703E704">
+            <Properties>
+              <string name="Name">SurfaceAppearance</string>
+              <Content name="ColorMap"><url>rbxassetid://5164021540</url></Content>
+              <token name="AlphaMode">1</token>
+              <Content name="RoughnessMap"><url>rbxassetid://5164022409</url></Content>
+              <Color3 name="Color">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              <float name="EmissiveStrength">1</float>
+              <Content name="MetalnessMap"><url>rbxassetid://6036394111</url></Content>
+              <token name="ResampleMode">0</token>
+              <Color3 name="EmissiveTint">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              
+              <bool name="archivable">true</bool>
+              <Content name="NormalMap"><url>rbxassetid://5164022093</url></Content>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="MeshPart" referent="RBX6785E53CEF6E47BD8ED47943A4248B0B">
+          <Properties>
+            <string name="Name">Trunk</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>2.31578324</X>
+              <Y>2.14239178</Y>
+              <Z>0.955266488</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>5.60673428</X>
+              <Y>5.18693686</Y>
+              <Z>6.08629513</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-1.58807915</X>
+              <Y>1.07119589</Y>
+              <Z>-0.034666</Z>
+              <R00>-0.116250217</R00>
+              <R01>0</R01>
+              <R02>0.993220508</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.993219435</R20>
+              <R21>0</R21>
+              <R22>-0.116250351</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://5547038630</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+          <Item class="SurfaceAppearance" referent="RBX133D14F5D1C5457895E5E498DB72B151">
+            <Properties>
+              <string name="Name">SurfaceAppearance</string>
+              <Content name="ColorMap"><url>rbxassetid://5164022511</url></Content>
+              <token name="AlphaMode">0</token>
+              <Content name="RoughnessMap"><url>rbxassetid://5164022664</url></Content>
+              <Color3 name="Color">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              <float name="EmissiveStrength">1</float>
+              
+              <token name="ResampleMode">0</token>
+              <Color3 name="EmissiveTint">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              
+              <bool name="archivable">true</bool>
+              <Content name="NormalMap"><url>rbxassetid://5164022594</url></Content>
+            </Properties>
+          </Item>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX6676E88593C14113885CB122C3602A52">
+      <Properties>
+        <string name="Name">Dense hedge foliage 2</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">AQAAAA0AAABTb3VyY2VBc3NldElkAgoAAAA5MTg3MTE4Mzc3</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX7385DB88010C46DCBD7466C065AE0114">
+        <Properties>
+          <string name="Name">RhododendronVar02</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">RBXD88A638151BD4F169B50FDC619A5D703</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXA241C240901B4FF391766DD0413549BB">
+          <Properties>
+            <string name="Name">Leaves</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.12368089</X>
+              <Y>2.11215963</Y>
+              <Z>1.92400801</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>9.98382854</X>
+              <Y>5.11374187</Y>
+              <Z>12.2584438</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>1.69079475</X>
+              <Y>1.12326971</Y>
+              <Z>0</Z>
+              <R00>-0.116250217</R00>
+              <R01>0</R01>
+              <R02>0.993220508</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.993219435</R20>
+              <R21>0</R21>
+              <R22>-0.116250351</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://5547038674</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+          <Item class="SurfaceAppearance" referent="RBX3388239714E044FE953C2CA57859A499">
+            <Properties>
+              <string name="Name">SurfaceAppearance</string>
+              <Content name="ColorMap"><url>rbxassetid://5164021540</url></Content>
+              <token name="AlphaMode">1</token>
+              <Content name="RoughnessMap"><url>rbxassetid://5164022409</url></Content>
+              <Color3 name="Color">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              <float name="EmissiveStrength">1</float>
+              <Content name="MetalnessMap"><url>rbxassetid://6036394111</url></Content>
+              <token name="ResampleMode">0</token>
+              <Color3 name="EmissiveTint">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              
+              <bool name="archivable">true</bool>
+              <Content name="NormalMap"><url>rbxassetid://5164022093</url></Content>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="MeshPart" referent="RBXD88A638151BD4F169B50FDC619A5D703">
+          <Properties>
+            <string name="Name">Trunk</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>2.31578324</X>
+              <Y>2.14239178</Y>
+              <Z>0.955266488</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>5.60673428</X>
+              <Y>5.18693686</Y>
+              <Z>6.08629513</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>1.79351085</X>
+              <Y>1.07119589</Y>
+              <Z>-0.034666</Z>
+              <R00>-0.116250217</R00>
+              <R01>0</R01>
+              <R02>0.993220508</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.993219435</R20>
+              <R21>0</R21>
+              <R22>-0.116250351</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://5547038630</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+          <Item class="SurfaceAppearance" referent="RBXDA07F7563F70498F91CA418E7DFC0CEA">
+            <Properties>
+              <string name="Name">SurfaceAppearance</string>
+              <Content name="ColorMap"><url>rbxassetid://5164022511</url></Content>
+              <token name="AlphaMode">0</token>
+              <Content name="RoughnessMap"><url>rbxassetid://5164022664</url></Content>
+              <Color3 name="Color">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              <float name="EmissiveStrength">1</float>
+              
+              <token name="ResampleMode">0</token>
+              <Color3 name="EmissiveTint">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              
+              <bool name="archivable">true</bool>
+              <Content name="NormalMap"><url>rbxassetid://5164022594</url></Content>
+            </Properties>
+          </Item>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXADFD86845A784958AC65F954A60FF938">
+      <Properties>
+        <string name="Name">Dense hedge foliage 3</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">AQAAAA0AAABTb3VyY2VBc3NldElkAgoAAAA5MTg3MTE4Mzc3</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX3BAF417C965A4B1B9246F748726B238F">
+        <Properties>
+          <string name="Name">RhododendronVar02</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">RBXC62D699A1E48480E9A8530ECDF87E221</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXF74ADABC80094E2E90B043A7F5599B8A">
+          <Properties>
+            <string name="Name">Leaves</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.12368089</X>
+              <Y>2.11215963</Y>
+              <Z>1.92400801</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>9.98382854</X>
+              <Y>5.11374187</Y>
+              <Z>12.2584438</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>5.07238525</X>
+              <Y>1.12326971</Y>
+              <Z>0</Z>
+              <R00>-0.116250217</R00>
+              <R01>0</R01>
+              <R02>0.993220508</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.993219435</R20>
+              <R21>0</R21>
+              <R22>-0.116250351</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://5547038674</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+          <Item class="SurfaceAppearance" referent="RBX1543EB5376284B10BB0FCC1948D52BDC">
+            <Properties>
+              <string name="Name">SurfaceAppearance</string>
+              <Content name="ColorMap"><url>rbxassetid://5164021540</url></Content>
+              <token name="AlphaMode">1</token>
+              <Content name="RoughnessMap"><url>rbxassetid://5164022409</url></Content>
+              <Color3 name="Color">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              <float name="EmissiveStrength">1</float>
+              <Content name="MetalnessMap"><url>rbxassetid://6036394111</url></Content>
+              <token name="ResampleMode">0</token>
+              <Color3 name="EmissiveTint">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              
+              <bool name="archivable">true</bool>
+              <Content name="NormalMap"><url>rbxassetid://5164022093</url></Content>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="MeshPart" referent="RBXC62D699A1E48480E9A8530ECDF87E221">
+          <Properties>
+            <string name="Name">Trunk</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>2.31578324</X>
+              <Y>2.14239178</Y>
+              <Z>0.955266488</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>5.60673428</X>
+              <Y>5.18693686</Y>
+              <Z>6.08629513</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>5.17510055</X>
+              <Y>1.07119589</Y>
+              <Z>-0.034666</Z>
+              <R00>-0.116250217</R00>
+              <R01>0</R01>
+              <R02>0.993220508</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.993219435</R20>
+              <R21>0</R21>
+              <R22>-0.116250351</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://5547038630</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+          <Item class="SurfaceAppearance" referent="RBX2A20E4F57EF04397988643DCF2DD0C93">
+            <Properties>
+              <string name="Name">SurfaceAppearance</string>
+              <Content name="ColorMap"><url>rbxassetid://5164022511</url></Content>
+              <token name="AlphaMode">0</token>
+              <Content name="RoughnessMap"><url>rbxassetid://5164022664</url></Content>
+              <Color3 name="Color">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              <float name="EmissiveStrength">1</float>
+              
+              <token name="ResampleMode">0</token>
+              <Color3 name="EmissiveTint">
+                <R>1</R>
+                <G>1</G>
+                <B>1</B>
+              </Color3>
+              
+              <bool name="archivable">true</bool>
+              <Content name="NormalMap"><url>rbxassetid://5164022594</url></Content>
+            </Properties>
+          </Item>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

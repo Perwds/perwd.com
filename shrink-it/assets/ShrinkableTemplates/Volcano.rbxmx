@@ -1,0 +1,74 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX9C4EA95E3A4B4B998EE32E4B687471D0">
+    <Properties>
+      <string name="Name">Volcano</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIHAAAAdm9sY2Fubw0AAABTb3VyY2VBc3NldElkAgoAAAAzMzg5NzM3NzUy</BinaryString>
+    </Properties>
+    <Item class="MeshPart" referent="RBX205D16B6973046019072DD152F571C6E">
+      <Properties>
+        <string name="Name">Volcano</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4284177769</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">800</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>42.0000067</X>
+          <Y>32.2587957</Y>
+          <Z>42.0000067</Z>
+        </Vector3>
+        <token name="CollisionFidelity">0</token>
+        <Vector3 name="InitialSize">
+          <X>1440</X>
+          <Y>740.012939</Y>
+          <Z>1440</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>-9.32630709e-16</X>
+          <Y>16.1293979</Y>
+          <Z>1.55295698e-15</Z>
+          <R00>0.0549549796</R00>
+          <R01>0</R01>
+          <R02>-0.998488784</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0.998488903</R20>
+          <R21>0</R21>
+          <R22>0.0549549721</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>rbxassetid://3389709267</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

@@ -1,0 +1,3653 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX4980441392C24F319BAB3D93C27B7858">
+    <Properties>
+      <string name="Name">Tropical palm tree</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIJAAAAcGFsbV90cmVlDQAAAFNvdXJjZUFzc2V0SWQCDgAAADk5ODA4OTE5NTYxMzgzDQAAAFNvdXJjZUNyZWF0b3ICDQAAADNEVGh1bmRlcmJvbHQ=</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX65A5ADD231624B8D867AF3BBF5790C17">
+      <Properties>
+        <string name="Name">_selected_palm</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="Model" referent="RBXA96BEEEEFF24473E9F007141F6144867">
+        <Properties>
+          <string name="Name">Bud</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXFD649E3FD227436AB4BE0709F6E15750">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.044</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.820040513</X>
+              <Y>0.674792237</Y>
+              <Z>0.999138005</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>26.2977791</X>
+              <Y>21.6398315</Y>
+              <Z>32.0412331</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.465543295</X>
+              <Y>10.986341</Y>
+              <Z>0.539910493</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626852771</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX5560ED1ADFC248C985A505C891681C04">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.045</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.922241188</X>
+              <Y>0.674790473</Y>
+              <Z>0.911141365</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>29.5752411</X>
+              <Y>21.6397705</Y>
+              <Z>29.2192802</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.543628295</X>
+              <Y>12.7140789</Y>
+              <Z>0.187744071</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626853171</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX250ED1170D844213B7126D7F4A49968F">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.045</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.922241188</X>
+              <Y>0.674790473</Y>
+              <Z>0.911141365</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>29.5752411</X>
+              <Y>21.6397705</Y>
+              <Z>29.2192802</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.543617515</X>
+              <Y>11.0209747</Y>
+              <Z>0.187736775</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626853171</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXC916808E81234EB58D56C08047798692">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.046</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.559090338</X>
+              <Y>0.674790473</Y>
+              <Z>1.16663242</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>17.9293976</X>
+              <Y>21.6397705</Y>
+              <Z>37.41259</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.430748206</X>
+              <Y>12.4985567</Y>
+              <Z>0.228849465</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626853479</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX5BF04B90A301473791BA82E7EB79117C">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.046</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.559090338</X>
+              <Y>0.674790473</Y>
+              <Z>1.16663242</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>17.9293976</X>
+              <Y>21.6397705</Y>
+              <Z>37.41259</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.430741483</X>
+              <Y>10.8054487</Y>
+              <Z>0.228825242</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626853479</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXF21283809C0F4EB3AD6BED11A4298C6D">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.047</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.16894918</X>
+              <Y>0.674786754</Y>
+              <Z>0.543665932</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>37.4868851</X>
+              <Y>21.6396484</Y>
+              <Z>17.4347572</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.287868685</X>
+              <Y>12.5496768</Y>
+              <Z>-0.206458247</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626853806</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX765A0719750740538C6F3CE6EFAEC7DB">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.047</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.16894918</X>
+              <Y>0.674786754</Y>
+              <Z>0.543665932</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>37.4868851</X>
+              <Y>21.6396484</Y>
+              <Z>17.4347572</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.287874795</X>
+              <Y>10.8565657</Y>
+              <Z>-0.206481807</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626853806</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX374D838198844131ACE66FC8F7E72684">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.048</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.16691661</X>
+              <Y>0.67478847</Y>
+              <Z>0.564022411</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>37.4217072</X>
+              <Y>21.6397095</Y>
+              <Z>18.0875645</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.122783825</X>
+              <Y>12.2519562</Y>
+              <Z>0.872437028</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626854147</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX44060A43E8E14782AD70D4DCFB958C1F">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.048</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.16691661</X>
+              <Y>0.67478847</Y>
+              <Z>0.564022411</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>37.4217072</X>
+              <Y>21.6397095</Y>
+              <Z>18.0875645</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.122788505</X>
+              <Y>10.5588398</Y>
+              <Z>0.872414617</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626854147</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXB2F306E44ADC4D15A8436AA195780D95">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.049</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.770531764</X>
+              <Y>0.674790473</Y>
+              <Z>1.07770108</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>24.7100887</X>
+              <Y>21.6397705</Y>
+              <Z>34.5606613</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.714193065</X>
+              <Y>12.3482484</Y>
+              <Z>0.222494509</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626854539</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX6EA0CF4934904964ADA84BE3317CE5F1">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.049</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.770531764</X>
+              <Y>0.674790473</Y>
+              <Z>1.07770108</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>24.7100887</X>
+              <Y>21.6397705</Y>
+              <Z>34.5606613</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.714181045</X>
+              <Y>10.6551389</Y>
+              <Z>0.222488262</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626854539</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX1A1293D67A414757AB24005533C5D7B6">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.050</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.13624004</X>
+              <Y>0.674786754</Y>
+              <Z>0.676139494</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>36.4379425</X>
+              <Y>21.6396484</Y>
+              <Z>21.683033</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.0920120753</X>
+              <Y>12.321721</Y>
+              <Z>-0.193603857</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626854856</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX162898353C364EDDA228FD67F3423F73">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.050</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.13624004</X>
+              <Y>0.674786754</Y>
+              <Z>0.676139494</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>36.4379425</X>
+              <Y>21.6396484</Y>
+              <Z>21.683033</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.0920015853</X>
+              <Y>10.6286175</Y>
+              <Z>-0.193611287</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626854856</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXF17277B7EE124C289B9A0A0410918436">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.052</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.700884928</X>
+              <Y>0.67478847</Y>
+              <Z>1.06029098</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>22.476593</X>
+              <Y>21.6397095</Y>
+              <Z>34.0023422</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.251974249</X>
+              <Y>10.4725582</Y>
+              <Z>0.197386106</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626855612</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXEE4EA19AAC89476D931DD611A0E55FC9">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.052</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.700884928</X>
+              <Y>0.67478847</Y>
+              <Z>1.06029098</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>22.476593</X>
+              <Y>21.6397095</Y>
+              <Z>34.0023422</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.251997566</X>
+              <Y>12.1656616</Y>
+              <Z>0.197358354</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626855612</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXA8AC5627CA65461195DC2D70E0F4226A">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.053</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.809531587</X>
+              <Y>0.544437551</Y>
+              <Z>1.08688612</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>25.9607658</X>
+              <Y>17.4595032</Y>
+              <Z>34.8552208</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.477609955</X>
+              <Y>9.83111639</Y>
+              <Z>0.375635686</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626855950</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXCCEF861F1B704BDAB28DE01D2C40B2A9">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.053</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.809531587</X>
+              <Y>0.544437551</Y>
+              <Z>1.08688612</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>25.9607658</X>
+              <Y>17.4595032</Y>
+              <Z>34.8552208</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.477637415</X>
+              <Y>11.5242122</Y>
+              <Z>0.375626912</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626855950</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX83B32E7487E24A5486091AFBDF4C6DFE">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.054</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.13624004</X>
+              <Y>0.674789424</Y>
+              <Z>0.676139494</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>36.4379463</X>
+              <Y>21.63974</Y>
+              <Z>21.6830349</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.0678243953</X>
+              <Y>9.89569468</Y>
+              <Z>-0.156220177</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626856345</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX38FE1749868C44CBB6B7BF050C0FE422">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.054</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.13624004</X>
+              <Y>0.674789424</Y>
+              <Z>0.676139494</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>36.4379463</X>
+              <Y>21.63974</Y>
+              <Z>21.6830349</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.0678365053</X>
+              <Y>11.5888042</Y>
+              <Z>-0.156214067</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626856345</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX394339EE58204357A1BF67DDCFA56589">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.055</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.631147492</X>
+              <Y>0.634858289</Y>
+              <Z>1.16219535</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>20.2401924</X>
+              <Y>20.3591919</Y>
+              <Z>37.2703018</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.308749239</X>
+              <Y>9.90908809</Y>
+              <Z>0.260028868</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626856651</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXE4D02FCD461B4D708753D523901BA496">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.055</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.631147492</X>
+              <Y>0.634858289</Y>
+              <Z>1.16219535</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>20.2401924</X>
+              <Y>20.3591919</Y>
+              <Z>37.2703018</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.308735887</X>
+              <Y>11.6022037</Y>
+              <Z>0.260033827</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626856651</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX29717C9BD3314938A1C5F9CD46D7F285">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.056</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.700885023</X>
+              <Y>0.674789424</Y>
+              <Z>1.06029146</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>22.4765968</X>
+              <Y>21.63974</Y>
+              <Z>34.0023499</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.0326885597</X>
+              <Y>9.44411203</Y>
+              <Z>0.23191677</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626856962</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXAC69259EF72F4BB98949F2D33EDD3F10">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.056</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.700885023</X>
+              <Y>0.674789424</Y>
+              <Z>1.06029146</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>22.4765968</X>
+              <Y>21.63974</Y>
+              <Z>34.0023499</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.0326778777</X>
+              <Y>11.1372162</Y>
+              <Z>0.231924161</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626856962</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXDF9B69702DE04AD1ABCCAE17A3079656">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.057</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.16686168</X>
+              <Y>0.67478847</Y>
+              <Z>0.564379944</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>37.4199371</X>
+              <Y>21.6397095</Y>
+              <Z>18.0990295</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.253875805</X>
+              <Y>10.1899896</Y>
+              <Z>-0.227715087</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626857351</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX54D716205DCB46B2B580D06D20B394E8">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.057</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.16686168</X>
+              <Y>0.67478847</Y>
+              <Z>0.564379944</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>37.4199371</X>
+              <Y>21.6397095</Y>
+              <Z>18.0990295</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.253871035</X>
+              <Y>11.883106</Y>
+              <Z>-0.227692777</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626857351</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX9D6F0AEE500F4277B7E3A805970E1F87">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.058</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.16691661</X>
+              <Y>0.674789424</Y>
+              <Z>0.564022125</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>37.4217072</X>
+              <Y>21.63974</Y>
+              <Z>18.0875549</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.106926025</X>
+              <Y>9.72376386</Y>
+              <Z>0.758774324</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626857722</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXE6F27F58E65645C79CB28CC3600B780A">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.058</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.16691661</X>
+              <Y>0.674789424</Y>
+              <Z>0.564022125</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>37.4217072</X>
+              <Y>21.63974</Y>
+              <Z>18.0875549</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.106904185</X>
+              <Y>11.4168734</Y>
+              <Z>0.758745189</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626857722</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX258823EEF9C440848C0DD405C7629456">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.059</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.770531859</X>
+              <Y>0.674792237</Y>
+              <Z>1.07770108</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>24.7100906</X>
+              <Y>21.6398315</Y>
+              <Z>34.5606613</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.477289515</X>
+              <Y>9.65178277</Y>
+              <Z>0.286354541</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626858239</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXFF4FE7AFB1304FAC8A6C898D4E8C5C95">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.059</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.770531859</X>
+              <Y>0.674792237</Y>
+              <Z>1.07770108</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>24.7100906</X>
+              <Y>21.6398315</Y>
+              <Z>34.5606613</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.477302675</X>
+              <Y>11.3448984</Y>
+              <Z>0.286359595</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626858239</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXC89A2163C71B4CB2988E25A008B44176">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.060</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.922240998</X>
+              <Y>0.67478847</Y>
+              <Z>0.911141365</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>29.5752354</X>
+              <Y>21.6397095</Y>
+              <Z>29.2192802</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.519511195</X>
+              <Y>10.2880518</Y>
+              <Z>0.225127558</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626858696</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXB1B380D2D5E74831B280BBA8A5658D8A">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.060</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.922240998</X>
+              <Y>0.67478847</Y>
+              <Z>0.911141365</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>29.5752354</X>
+              <Y>21.6397095</Y>
+              <Z>29.2192802</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.519521965</X>
+              <Y>11.981156</Y>
+              <Z>0.225134711</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626858696</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX506E3647615E4D9FB8101EFB958AFC73">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.061</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.820040323</X>
+              <Y>0.674786754</Y>
+              <Z>0.999138005</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>26.2977695</X>
+              <Y>21.6396484</Y>
+              <Z>32.0412331</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.391694325</X>
+              <Y>10.3401164</Y>
+              <Z>0.596356322</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626859173</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX33461488D41D43FD8FD0EB81F2930B61">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.061</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.820040323</X>
+              <Y>0.674786754</Y>
+              <Z>0.999138005</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>26.2977695</X>
+              <Y>21.6396484</Y>
+              <Z>32.0412331</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.391705105</X>
+              <Y>12.0332206</Y>
+              <Z>0.596363665</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626859173</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX6E9AED67BB4B464FA42D5177562F7C49">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.062</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.04426915</X>
+              <Y>0.622117907</Y>
+              <Z>0.781801151</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>33.4885368</X>
+              <Y>19.9506226</Y>
+              <Z>25.0714836</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.0235553753</X>
+              <Y>9.27307767</Y>
+              <Z>0.541824995</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626859627</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX75FD393908F2452C98AB41D69F142402">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.062</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.04426915</X>
+              <Y>0.622117907</Y>
+              <Z>0.781801151</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>33.4885368</X>
+              <Y>19.9506226</Y>
+              <Z>25.0714836</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.0235674853</X>
+              <Y>10.9661872</Y>
+              <Z>0.541831051</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626859627</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX61077CF79AF74E488E468DDE417B6839">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.063</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.701048388</X>
+              <Y>0.674787516</Y>
+              <Z>1.06016815</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>22.4818363</X>
+              <Y>21.639679</Y>
+              <Z>33.9984055</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.398667595</X>
+              <Y>9.23342844</Y>
+              <Z>0.415151781</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626860118</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX7EC7934459364D98B8D8C553A58889EF">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.063</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.701048388</X>
+              <Y>0.674787516</Y>
+              <Z>1.06016815</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>22.4818363</X>
+              <Y>21.639679</Y>
+              <Z>33.9984055</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.398627545</X>
+              <Y>10.9265395</Y>
+              <Z>0.415140193</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626860118</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX9B72665B3A8E4812B02F7DE026EEDCE4">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.064</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.0212975</X>
+              <Y>0.654094391</Y>
+              <Z>0.786430432</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>32.7518578</X>
+              <Y>20.9760742</Y>
+              <Z>25.219944</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.0655474307</X>
+              <Y>10.9909667</Y>
+              <Z>0.688811869</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626860419</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX99475978ADAE45C7AA58C905D7EAC1E9">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.064</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.0212975</X>
+              <Y>0.654094391</Y>
+              <Z>0.786430432</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>32.7518578</X>
+              <Y>20.9760742</Y>
+              <Z>25.219944</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.0655476217</X>
+              <Y>12.6840625</Y>
+              <Z>0.688829703</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626860419</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBXD3A08F6C39CB43B897EB596468773B06">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.065</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.15080351</X>
+              <Y>0.67478847</Y>
+              <Z>0.636576335</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>36.9049759</X>
+              <Y>21.6397095</Y>
+              <Z>20.4142838</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.132771475</X>
+              <Y>11.2237588</Y>
+              <Z>0.896669385</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626860754</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX0C91675424604AF0A296486F9F76DCA3">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.065</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>1.15080351</X>
+              <Y>0.67478847</Y>
+              <Z>0.636576335</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>36.9049759</X>
+              <Y>21.6397095</Y>
+              <Z>20.4142838</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.132782065</X>
+              <Y>12.916863</Y>
+              <Z>0.896676752</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626860754</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX2FE1973537014081AC295552B6B785B8">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.066</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.641497298</X>
+              <Y>0.654094391</Y>
+              <Z>1.15338196</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>20.5720997</X>
+              <Y>20.9760742</Y>
+              <Z>36.9876556</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.36011465</X>
+              <Y>11.1852647</Y>
+              <Z>0.309971205</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626861153</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX57BD46B43E2648868274817B8B7B302D">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.066</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.641497298</X>
+              <Y>0.654094391</Y>
+              <Z>1.15338196</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>20.5720997</X>
+              <Y>20.9760742</Y>
+              <Z>36.9876556</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.360137872</X>
+              <Y>12.8783689</Y>
+              <Z>0.309943453</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626861153</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX095C74B894B34632828F0B47ECB2C041">
+          <Properties>
+            <string name="Name">Meshes/palm tree_AM113_073_Washingtonia_filifera.044</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4292330906</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">832</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>0.820040513</X>
+              <Y>0.674792237</Y>
+              <Z>0.999138005</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>26.2977791</X>
+              <Y>21.6398315</Y>
+              <Z>32.0412331</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.465554075</X>
+              <Y>12.6794445</Y>
+              <Z>0.539917836</Z>
+              <R00>-0.99999994</R00>
+              <R01>-1.63912773e-07</R01>
+              <R02>-5.96046448e-08</R02>
+              <R10>1.63912773e-07</R10>
+              <R11>0.999999642</R11>
+              <R12>-7.4505806e-08</R12>
+              <R20>-2.98023224e-08</R20>
+              <R21>4.47034836e-08</R21>
+              <R22>-0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://8626852771</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">true</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="Part" referent="RBX22624334ACFD4AD189DA79908FBFAAB1">
+        <Properties>
+          <string name="Name">Part</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4289696899</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">1312</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>0.668719855</X>
+            <Y>1.12284396</Y>
+            <Z>0.818462467</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">2</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.405761515</X>
+            <Y>4.71216521</Y>
+            <Z>0.504012831</Z>
+            <R00>-0.0916883722</R00>
+            <R01>-0.652394056</R01>
+            <R02>-0.752313495</R02>
+            <R10>0.990267873</R10>
+            <R11>-0.13917321</R11>
+            <R12>1.49011612e-07</R12>
+            <R20>-0.104701877</R20>
+            <R21>-0.74499166</R21>
+            <R22>0.65880543</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX493CA53552B74C1F9711B84C9EEEFBCD">
+        <Properties>
+          <string name="Name">Part</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4289696899</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">1312</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>3.43623173</X>
+            <Y>1.12284396</Y>
+            <Z>0.818462467</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">2</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.298845585</X>
+            <Y>6.71821596</Y>
+            <Z>0.381928033</Z>
+            <R00>-0.0459562838</R00>
+            <R01>-0.657200634</R01>
+            <R02>-0.752313316</R02>
+            <R10>0.997563779</R10>
+            <R11>-0.0697566196</R11>
+            <R12>1.78813934e-07</R12>
+            <R20>-0.052478835</R20>
+            <R21>-0.750480652</R21>
+            <R22>0.65880549</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="MeshPart" referent="RBX1ADFB54340914329B1BF99316BD141E6">
+        <Properties>
+          <string name="Name">Meshes/meshPart</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288700213</Color3uint8>
+          <bool name="Anchored">true</bool>
+          
+          <token name="RenderFidelity">1</token>
+          <token name="Material">832</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.51116261</X>
+            <Y>6.87387337</Y>
+            <Z>1.55078224</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>40.3942261</X>
+            <Y>46.3039246</Y>
+            <Z>14.3855228</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.532443405</X>
+            <Y>3.62089094</Y>
+            <Z>0.726377985</Z>
+            <R00>-0.616610467</R00>
+            <R01>0.0745572448</R01>
+            <R02>-0.783730149</R02>
+            <R10>-0.053276062</R10>
+            <R11>-0.997174919</R11>
+            <R12>-0.0529463887</R12>
+            <R20>-0.78546387</R20>
+            <R21>0.00910666585</R21>
+            <R22>0.618840754</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://8788157008</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="MeshPart" referent="RBX7B5A64996B5640A3BB1EF9E5BC484827">
+        <Properties>
+          <string name="Name">sand hill</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4291595881</Color3uint8>
+          <bool name="Anchored">true</bool>
+          
+          <token name="RenderFidelity">1</token>
+          <token name="Material">1360</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>2.14520261</X>
+            <Y>1.16480976</Y>
+            <Z>2.21487067</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>244.445312</X>
+            <Y>49.9999962</Y>
+            <Z>244.445312</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.400751955</X>
+            <Y>4.86737161</Y>
+            <Z>0.515978019</Z>
+            <R00>-0.761676073</R00>
+            <R01>-1.63912773e-07</R01>
+            <R02>0.6479581</R02>
+            <R10>9.12696123e-08</R10>
+            <R11>0.999999642</R11>
+            <R12>-8.94069672e-08</R12>
+            <R20>-0.6479581</R20>
+            <R21>4.47034836e-08</R21>
+            <R22>-0.761675894</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://1155182527</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="MeshPart" referent="RBXC54B1FE2825E48F9B3C337147E6D50F3">
+        <Properties>
+          <string name="Name">Meshes/meshPart</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288700213</Color3uint8>
+          <bool name="Anchored">true</bool>
+          
+          <token name="RenderFidelity">1</token>
+          <token name="Material">832</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.51116261</X>
+            <Y>6.87387337</Y>
+            <Z>1.55078224</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>40.3942261</X>
+            <Y>46.3039246</Y>
+            <Z>14.3855228</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.819053255</X>
+            <Y>3.64103714</Y>
+            <Z>0.586139888</Z>
+            <R00>-0.964157343</R00>
+            <R01>0.0745574236</R01>
+            <R02>0.254640281</R02>
+            <R10>-0.0697503537</R10>
+            <R11>-0.997174799</R11>
+            <R12>0.0278668627</R12>
+            <R20>0.255998582</R20>
+            <R21>0.00910666585</R21>
+            <R22>0.966634393</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://8788157008</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXCC93028330A340B980ECB978BF72685F">
+        <Properties>
+          <string name="Name">Leaves</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">1312</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>0.189018203</X>
+            <Y>0.411608316</Y>
+            <Z>0.195720988</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0.100000001</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.150588035</X>
+            <Y>12.3702661</Y>
+            <Z>0.416767878</Z>
+            <R00>-0.664718688</R00>
+            <R01>-0.0448453724</R01>
+            <R02>-0.745746672</R02>
+            <R10>-0.0691893995</R10>
+            <R11>0.997601867</R11>
+            <R12>0.00168155693</R12>
+            <R20>0.743882895</R20>
+            <R21>0.0527156442</R21>
+            <R22>-0.666227579</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="SpecialMesh" referent="RBXF0FC413F796D4D2DAB40169C6575BBE6">
+          <Properties>
+            <string name="Name">Mesh</string>
+            <Vector3 name="Offset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <Vector3 name="VertexColor">
+              <X>1</X>
+              <Y>1</Y>
+              <Z>1</Z>
+            </Vector3>
+            <token name="MeshType">5</token>
+            <Vector3 name="Scale">
+              <X>0.163573546</X>
+              <Y>0.356199776</Y>
+              <Z>0.169373976</Z>
+            </Vector3>
+            <Content name="MeshId">
+              <url>rbxassetid://743209371</url>
+            </Content>
+            <bool name="archivable">true</bool>
+            <Content name="TextureId">
+              <url>rbxassetid://1354364345</url>
+            </Content>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="Part" referent="RBX2032D80061754D45875F0ED935770EC2">
+        <Properties>
+          <string name="Name">Leaves</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">1312</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>0.189018203</X>
+            <Y>0.411608316</Y>
+            <Z>0.195720988</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0.100000001</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.140759365</X>
+            <Y>12.3636621</Y>
+            <Z>0.533475309</Z>
+            <R00>-0.372416645</R00>
+            <R01>-0.0448452979</R01>
+            <R02>0.926981509</R02>
+            <R10>0.032270208</R10>
+            <R11>0.997601867</R11>
+            <R12>0.0612259507</R12>
+            <R20>-0.927504301</R20>
+            <R21>0.0527155846</R21>
+            <R22>-0.370076388</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="SpecialMesh" referent="RBX0F063DD495574078B055090FD73A3484">
+          <Properties>
+            <string name="Name">Mesh</string>
+            <Vector3 name="Offset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <Vector3 name="VertexColor">
+              <X>1</X>
+              <Y>1</Y>
+              <Z>1</Z>
+            </Vector3>
+            <token name="MeshType">5</token>
+            <Vector3 name="Scale">
+              <X>0.163573546</X>
+              <Y>0.356199776</Y>
+              <Z>0.169373976</Z>
+            </Vector3>
+            <Content name="MeshId">
+              <url>rbxassetid://743209371</url>
+            </Content>
+            <bool name="archivable">true</bool>
+            <Content name="TextureId">
+              <url>rbxassetid://1354364345</url>
+            </Content>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="Part" referent="RBXFF7F7D04435046059241FF73A79E1C9A">
+        <Properties>
+          <string name="Name">Leaves</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">1312</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>0.189018203</X>
+            <Y>0.333348817</Y>
+            <Z>0.154400469</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0.100000001</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.123633935</X>
+            <Y>12.3320138</Y>
+            <Z>0.375343861</Z>
+            <R00>-0.991783977</R00>
+            <R01>-0.0448452979</R01>
+            <R02>-0.119806379</R02>
+            <R10>-0.0507876277</R10>
+            <R11>0.997601867</R11>
+            <R12>0.0470171124</R12>
+            <R20>0.117410451</R20>
+            <R21>0.0527155846</R21>
+            <R22>-0.991683245</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="SpecialMesh" referent="RBX5EFE50C332FD4C919C474B191DE41413">
+          <Properties>
+            <string name="Name">Mesh</string>
+            <Vector3 name="Offset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <Vector3 name="VertexColor">
+              <X>1</X>
+              <Y>1</Y>
+              <Z>1</Z>
+            </Vector3>
+            <token name="MeshType">5</token>
+            <Vector3 name="Scale">
+              <X>0.163573546</X>
+              <Y>0.288475119</Y>
+              <Z>0.133615849</Z>
+            </Vector3>
+            <Content name="MeshId">
+              <url>rbxassetid://743209371</url>
+            </Content>
+            <bool name="archivable">true</bool>
+            <Content name="TextureId">
+              <url>rbxassetid://1354364345</url>
+            </Content>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="Part" referent="RBXFA62E6263D344096A09E4BDB8AA568C5">
+        <Properties>
+          <string name="Name">Part</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4289696899</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">1312</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>3.43623173</X>
+            <Y>1.12284396</Y>
+            <Z>0.818462467</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">2</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.220753425</X>
+            <Y>10.1110909</Y>
+            <Z>0.292761997</Z>
+            <R00>-1.63912773e-07</R00>
+            <R01>-0.658807933</R01>
+            <R02>-0.752316058</R02>
+            <R10>0.999999642</R10>
+            <R11>6.79865479e-08</R11>
+            <R12>2.08616257e-07</R12>
+            <R20>4.47034836e-08</R20>
+            <R21>-0.752316058</R21>
+            <R22>0.658807993</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Model" referent="RBX0FBA1E656EA84B9E96AF768C2E56211D">
+        <Properties>
+          <string name="Name">Model</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBX2811C5C2923E47D1ABF578C2E921EE7E">
+          <Properties>
+            <string name="Name">Palm Leaf</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4281099549</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">1296</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>6.64564903</X>
+              <Y>6.80590228</Y>
+              <Z>9.80071791</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>33.9038849</X>
+              <Y>34.7214432</Y>
+              <Z>50</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.216674398</X>
+              <Y>16.614489</Y>
+              <Z>-3.72717051</Z>
+              <R00>-0.896237969</R00>
+              <R01>-0.167979032</R01>
+              <R02>0.410536885</R02>
+              <R10>-0.0171850994</R10>
+              <R11>0.937975824</R11>
+              <R12>0.346273422</R12>
+              <R20>-0.443240464</R20>
+              <R21>0.3032884</R21>
+              <R22>-0.843536377</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://3764176474</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>-2.48721266</X>
+              <Y>-3.83463073</Y>
+              <Z>-5.79190397</Z>
+              <R00>0.842986226</R00>
+              <R01>0.0966205448</R01>
+              <R02>0.529187202</R02>
+              <R10>0.22343336</R10>
+              <R11>0.831977308</R11>
+              <R12>-0.507830381</R12>
+              <R20>-0.489338428</R20>
+              <R21>0.546331882</R21>
+              <R22>0.67975688</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX0C3F6D28086C4EC9A82F7550B3170008">
+          <Properties>
+            <string name="Name">Palm Leaf</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4281099549</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">1296</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>6.64564903</X>
+              <Y>6.80590228</Y>
+              <Z>9.80071791</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>33.9038849</X>
+              <Y>34.7214432</Y>
+              <Z>50</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-3.35902374</X>
+              <Y>16.7231012</Y>
+              <Z>2.12097124</Z>
+              <R00>-0.129661649</R00>
+              <R01>0.382315665</R01>
+              <R02>-0.914889336</R02>
+              <R10>0.0190029144</R10>
+              <R11>0.923466563</R11>
+              <R12>0.383207142</R12>
+              <R20>0.991376102</R20>
+              <R21>0.0323017798</R21>
+              <R22>-0.127003402</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://3764176474</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>-2.48721266</X>
+              <Y>-3.83463073</Y>
+              <Z>-5.79190397</Z>
+              <R00>0.842986226</R00>
+              <R01>0.0966205448</R01>
+              <R02>0.529187202</R02>
+              <R10>0.22343336</R10>
+              <R11>0.831977308</R11>
+              <R12>-0.507830381</R12>
+              <R20>-0.489338428</R20>
+              <R21>0.546331882</R21>
+              <R22>0.67975688</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX948361CCD6B5497BAADAC099C63E85CF">
+          <Properties>
+            <string name="Name">Palm Leaf</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4281099549</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">1296</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>5.34848931</X>
+              <Y>0.863403257</Y>
+              <Z>7.51484595</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>33.9038849</X>
+              <Y>34.7214432</Y>
+              <Z>50</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.40484873</X>
+              <Y>16.5903405</Y>
+              <Z>0.459039093</Z>
+              <R00>0.0960029662</R00>
+              <R01>0.960207582</R01>
+              <R02>-0.262268662</R02>
+              <R10>0.487792313</R10>
+              <R11>0.184293345</R11>
+              <R12>0.853284359</R12>
+              <R20>0.867664695</R20>
+              <R21>-0.209850371</R21>
+              <R22>-0.450689256</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://3764176474</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>-2.00173569</X>
+              <Y>-0.486464858</Y>
+              <Z>-4.44102812</Z>
+              <R00>0.842986226</R00>
+              <R01>0.0966205448</R01>
+              <R02>0.529187202</R02>
+              <R10>0.22343336</R10>
+              <R11>0.831977308</R11>
+              <R12>-0.507830381</R12>
+              <R20>-0.489338428</R20>
+              <R21>0.546331882</R21>
+              <R22>0.67975688</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX154D695AFB29446E8611D9073AD80DFD">
+          <Properties>
+            <string name="Name">Palm Leaf</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4281099549</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">1296</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>6.64564903</X>
+              <Y>6.80590228</Y>
+              <Z>9.80071791</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>33.9038849</X>
+              <Y>34.7214432</Y>
+              <Z>50</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>3.3341389</X>
+              <Y>16.8465815</Y>
+              <Z>-1.59583395</Z>
+              <R00>0.123965293</R00>
+              <R01>-0.414132416</R01>
+              <R02>0.901735604</R02>
+              <R10>-0.0248290002</R10>
+              <R11>0.907165885</R11>
+              <R12>0.420039296</R12>
+              <R20>-0.991975904</R20>
+              <R21>-0.0744594634</R21>
+              <R22>0.102174699</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://3764176474</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>-2.48721266</X>
+              <Y>-3.83463073</Y>
+              <Z>-5.79190397</Z>
+              <R00>0.842986226</R00>
+              <R01>0.0966205448</R01>
+              <R02>0.529187202</R02>
+              <R10>0.22343336</R10>
+              <R11>0.831977308</R11>
+              <R12>-0.507830381</R12>
+              <R20>-0.489338428</R20>
+              <R21>0.546331882</R21>
+              <R22>0.67975688</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+        <Item class="MeshPart" referent="RBX7FEFEA81F644493CB2925B18A8511F1E">
+          <Properties>
+            <string name="Name">Palm Leaf</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4281099549</Color3uint8>
+            <bool name="Anchored">true</bool>
+            
+            <token name="RenderFidelity">1</token>
+            <token name="Material">1296</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>6.64564903</X>
+              <Y>6.80590228</Y>
+              <Z>9.80071791</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>33.9038849</X>
+              <Y>34.7214432</Y>
+              <Z>50</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.951035225</X>
+              <Y>16.4485038</Y>
+              <Z>4.03519759</Z>
+              <R00>0.694818974</R00>
+              <R01>0.216578871</R01>
+              <R02>-0.685798883</R02>
+              <R10>-0.0072174971</R10>
+              <R11>0.955629587</R11>
+              <R12>0.294481009</R12>
+              <R20>0.719148457</R20>
+              <R21>-0.19966118</R21>
+              <R22>0.665552974</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://3764176474</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>-2.48721266</X>
+              <Y>-3.83463073</Y>
+              <Z>-5.79190397</Z>
+              <R00>0.842986226</R00>
+              <R01>0.0966205448</R01>
+              <R02>0.529187202</R02>
+              <R10>0.22343336</R10>
+              <R11>0.831977308</R11>
+              <R12>-0.507830381</R12>
+              <R20>-0.489338428</R20>
+              <R21>0.546331882</R21>
+              <R22>0.67975688</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

@@ -1,0 +1,435 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX629E74D08C5B4E8396D79AEEFE80062D">
+    <Properties>
+      <string name="Name">Galaxy Orb</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAABEAAABEcm9wQ2hhbmNlUGVyY2VudAYAAAAAAAAIQAsAAABQYWNrQXNzZXRJZAIKAAAAZ2FsYXh5X29yYg0AAABTb3VyY2VBc3NldElkAg8AAAAxMzU2NzcxNDc5MjU0MDk=</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX6A3408F9BD3A4D3A9F1021F4AB3B8807">
+      <Properties>
+        <string name="Name">Model</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">RBX8DCF25F0981548B8999CE30E7810103E</Ref>
+      </Properties>
+      <Item class="Part" referent="RBX7A2427715C63438CA6FA8281ECA43593">
+        <Properties>
+          <string name="Name">Part</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4278190080</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">288</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>6.59687317</X>
+            <Y>6.59687317</Y>
+            <Z>6.59687317</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">0</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.000193169765</X>
+            <Y>3.49969996</Y>
+            <Z>-0.000167603178</Z>
+            <R00>0.0549549423</R00>
+            <R01>-4.21292583e-07</R01>
+            <R02>-0.998488784</R02>
+            <R10>1.93646121e-09</R10>
+            <R11>1</R11>
+            <R12>-4.21823614e-07</R12>
+            <R20>0.998488903</R20>
+            <R21>2.12477573e-08</R21>
+            <R22>0.0549549349</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="MeshPart" referent="RBX8DCF25F0981548B8999CE30E7810103E">
+        <Properties>
+          <string name="Name">MeshPart</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4290019583</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <Content name="TextureID"><url>rbxassetid://94257533</url></Content>
+          <token name="RenderFidelity">1</token>
+          <token name="Material">1584</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>6.99999929</X>
+            <Y>6.99999929</Y>
+            <Z>6.99999929</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>2.86322403</X>
+            <Y>2.88424492</Y>
+            <Z>2.87055898</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>-1.92954105e-16</X>
+            <Y>3.49999965</Y>
+            <Z>0</Z>
+            <R00>0.0549549796</R00>
+            <R01>5.50005161e-17</R01>
+            <R02>-0.998488784</R02>
+            <R10>1.00082861e-15</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>9.99316236e-16</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://6813496146</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">1</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="Attachment" referent="RBXCE183EDB985344338B48654285D9D887">
+          <Properties>
+            <string name="Name">Attachment</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="ParticleEmitter" referent="RBXACD8401197D54D1DBFECEA1D9AC3CFD7">
+            <Properties>
+              <string name="Name">aura</string>
+              <bool name="WindAffectsDrag">false</bool>
+              <ColorSequence name="Color">0 0.380392164 0.274509817 0.545098066 0 1 0.380392164 0.274509817 0.545098066 0 </ColorSequence>
+              <float name="Drag">0</float>
+              <float name="ZOffset">0</float>
+              <float name="TimeScale">0.5</float>
+              <float name="LightInfluence">0</float>
+              <Content name="Texture">
+                <url>rbxassetid://1084955012</url>
+              </Content>
+              <float name="ShapePartial">1</float>
+              <NumberRange name="Lifetime">1 1 </NumberRange>
+              <NumberRange name="Speed">0.100000001 0.100000001 </NumberRange>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <NumberSequence name="size">0 0 0 1 5.35519123 0 </NumberSequence>
+              <bool name="Enabled">true</bool>
+              <Vector3 name="Acceleration">
+                <X>0</X>
+                <Y>0</Y>
+                <Z>0</Z>
+              </Vector3>
+              <NumberRange name="RotSpeed">-50 50 </NumberRange>
+              <token name="ShapeInOut">0</token>
+              <token name="ShapeStyle">0</token>
+              <bool name="LockedToPart">false</bool>
+              <float name="Rate">80</float>
+              <float name="VelocityInheritance">0</float>
+              <NumberRange name="Rotation">-360 360 </NumberRange>
+              <NumberSequence name="Transparency">0 1 0 0.5 0.162499964 0 1 1 0 </NumberSequence>
+              <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+              <token name="Orientation">3</token>
+              <float name="LightEmission">1</float>
+              <token name="EmissionDirection">1</token>
+              <token name="shape">0</token>
+              <Vector2 name="SpreadAngle">
+                <X>360</X>
+                <Y>360</Y>
+              </Vector2>
+            </Properties>
+          </Item>
+          <Item class="ParticleEmitter" referent="RBX5BAE8F32B9D243239EF1DD44171B3DFF">
+            <Properties>
+              <string name="Name">core</string>
+              <bool name="WindAffectsDrag">false</bool>
+              <ColorSequence name="Color">0 0.380392164 0.274509817 0.545098066 0 1 0.380392164 0.274509817 0.545098066 0 </ColorSequence>
+              <float name="Drag">0</float>
+              <float name="ZOffset">0</float>
+              <float name="TimeScale">0.5</float>
+              <float name="LightInfluence">0</float>
+              <Content name="Texture">
+                <url>http://www.roblox.com/asset/?id=243728104</url>
+              </Content>
+              <float name="ShapePartial">1</float>
+              <NumberRange name="Lifetime">1 1 </NumberRange>
+              <NumberRange name="Speed">0.100000001 0.100000001 </NumberRange>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <NumberSequence name="size">0 0 0 1 5.191257 0 </NumberSequence>
+              <bool name="Enabled">true</bool>
+              <Vector3 name="Acceleration">
+                <X>0</X>
+                <Y>0</Y>
+                <Z>0</Z>
+              </Vector3>
+              <NumberRange name="RotSpeed">-50 50 </NumberRange>
+              <token name="ShapeInOut">0</token>
+              <token name="ShapeStyle">0</token>
+              <bool name="LockedToPart">false</bool>
+              <float name="Rate">80</float>
+              <float name="VelocityInheritance">0</float>
+              <NumberRange name="Rotation">-360 360 </NumberRange>
+              <NumberSequence name="Transparency">0 1 0 0.497754514 0.474999964 0 1 1 0 </NumberSequence>
+              <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+              <token name="Orientation">3</token>
+              <float name="LightEmission">1</float>
+              <token name="EmissionDirection">1</token>
+              <token name="shape">0</token>
+              <Vector2 name="SpreadAngle">
+                <X>360</X>
+                <Y>360</Y>
+              </Vector2>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="ParticleEmitter" referent="RBX809D6F99510F417C910455C6840CAC5A">
+          <Properties>
+            <string name="Name">Shine</string>
+            <bool name="WindAffectsDrag">false</bool>
+            <ColorSequence name="Color">0 0.4627451 0.227450982 0.792156875 0 1 0.4627451 0.227450982 0.792156875 0 </ColorSequence>
+            <float name="Drag">0</float>
+            <float name="ZOffset">2</float>
+            <float name="TimeScale">1</float>
+            <float name="LightInfluence">1</float>
+            <Content name="Texture">
+              <url>rbxassetid://75202463</url>
+            </Content>
+            <float name="ShapePartial">1</float>
+            <NumberRange name="Lifetime">1 1 </NumberRange>
+            <NumberRange name="Speed">0.0500000007 0.0500000007 </NumberRange>
+            <float name="Brightness">1</float>
+            <bool name="archivable">true</bool>
+            <NumberSequence name="size">0 5 0 1 5 0 </NumberSequence>
+            <bool name="Enabled">true</bool>
+            <Vector3 name="Acceleration">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <NumberRange name="RotSpeed">0 0 </NumberRange>
+            <token name="ShapeInOut">0</token>
+            <token name="ShapeStyle">0</token>
+            <bool name="LockedToPart">false</bool>
+            <float name="Rate">100</float>
+            <float name="VelocityInheritance">0</float>
+            <NumberRange name="Rotation">-100 100 </NumberRange>
+            <NumberSequence name="Transparency">0 1 0 0.0500000007 0.980000019 0 0.146957517 0.956250012 0 0.770378828 0.981249988 0 0.84799999 0.980000019 0 1 1 0 </NumberSequence>
+            <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+            <token name="Orientation">0</token>
+            <float name="LightEmission">1</float>
+            <token name="EmissionDirection">1</token>
+            <token name="shape">0</token>
+            <Vector2 name="SpreadAngle">
+              <X>0</X>
+              <Y>0</Y>
+            </Vector2>
+          </Properties>
+        </Item>
+        <Item class="Attachment" referent="RBX108A0749E978480F886E9983F09E80D1">
+          <Properties>
+            <string name="Name">Attachment</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0</X>
+              <Y>1.86166859</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>6.81343783e-12</R01>
+              <R02>5.0665318e-07</R02>
+              <R10>-6.81349725e-12</R10>
+              <R11>1</R11>
+              <R12>1.17324817e-10</R12>
+              <R20>-5.0665318e-07</R20>
+              <R21>-1.17324817e-10</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+        </Item>
+        <Item class="Attachment" referent="RBX7254919988E24C838D8E9DD7BF015CEB">
+          <Properties>
+            <string name="Name">Attachment</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0</X>
+              <Y>-2.08380771</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>1.22721529e-11</R01>
+              <R02>9.83489372e-07</R02>
+              <R10>-1.22722683e-11</R10>
+              <R11>1</R11>
+              <R12>1.17324817e-10</R12>
+              <R20>-9.83489372e-07</R20>
+              <R21>-1.1732483e-10</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+        </Item>
+        <Item class="ParticleEmitter" referent="RBXD7E7C4A257684BDE8A95EAD2A0B4BBBF">
+          <Properties>
+            <string name="Name">GreenPoison </string>
+            <bool name="WindAffectsDrag">false</bool>
+            <ColorSequence name="Color">0 0.564705908 0.258823544 0.988235295 0 1 0.564705908 0.258823544 0.988235295 0 </ColorSequence>
+            <float name="Drag">0</float>
+            <float name="ZOffset">0</float>
+            <float name="TimeScale">1</float>
+            <float name="LightInfluence">1</float>
+            <Content name="Texture">
+              <url>rbxassetid://75202463</url>
+            </Content>
+            <float name="ShapePartial">1</float>
+            <NumberRange name="Lifetime">3 3 </NumberRange>
+            <NumberRange name="Speed">0.200000003 0.200000003 </NumberRange>
+            <float name="Brightness">1</float>
+            <bool name="archivable">true</bool>
+            <NumberSequence name="size">0 0.0399999991 0 1 0.0399999991 0 </NumberSequence>
+            <bool name="Enabled">true</bool>
+            <Vector3 name="Acceleration">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <NumberRange name="RotSpeed">0 0 </NumberRange>
+            <token name="ShapeInOut">0</token>
+            <token name="ShapeStyle">0</token>
+            <bool name="LockedToPart">false</bool>
+            <float name="Rate">200</float>
+            <float name="VelocityInheritance">0</float>
+            <NumberRange name="Rotation">-100 100 </NumberRange>
+            <NumberSequence name="Transparency">0 0 0 1 0 0 </NumberSequence>
+            <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+            <token name="Orientation">0</token>
+            <float name="LightEmission">1</float>
+            <token name="EmissionDirection">1</token>
+            <token name="shape">0</token>
+            <Vector2 name="SpreadAngle">
+              <X>100</X>
+              <Y>100</Y>
+            </Vector2>
+          </Properties>
+        </Item>
+        <Item class="ParticleEmitter" referent="RBX94991301066D4DC79A79830CF33018E9">
+          <Properties>
+            <string name="Name">MatGreenPoison</string>
+            <bool name="WindAffectsDrag">false</bool>
+            <ColorSequence name="Color">0 0.596078455 0.309803933 1 0 1 0.596078455 0.309803933 1 0 </ColorSequence>
+            <float name="Drag">0</float>
+            <float name="ZOffset">0</float>
+            <float name="TimeScale">1</float>
+            <float name="LightInfluence">1</float>
+            <Content name="Texture">
+              <url>rbxassetid://75202463</url>
+            </Content>
+            <float name="ShapePartial">1</float>
+            <NumberRange name="Lifetime">3 3 </NumberRange>
+            <NumberRange name="Speed">0.200000003 0.200000003 </NumberRange>
+            <float name="Brightness">1</float>
+            <bool name="archivable">true</bool>
+            <NumberSequence name="size">0 0.0399999991 0 1 0.0399999991 0 </NumberSequence>
+            <bool name="Enabled">true</bool>
+            <Vector3 name="Acceleration">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <NumberRange name="RotSpeed">0 0 </NumberRange>
+            <token name="ShapeInOut">0</token>
+            <token name="ShapeStyle">0</token>
+            <bool name="LockedToPart">false</bool>
+            <float name="Rate">200</float>
+            <float name="VelocityInheritance">0</float>
+            <NumberRange name="Rotation">-100 100 </NumberRange>
+            <NumberSequence name="Transparency">0 0 0 1 0 0 </NumberSequence>
+            <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+            <token name="Orientation">0</token>
+            <float name="LightEmission">1</float>
+            <token name="EmissionDirection">1</token>
+            <token name="shape">0</token>
+            <Vector2 name="SpreadAngle">
+              <X>100</X>
+              <Y>100</Y>
+            </Vector2>
+          </Properties>
+        </Item>
+        <Item class="Trail" referent="RBX7BD35A13DFC1435FA8773858B1BA696C">
+          <Properties>
+            <string name="Name">Trail</string>
+            <bool name="FaceCamera">true</bool>
+            <ColorSequence name="Color">0 0.423529416 0.20784314 0.745098054 0 1 0.423529416 0.20784314 0.745098054 0 </ColorSequence>
+            <NumberSequence name="WidthScale">0 0.9375 0 0.0539609641 1 0 0.94833523 1 0 1 0 0 </NumberSequence>
+            <float name="LightInfluence">1</float>
+            <Ref name="Attachment0">RBX7254919988E24C838D8E9DD7BF015CEB</Ref>
+            <float name="Brightness">1</float>
+            <bool name="archivable">true</bool>
+            <Ref name="Attachment1">RBX108A0749E978480F886E9983F09E80D1</Ref>
+            <bool name="Enabled">true</bool>
+            <float name="MaxLength">0</float>
+            <NumberSequence name="Transparency">0 0 0 1 1 0 </NumberSequence>
+            <Content name="Texture">
+              <url>rbxassetid://5699911427</url>
+            </Content>
+            <float name="TextureLength">0.949999988</float>
+            <float name="LightEmission">0.5</float>
+            <float name="MinLength">0.100000001</float>
+            <float name="Lifetime">3</float>
+            <token name="TextureMode">0</token>
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

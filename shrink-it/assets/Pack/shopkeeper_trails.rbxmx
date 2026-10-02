@@ -1,0 +1,1237 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX7a59cf009fac42f6a8fe684fc0389a58">
+    <Properties>
+      <string name="Name">Trails stall shopkeeper</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">RBXc4435bcaebe14138bf4761d8b6c413dd</Ref>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIRAAAAc2hvcGtlZXBlcl90cmFpbHMKAAAAUmVkZXNpZ25lZAMBBAAAAFJvbGUCFQAAAHN0YXRpb25hcnlfc2hvcGtlZXBlcg==</BinaryString>
+    </Properties>
+    <Item class="Part" referent="RBXaca82034170e43328ca7c73fb7a5c8df">
+      <Properties>
+        <string name="Name">Name badge</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4293583045</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.480637631</X>
+          <Y>0.223552386</Y>
+          <Z>0.0894209511</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>-0.547709478</X>
+          <Y>4.39439751</Y>
+          <Z>-0.536525207</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">true</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBXaca12b9d2c3a440caac1f24a63023a54">
+      <Properties>
+        <string name="Name">LeftHand</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4289425997</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.10017576</X>
+          <Y>0.352950716</Y>
+          <Z>1.14935732</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>0.300100327</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>-1.64549918</X>
+          <Y>2.60052846</Y>
+          <Z>0.145314507</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430070991</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBXd5ca35318c934494beece2890cb33764">
+      <Properties>
+        <string name="Name">RightHand</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4289425997</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.10017576</X>
+          <Y>0.352950716</Y>
+          <Z>1.14935732</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>0.300100327</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>1.64549918</X>
+          <Y>2.60052846</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430070997</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBX23a46820ab91435cb788765d67bb5286">
+      <Properties>
+        <string name="Name">LeftLowerArm</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4289425997</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.11895421</X>
+          <Y>1.24911287</Y>
+          <Z>1.11984844</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>1.05189896</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>-1.64549918</X>
+          <Y>3.34244019</Y>
+          <Z>0.145314507</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071005</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBX3e93f082b56642eb8ffc67ca9d494d35">
+      <Properties>
+        <string name="Name">RightLowerArm</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4289425997</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.11895421</X>
+          <Y>1.24911287</Y>
+          <Z>1.11984844</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>1.05189896</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>1.64549918</X>
+          <Y>3.34244019</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071013</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBXd5be1638c1284e3cb798a237d48d7af5">
+      <Properties>
+        <string name="Name">LeftUpperArm</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4281170883</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.11895421</X>
+          <Y>1.38781137</Y>
+          <Z>1.11984844</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>1.16869926</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>-1.64549918</X>
+          <Y>4.04631479</Y>
+          <Z>0.145314507</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071044</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBX36d0d19f3814406389dc3488b33072f9">
+      <Properties>
+        <string name="Name">RightUpperArm</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4281170883</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.11895421</X>
+          <Y>1.38781137</Y>
+          <Z>1.11984844</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>1.16869926</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>1.64549918</X>
+          <Y>4.04631479</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071041</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBXba466d9feb154fc59b8be7c841cb25d2">
+      <Properties>
+        <string name="Name">LeftFoot</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4279901473</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.127681</X>
+          <Y>0.348734829</Y>
+          <Z>1.11895421</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>0.299999237</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>-0.558880957</X>
+          <Y>0.174367281</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071039</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBX3ee7c0346ac841bc9b888aab6e48d576">
+      <Properties>
+        <string name="Name">LeftLowerLeg</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280823094</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.10976266</X>
+          <Y>1.45383316</Y>
+          <Z>1.08735881</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>1.19309998</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>-0.558880957</X>
+          <Y>0.959597008</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071049</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBXc4435bcaebe14138bf4761d8b6c413dd">
+      <Properties>
+        <string name="Name">UpperTorso</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4281170883</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>2.1720436</X>
+          <Y>1.89799512</Y>
+          <Z>1.1222329</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>2</X>
+          <Y>1.60000038</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>3.84669416</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071038</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBX019a0cd43b6e4c70a91c4a77df0c699c">
+      <Properties>
+        <string name="Name">LeftUpperLeg</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280823094</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.10976266</X>
+          <Y>1.52343344</Y>
+          <Z>1.08724888</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>1.21660042</Y>
+          <Z>0.999898911</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>-0.558880957</X>
+          <Y>1.92370645</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071065</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBXd7bf7fa2e595448abf20c81240f867ba">
+      <Properties>
+        <string name="Name">RightFoot</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4279901473</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.127681</X>
+          <Y>0.348734829</Y>
+          <Z>1.11895421</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>0.299999237</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>0.558880957</X>
+          <Y>0.174372345</Y>
+          <Z>0.145305979</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071082</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBX00fccaf65a444aa3a93c1804ddbb85b9">
+      <Properties>
+        <string name="Name">RightLowerLeg</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280823094</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.10976266</X>
+          <Y>1.45383316</Y>
+          <Z>1.08735881</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>1.19309998</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>0.558880957</X>
+          <Y>0.959602072</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071105</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBXe77701ad2f514848a15b26c3741e5280">
+      <Properties>
+        <string name="Name">LowerTorso</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280823094</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>2.22592467</X>
+          <Y>0.447835102</Y>
+          <Z>1.1222329</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>2</X>
+          <Y>0.400100708</Y>
+          <Z>1</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.67413337</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071109</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="MeshPart" referent="RBXe48ec9a306c64e1998e3feb255aa854b">
+      <Properties>
+        <string name="Name">RightUpperLeg</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280823094</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.10976266</X>
+          <Y>1.52343344</Y>
+          <Z>1.08724888</Z>
+        </Vector3>
+        <token name="CollisionFidelity">2</token>
+        <Vector3 name="InitialSize">
+          <X>1</X>
+          <Y>1.21660042</Y>
+          <Z>0.999898911</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>0.558880957</X>
+          <Y>1.92370631</Y>
+          <Z>0.14536141</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>https://assetdelivery.roblox.com/v1/asset/?id=7430071119</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX698972d159064985aecb2f355d9c2f60">
+      <Properties>
+        <string name="Name">Cloth cap crown</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4294441980</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.558880957</X>
+          <Y>2.10139239</Y>
+          <Z>1.54251144</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">2</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>6.02055952</Y>
+          <Z>0.145310243</Z>
+          <R00>-4.37113883e-08</R00>
+          <R01>-1</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>-4.37113883e-08</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">true</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX13d08fc70c3f440683670e326abfccad">
+      <Properties>
+        <string name="Name">Cap brim</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4294441980</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.69899809</X>
+          <Y>0.111776193</Y>
+          <Z>0.737722893</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>5.91996078</Y>
+          <Z>-0.54770095</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">true</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX85cbea80ce3347c1952f4a11bf9b2b77">
+      <Properties>
+        <string name="Name">Head</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4289425997</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>2.16596951</X>
+          <Y>1.09831283</Y>
+          <Z>1.08298476</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>5.43932281</Y>
+          <Z>0.145310243</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="SpecialMesh" referent="RBX13cebc3f62d94610bfbd6af3df7898fb">
+        <Properties>
+          <string name="Name">Mesh</string>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="VertexColor">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <token name="MeshType">0</token>
+          <Vector3 name="Scale">
+            <X>1.39720239</X>
+            <Y>1.39720239</Y>
+            <Z>1.39720239</Z>
+          </Vector3>
+          <Content name="MeshId">
+            <null />
+          </Content>
+          <bool name="archivable">true</bool>
+          <Content name="TextureId">
+            <null />
+          </Content>
+        </Properties>
+      </Item>
+      <Item class="Decal" referent="RBX1f7bb934e32a498eb10893f3791f2f4f">
+        <Properties>
+          <string name="Name">Friendly smile</string>
+          <float name="Transparency">0</float>
+          <Color3 name="Color3">
+            <R>1</R>
+            <G>1</G>
+            <B>1</B>
+          </Color3>
+          <int name="ZIndex">1</int>
+          <token name="Face">5</token>
+          <bool name="archivable">true</bool>
+          <Content name="Texture">
+            <url>rbxasset://textures/face.png</url>
+          </Content>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBX58a7ac0525874b38853dab091d51e6a5">
+      <Properties>
+        <string name="Name">White jacket zip</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4294441980</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.0670657133</X>
+          <Y>1.62075483</Y>
+          <Z>0.0894209511</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>3.84669416</Y>
+          <Z>-0.447102207</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">true</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX8d9312eafd6d4ed5908a534fe0323105">
+      <Properties>
+        <string name="Name">Sport jacket stripe</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4294441980</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">272</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.73253091</X>
+          <Y>0.145309043</Y>
+          <Z>0.0894209511</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>4.24908833</Y>
+          <Z>-0.458282214</Z>
+          <R00>1</R00>
+          <R01>4.87890978e-19</R01>
+          <R02>0</R02>
+          <R10>4.87890978e-19</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">true</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

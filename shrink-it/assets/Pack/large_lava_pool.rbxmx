@@ -1,0 +1,1395 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXbc6cb692991a4c1bbeaff3a9b7722cd5">
+    <Properties>
+      <string name="Name">Large rock ringed lava pool</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">BgAAAAsAAABQYWNrQXNzZXRJZAIPAAAAbGFyZ2VfbGF2YV9wb29sEAAAAFJCWF9BSV9HRU5FUkFURUQDARQAAABSQlhfQUlfR0VORVJBVElPTl9JRAIkAAAANTgwZWY2YjItNTE2Yy00YmE0LWI4ZDktNGQ3NTg4NzVlYmU0FgAAAFJCWF9BSV9HRU5FUkFUSU9OX1RZUEUCDAAAAEdlbmVyYXRlTWVzaBEAAABSQlhfQUlfTU9ERUxfRkxPVwIEAAAAbWVzaAwAAABSZWZpbmVkQmFzaW4DAQ==</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX27242f31f9854620a8b6a2e82acd3a3e">
+      <Properties>
+        <string name="Name">molten lava</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBX0f06038a3011437eb441ddf002d7c447">
+        <Properties>
+          <string name="Name">molten lava_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294967295</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <Content name="TextureID"><url>rbxassetid://82992132278024</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>19.7655691</X>
+            <Y>0.489050618</Y>
+            <Z>19.8057842</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>4.08308315</X>
+            <Y>0.722723722</Y>
+            <Z>4.09139061</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.488918763</X>
+            <Y>0.541489507</Y>
+            <Z>0.938359657</Z>
+            <R00>1.00000012</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>0.999999881</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://121214942872329</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="PointLight" referent="RBX1032801f0e3842879e3b67bbf714e478">
+          <Properties>
+            <string name="Name">Molten glow</string>
+            <Color3 name="Color">
+              <R>1</R>
+              <G>0.24</G>
+              <B>0.025</B>
+            </Color3>
+            <float name="Brightness">0.8</float>
+            <float name="Range">24.9850019</float>
+            <bool name="Shadows">false</bool>
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX82bc7a35602440898de805cf2068909b">
+      <Properties>
+        <string name="Name">cooling crust</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBX7e6b84fdcec1407ea4d2a933d31a9631">
+        <Properties>
+          <string name="Name">cooling crust_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294967295</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <Content name="TextureID"><url>rbxassetid://81155107357602</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>19.8670186</X>
+            <Y>0.262657054</Y>
+            <Z>19.8361429</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>4.10404015</X>
+            <Y>0.388157129</Y>
+            <Z>4.09766197</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.490691533</X>
+            <Y>0.458206168</Y>
+            <Z>0.913984069</Z>
+            <R00>1.00000012</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>0.999999881</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://91522801021625</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXc211615f1076407fa338665cfc73de7e">
+      <Properties>
+        <string name="Name">Basalt rim boulder 1</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX8adbed1d657d4d7699c3c406c3ab6812">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXacbfbdc482a34b23ace2404118ec0e96">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4284900193</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.28349319</X>
+              <Y>5.10135429</Y>
+              <Z>4.22533905</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>12.2788897</X>
+              <Y>2.55070008</Y>
+              <Z>0.93089925</Z>
+              <R00>1.00000012</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>0.999999881</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXdfddcf9c161a4d5fb5adfc907960b5ab">
+      <Properties>
+        <string name="Name">Basalt rim boulder 2</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBXbb613e1b6e4c4b668a1924b92d7175bc">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXb0082d99bf1242ae9e4b83d165116083">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285295207</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>5.06369942</X>
+              <Y>6.0305278</Y>
+              <Z>4.99495294</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>11.5910958</X>
+              <Y>3.01526409</Y>
+              <Z>5.54028016</Z>
+              <R00>0.325568193</R00>
+              <R01>0</R01>
+              <R02>0.945518463</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.945518688</R20>
+              <R21>0</R21>
+              <R22>0.325568116</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX0a8dd40b43154960be237fd5e324a307">
+      <Properties>
+        <string name="Name">Basalt rim boulder 3</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX60fa8096a1184caea7c65be61cb53ded">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXfae87a0d4082476fb550504a3157058a">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285755502</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.08244264</X>
+              <Y>4.86191651</Y>
+              <Z>4.02701803</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>8.52121752</X>
+              <Y>2.43098705</Y>
+              <Z>8.9890509</Z>
+              <R00>-0.788010848</R00>
+              <R01>0</R01>
+              <R02>0.615661402</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.615661549</R20>
+              <R21>-0</R21>
+              <R22>-0.78801066</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXe5cd392f91434211af529dd540e94400">
+      <Properties>
+        <string name="Name">Basalt rim boulder 4</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBXabde44bb1d2f46b4b28a4e1c9dcf99c6">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBX9b06c16dd66d42319bff08cfab168dd7">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4284900193</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>3.55509548</X>
+              <Y>4.23388126</Y>
+              <Z>3.50683031</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>5.19164611</X>
+              <Y>2.1169848</Y>
+              <Z>12.3467018</Z>
+              <R00>-0.838670668</R00>
+              <R01>0</R01>
+              <R02>-0.54463897</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.5446391</R20>
+              <R21>0</R21>
+              <R22>-0.838670468</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXdab7d52a4c954d008ccd1d1e440ed344">
+      <Properties>
+        <string name="Name">Basalt rim boulder 5</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBXce79c28146f14a0aac39dd80cfbe73e8">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBX01283f2fd56a4ed0a02fe7aae02aeff7">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285295207</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.67224382</X>
+              <Y>5.56433032</Y>
+              <Z>4.60881186</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.463065866</X>
+              <Y>2.78217676</Y>
+              <Z>12.1757844</Z>
+              <R00>0.241921924</R00>
+              <R01>0</R01>
+              <R02>-0.970295611</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.970295842</R20>
+              <R21>0</R21>
+              <R22>0.241921867</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXc1b9bbc3715c4cfbaff303f166d96bca">
+      <Properties>
+        <string name="Name">Basalt rim boulder 6</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX4504d73d17924b1badf930280bc3b4ef">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBX4452bfd43d8b4b44825c6b98ee7d043e">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285755502</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.91171415</X>
+              <Y>5.84952349</Y>
+              <Z>4.84503107</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-4.25227716</X>
+              <Y>2.92476636</Y>
+              <Z>12.3147443</Z>
+              <R00>0.996194817</R00>
+              <R01>0</R01>
+              <R02>-0.0871557324</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.0871557531</R20>
+              <R21>0</R21>
+              <R22>0.996194579</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXaae2a7c5ee7543d9a56a33e2fd34be70">
+      <Properties>
+        <string name="Name">Basalt rim boulder 7</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX67452a5ca9a94043a06787b5fb89f6c2">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXa042ea69915b41929540bbd2961bbcbd">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4284900193</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>3.73285694</X>
+              <Y>4.4455833</Y>
+              <Z>3.68217842</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-7.63991872</X>
+              <Y>2.22283063</Y>
+              <Z>9.03388383</Z>
+              <R00>0.406736692</R00>
+              <R01>0</R01>
+              <R02>0.913545349</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.913545567</R20>
+              <R21>0</R21>
+              <R22>0.406736595</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX8374abcf7ca44e03a7c301f909ed3581">
+      <Properties>
+        <string name="Name">Basalt rim boulder 8</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX61c4bbc60a5a49df8850366b5d08341e">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXa136135992254cafbd388ec40d7825af">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285295207</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>3.79716513</X>
+              <Y>4.52217005</Y>
+              <Z>3.74561354</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-10.5895516</X>
+              <Y>2.26112213</Y>
+              <Z>5.50904329</Z>
+              <R00>-0.731353789</R00>
+              <R01>0</R01>
+              <R02>0.681998279</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.681998441</R20>
+              <R21>-0</R21>
+              <R22>-0.731353614</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX3002a512af5f4857a38666b78c99f81d">
+      <Properties>
+        <string name="Name">Basalt rim boulder 9</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBXff6bfb8a370d47f899a4ea172a588eaf">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBX691198b4dca6492b94dffebcabf15993">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285755502</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.95945083</X>
+              <Y>5.90637469</Y>
+              <Z>4.89211966</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-11.4389724</X>
+              <Y>2.95319057</Y>
+              <Z>0.93089925</Z>
+              <R00>-0.882947698</R00>
+              <R01>0</R01>
+              <R02>-0.469471507</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.469471619</R20>
+              <R21>0</R21>
+              <R22>-0.882947488</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX2e2f351c45a24c37b16cc517ac0fa4c1">
+      <Properties>
+        <string name="Name">Basalt rim boulder 10</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBXaf42e8f1932d45629b52e8542bd74a83">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXe43ead55f2fc4a4d85c1200c685ab0cb">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4284900193</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.59563441</X>
+              <Y>5.47309364</Y>
+              <Z>4.53324254</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-10.171113</X>
+              <Y>2.73656065</Y>
+              <Z>-3.47392187</Z>
+              <R00>0.156434484</R00>
+              <R01>0</R01>
+              <R02>-0.987688223</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.987688458</R20>
+              <R21>0</R21>
+              <R22>0.156434446</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX5d80a8aa01084a59ad44dceb3bbe053d">
+      <Properties>
+        <string name="Name">Basalt rim boulder 11</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBXd01eeec6fe97446e9c868a17bee45c67">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXd1b7c0ed7f704050b95ad0392fbcf16a">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285295207</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>3.5271002</X>
+              <Y>4.20054076</Y>
+              <Z>3.4792151</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-8.22694371</X>
+              <Y>2.10031536</Y>
+              <Z>-7.75911032</Z>
+              <R00>0.98480787</R00>
+              <R01>0</R01>
+              <R02>-0.173648157</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.173648198</R20>
+              <R21>0</R21>
+              <R22>0.984807636</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX213a2d073f8a410aa7213a40309c21b3">
+      <Properties>
+        <string name="Name">Basalt rim boulder 12</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBXb9c7c496cc8d4352ab2e4aadf0b82fa1">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBX72ab63ca2ef74e79950e6a20b5879f05">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285755502</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.16626611</X>
+              <Y>4.96174467</Y>
+              <Z>4.10970349</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-3.84327362</X>
+              <Y>2.48089868</Y>
+              <Z>-9.46552395</Z>
+              <R00>0.484809678</R00>
+              <R01>0</R01>
+              <R02>0.874619603</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.874619811</R20>
+              <R21>0</R21>
+              <R22>0.484809562</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX862f2d2a75ec42d4b3e163112b00e4fe">
+      <Properties>
+        <string name="Name">Basalt rim boulder 13</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX3a3140655ce04e68aa75e26164db72c1">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBX48170a803ffd46cfaa53e8c9017dd2af">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4284900193</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>5.07009431</X>
+              <Y>6.03814368</Y>
+              <Z>5.00126101</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.463065866</X>
+              <Y>3.01907184</Y>
+              <Z>-11.4428444</Z>
+              <R00>-0.669130686</R00>
+              <R01>0</R01>
+              <R02>0.743144737</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>-0.743144914</R20>
+              <R21>-0</R21>
+              <R22>-0.669130527</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXf1b532f44f584fe9ae182d3ea1cde33c">
+      <Properties>
+        <string name="Name">Basalt rim boulder 14</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX1cb4062d7c6a4572981e96768bf5eb92">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXb5f3d4d5394246e8a018509c4e2f2269">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285295207</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.19802182</X>
+              <Y>4.9995636</Y>
+              <Z>4.14102807</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>4.80881515</X>
+              <Y>2.49980722</Y>
+              <Z>-9.56066761</Z>
+              <R00>-0.920504963</R00>
+              <R01>0</R01>
+              <R02>-0.390731082</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.390731175</R20>
+              <R21>0</R21>
+              <R22>-0.920504744</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX7e7044e6d088442f9417d15e668b0c62">
+      <Properties>
+        <string name="Name">Basalt rim boulder 15</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX5906b1ad03d3480bb8ae971c3c877a42">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBXb502736bd224425b8fc394b6ec9ceabc">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4285755502</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>3.51891711</X>
+              <Y>4.19079524</Y>
+              <Z>3.4711431</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>9.01959896</X>
+              <Y>2.09544284</Y>
+              <Z>-7.62563384</Z>
+              <R00>0.0697564821</R00>
+              <R01>0</R01>
+              <R02>-0.997563931</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.997564169</R20>
+              <R21>0</R21>
+              <R22>0.0697564654</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBXfefb00a488294d0d9ec96ff83aeeedf2">
+      <Properties>
+        <string name="Name">Basalt rim boulder 16</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+        <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAIEAAAAcm9jaxAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADRiMGYzMGZhLTkwMDMtNDAyMS1iYWJlLWJiNTMzMGI4MzI2ZhYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2g=</BinaryString>
+      </Properties>
+      <Item class="Model" referent="RBX822ce8dce8d34c49a1bab78bbe4bacd2">
+        <Properties>
+          <string name="Name">boulder</string>
+          <bool name="archivable">true</bool>
+          <Ref name="PrimaryPart">null</Ref>
+        </Properties>
+        <Item class="MeshPart" referent="RBX7c86fcd6399a4483bfeb1f565973825d">
+          <Properties>
+            <string name="Name">boulder_geom</string>
+            <token name="FluidFidelity">0</token>
+            <bool name="CanQuery">true</bool>
+            <Color3uint8 name="Color3uint8">4284900193</Color3uint8>
+            <bool name="Anchored">true</bool>
+            <Content name="TextureID"><url>rbxassetid://97613013735968</url></Content>
+            <token name="RenderFidelity">0</token>
+            <token name="Material">256</token>
+            <bool name="archivable">true</bool>
+            <Vector3 name="size">
+              <X>4.5659874</X>
+              <Y>5.43778602</Y>
+              <Z>4.50399802</Z>
+            </Vector3>
+            <token name="CollisionFidelity">0</token>
+            <Vector3 name="InitialSize">
+              <X>2.51903296</X>
+              <Y>3</Y>
+              <Z>2.48483372</Z>
+            </Vector3>
+            <bool name="CanCollide">false</bool>
+            <string name="CollisionGroup">Default</string>
+            <bool name="CanTouch">true</bool>
+            <CoordinateFrame name="CFrame">
+              <X>11.3217626</X>
+              <Y>2.71890771</Y>
+              <Z>-3.56692022</Z>
+              <R00>0.965925941</R00>
+              <R01>0</R01>
+              <R02>-0.258819014</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0.258819076</R20>
+              <R21>0</R21>
+              <R22>0.965925711</R22>
+            </CoordinateFrame>
+            <Content name="MeshId"><url>rbxassetid://137815810269222</url></Content>
+            <float name="Transparency">0</float>
+            <CoordinateFrame name="PivotOffset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+              <R00>1</R00>
+              <R01>0</R01>
+              <R02>0</R02>
+              <R10>0</R10>
+              <R11>1</R11>
+              <R12>0</R12>
+              <R20>0</R20>
+              <R21>0</R21>
+              <R22>1</R22>
+            </CoordinateFrame>
+            <float name="Reflectance">0</float>
+            <bool name="DoubleSided">false</bool>
+            <bool name="Massless">false</bool>
+            <bool name="CastShadow">true</bool>
+            <string name="MaterialVariantSerialized" />
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

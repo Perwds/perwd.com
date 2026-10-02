@@ -1,0 +1,150 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX89A46CF1605E49D0BCF00ADFB4DD2840">
+    <Properties>
+      <string name="Name">Wooden garden direction sign</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">BQAAAAsAAABQYWNrQXNzZXRJZAILAAAAd29vZGVuX3NpZ24QAAAAUkJYX0FJX0dFTkVSQVRFRAMBFAAAAFJCWF9BSV9HRU5FUkFUSU9OX0lEAiQAAAA5YjY2NTZiOS04ZTk3LTQ5MWQtODUyYi02ZjM1OTA0MzhkMTQWAAAAUkJYX0FJX0dFTkVSQVRJT05fVFlQRQIMAAAAR2VuZXJhdGVNZXNoEQAAAFJCWF9BSV9NT0RFTF9GTE9XAgQAAABtZXNo</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX4D0BC93E61754DEB8AB586F692BFA426">
+      <Properties>
+        <string name="Name">sign</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBX8D72C44335B648129B929EEAE35DAE33">
+        <Properties>
+          <string name="Name">sign_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <Content name="TextureID"><url>rbxassetid://74421785618635</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.28184709</X>
+            <Y>2.16739522</Y>
+            <Z>1.59521061</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>3.31106567</X>
+            <Y>1.35868907</Y>
+            <Z>1</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>4.31905855</Y>
+            <Z>0</Z>
+            <R00>1.00000012</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>0.999999881</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://105399288606132</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX3C0DC5C029104175BDE472833B355124">
+      <Properties>
+        <string name="Name">post</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBX26512B54B803452BAD6A254744486937">
+        <Properties>
+          <string name="Name">post_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <Content name="TextureID"><url>rbxassetid://80147003163770</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.13627128</X>
+            <Y>6.0000734</Y>
+            <Z>1.53625352</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>0.712301731</X>
+            <Y>3.76130486</Y>
+            <Z>0.963041186</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.164496358</X>
+            <Y>3.0000367</Y>
+            <Z>-0.00124747534</Z>
+            <R00>1.00000012</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>0.999999881</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://129462268722412</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

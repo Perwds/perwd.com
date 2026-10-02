@@ -1,0 +1,105 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXCE0A43CABE3F4BAF832D9D94EC80733B">
+    <Properties>
+      <string name="Name">Saguaro cactus</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIGAAAAY2FjdHVzDQAAAFNvdXJjZUFzc2V0SWQCDwAAADEzNzU3ODcyOTM0NzY4NQ0AAABTb3VyY2VDcmVhdG9yAgwAAABTbG93Y3JhejEwMjU=</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX5DF044FDBD874A4DBA095473EE86AD92">
+      <Properties>
+        <string name="Name">Cactus_4</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBX1092E2AF13334DB7B00A82A78F5171A5">
+        <Properties>
+          <string name="Name">cactus</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          
+          <token name="RenderFidelity">1</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>6.12143585</X>
+            <Y>10</Y>
+            <Z>2.40783708</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>57.2596283</X>
+            <Y>93.5395355</Y>
+            <Z>22.5227966</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>5</Y>
+            <Z>-6.79929758e-17</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://16910131721</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0.170167267</X>
+            <Y>-3.32788062</Y>
+            <Z>0.349178672</Z>
+            <R00>1</R00>
+            <R01>1.22464685e-16</R01>
+            <R02>-1.22464685e-16</R02>
+            <R10>-1.22464685e-16</R10>
+            <R11>1</R11>
+            <R12>-1.22464685e-16</R12>
+            <R20>1.22464685e-16</R20>
+            <R21>1.22464685e-16</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="SurfaceAppearance" referent="RBXE5B4BD7624AE44A89877E05180942574">
+          <Properties>
+            <string name="Name">SurfaceAppearance</string>
+            <Content name="ColorMap"><url>rbxassetid://16910134642</url></Content>
+            <token name="AlphaMode">0</token>
+            <Content name="RoughnessMap"><url>rbxassetid://16910129105</url></Content>
+            <Color3 name="Color">
+              <R>1</R>
+              <G>1</G>
+              <B>1</B>
+            </Color3>
+            <float name="EmissiveStrength">1</float>
+            
+            <token name="ResampleMode">0</token>
+            <Color3 name="EmissiveTint">
+              <R>1</R>
+              <G>1</G>
+              <B>1</B>
+            </Color3>
+            
+            <bool name="archivable">true</bool>
+            <Content name="NormalMap"><url>rbxassetid://16910132615</url></Content>
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

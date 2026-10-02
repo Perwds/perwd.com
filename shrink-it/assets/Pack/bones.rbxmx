@@ -1,0 +1,214 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX775565672CA14F1B8E9D309965CD1F1D">
+    <Properties>
+      <string name="Name">Weathered bone cluster</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIFAAAAYm9uZXMNAAAAU291cmNlQXNzZXRJZAILAAAAMTI1ODE0NzU0NDANAAAAU291cmNlQ3JlYXRvcgILAAAAQzBzbTFjbTAwMG4=</BinaryString>
+    </Properties>
+    <Item class="Part" referent="RBX724FF34DE67D4BFCB654A3FB66C9FBF4">
+      <Properties>
+        <string name="Name">Handle</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4294506744</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">256</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.783226177</X>
+          <Y>3.13290471</Y>
+          <Z>0.783226177</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>-1.57788107e-08</X>
+          <Y>1.56645243</Y>
+          <Z>-2.10838698</Z>
+          <R00>1.22464685e-16</R00>
+          <R01>1.78813892e-07</R01>
+          <R02>-1</R02>
+          <R10>1.22464685e-16</R10>
+          <R11>1</R11>
+          <R12>1.78813892e-07</R12>
+          <R20>1</R20>
+          <R21>-1.22464712e-16</R21>
+          <R22>1.22464659e-16</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="Attachment" referent="RBX91DBB55504424A3F965DEC2A0F582A35">
+        <Properties>
+          <string name="Name">BodyBackAttachment</string>
+          <bool name="Visible">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-1.58945696e-07</Y>
+            <Z>-1.58945738e-07</Z>
+            <R00>1.22464685e-16</R00>
+            <R01>1.22464685e-16</R01>
+            <R02>1</R02>
+            <R10>1.78813892e-07</R10>
+            <R11>1</R11>
+            <R12>-1.22464712e-16</R12>
+            <R20>-1</R20>
+            <R21>1.78813892e-07</R21>
+            <R22>1.22464659e-16</R22>
+          </CoordinateFrame>
+          <bool name="archivable">true</bool>
+        </Properties>
+      </Item>
+      <Item class="SpecialMesh" referent="RBX2936AF8E3466404CAE7B04E470169055">
+        <Properties>
+          <string name="Name">Mesh</string>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="VertexColor">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <token name="MeshType">5</token>
+          <Vector3 name="Scale">
+            <X>0.5221508</X>
+            <Y>0.5221508</Y>
+            <Z>0.5221508</Z>
+          </Vector3>
+          <Content name="MeshId">
+            <url>rbxassetid://5875062545</url>
+          </Content>
+          <bool name="archivable">true</bool>
+          <Content name="TextureId">
+            <null />
+          </Content>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBXC484D47A8F2A47B8A00CBBC037A2C201">
+      <Properties>
+        <string name="Name">Handle</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4294506744</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">256</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.783226177</X>
+          <Y>3.13290471</Y>
+          <Z>0.783226177</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>6.82522229e-08</X>
+          <Y>2.03638807</Y>
+          <Z>1.02451773</Z>
+          <R00>1.40907261e-07</R00>
+          <R01>1.10088827e-07</R01>
+          <R02>-1</R02>
+          <R10>0.788010716</R10>
+          <R11>0.615661502</R11>
+          <R12>1.78813892e-07</R12>
+          <R20>0.615661502</R20>
+          <R21>-0.788010716</R21>
+          <R22>1.22464659e-16</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="Attachment" referent="RBX18484CD886DB4E078A7FF5788A1A8FB6">
+        <Properties>
+          <string name="Name">BodyBackAttachment</string>
+          <bool name="Visible">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-1.58945696e-07</Y>
+            <Z>-1.58945738e-07</Z>
+            <R00>1.22464685e-16</R00>
+            <R01>1.22464685e-16</R01>
+            <R02>1</R02>
+            <R10>1.78813892e-07</R10>
+            <R11>1</R11>
+            <R12>-1.22464712e-16</R12>
+            <R20>-1</R20>
+            <R21>1.78813892e-07</R21>
+            <R22>1.22464659e-16</R22>
+          </CoordinateFrame>
+          <bool name="archivable">true</bool>
+        </Properties>
+      </Item>
+      <Item class="SpecialMesh" referent="RBXE2D41CC99ABA4F8BBE9645CBA3FCAA6F">
+        <Properties>
+          <string name="Name">Mesh</string>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="VertexColor">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <token name="MeshType">5</token>
+          <Vector3 name="Scale">
+            <X>0.5221508</X>
+            <Y>0.5221508</Y>
+            <Z>0.5221508</Z>
+          </Vector3>
+          <Content name="MeshId">
+            <url>rbxassetid://5875062545</url>
+          </Content>
+          <bool name="archivable">true</bool>
+          <Content name="TextureId">
+            <null />
+          </Content>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

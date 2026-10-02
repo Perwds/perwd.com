@@ -1,0 +1,98 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX1DE051D7305A46E38B7C6898781E6251">
+    <Properties>
+      <string name="Name">Fire hydrant</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIMAAAAZmlyZV9oeWRyYW50DQAAAFNvdXJjZUFzc2V0SWQCCwAAADExMzY1MDQwNDg2DQAAAFNvdXJjZUNyZWF0b3ICBwAAAG1qbGs4bG0=</BinaryString>
+    </Properties>
+    <Item class="MeshPart" referent="RBX0B963B7ACC2B440B91E545980FA972F2">
+      <Properties>
+        <string name="Name">fire hydrant</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">0</token>
+        <token name="Material">256</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.63732116</X>
+          <Y>3.6</Y>
+          <Z>1.58173692</Z>
+        </Vector3>
+        <token name="CollisionFidelity">0</token>
+        <Vector3 name="InitialSize">
+          <X>22.7405739</X>
+          <Y>50</Y>
+          <Z>21.9685707</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>1.8</Y>
+          <Z>0</Z>
+          <R00>0.993220031</R00>
+          <R01>0</R01>
+          <R02>0.116250277</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>-0.116250291</R20>
+          <R21>0</R21>
+          <R22>0.993219912</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>rbxassetid://11364990213</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="SurfaceAppearance" referent="RBXA7343DF6B5514C3CBEA261882B98BF76">
+        <Properties>
+          <string name="Name">fire hydrant texture</string>
+          <Content name="ColorMap"><url>rbxassetid://11365019002</url></Content>
+          <token name="AlphaMode">0</token>
+          <Content name="RoughnessMap"><url>rbxassetid://11365018485</url></Content>
+          <Color3 name="Color">
+            <R>1</R>
+            <G>1</G>
+            <B>1</B>
+          </Color3>
+          <float name="EmissiveStrength">1</float>
+          <Content name="MetalnessMap"><url>rbxassetid://11365018808</url></Content>
+          <token name="ResampleMode">0</token>
+          <Color3 name="EmissiveTint">
+            <R>1</R>
+            <G>1</G>
+            <B>1</B>
+          </Color3>
+          
+          <bool name="archivable">true</bool>
+          <Content name="NormalMap"><url>rbxassetid://11365018649</url></Content>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

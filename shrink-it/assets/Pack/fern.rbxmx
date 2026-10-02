@@ -1,0 +1,141 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX2BF5F47560BA4FDD893E38684E55AE38">
+    <Properties>
+      <string name="Name">Tropical fern</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIEAAAAZmVybg0AAABTb3VyY2VBc3NldElkAg4AAAA3OTIyNzkxMTUyOTQ3NQ0AAABTb3VyY2VDcmVhdG9yAgsAAABXaWtrZmxpNDg3MQ==</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX78DA2670583641DD9B338546E86A9E93">
+      <Properties>
+        <string name="Name">Fern_Var01</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">RBXB544EEB9288F467FA67A9E4BB2BF174C</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBXB544EEB9288F467FA67A9E4BB2BF174C">
+        <Properties>
+          <string name="Name">FernLeavesOuter</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          
+          <token name="RenderFidelity">1</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>4.73323313</X>
+            <Y>2.03438695</Y>
+            <Z>4.95559177</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>4.76375675</X>
+            <Y>2.04750633</Y>
+            <Z>4.98754883</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>1.51307189e-16</X>
+            <Y>1.15729981</Y>
+            <Z>-5.12293997e-17</Z>
+            <R00>0.992573678</R00>
+            <R01>0.0384642072</R01>
+            <R02>0.115416728</R02>
+            <R10>-0.0361092798</R10>
+            <R11>0.999097943</R11>
+            <R12>-0.0224260129</R12>
+            <R20>-0.116174094</R20>
+            <R21>0.0180918537</R21>
+            <R22>0.993064165</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://5548364402</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="SurfaceAppearance" referent="RBX9F37AFD8FE324C37AF21C9371E772B7F">
+          <Properties>
+            <string name="Name">SurfaceAppearance</string>
+            <Content name="ColorMap"><url>rbxassetid://5548259390</url></Content>
+            <token name="AlphaMode">1</token>
+            <Content name="RoughnessMap"><url>rbxassetid://5548170334</url></Content>
+            <Color3 name="Color">
+              <R>1</R>
+              <G>1</G>
+              <B>1</B>
+            </Color3>
+            <float name="EmissiveStrength">1</float>
+            <Content name="MetalnessMap"><url>rbxassetid://6036394111</url></Content>
+            <token name="ResampleMode">0</token>
+            <Color3 name="EmissiveTint">
+              <R>1</R>
+              <G>1</G>
+              <B>1</B>
+            </Color3>
+            
+            <bool name="archivable">true</bool>
+            <Content name="NormalMap"><url>rbxassetid://5548170153</url></Content>
+          </Properties>
+        </Item>
+        <Item class="Model" referent="RBXEC5754B52457443586B13DC733196D31">
+          <Properties>
+            <string name="Name">AutomaticModel</string>
+            <bool name="archivable">true</bool>
+            <Ref name="PrimaryPart">null</Ref>
+            <BinaryString name="AttributesSerialize">BgAAAAoAAABDaGlsZEFkZGVkAgcAAABQbGF5ZXJzBQAAAEV2ZW50AgsAAABQbGF5ZXJBZGRlZAYAAABNZXRob2QCDgAAAFByb21wdFB1cmNoYXNlBgAAAFBhcmVudAIPAAAAMTIzODIzNjAwMzU4MTk1BQAAAFBhcnQwAhIAAABNYXJrZXRwbGFjZVNlcnZpY2UFAAAAUGFydDECDgAAAEdldFByb2R1Y3RJbmZv</BinaryString>
+          </Properties>
+          <Item class="SpecialMesh" referent="RBXD04A64EC016F4821990C6B51A7840E77">
+            <Properties>
+              <string name="Name">Mesh</string>
+              <Vector3 name="Offset">
+                <X>0</X>
+                <Y>0</Y>
+                <Z>0</Z>
+              </Vector3>
+              <Vector3 name="VertexColor">
+                <X>1</X>
+                <Y>1</Y>
+                <Z>1</Z>
+              </Vector3>
+              <token name="MeshType">0</token>
+              <Vector3 name="Scale">
+                <X>0.246612656</X>
+                <Y>0.246612656</Y>
+                <Z>0.246612656</Z>
+              </Vector3>
+              <Content name="MeshId">
+                <null />
+              </Content>
+              <bool name="archivable">true</bool>
+              <Content name="TextureId">
+                <null />
+              </Content>
+            </Properties>
+          </Item>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

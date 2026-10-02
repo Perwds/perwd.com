@@ -1,0 +1,205 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXC38C64A751D8470BB5E90776C69C9634">
+    <Properties>
+      <string name="Name">Golden Toilet</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAABEAAABEcm9wQ2hhbmNlUGVyY2VudAYAAAAAAAA+QAsAAABQYWNrQXNzZXRJZAINAAAAZ29sZGVuX3RvaWxldA0AAABTb3VyY2VBc3NldElkAg8AAAAxMTQwNjgzMjMxNjgwNTE=</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX972796B257AA45D9B668AC5F6566D03D">
+      <Properties>
+        <string name="Name">golden_toilet</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBX9C68F3994F484BBCBA56DB5ACE264478">
+        <Properties>
+          <string name="Name">Body</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <Content name="TextureID"><url>rbxassetid://79479900096312</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>4.13668345</X>
+            <Y>6.13811518</Y>
+            <Z>5.42333976</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>1.284868</X>
+            <Y>1.90651953</Y>
+            <Z>1.68450785</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>3.06905759</Y>
+            <Z>-6.65835659e-17</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://74007960081807</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>-0.00533204433</X>
+            <Y>-0.936562777</Y>
+            <Z>-0.011468282</Z>
+            <R00>0.999975622</R00>
+            <R01>4.14761168e-08</R01>
+            <R02>0.00698164012</R02>
+            <R10>-4.17823109e-08</R10>
+            <R11>1</R11>
+            <R12>4.37113883e-08</R12>
+            <R20>-0.00698164059</R20>
+            <R21>-4.40020322e-08</R21>
+            <R22>0.999975562</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="MeshPart" referent="RBX6031EA6A122E41FC8628EBBCB89A5A64">
+        <Properties>
+          <string name="Name">Lid</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <Content name="TextureID"><url>rbxassetid://100538277250249</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>2.98091392</X>
+            <Y>3.49491466</Y>
+            <Z>0.268844697</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>0.925882041</X>
+            <Y>1.08553243</Y>
+            <Z>0.0835040808</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>-0.810411612</X>
+            <Y>5.25254267</Y>
+            <Z>0.0322084147</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://97116587219193</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>-0.0214423984</X>
+            <Y>-0.512133121</Y>
+            <Z>-0.0330652446</Z>
+            <R00>0.999975622</R00>
+            <R01>4.14761168e-08</R01>
+            <R02>0.00698164012</R02>
+            <R10>-4.17823109e-08</R10>
+            <R11>1</R11>
+            <R12>4.37113883e-08</R12>
+            <R20>-0.00698164059</R20>
+            <R21>-4.40020322e-08</R21>
+            <R22>0.999975562</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="MeshPart" referent="RBX58009F298C8B4A88A31CEAADCF91B83D">
+        <Properties>
+          <string name="Name">Seat</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <Content name="TextureID"><url>rbxassetid://78361594991198</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>3.15210422</X>
+            <Y>0.172566791</Y>
+            <Z>3.40592241</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>0.979054332</X>
+            <Y>0.0535998344</Y>
+            <Z>1.05789113</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.996268596</X>
+            <Y>3.57168176</Y>
+            <Z>-0.0850068799</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://126301687119086</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>-0.0159300417</X>
+            <Y>0.00994801521</Y>
+            <Z>0.529247344</Z>
+            <R00>0.999975622</R00>
+            <R01>4.14761168e-08</R01>
+            <R02>0.00698164012</R02>
+            <R10>-4.17823109e-08</R10>
+            <R11>1</R11>
+            <R12>4.37113883e-08</R12>
+            <R20>-0.00698164059</R20>
+            <R21>-4.40020322e-08</R21>
+            <R22>0.999975562</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

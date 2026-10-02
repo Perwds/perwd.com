@@ -894,10 +894,155 @@ end
 
 -- Puts a shopkeeper NPC behind every stand that has a "KeeperSpot" (and no keeper yet).
 -- Runs when the server starts, because Roblox characters can only be created in a live game.
+-- ── your asset pack in the zones (ServerStorage > AssetPack, placed when the server starts) ──────
+-- Each zone: its environment kit on the left edge, its landmark on the right edge and a few props
+-- along both sides (the middle stays clear for the boxes). Old decor in the way is removed.
+MapDecor.PACK_ZONES = {
+	[1] = { Kit = "zone_1_environment_kit", Landmark = "doghouse", Props = { "bush", "flower_pot", "hay_bale", "flower_patch", "bench", "sunflower", "wooden_sign", "mailbox", "fire_hydrant", "traffic_cone" } },
+	[2] = { Kit = "zone_2_environment_kit", Landmark = "swing_set", Props = { "bush", "flower_pot", "bench", "mailbox", "trash_can", "fire_hydrant", "garden_lamp" } },
+	[3] = { Kit = "zone_3_environment_kit", Landmark = "bus_stop_shelter", Props = { "bench", "trash_can", "fire_hydrant", "traffic_cone", "street_lamp", "tyre" } },
+	[4] = { Kit = "zone_4_environment_kit", Landmark = "rowboat", Props = { "tyre", "crate", "barrel", "barrel_stack", "anchor", "rock" } },
+	[5] = { Kit = "zone_5_environment_kit", Landmark = "covered_wagon", Props = { "rock", "cactus", "skull", "bones", "torch", "hay" } },
+	[6] = { Kit = "zone_6_environment_kit", Landmark = "giant_jungle_tree", Props = { "bush", "torch", "fern", "palm_tree", "rock_cluster" } },
+	[7] = { Kit = "zone_7_environment_kit", Landmark = "shrink_billboard", Props = { "bench", "traffic_cone", "crate", "skyline_lamp", "satellite_dish" } },
+	[8] = { Kit = "zone_8_environment_kit", Landmark = "large_lava_pool", Props = { "rock", "skull", "torch", "small_lava_pool" } },
+	[9] = { Kit = "zone_9_environment_kit", Landmark = "snowmen_ski_rack", Props = { "pine_tree", "snowy_rock", "snowman", "ice_spike" } },
+	[10] = { Kit = "zone_10_environment_kit", Landmark = "crashed_rocket", Props = { "satellite_dish", "purple_crystal", "moon_rock", "meteor" } },
+}
+local PACK_RENAMES = { trash_can = "TrashBin", ufo = "UFO", moon = "TheMoon" }
+
+local function packArt(name)
+	local pack = game:GetService("ServerStorage"):FindFirstChild("AssetPack")
+	local templates = game:GetService("ReplicatedStorage"):FindFirstChild("ShrinkableTemplates")
+	local camel = PACK_RENAMES[name]
+	if not camel then
+		camel = name:gsub("_(%w)", string.upper)
+		camel = camel:gsub("^%l", string.upper)
+	end
+	local src = (pack and pack:FindFirstChild(name)) or (templates and templates:FindFirstChild(camel))
+	return src and src:Clone() or nil
+end
+
+-- puts `model` on the ground at (x, z) turned by `yaw`; returns its footprint half-size (x, z)
+local function placeArt(model, parent, x, groundY, z, yaw)
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.Anchored = true
+			d.CanQuery = false
+		elseif d:IsA("LuaSourceContainer") then
+			d:Destroy()
+		end
+	end
+	model:PivotTo(CFrame.new(x, groundY, z) * CFrame.Angles(0, yaw, 0))
+	local cf, size = model:GetBoundingBox()
+	model:PivotTo(model:GetPivot() + Vector3.new(x - cf.Position.X, groundY - (cf.Position.Y - size.Y / 2), z - cf.Position.Z))
+	model.Parent = parent
+	local turned = math.abs(math.sin(yaw)) > 0.7
+	return turned and size.Z / 2 or size.X / 2, turned and size.X / 2 or size.Z / 2
+end
+
+local function clearAround(zone, x, z, hx, hz)
+	local decor = zone:FindFirstChild("Decor")
+	for _, c in ipairs(decor and decor:GetChildren() or {}) do
+		local p = (c:IsA("Model") and c:GetPivot().Position) or (c:IsA("BasePart") and c.Position) or nil
+		if p and math.abs(p.X - x) < hx + 2 and math.abs(p.Z - z) < hz + 2 then
+			c:Destroy()
+		end
+	end
+end
+
+local function blocksSpawn(zone, x, z, hx, hz)
+	local points = zone:FindFirstChild("SpawnPoints")
+	for _, sp in ipairs(points and points:GetChildren() or {}) do
+		if math.abs(sp.Position.X - x) < hx + 7 and math.abs(sp.Position.Z - z) < hz + 7 then
+			return true
+		end
+	end
+	return false
+end
+
+function MapDecor.PackDecor(map)
+	local zones = map:FindFirstChild("Zones")
+	for _, zone in ipairs(zones and zones:GetChildren() or {}) do
+		local tier = zone:GetAttribute("Tier")
+		local cfg = MapDecor.PACK_ZONES[tier]
+		local floor = zone:FindFirstChild("Floor")
+		if cfg and floor and not zone:FindFirstChild("PackDecor") then
+			local folder = Instance.new("Folder")
+			folder.Name = "PackDecor"
+			folder.Parent = zone
+			local w, d = floor.Size.X, floor.Size.Z
+			local z0 = floor.Position.Z - d / 2
+			local groundY = floor.Position.Y + floor.Size.Y / 2
+			local placed = {}
+			local function overlapsPlaced(x, z, hx, hz)
+				for _, p in ipairs(placed) do
+					if math.abs(p[1] - x) < p[3] + hx + 2 and math.abs(p[2] - z) < p[4] + hz + 2 then
+						return true
+					end
+				end
+				return false
+			end
+			local function put(name, side, frac)
+				local model = packArt(name)
+				if not model then
+					return
+				end
+				local yaw = side < 0 and -math.pi / 2 or math.pi / 2 -- face the middle of the zone
+				-- try a few spots along the edge until it doesn't sit on a box spawn
+				for _, nudge in ipairs({ 0, 0.08, -0.08, 0.16, -0.16 }) do
+					local z = z0 + d * math.clamp(frac + nudge, 0.06, 0.94)
+					local hx, hz = placeArt(model, folder, 0, groundY, z, yaw)
+					local x = side * (w / 2 - hx - 3)
+					if not blocksSpawn(zone, x, z, hx, hz) and not overlapsPlaced(x, z, hx, hz) then
+						placeArt(model, folder, x, groundY, z, yaw)
+						clearAround(zone, x, z, hx, hz)
+						table.insert(placed, { x, z, hx, hz })
+						return
+					end
+				end
+				model:Destroy()
+			end
+			put(cfg.Kit, -1, 0.32)
+			put(cfg.Landmark, 1, 0.62)
+			for i, name in ipairs(cfg.Props) do
+				if i > 6 then
+					break
+				end
+				put(name, i % 2 == 0 and -1 or 1, 0.1 + (i - 1) * 0.14)
+			end
+		end
+	end
+end
+
 function MapDecor.AddShopkeepers(root)
 	for _, stand in ipairs(root:GetDescendants()) do
 		local spot = stand:IsA("Model") and stand:FindFirstChild("KeeperSpot")
 		if spot and not stand:FindFirstChild("Shopkeeper") then
+			-- your asset-pack shopkeeper (ServerStorage > AssetPack > shopkeeper_sell / _shop / _trails / _rewards)
+			local pack = game:GetService("ServerStorage"):FindFirstChild("AssetPack")
+			local key = stand.Name:gsub("Stand$", ""):lower()
+			local art = pack and (pack:FindFirstChild("shopkeeper_" .. key) or pack:FindFirstChild("shopkeeper_rewards"))
+			if art then
+				local npc = art:Clone()
+				npc.Name = "Shopkeeper"
+				for _, d in ipairs(npc:GetDescendants()) do
+					if d:IsA("BasePart") then
+						d.Anchored = true
+						d.CanCollide = false
+						d.CanQuery = false
+					elseif d:IsA("LuaSourceContainer") then
+						d:Destroy()
+					end
+				end
+				-- stand on the spot (feet on the ground), facing the customers
+				local base = spot.CFrame * CFrame.new(0, -spot.Size.Y / 2, 0)
+				npc:PivotTo(base)
+				local cf, size = npc:GetBoundingBox()
+				npc:PivotTo(npc:GetPivot() + Vector3.new(base.Position.X - cf.Position.X, base.Position.Y - (cf.Position.Y - size.Y / 2), base.Position.Z - cf.Position.Z))
+				npc.Parent = stand
+				continue
+			end
 			pcall(function()
 				local shirt = stand:GetAttribute("KeeperColor") or RGB(200, 60, 60)
 				local desc = Instance.new("HumanoidDescription")

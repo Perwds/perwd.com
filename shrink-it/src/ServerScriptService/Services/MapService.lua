@@ -553,6 +553,7 @@ function MapService.Init(_registry)
 	local map = existing or buildMap()
 	safe("Shopkeepers", MapDecor.AddShopkeepers, map)
 	safe("Textures", MapService.ApplyTextures, map)
+	safe("Asset pack decor", MapDecor.PackDecor, map)
 	-- a map saved in the place file doesn't keep PrimaryPart links: restore them
 	for _, d in ipairs(map:GetDescendants()) do
 		if d:IsA("Model") and d.Name == "MuseumBuilding" and not d.PrimaryPart then

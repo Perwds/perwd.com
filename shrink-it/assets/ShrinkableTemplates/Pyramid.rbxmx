@@ -1,0 +1,631 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXED7AC47D598B48D28782B1D4F1FD9198">
+    <Properties>
+      <string name="Name">Desert pyramid</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIHAAAAcHlyYW1pZA0AAABTb3VyY2VBc3NldElkAgsAAAAxMzM3ODg0OTY2Nw==</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX24AF886DD93F442291A1108C3A5C2E75">
+      <Properties>
+        <string name="Name">Ancient Egyptian Pyramid</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="CornerWedgePart" referent="RBX12D36AB1BC2F4E9C9BB56489BE33CE76">
+        <Properties>
+          <string name="Name">CornerWedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>-12.5863695</X>
+            <Y>4.33333506</Y>
+            <Z>-10.3239208</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>6.00000238</X>
+            <Y>8.66667011</Y>
+            <Z>8.00000318</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="WedgePart" referent="RBXD693A50ADF6949228AD8FD04A80BAF97">
+        <Properties>
+          <string name="Name">Wedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>-11.9818643</X>
+            <Y>4.33333506</Y>
+            <Z>0.659461738</Z>
+            <R00>-0.0549549796</R00>
+            <R01>0</R01>
+            <R02>0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-0.998488903</R20>
+            <R21>0</R21>
+            <R22>-0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>16.0000064</X>
+            <Y>8.66667011</Y>
+            <Z>8.00000318</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="CornerWedgePart" referent="RBX9B5F28A49CD142128C171CD014A8A43F">
+        <Properties>
+          <string name="Name">CornerWedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>-4.21377198</X>
+            <Y>13.0000052</Y>
+            <Z>-3.77413537</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>8.00000318</X>
+            <Y>8.66667011</Y>
+            <Z>8.00000318</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="CornerWedgePart" referent="RBX8DB87BBC6F25421692F9F8D20A49B9E8">
+        <Properties>
+          <string name="Name">CornerWedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>-3.77413176</X>
+            <Y>13.0000052</Y>
+            <Z>4.21377935</Z>
+            <R00>0.998488784</R00>
+            <R01>0</R01>
+            <R02>0.0549549796</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-0.0549549721</R20>
+            <R21>0</R21>
+            <R22>0.998488903</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>8.00000318</X>
+            <Y>8.66667011</Y>
+            <Z>8.00000318</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="WedgePart" referent="RBXDF79E024C03C4F619727C37E3204CADF">
+        <Properties>
+          <string name="Name">Wedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>-0.604499821</X>
+            <Y>4.33333506</Y>
+            <Z>-10.9833805</Z>
+            <R00>0.998488784</R00>
+            <R01>0</R01>
+            <R02>0.0549549796</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-0.0549549721</R20>
+            <R21>0</R21>
+            <R22>0.998488903</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>16.0000064</X>
+            <Y>8.66667011</Y>
+            <Z>6.00000238</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="CornerWedgePart" referent="RBX6D4A423D24BC4E2594829B1659E87ECB">
+        <Properties>
+          <string name="Name">CornerWedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>-11.3773592</X>
+            <Y>4.33333506</Y>
+            <Z>11.6428391</Z>
+            <R00>0.998488903</R00>
+            <R01>0</R01>
+            <R02>0.054954987</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-0.0549549796</R20>
+            <R21>0</R21>
+            <R22>0.998489022</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>8.00000318</X>
+            <Y>8.66667011</Y>
+            <Z>6.00000238</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="WedgePart" referent="RBX5354EE25C7B64CEF9B4400B8627280D8">
+        <Properties>
+          <string name="Name">Wedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>0.604510466</X>
+            <Y>4.33333506</Y>
+            <Z>10.9833845</Z>
+            <R00>-0.998488784</R00>
+            <R01>0</R01>
+            <R02>-0.0549549796</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.0549549721</R20>
+            <R21>0</R21>
+            <R22>-0.998488903</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>16.0000064</X>
+            <Y>8.66667011</Y>
+            <Z>6.00000238</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="CornerWedgePart" referent="RBX1C2CE1CF6AAB43E88EE9AD8083735C50">
+        <Properties>
+          <string name="Name">CornerWedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>3.77414115</X>
+            <Y>13.0000052</Y>
+            <Z>-4.21377527</Z>
+            <R00>-0.998488784</R00>
+            <R01>0</R01>
+            <R02>-0.0549549796</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.0549549721</R20>
+            <R21>0</R21>
+            <R22>-0.998488903</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>8.00000318</X>
+            <Y>8.66667011</Y>
+            <Z>8.00000318</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="CornerWedgePart" referent="RBX24BCDD7C6C6B4363AE2FC46079E7F13B">
+        <Properties>
+          <string name="Name">CornerWedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>4.21378264</X>
+            <Y>13.0000052</Y>
+            <Z>3.77413913</Z>
+            <R00>-0.0549549796</R00>
+            <R01>0</R01>
+            <R02>0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-0.998488903</R20>
+            <R21>0</R21>
+            <R22>-0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>8.00000318</X>
+            <Y>8.66667011</Y>
+            <Z>8.00000318</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="WedgePart" referent="RBX45592A704B614ABC98BB0A8C76970473">
+        <Properties>
+          <string name="Name">Wedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>11.9818649</X>
+            <Y>4.33333506</Y>
+            <Z>-0.659467823</Z>
+            <R00>0.0549549162</R00>
+            <R01>0</R01>
+            <R02>-0.998488724</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488843</R20>
+            <R21>0</R21>
+            <R22>0.0549549088</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>16.0000064</X>
+            <Y>8.66667011</Y>
+            <Z>8.00000318</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="CornerWedgePart" referent="RBXA422662DA9114EC492D24A23D1EC9C46">
+        <Properties>
+          <string name="Name">CornerWedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>11.3773597</X>
+            <Y>4.33333506</Y>
+            <Z>-11.6428402</Z>
+            <R00>-0.998488665</R00>
+            <R01>0</R01>
+            <R02>-0.0549549125</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.0549549051</R20>
+            <R21>0</R21>
+            <R22>-0.998488784</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>8.00000318</X>
+            <Y>8.66667011</Y>
+            <Z>6.00000238</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="CornerWedgePart" referent="RBXD20310813A454681BB73872840613D04">
+        <Properties>
+          <string name="Name">CornerWedge</string>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <string name="CollisionGroup">Default</string>
+          <float name="Reflectance">0</float>
+          <bool name="CanCollide">false</bool>
+          <Color3uint8 name="Color3uint8">4294830733</Color3uint8>
+          <CoordinateFrame name="CFrame">
+            <X>12.58637</X>
+            <Y>4.33333506</Y>
+            <Z>10.3239197</Z>
+            <R00>-0.0549549162</R00>
+            <R01>0</R01>
+            <R02>0.998488724</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>-0.998488843</R20>
+            <R21>0</R21>
+            <R22>-0.0549549088</R22>
+          </CoordinateFrame>
+          <bool name="CanTouch">true</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <float name="Transparency">0</float>
+          <bool name="CanQuery">true</bool>
+          <bool name="Anchored">true</bool>
+          <string name="MaterialVariantSerialized" />
+          <token name="Material">1296</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>6.00000238</X>
+            <Y>8.66667011</Y>
+            <Z>8.00000318</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

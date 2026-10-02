@@ -1,0 +1,162 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXB7C5628C46E2471EBBD64313C57A3FEA">
+    <Properties>
+      <string name="Name">Glowing lava wall cracks</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAILAAAAbGF2YV9jcmFja3MNAAAAU291cmNlQXNzZXRJZAZAi9Dol63eQg==</BinaryString>
+    </Properties>
+    <Item class="MeshPart" referent="RBX4EA23F12E378407BB2C0E6AF0D64BC96">
+      <Properties>
+        <string name="Name">Lava</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4292178749</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">288</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>10.0000016</X>
+          <Y>0.249999876</Y>
+          <Z>10.0000016</Z>
+        </Vector3>
+        <token name="CollisionFidelity">0</token>
+        <Vector3 name="InitialSize">
+          <X>12.0577192</X>
+          <Y>0.202121019</Y>
+          <Z>12.0577192</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>4.3375922e-16</X>
+          <Y>0.124999938</Y>
+          <Z>-4.61599075e-17</Z>
+          <R00>0.0549549796</R00>
+          <R01>0</R01>
+          <R02>-0.998488784</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0.998488903</R20>
+          <R21>0</R21>
+          <R22>0.0549549721</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>rbxassetid://4574345201</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="Texture" referent="RBXA7D9097869DD42019533F71FF2C50065">
+        <Properties>
+          <string name="Name">Texture</string>
+          <float name="OffsetStudsU">0</float>
+          <float name="OffsetStudsV">0</float>
+          <token name="Face">1</token>
+          <float name="StudsPerTileU">12</float>
+          <float name="Transparency">0.349999994</float>
+          <Color3 name="Color3">
+            <R>1</R>
+            <G>1</G>
+            <B>1</B>
+          </Color3>
+          <float name="StudsPerTileV">12</float>
+          <int name="ZIndex">1</int>
+          <bool name="archivable">true</bool>
+          <Content name="Texture">
+            <url>rbxassetid://4539751690</url>
+          </Content>
+        </Properties>
+      </Item>
+      <Item class="SurfaceLight" referent="RBX92DB1C9D0F334D6EA03CB609BFE36C1E">
+        <Properties>
+          <string name="Name">SurfaceLight</string>
+          <bool name="Enabled">true</bool>
+          <bool name="Shadows">true</bool>
+          <token name="Face">1</token>
+          <float name="Angle">90</float>
+          <Color3 name="Color">
+            <R>1</R>
+            <G>0.333333343</G>
+            <B>0</B>
+          </Color3>
+          <float name="Brightness">6</float>
+          <bool name="archivable">true</bool>
+          <float name="Range">12.500002</float>
+        </Properties>
+      </Item>
+      <Item class="ParticleEmitter" referent="RBXD3A1AEFAC95540B4B9ACAA51C0AB8F79">
+        <Properties>
+          <string name="Name">ParticleEmitter</string>
+          <bool name="WindAffectsDrag">false</bool>
+          <ColorSequence name="Color">0 1 0.749019623 0 0 1 1 0.749019623 0 0 </ColorSequence>
+          <float name="Drag">0</float>
+          <float name="ZOffset">0</float>
+          <float name="TimeScale">1</float>
+          <float name="LightInfluence">1</float>
+          <Content name="Texture">
+            <url>http://www.roblox.com/asset/?id=2786423908</url>
+          </Content>
+          <float name="ShapePartial">1</float>
+          <NumberRange name="Lifetime">1 3 </NumberRange>
+          <NumberRange name="Speed">2 2 </NumberRange>
+          <float name="Brightness">1</float>
+          <bool name="archivable">true</bool>
+          <NumberSequence name="size">0 0.5 0.5 1 0.5 0.5 </NumberSequence>
+          <bool name="Enabled">true</bool>
+          <Vector3 name="Acceleration">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <NumberRange name="RotSpeed">0 0 </NumberRange>
+          <token name="ShapeInOut">0</token>
+          <token name="ShapeStyle">0</token>
+          <bool name="LockedToPart">false</bool>
+          <float name="Rate">0.5</float>
+          <float name="VelocityInheritance">0</float>
+          <NumberRange name="Rotation">0 0 </NumberRange>
+          <NumberSequence name="Transparency">0 1 0 0.0598159507 0 0 0.808282197 0 0 1 1 0 </NumberSequence>
+          <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+          <token name="Orientation">0</token>
+          <float name="LightEmission">1</float>
+          <token name="EmissionDirection">1</token>
+          <token name="shape">0</token>
+          <Vector2 name="SpreadAngle">
+            <X>0</X>
+            <Y>0</Y>
+          </Vector2>
+        </Properties>
+      </Item>
+      <Item class="BoolValue" referent="RBXBBB3A73E14934EC38EBCA9D8A8889B33">
+        <Properties>
+          <string name="Name">BurnTools</string>
+          <bool name="archivable">true</bool>
+          <bool name="Value">false</bool>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

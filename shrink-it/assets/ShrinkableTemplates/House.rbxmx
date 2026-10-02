@@ -1,0 +1,74 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX7EEE003B51D74CA0A52DDDC028495379">
+    <Properties>
+      <string name="Name">Coastal house</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIFAAAAaG91c2UNAAAAU291cmNlQXNzZXRJZAIKAAAANTY1NDk0NjQ3MQ==</BinaryString>
+    </Properties>
+    <Item class="MeshPart" referent="RBX2CB6DF88D0CF451CAF333D043C4E502C">
+      <Properties>
+        <string name="Name">Meshes/cottage_fbx</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <Content name="TextureID"><url>rbxassetid://5654937750</url></Content>
+        <token name="RenderFidelity">1</token>
+        <token name="Material">256</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>21.9999966</X>
+          <Y>9.51414757</Y>
+          <Z>13.4444364</Z>
+        </Vector3>
+        <token name="CollisionFidelity">0</token>
+        <Vector3 name="InitialSize">
+          <X>50</X>
+          <Y>21.6230659</Y>
+          <Z>30.555542</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>4.09963946e-16</X>
+          <Y>4.7570735</Y>
+          <Z>8.66452236e-16</Z>
+          <R00>-0.0118788714</R00>
+          <R01>0</R01>
+          <R02>-0.999929368</R02>
+          <R10>0</R10>
+          <R11>0.99999994</R11>
+          <R12>0</R12>
+          <R20>0.999929488</R20>
+          <R21>0</R21>
+          <R22>-0.0118788695</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>rbxassetid://5654929395</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

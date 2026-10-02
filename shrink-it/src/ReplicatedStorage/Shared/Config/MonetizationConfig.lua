@@ -100,14 +100,15 @@ MonetizationConfig.RoyalCrate = {
 }
 
 -- ── Ray skins (cosmetic beam colors) ──────────────────────────────────
+-- Model = the ray gun from your asset pack (ServerStorage > AssetPack) you hold with this skin.
 MonetizationConfig.SkinOrder = { "Default", "Bubblegum", "Toxic", "Sunset", "Galaxy", "Rainbow" }
 MonetizationConfig.RaySkins = {
-	Default = { Name = "Classic", Colors = { Color3.fromRGB(80, 220, 255), Color3.fromRGB(30, 120, 255) } },
-	Bubblegum = { Name = "Bubblegum", Colors = { Color3.fromRGB(255, 140, 220), Color3.fromRGB(255, 60, 160) } },
-	Toxic = { Name = "Toxic", Colors = { Color3.fromRGB(170, 255, 60), Color3.fromRGB(40, 200, 40) } },
-	Sunset = { Name = "Sunset", Colors = { Color3.fromRGB(255, 200, 60), Color3.fromRGB(255, 70, 50) } },
-	Galaxy = { Name = "Galaxy", Colors = { Color3.fromRGB(150, 90, 255), Color3.fromRGB(20, 10, 80) } },
-	Rainbow = { Name = "Rainbow", Colors = { Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 0, 255) }, Rainbow = true, Pass = "RainbowRay" },
+	Default = { Name = "Classic", Model = "ray_blue", Colors = { Color3.fromRGB(80, 220, 255), Color3.fromRGB(30, 120, 255) } },
+	Bubblegum = { Name = "Bubblegum", Model = "ray_purple", Colors = { Color3.fromRGB(255, 140, 220), Color3.fromRGB(255, 60, 160) } },
+	Toxic = { Name = "Toxic", Model = "ray_green", Colors = { Color3.fromRGB(170, 255, 60), Color3.fromRGB(40, 200, 40) } },
+	Sunset = { Name = "Sunset", Model = "ray_gold", Colors = { Color3.fromRGB(255, 200, 60), Color3.fromRGB(255, 70, 50) } },
+	Galaxy = { Name = "Galaxy", Model = "ray_galaxy", Colors = { Color3.fromRGB(150, 90, 255), Color3.fromRGB(20, 10, 80) } },
+	Rainbow = { Name = "Rainbow", Model = "ray_rainbow", Colors = { Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 0, 255) }, Rainbow = true, Pass = "RainbowRay" },
 }
 
 -- ── Trails (bought at the TRAILS stand) ───────────────────────────────

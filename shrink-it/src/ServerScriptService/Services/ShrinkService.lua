@@ -14,6 +14,7 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
+local MonetizationConfig = require(Shared.Config.MonetizationConfig)
 local Formulas = require(Shared.Formulas)
 local Remotes = require(Shared.Remotes)
 
@@ -35,10 +36,66 @@ function ShrinkService.GetStats(player)
 	return Formulas.RayStats(data, s.Passes)
 end
 
-local function makeTool()
+-- A ray gun model from your asset pack (ServerStorage > AssetPack > ray_*) turned into a Tool:
+-- every part welded to its "Handle", plus a "Tip" attachment at the front of the barrel (-Z).
+local function packRay(modelName)
+	local pack = ServerStorage:FindFirstChild("AssetPack")
+	local source = pack and modelName and pack:FindFirstChild(modelName)
+	if not source then
+		return nil
+	end
+	local model = source:Clone()
+	local handle = model:FindFirstChild("Handle", true)
+	if not (handle and handle:IsA("BasePart")) then
+		return nil
+	end
+	local tool = Instance.new("Tool")
+	tool.CanBeDropped = false
+	tool.RequiresHandle = true
+	tool.ToolTip = "Hold to charge on an object!"
+	local front, tipY = 0, 0
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.Anchored = false
+			d.CanCollide = false
+			d.CanQuery = false
+			d.CanTouch = false
+			d.Massless = true
+			local rel = handle.CFrame:PointToObjectSpace(d.Position)
+			local reach = rel.Z - d.Size.Magnitude / 2
+			if reach < front then
+				front, tipY = reach, rel.Y
+			end
+			if d ~= handle then
+				local weld = Instance.new("WeldConstraint")
+				weld.Part0 = handle
+				weld.Part1 = d
+				weld.Parent = d
+			end
+		elseif d:IsA("LuaSourceContainer") then
+			d:Destroy()
+		end
+	end
+	for _, child in ipairs(model:GetChildren()) do
+		child.Parent = tool
+	end
+	handle.Parent = tool
+	local tip = Instance.new("Attachment")
+	tip.Name = "Tip"
+	tip.Position = Vector3.new(0, tipY, front)
+	tip.Parent = handle
+	tool.Grip = CFrame.new(0, -0.1, 0.1)
+	return tool
+end
+
+local function makeTool(player)
 	local custom = ServerStorage:FindFirstChild("ShrinkRay")
-	local tool
-	if custom and custom:IsA("Tool") then
+	local data = player and Svc.Data.Get(player)
+	local skin = data and MonetizationConfig.RaySkins[data.EquippedSkin or "Default"]
+	local tool = not (custom and custom:IsA("Tool")) and packRay(skin and skin.Model or "ray_blue") or nil
+	if tool then
+		-- your asset-pack ray gun
+	elseif custom and custom:IsA("Tool") then
 		tool = custom:Clone()
 	else
 		tool = Instance.new("Tool")
@@ -123,7 +180,18 @@ local function giveTool(player)
 	if backpack:FindFirstChild(TOOL_NAME) or (player.Character and player.Character:FindFirstChild(TOOL_NAME)) then
 		return
 	end
-	makeTool().Parent = backpack
+	makeTool(player).Parent = backpack
+end
+
+-- Swaps the ray gun (after equipping another skin).
+function ShrinkService.RefreshTool(player)
+	for _, holder in ipairs({ player:FindFirstChildOfClass("Backpack"), player.Character }) do
+		local old = holder and holder:FindFirstChild(TOOL_NAME)
+		if old then
+			old:Destroy()
+		end
+	end
+	giveTool(player)
 end
 
 local function rootOf(player)

@@ -5,8 +5,7 @@
 	Make it back to the SAFE ZONE (your base) to keep your loot. Get caught and you drop it all.
 
 	Speed is in studs/sec (players start at 28; TRAIN speed on your plot's treadmill to outrun later chasers).
-	Every zone is guarded by a blocky ANIMAL (Animal = ..., built by ServerScriptService.Services.ChaserModels).
-	Remove `Animal` to get the old R15 person built from Colors / HeadProps. To use your own NPC instead,
+	Colors / HeadProps build a simple look on a standard R15 body. To use your own NPC instead,
 	put a Model with a Humanoid + HumanoidRootPart in ServerStorage > Chasers named "Tier1".."Tier10".
 ]]
 
@@ -34,16 +33,15 @@ ChaserConfig.RunAnimation = "rbxassetid://913376220" -- Roblox default R15 run
 
 ChaserConfig.Chasers = {
 	[1] = {
-		Name = "Big Hen",
-		Animal = "Chicken", -- blocky animal (ChaserModels)
+		Name = "Grandpa Joe",
 		Emoji = "👴",
 		Speed = 38,
-		Shout = "BAWK BAWK! MY EGGS!",
-		CaughtLine = "Bawk! Back to my nest!",
+		Shout = "HEY! THAT'S MY STUFF, YOU WHIPPERSNAPPER!",
+		CaughtLine = "Hah! Back to my yard!",
 		Skin = RGB(234, 184, 146),
 		Shirt = RGB(150, 110, 80),
 		Pants = RGB(90, 90, 110),
-		Scale = 1.25,
+		Scale = 0.95,
 		HeadProps = {
 			{ Name = "FlatCap", Size = Vector3.new(1.3, 0.35, 1.4), Offset = Vector3.new(0, 0.62, -0.05), Color = RGB(110, 85, 60), Material = Enum.Material.Fabric },
 			{ Name = "Beard", Size = Vector3.new(1, 0.7, 0.4), Offset = Vector3.new(0, -0.45, -0.55), Color = RGB(240, 240, 240), Material = Enum.Material.Fabric },
@@ -56,16 +54,15 @@ ChaserConfig.Chasers = {
 		},
 	},
 	[2] = {
-		Name = "Buster the Dog",
-		Animal = "Dog", -- blocky animal (ChaserModels)
+		Name = "Angry Neighbor",
 		Emoji = "😠",
 		Speed = 44,
-		Shout = "WOOF WOOF! DROP IT!",
-		CaughtLine = "Good boy! ...me, I mean.",
+		Shout = "GET OFF MY LAWN!",
+		CaughtLine = "And STAY out!",
 		Skin = RGB(200, 140, 100),
 		Shirt = RGB(230, 70, 70),
 		Pants = RGB(60, 80, 140),
-		Scale = 1.25,
+		Scale = 1,
 		HeadProps = {
 			{ Name = "Cap", Size = Vector3.new(1.3, 0.35, 1.5), Offset = Vector3.new(0, 0.62, -0.1), Color = RGB(40, 120, 220), Material = Enum.Material.Fabric },
 			{ Name = "Brim", Size = Vector3.new(1.1, 0.1, 0.6), Offset = Vector3.new(0, 0.48, -0.85), Color = RGB(40, 120, 220), Material = Enum.Material.Fabric },
@@ -76,16 +73,15 @@ ChaserConfig.Chasers = {
 		},
 	},
 	[3] = {
-		Name = "Trash Raccoon",
-		Animal = "Raccoon", -- blocky animal (ChaserModels)
+		Name = "Officer Doug",
 		Emoji = "👮",
 		Speed = 50,
-		Shout = "HISSSS! THAT'S MY TRASH!",
-		CaughtLine = "Mine now. All mine.",
+		Shout = "STOP RIGHT THERE!",
+		CaughtLine = "You're under arrest... for shrinking!",
 		Skin = RGB(160, 110, 80),
 		Shirt = RGB(30, 50, 110),
 		Pants = RGB(25, 30, 60),
-		Scale = 1.3,
+		Scale = 1.05,
 		HeadProps = {
 			{ Name = "PoliceHat", Size = Vector3.new(1.35, 0.45, 1.45), Offset = Vector3.new(0, 0.66, 0), Color = RGB(25, 35, 80), Material = Enum.Material.SmoothPlastic },
 			{ Name = "Badge", Size = Vector3.new(0.3, 0.3, 0.1), Offset = Vector3.new(0, 0.7, -0.75), Color = RGB(255, 210, 60), Material = Enum.Material.Neon },
@@ -97,16 +93,15 @@ ChaserConfig.Chasers = {
 		},
 	},
 	[4] = {
-		Name = "King Crab",
-		Animal = "Crab", -- blocky animal (ChaserModels)
+		Name = "Captain Barnacle",
 		Emoji = "🏴‍☠️",
 		Speed = 56,
-		Shout = "SNIP SNIP! THIEF!",
-		CaughtLine = "Back to the beach with you!",
+		Shout = "ARRR! THIEF ON DECK!",
+		CaughtLine = "Walk the plank, landlubber!",
 		Skin = RGB(210, 160, 120),
 		Shirt = RGB(150, 30, 30),
 		Pants = RGB(40, 30, 25),
-		Scale = 1.35,
+		Scale = 1.1,
 		HeadProps = {
 			{ Name = "PirateHat", Size = Vector3.new(1.8, 0.5, 1.2), Offset = Vector3.new(0, 0.7, 0), Color = RGB(25, 25, 25), Material = Enum.Material.Fabric },
 			{ Name = "EyePatch", Size = Vector3.new(0.35, 0.3, 0.1), Offset = Vector3.new(0.25, 0.1, -0.6), Color = RGB(10, 10, 10), Material = Enum.Material.SmoothPlastic },
@@ -119,16 +114,15 @@ ChaserConfig.Chasers = {
 		},
 	},
 	[5] = {
-		Name = "Grumpy Camel",
-		Animal = "Camel", -- blocky animal (ChaserModels)
+		Name = "Sheriff Sandy",
 		Emoji = "🤠",
 		Speed = 62,
-		Shout = "PTOOEY! COME BACK HERE!",
-		CaughtLine = "Spit happens.",
+		Shout = "YEEHAW! STOP, VARMINT!",
+		CaughtLine = "This town ain't big enough for the both of us!",
 		Skin = RGB(225, 175, 130),
 		Shirt = RGB(200, 140, 70),
 		Pants = RGB(70, 80, 120),
-		Scale = 1.25,
+		Scale = 1.05,
 		HeadProps = {
 			{ Name = "CowboyHat", Size = Vector3.new(2.2, 0.25, 2.2), Offset = Vector3.new(0, 0.55, 0), Color = RGB(150, 100, 50), Material = Enum.Material.Fabric },
 			{ Name = "HatTop", Size = Vector3.new(1.2, 0.6, 1.2), Offset = Vector3.new(0, 0.85, 0), Color = RGB(150, 100, 50), Material = Enum.Material.Fabric },
@@ -139,16 +133,15 @@ ChaserConfig.Chasers = {
 		},
 	},
 	[6] = {
-		Name = "Gorilla Boss",
-		Animal = "Gorilla", -- blocky animal (ChaserModels)
+		Name = "Jungle Jim",
 		Emoji = "🦁",
 		Speed = 68,
-		Shout = "OOH OOH AAH AAH!!",
-		CaughtLine = "Banana tax collected.",
+		Shout = "NOBODY ROBS MY JUNGLE!",
+		CaughtLine = "Ha! The jungle always wins!",
 		Skin = RGB(190, 130, 90),
 		Shirt = RGB(110, 140, 70),
 		Pants = RGB(150, 120, 70),
-		Scale = 1.35,
+		Scale = 1.1,
 		HeadProps = {
 			{ Name = "SafariHat", Size = Vector3.new(1.9, 0.3, 1.9), Offset = Vector3.new(0, 0.55, 0), Color = RGB(220, 200, 150), Material = Enum.Material.Fabric },
 			{ Name = "HatDome", Size = Vector3.new(1.3, 0.5, 1.3), Offset = Vector3.new(0, 0.8, 0), Color = RGB(220, 200, 150), Material = Enum.Material.Fabric },
@@ -159,32 +152,30 @@ ChaserConfig.Chasers = {
 		},
 	},
 	[7] = {
-		Name = "Sky Eagle",
-		Animal = "Eagle", -- blocky animal (ChaserModels)
+		Name = "Security Bot",
 		Emoji = "🤖",
 		Speed = 74,
-		Shout = "SKREEEE!",
-		CaughtLine = "Nothing escapes my eyes.",
+		Shout = "INTRUDER DETECTED. INITIATING PURSUIT.",
+		CaughtLine = "TARGET NEUTRALIZED. BEEP BOOP.",
 		Skin = RGB(170, 175, 190),
 		Shirt = RGB(90, 95, 110),
 		Pants = RGB(60, 65, 80),
-		Scale = 1.35,
+		Scale = 1.15,
 		HeadProps = {
 			{ Name = "Visor", Size = Vector3.new(1.1, 0.3, 0.2), Offset = Vector3.new(0, 0.1, -0.6), Color = RGB(255, 40, 40), Material = Enum.Material.Neon },
 			{ Name = "Antenna", Size = Vector3.new(0.15, 0.8, 0.15), Offset = Vector3.new(0, 0.95, 0), Color = RGB(255, 40, 40), Material = Enum.Material.Neon },
 		},
 	},
 	[8] = {
-		Name = "Lava Lizard",
-		Animal = "Lizard", -- blocky animal (ChaserModels)
+		Name = "Magma Golem",
 		Emoji = "🔥",
 		Speed = 80,
-		Shout = "HSSS... YOU WILL BURN!",
+		Shout = "YOU... WILL... BURN!",
 		CaughtLine = "Toasty!",
 		Skin = RGB(70, 45, 40),
 		Shirt = RGB(60, 40, 35),
 		Pants = RGB(50, 35, 30),
-		Scale = 1.45,
+		Scale = 1.5,
 		HeadProps = {
 			{ Name = "LavaEyes", Size = Vector3.new(1.0, 0.25, 0.1), Offset = Vector3.new(0, 0.12, -0.62), Color = RGB(255, 120, 20), Material = Enum.Material.Neon },
 			{ Name = "LavaCrown", Size = Vector3.new(1.3, 0.3, 1.3), Offset = Vector3.new(0, 0.7, 0), Color = RGB(255, 80, 20), Material = Enum.Material.Neon },
@@ -192,7 +183,6 @@ ChaserConfig.Chasers = {
 	},
 	[9] = {
 		Name = "The Yeti",
-		Animal = "Yeti", -- blocky animal (ChaserModels)
 		Emoji = "🦍",
 		Speed = 88,
 		Shout = "ROOOOAAAARRR!!!",
@@ -206,16 +196,15 @@ ChaserConfig.Chasers = {
 		},
 	},
 	[10] = {
-		Name = "Space Blob",
-		Animal = "Alien", -- blocky animal (ChaserModels)
+		Name = "Alien Overlord",
 		Emoji = "👽",
 		Speed = 96,
-		Shout = "BLORP! RETURN OUR TREASURE!",
+		Shout = "EARTHLING! RETURN OUR TREASURE!",
 		CaughtLine = "Probing complete. Bye bye!",
 		Skin = RGB(120, 230, 120),
 		Shirt = RGB(70, 60, 140),
 		Pants = RGB(50, 45, 110),
-		Scale = 1.4,
+		Scale = 1.3,
 		HeadProps = {
 			{ Name = "Eyes", Size = Vector3.new(1.1, 0.4, 0.1), Offset = Vector3.new(0, 0.12, -0.62), Color = RGB(10, 10, 20), Material = Enum.Material.Glass },
 			{ Name = "Antenna", Size = Vector3.new(0.12, 1.0, 0.12), Offset = Vector3.new(0, 1.0, 0), Color = RGB(120, 230, 120), Material = Enum.Material.SmoothPlastic },

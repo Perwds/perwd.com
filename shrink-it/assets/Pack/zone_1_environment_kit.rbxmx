@@ -1,0 +1,530 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX444D5A0FA8CF4276B5CB258ACA77D728">
+    <Properties>
+      <string name="Name">Zone 1 backyard environment kit</string>
+      <BinaryString name="AttributesSerialize">BAAAAAsAAABQYWNrQXNzZXRJZAIWAAAAem9uZV8xX2Vudmlyb25tZW50X2tpdAwAAABQYWNrQ2F0ZWdvcnkCBAAAAGJhc2UNAAAAUmV1c2FibGVBc3NldAMBBQAAAFpvbmVzAgEAAAAx</BinaryString>
+    </Properties>
+    <Item class="Part" referent="RBXAC4BEBC84949467EBC48BBBA510DD308">
+      <Properties>
+        <string name="Name">Themed floor tile</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4285037900</Color3uint8>
+        <token name="Material">1280</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>24</X>
+          <Y>0.5</Y>
+          <Z>12</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>0.25</Y>
+          <Z>0.65</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXEF0AED7EF56E4F4B8E0390C0FBAC6652">
+      <Properties>
+        <string name="Name">Themed wall panel</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4286143294</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>24</X>
+          <Y>12</Y>
+          <Z>2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>6.5</Y>
+          <Z>-5.35</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX8F0FE0F08C1F41FBB3E5911EABAFA758">
+      <Properties>
+        <string name="Name">Wall foot course</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4284827434</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>24</X>
+          <Y>2.2</Y>
+          <Z>0.8</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>1.6</Y>
+          <Z>-4.25</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX5AF1B0158438421AB0FF66ACE80DF7ED">
+      <Properties>
+        <string name="Name">Wall coping</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4287524947</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>24</X>
+          <Y>0.5</Y>
+          <Z>2.6</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>12.65</Y>
+          <Z>-5.35</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXA4B8D7F43C2A4C35A28F76C3A493E22A">
+      <Properties>
+        <string name="Name">Wall end buttress</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4285485364</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>1.2</X>
+          <Y>12.3</Y>
+          <Z>1.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-11.4</X>
+          <Y>6.5</Y>
+          <Z>-4.15</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXEF5D5BC0DB684EAFB91217F0820F792E">
+      <Properties>
+        <string name="Name">Wall end buttress</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4285485364</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>1.2</X>
+          <Y>12.3</Y>
+          <Z>1.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>11.4</X>
+          <Y>6.5</Y>
+          <Z>-4.15</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXAC83EE04005A4C58A68DC3B23A9F0BAF">
+      <Properties>
+        <string name="Name">Weathered fence batten</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4287129669</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.9</X>
+          <Y>11.3</Y>
+          <Z>0.12</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-10.2</X>
+          <Y>6.5</Y>
+          <Z>-4.28</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX72D9CB54F5024819BEC8A657A21A7A42">
+      <Properties>
+        <string name="Name">Weathered fence batten</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4287129669</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.9</X>
+          <Y>11.3</Y>
+          <Z>0.12</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-6.8</X>
+          <Y>6.5</Y>
+          <Z>-4.28</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXFEE4C1A5BF4148A7A3032AB0377A1053">
+      <Properties>
+        <string name="Name">Weathered fence batten</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4287129669</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.9</X>
+          <Y>11.3</Y>
+          <Z>0.12</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-3.4</X>
+          <Y>6.5</Y>
+          <Z>-4.28</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX5526E4C130484C6DAD27AB3DD614E95C">
+      <Properties>
+        <string name="Name">Weathered fence batten</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4287129669</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.9</X>
+          <Y>11.3</Y>
+          <Z>0.12</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>6.5</Y>
+          <Z>-4.28</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX27E24905CE664ED7B73A089E91B983D0">
+      <Properties>
+        <string name="Name">Weathered fence batten</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4287129669</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.9</X>
+          <Y>11.3</Y>
+          <Z>0.12</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>3.4</X>
+          <Y>6.5</Y>
+          <Z>-4.28</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX0AB549B65EA649A7B3DAA2F169A477F6">
+      <Properties>
+        <string name="Name">Weathered fence batten</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4287129669</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.9</X>
+          <Y>11.3</Y>
+          <Z>0.12</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>6.8</X>
+          <Y>6.5</Y>
+          <Z>-4.28</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX60BEEB12F73245F9B3362D157CE9B2E6">
+      <Properties>
+        <string name="Name">Weathered fence batten</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4287129669</Color3uint8>
+        <token name="Material">528</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.9</X>
+          <Y>11.3</Y>
+          <Z>0.12</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>10.2</X>
+          <Y>6.5</Y>
+          <Z>-4.28</Z>
+          <R00>1</R00>
+          <R01>-0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

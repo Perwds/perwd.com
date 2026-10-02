@@ -1,0 +1,2805 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX12FF5268C3E043E99440F1DAE150CE09">
+    <Properties>
+      <string name="Name">Greek temple museum</string>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIMAAAAZ3JlZWtfbXVzZXVtDAAAAFBhY2tDYXRlZ29yeQIEAAAAYmFzZQ0AAABSZXVzYWJsZUFzc2V0AwE=</BinaryString>
+    </Properties>
+    <Item class="Part" referent="RBX87F9BF9F995D40DAABC80F1ED53BB5E2">
+      <Properties>
+        <string name="Name">Museum foundation step</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>24.0</X>
+          <Y>0.48</Y>
+          <Z>18.0</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.50000004e-08</X>
+          <Y>0.24</Y>
+          <Z>0</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXCC6709C7352F414F9ADFBEB39D15A315">
+      <Properties>
+        <string name="Name">Museum foundation step</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>22.8</X>
+          <Y>0.48</Y>
+          <Z>16.8</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.50000004e-08</X>
+          <Y>0.69</Y>
+          <Z>0</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXF5890E661D574E62AF4C05FEC9654EDA">
+      <Properties>
+        <string name="Name">Museum foundation step</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>21.6</X>
+          <Y>0.48</Y>
+          <Z>15.6</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>1.50000004e-08</X>
+          <Y>1.14</Y>
+          <Z>0</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXAD489EC1CBEB47F9BDCA4D827CCCDF6F">
+      <Properties>
+        <string name="Name">Museum rear wall</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>21.5</X>
+          <Y>7.9</Y>
+          <Z>0.6</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>4.23292875e-08</X>
+          <Y>5.39</Y>
+          <Z>6.80000007</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXD71B2A45B16C44A8A10021EDC1372925">
+      <Properties>
+        <string name="Name">Museum side wall</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.6</X>
+          <Y>7.9</Y>
+          <Z>12.8</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-10.45</X>
+          <Y>5.39</Y>
+          <Z>0.700000037</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX25925B105E254BE9868941F66112CC9E">
+      <Properties>
+        <string name="Name">Side clerestory glass</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0.3</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4285437079</Color3uint8>
+        <token name="Material">1568</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.08</X>
+          <Y>2.5</Y>
+          <Z>8.0</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-10.7699999</X>
+          <Y>6.09</Y>
+          <Z>0.300000049</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXB66BD7BD49024B87AEDDA25EC11F4C9A">
+      <Properties>
+        <string name="Name">Window mullion</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4284176722</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.12</X>
+          <Y>2.7</Y>
+          <Z>0.13</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-10.87</X>
+          <Y>6.09</Y>
+          <Z>-3.49999998</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX990EC55F76AE48D4AE72DB5EE0737825">
+      <Properties>
+        <string name="Name">Window mullion</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4284176722</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.12</X>
+          <Y>2.7</Y>
+          <Z>0.13</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-10.8699999</X>
+          <Y>6.09</Y>
+          <Z>0.300000058</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXAC4E998A66994E8C9F0F342C6ECD8628">
+      <Properties>
+        <string name="Name">Window mullion</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4284176722</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.12</X>
+          <Y>2.7</Y>
+          <Z>0.13</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-10.87</X>
+          <Y>6.09</Y>
+          <Z>4.10000003</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX5AF398E6147348D5A15531020DD6AC9F">
+      <Properties>
+        <string name="Name">Museum side wall</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.6</X>
+          <Y>7.9</Y>
+          <Z>12.8</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>10.45</X>
+          <Y>5.39</Y>
+          <Z>0.699999988</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXC9E9944094BB4D788CEDB7D1C98BA79D">
+      <Properties>
+        <string name="Name">Side clerestory glass</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0.3</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4285437079</Color3uint8>
+        <token name="Material">1568</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.08</X>
+          <Y>2.5</Y>
+          <Z>8.0</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>10.7700001</X>
+          <Y>6.09</Y>
+          <Z>0.300000019</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXD79D869DA9B340AEBEB637DDA3597126">
+      <Properties>
+        <string name="Name">Window mullion</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4284176722</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.12</X>
+          <Y>2.7</Y>
+          <Z>0.13</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>10.87</X>
+          <Y>6.09</Y>
+          <Z>-3.49999993</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX239E6EDE585740299BAEFC3E99DFFFFC">
+      <Properties>
+        <string name="Name">Window mullion</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4284176722</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.12</X>
+          <Y>2.7</Y>
+          <Z>0.13</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>10.87</X>
+          <Y>6.09</Y>
+          <Z>0.300000036</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXDB06C05F42B3481ABAE65582B52CF8B4">
+      <Properties>
+        <string name="Name">Window mullion</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4284176722</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.12</X>
+          <Y>2.7</Y>
+          <Z>0.13</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>10.87</X>
+          <Y>6.09</Y>
+          <Z>4.09999998</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX490F53AFAAB047FF87D8FD7A62363827">
+      <Properties>
+        <string name="Name">Column square plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.15</X>
+          <Y>0.5</Y>
+          <Z>2.15</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>1.67</Y>
+          <Z>-6.2</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX379882698A5B41BA847FB580BA2D143C">
+      <Properties>
+        <string name="Name">Doric column base</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>2.05</Y>
+          <Z>2.05</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>2.01</Y>
+          <Z>-6.2</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX5F1D1D382C0E4B5ABF826DC798C25D30">
+      <Properties>
+        <string name="Name">Doric column shaft</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>6.8</X>
+          <Y>1.35</Y>
+          <Z>1.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>5.54</Y>
+          <Z>-6.2</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXC5EC717AB5DA4E20911A84CE029D290D">
+      <Properties>
+        <string name="Name">Doric capital neck</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.58</Y>
+          <Z>1.58</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>8.92</Y>
+          <Z>-6.2</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXB70B5060203946CCA174BF2BEFBC747F">
+      <Properties>
+        <string name="Name">Doric capital abacus</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.2</X>
+          <Y>0.3</Y>
+          <Z>2.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>9.14</Y>
+          <Z>-6.2</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXFC1808D1D61D47D9B061B4BE780A8888">
+      <Properties>
+        <string name="Name">Column square plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.15</X>
+          <Y>0.5</Y>
+          <Z>2.15</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>1.67</Y>
+          <Z>5.00000004</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX8B4BBF7754C14C1F84ADC49F3E4F117A">
+      <Properties>
+        <string name="Name">Doric column base</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>2.05</Y>
+          <Z>2.05</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>2.01</Y>
+          <Z>5.00000004</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXFC9C15431F4640A09EAB24EC595D761E">
+      <Properties>
+        <string name="Name">Doric column shaft</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>6.8</X>
+          <Y>1.35</Y>
+          <Z>1.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>5.54</Y>
+          <Z>5.00000004</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXEA7CB8F0B2BF48CBB72AA298E126C90D">
+      <Properties>
+        <string name="Name">Doric capital neck</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.58</Y>
+          <Z>1.58</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>8.92</Y>
+          <Z>5.00000004</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX05FCB11F19374D888460BCB8E32D7F14">
+      <Properties>
+        <string name="Name">Doric capital abacus</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.2</X>
+          <Y>0.3</Y>
+          <Z>2.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-8.19999998</X>
+          <Y>9.14</Y>
+          <Z>5.00000004</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX0372ABF5AC9E450BAA90E91CD1E12E52">
+      <Properties>
+        <string name="Name">Column square plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.15</X>
+          <Y>0.5</Y>
+          <Z>2.15</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999994</X>
+          <Y>1.67</Y>
+          <Z>-6.20000001</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXB774DBF93C2A41B09999A869A2880009">
+      <Properties>
+        <string name="Name">Doric column base</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>2.05</Y>
+          <Z>2.05</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999994</X>
+          <Y>2.01</Y>
+          <Z>-6.20000001</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX11A249AD03424AE48E08DBC8C5E68D54">
+      <Properties>
+        <string name="Name">Doric column shaft</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>6.8</X>
+          <Y>1.35</Y>
+          <Z>1.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999994</X>
+          <Y>5.54</Y>
+          <Z>-6.20000001</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX26AAB4B2D5224C94A11E74B2696D1352">
+      <Properties>
+        <string name="Name">Doric capital neck</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.58</Y>
+          <Z>1.58</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999994</X>
+          <Y>8.92</Y>
+          <Z>-6.20000001</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXF178AD6A5D1B4F94A7401737D922FB68">
+      <Properties>
+        <string name="Name">Doric capital abacus</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.2</X>
+          <Y>0.3</Y>
+          <Z>2.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999994</X>
+          <Y>9.14</Y>
+          <Z>-6.20000001</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX322EB85479364937AC8982259EDAAE52">
+      <Properties>
+        <string name="Name">Column square plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.15</X>
+          <Y>0.5</Y>
+          <Z>2.15</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999992</X>
+          <Y>1.67</Y>
+          <Z>5.00000003</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX763FB3712607460A90C569C6217AA900">
+      <Properties>
+        <string name="Name">Doric column base</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>2.05</Y>
+          <Z>2.05</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999992</X>
+          <Y>2.01</Y>
+          <Z>5.00000003</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXD517DD63E5BD43A3AC40832B4C2B76E2">
+      <Properties>
+        <string name="Name">Doric column shaft</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>6.8</X>
+          <Y>1.35</Y>
+          <Z>1.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999992</X>
+          <Y>5.54</Y>
+          <Z>5.00000003</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX277A57A82E8044F18E91FFFDA829D304">
+      <Properties>
+        <string name="Name">Doric capital neck</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.58</Y>
+          <Z>1.58</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999992</X>
+          <Y>8.92</Y>
+          <Z>5.00000003</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXC9A24E3A30DF4B2ABA311225DBED4211">
+      <Properties>
+        <string name="Name">Doric capital abacus</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.2</X>
+          <Y>0.3</Y>
+          <Z>2.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-2.74999992</X>
+          <Y>9.14</Y>
+          <Z>5.00000003</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX3C77BEB142F644B9B2590FB847950DE0">
+      <Properties>
+        <string name="Name">Column square plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.15</X>
+          <Y>0.5</Y>
+          <Z>2.15</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000003</X>
+          <Y>1.67</Y>
+          <Z>-6.19999995</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX89E5DE544B3647DC8436160081FC946D">
+      <Properties>
+        <string name="Name">Doric column base</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>2.05</Y>
+          <Z>2.05</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000003</X>
+          <Y>2.01</Y>
+          <Z>-6.19999995</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX29D967263B6E4467A20381BF21BF3434">
+      <Properties>
+        <string name="Name">Doric column shaft</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>6.8</X>
+          <Y>1.35</Y>
+          <Z>1.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000003</X>
+          <Y>5.54</Y>
+          <Z>-6.19999995</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX8CF52B06D9F947EBB1D8A6E715FCF199">
+      <Properties>
+        <string name="Name">Doric capital neck</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.58</Y>
+          <Z>1.58</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000003</X>
+          <Y>8.92</Y>
+          <Z>-6.19999995</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXFA4EB94DE27A4F6A90429B50C8EACF60">
+      <Properties>
+        <string name="Name">Doric capital abacus</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.2</X>
+          <Y>0.3</Y>
+          <Z>2.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000003</X>
+          <Y>9.14</Y>
+          <Z>-6.19999995</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX4AD9BBB953CD4996B332330A823A05EA">
+      <Properties>
+        <string name="Name">Column square plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.15</X>
+          <Y>0.5</Y>
+          <Z>2.15</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000002</X>
+          <Y>1.67</Y>
+          <Z>4.99999999</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXD239B8B0FB2842CE88879A3C79033C8D">
+      <Properties>
+        <string name="Name">Doric column base</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>2.05</Y>
+          <Z>2.05</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000002</X>
+          <Y>2.01</Y>
+          <Z>4.99999999</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX32465CB9F1464B65A2AB6EBF5588A9E6">
+      <Properties>
+        <string name="Name">Doric column shaft</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>6.8</X>
+          <Y>1.35</Y>
+          <Z>1.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000002</X>
+          <Y>5.54</Y>
+          <Z>4.99999999</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXDE27E6D3902D46F1A2045C834CBC07A8">
+      <Properties>
+        <string name="Name">Doric capital neck</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.58</Y>
+          <Z>1.58</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000002</X>
+          <Y>8.92</Y>
+          <Z>4.99999999</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXB96D691808C54D7A89CD2921F7E75454">
+      <Properties>
+        <string name="Name">Doric capital abacus</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.2</X>
+          <Y>0.3</Y>
+          <Z>2.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>2.75000002</X>
+          <Y>9.14</Y>
+          <Z>4.99999999</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXF46413EC24FB4D76AE57282CB5E47034">
+      <Properties>
+        <string name="Name">Column square plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.15</X>
+          <Y>0.5</Y>
+          <Z>2.15</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>1.67</Y>
+          <Z>-6.19999996</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX3411F9E912524EB9A628628F09DFF87A">
+      <Properties>
+        <string name="Name">Doric column base</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>2.05</Y>
+          <Z>2.05</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>2.01</Y>
+          <Z>-6.19999996</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX48517ED7689C4D1CA628038B2834C814">
+      <Properties>
+        <string name="Name">Doric column shaft</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>6.8</X>
+          <Y>1.35</Y>
+          <Z>1.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>5.54</Y>
+          <Z>-6.19999996</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX266E2349D008400C942A96668AAB82A8">
+      <Properties>
+        <string name="Name">Doric capital neck</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.58</Y>
+          <Z>1.58</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>8.92</Y>
+          <Z>-6.19999996</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX42167BFA86CE4F06BDC00C0F0EE262F2">
+      <Properties>
+        <string name="Name">Doric capital abacus</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.2</X>
+          <Y>0.3</Y>
+          <Z>2.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>9.14</Y>
+          <Z>-6.19999996</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX15842A8F8F394FAAA2116013E147E4B5">
+      <Properties>
+        <string name="Name">Column square plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.15</X>
+          <Y>0.5</Y>
+          <Z>2.15</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>1.67</Y>
+          <Z>4.99999998</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX8EED45D3491B4BD194FD2C82B12A1F93">
+      <Properties>
+        <string name="Name">Doric column base</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.23</X>
+          <Y>2.05</Y>
+          <Z>2.05</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>2.01</Y>
+          <Z>4.99999998</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX6BCCF3440A064E6BBBFE82D32C1BBD6F">
+      <Properties>
+        <string name="Name">Doric column shaft</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>6.8</X>
+          <Y>1.35</Y>
+          <Z>1.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>5.54</Y>
+          <Z>4.99999998</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX9FDD315433204A7695ABB8A889F0DB2E">
+      <Properties>
+        <string name="Name">Doric capital neck</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.22</X>
+          <Y>1.58</Y>
+          <Z>1.58</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>8.92</Y>
+          <Z>4.99999998</Z>
+          <R00>0</R00>
+          <R01>-0.999999999</R01>
+          <R02>0</R02>
+          <R10>1</R10>
+          <R11>0</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">2</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX359F13C582BA49679557FD6522AF31ED">
+      <Properties>
+        <string name="Name">Doric capital abacus</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292202173</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>2.2</X>
+          <Y>0.3</Y>
+          <Z>2.2</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>8.20000007</X>
+          <Y>9.14</Y>
+          <Z>4.99999998</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXE0AE9B4799F443E6AAA439EB70A0EA49">
+      <Properties>
+        <string name="Name">Entablature course</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4291149484</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>23.7</X>
+          <Y>0.45</Y>
+          <Z>14.9</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>4.93526577e-08</X>
+          <Y>9.49</Y>
+          <Z>-0.449999986</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXB03D39654F1049059C1D5A9BF4C85065">
+      <Properties>
+        <string name="Name">Entablature course</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292794308</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>23.7</X>
+          <Y>0.55</Y>
+          <Z>15.35</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>4.93526577e-08</X>
+          <Y>10.02</Y>
+          <Z>-0.449999986</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX4656E735BE2F4254B5E6EC6F5DC10408">
+      <Properties>
+        <string name="Name">Entablature course</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4290952106</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>23.7</X>
+          <Y>0.3</Y>
+          <Z>15.7</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>4.93526577e-08</X>
+          <Y>10.54</Y>
+          <Z>-0.449999986</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="WedgePart" referent="RBX94E4106EFA4C40E6A8140DE6A1D2D9E5">
+      <Properties>
+        <string name="Name">Stone pediment</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292333757</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.65</X>
+          <Y>2.5</Y>
+          <Z>11.3</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-5.64999999</X>
+          <Y>11.74</Y>
+          <Z>-8.22999994</Z>
+          <R00>0</R00>
+          <R01>0</R01>
+          <R02>-0.999999999</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0.999999999</R20>
+          <R21>0</R21>
+          <R22>0</R22>
+        </CoordinateFrame>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXC9CABF14542A46579E10308D934A8A4F">
+      <Properties>
+        <string name="Name">Copper pitched roof</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4284643441</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>12.35</X>
+          <Y>0.34</Y>
+          <Z>16.7</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-6.04999999</X>
+          <Y>12.13</Y>
+          <Z>-0.449999951</Z>
+          <R00>0.979575249</R00>
+          <R01>-0.201077921</R01>
+          <R02>0</R02>
+          <R10>0.201077921</R10>
+          <R11>0.97957525</R11>
+          <R12>0</R12>
+          <R20>4.05136341e-10</R20>
+          <R21>-4.81080432e-10</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="WedgePart" referent="RBXA08EAAE97FC04CDEB061E2691522361E">
+      <Properties>
+        <string name="Name">Stone pediment</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4292333757</Color3uint8>
+        <token name="Material">820</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.65</X>
+          <Y>2.5</Y>
+          <Z>11.3</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>5.65000007</X>
+          <Y>11.74</Y>
+          <Z>-8.22999996</Z>
+          <R00>0</R00>
+          <R01>0</R01>
+          <R02>0.999999999</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>-0.999999999</R20>
+          <R21>0</R21>
+          <R22>0</R22>
+        </CoordinateFrame>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX930100FBFF0A4467B378F31D1C2390B4">
+      <Properties>
+        <string name="Name">Copper pitched roof</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4284643441</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>12.35</X>
+          <Y>0.34</Y>
+          <Z>16.7</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>6.05</X>
+          <Y>12.13</Y>
+          <Z>-0.449999996</Z>
+          <R00>0.979575249</R00>
+          <R01>0.201077921</R01>
+          <R02>0</R02>
+          <R10>-0.201077921</R10>
+          <R11>0.97957525</R11>
+          <R12>0</R12>
+          <R20>4.05136341e-10</R20>
+          <R21>4.81080432e-10</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX0D10AEB1F93948FC97053EE6FCA238F6">
+      <Properties>
+        <string name="Name">Roof ridge</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4282867803</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>0.55</X>
+          <Y>0.4</Y>
+          <Z>16.8</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>4.93526577e-08</X>
+          <Y>13.37</Y>
+          <Z>-0.449999986</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX2F722B9A0B2E49FA845CA857DAEE1E22">
+      <Properties>
+        <string name="Name">Museum engraved plaque</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4283787108</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>8.6</X>
+          <Y>0.42</Y>
+          <Z>0.08</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>5.5039136e-08</X>
+          <Y>9.99</Y>
+          <Z>-8.29999995</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+      <Item class="SurfaceGui" referent="RBX70231341B8F5433786AFB68966E1710B">
+        <Properties>
+          <string name="Name">Lettering</string>
+          <token name="Face">5</token>
+          <token name="SizingMode">1</token>
+          <float name="PixelsPerStud">40</float>
+          <float name="LightInfluence">0</float>
+        </Properties>
+        <Item class="TextLabel" referent="RBX8B4402CD017D4B419D7F7DF5D84A8CC3">
+          <Properties>
+            <string name="Name">Text</string>
+            <float name="BackgroundTransparency">1</float>
+            <string name="Text">M U S E U M   1</string>
+            <bool name="TextScaled">true</bool>
+            <bool name="TextWrapped">true</bool>
+            <Font name="FontFace">
+              <Family>
+                <url>rbxasset://fonts/families/GothamSSm.json</url>
+              </Family>
+              <Weight>700</Weight>
+              <Style>Normal</Style>
+            </Font>
+            <float name="TextSize">32</float>
+            <Color3 name="TextColor3">
+              <R>0.9450980392156862</R>
+              <G>0.9254901960784314</G>
+              <B>0.8627450980392157</B>
+            </Color3>
+            <UDim2 name="Size">
+              <XS>1</XS>
+              <XO>0</XO>
+              <YS>1</YS>
+              <YO>0</YO>
+            </UDim2>
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBXD35CF59516BE46C6BB1F70CA43C3D2C6">
+      <Properties>
+        <string name="Name">Display plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4293254859</Color3uint8>
+        <token name="Material">784</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>3.3</X>
+          <Y>0.9</Y>
+          <Z>3.3</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-5.99999992</X>
+          <Y>1.89</Y>
+          <Z>0.199999988</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX6C0A2A8859F346688987C233454025E3">
+      <Properties>
+        <string name="Name">Display brass rim</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4289432136</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>3.45</X>
+          <Y>0.08</Y>
+          <Z>3.45</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>-5.99999992</X>
+          <Y>2.37</Y>
+          <Z>0.199999988</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX5AADA878F8BE41CC9986FFBF33ECC010">
+      <Properties>
+        <string name="Name">Display plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4293254859</Color3uint8>
+        <token name="Material">784</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>3.3</X>
+          <Y>0.9</Y>
+          <Z>3.3</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>3.27002329e-08</X>
+          <Y>1.89</Y>
+          <Z>0.200000031</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXD6EAC219BEDD4A55B42B56EA8145FFAA">
+      <Properties>
+        <string name="Name">Display brass rim</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4289432136</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>3.45</X>
+          <Y>0.08</Y>
+          <Z>3.45</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>3.27002329e-08</X>
+          <Y>2.37</Y>
+          <Z>0.200000031</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXDEFD46849AE1410C98AD6C6D37390953">
+      <Properties>
+        <string name="Name">Display plinth</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0</float>
+        <Color3uint8 name="Color3uint8">4293254859</Color3uint8>
+        <token name="Material">784</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>3.3</X>
+          <Y>0.9</Y>
+          <Z>3.3</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>6.00000007</X>
+          <Y>1.89</Y>
+          <Z>0.200000049</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX614EF33FBD7C4E2C808BF522D33775D9">
+      <Properties>
+        <string name="Name">Display brass rim</string>
+        <bool name="Anchored">true</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">true</bool>
+        <bool name="CastShadow">true</bool>
+        <float name="Transparency">0</float>
+        <float name="Reflectance">0.04</float>
+        <Color3uint8 name="Color3uint8">4289432136</Color3uint8>
+        <token name="Material">1088</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <token name="LeftSurface">0</token>
+        <token name="RightSurface">0</token>
+        <token name="FrontSurface">0</token>
+        <token name="BackSurface">0</token>
+        <Vector3 name="size">
+          <X>3.45</X>
+          <Y>0.08</Y>
+          <Z>3.45</Z>
+        </Vector3>
+        <CoordinateFrame name="CFrame">
+          <X>6.00000007</X>
+          <Y>2.37</Y>
+          <Z>0.200000049</Z>
+          <R00>0.999999999</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>0.999999999</R22>
+        </CoordinateFrame>
+        <token name="shape">1</token>
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

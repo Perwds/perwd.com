@@ -6,6 +6,9 @@
       "$className": "ReplicatedStorage",
       "Shared": {
         "$path": "src/ReplicatedStorage/Shared"
+      },
+      "ShrinkableTemplates": {
+        "$path": "assets/ShrinkableTemplates"
       }
     },
     "ServerScriptService": {
@@ -51,6 +54,15 @@
       "$className": "TextChatService",
       "$properties": {
         "CreateDefaultTextChannels": false
+      }
+    },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "Chasers": {
+        "$path": "assets/Chasers"
+      },
+      "AssetPack": {
+        "$path": "assets/Pack"
       }
     }
   }

@@ -30,7 +30,6 @@ local ChaserConfig = require(Shared.Config.ChaserConfig)
 local Formulas = require(Shared.Formulas)
 local Remotes = require(Shared.Remotes)
 local ModelFactory = require(ServerScriptService.Services.ModelFactory)
-local ChaserModels = require(ServerScriptService.Services.ChaserModels)
 
 local CarryService = {}
 local Svc
@@ -292,10 +291,9 @@ local function buildChaser(tier)
 	local folder = ServerStorage:FindFirstChild("Chasers")
 	local custom = folder and folder:FindFirstChild("Tier" .. tier)
 	local model
+	local scripted = custom and custom:FindFirstChild("RunAndAttack", true) ~= nil
 	if custom then
 		model = custom:Clone()
-	elseif ChaserModels.Has(cfg.Animal) then
-		model = ChaserModels.Build(cfg.Animal, cfg.Scale)
 	else
 		local desc = Instance.new("HumanoidDescription")
 		desc.HeadColor = cfg.Skin
@@ -357,9 +355,24 @@ local function buildChaser(tier)
 		if d:IsA("BasePart") then
 			d.CanQuery = false
 			d.Anchored = false
-		elseif d:IsA("LocalScript") or d:IsA("Script") then
+		elseif (d:IsA("LocalScript") or d:IsA("Script")) and not scripted then
 			d:Destroy()
 		end
+	end
+	if scripted then
+		-- Your asset-pack chasers bring their own controller (RunAndAttack: running/attack poses +
+		-- pathfinding). We steer it with its attributes: only the thief is chased, no damage
+		-- (getting caught = dropping your boxes, handled here).
+		model:SetAttribute("AttackDamage", 0)
+		model:SetAttribute("AttackRange", ChaserConfig.CatchDistance)
+		model:SetAttribute("DetectionRadius", 5)
+		model:SetAttribute("LoseTargetRadius", 500)
+		model:SetAttribute("HomeLeash", 1000)
+		model:SetAttribute("ChaseSpeed", cfg.Speed)
+		model:SetAttribute("ChaseEnabled", false)
+		local override = Instance.new("ObjectValue")
+		override.Name = "TargetOverride"
+		override.Parent = model
 	end
 	local hum = model:FindFirstChildOfClass("Humanoid")
 	hum.WalkSpeed = cfg.Speed
@@ -401,6 +414,42 @@ local function despawnModel(model, line, delaySeconds)
 	end)
 end
 
+-- pack chasers: tell their controller who to run after (nil = stand still) and how fast
+local function steer(ch, target, speed)
+	ch.Model:SetAttribute("ChaseSpeed", math.clamp(speed, 5, 120))
+	if ch.Target then
+		ch.Target.Value = target
+	end
+	ch.Model:SetAttribute("ChaseEnabled", target ~= nil)
+end
+
+-- an invisible "home" the controller can walk back to after a catch
+local function homeMarker(ch)
+	if ch.HomeMarker and ch.HomeMarker.Parent then
+		return ch.HomeMarker
+	end
+	local marker = Instance.new("Model")
+	marker.Name = "HomeMarker"
+	local p = Instance.new("Part")
+	p.Name = "HumanoidRootPart"
+	p.Size = Vector3.new(1, 1, 1)
+	p.Transparency = 1
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanQuery = false
+	p.CanTouch = false
+	p.CFrame = CFrame.new(ch.Home)
+	p.Parent = marker
+	local h = Instance.new("Humanoid")
+	h.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+	h.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
+	h.Parent = marker
+	marker.PrimaryPart = p
+	marker.Parent = ch.Model
+	ch.HomeMarker = marker
+	return marker
+end
+
 local function despawnChaser(c, line)
 	local ch = c.Chaser
 	if not ch then
@@ -410,7 +459,11 @@ local function despawnChaser(c, line)
 	if not ch.Model.Parent then
 		return
 	end
-	ch.Humanoid:MoveTo(ch.Root.Position)
+	if ch.Scripted then
+		steer(ch, nil, ch.Cfg.Speed)
+	else
+		ch.Humanoid:MoveTo(ch.Root.Position)
+	end
 	despawnModel(ch.Model, line)
 end
 
@@ -426,6 +479,9 @@ local function sendHome(c, line)
 	end
 	say(ch.Model, line, 2.5)
 	ch.Humanoid.WalkSpeed = ch.Cfg.Speed * 0.6
+	if ch.Scripted then
+		steer(ch, homeMarker(ch), ch.Cfg.Speed * 0.6)
+	end
 	ch.ReturnUntil = os.clock() + ChaserConfig.DropLifetime + 2 -- stays around while your boxes are on the ground
 	ch.Victim = c
 	table.insert(returning, ch)
@@ -491,13 +547,14 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 	spawnPos += Vector3.new(0, size.Y / 2, 0)
 	local lookAt = target and Vector3.new(target.Position.X, spawnPos.Y, target.Position.Z) or (spawnPos - Vector3.new(0, 0, 1))
 	model:PivotTo(CFrame.lookAt(spawnPos, lookAt))
+	model:SetAttribute("HomePosition", spawnPos)
 	model.Parent = Svc.Map.ChaserFolder
 	pcall(function()
 		root:SetNetworkOwner(nil)
 	end)
 	pcall(function()
-		if model:GetAttribute("Animal") then
-			return -- animals swing their legs on the client (Effects)
+		if model:FindFirstChild("TargetOverride") then
+			return -- pack chasers animate themselves (RunAndAttack)
 		end
 		local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
 		local anim = Instance.new("Animation")
@@ -518,7 +575,7 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 	else
 		say(model, "❗ " .. cfg.Shout, 3)
 	end
-	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, Home = spawnPos, Rage = rage, Track = TRACKS[model], StartAt = os.clock() + (rage > 0 and 0.2 or ChaserConfig.HeadStart) }
+	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, Home = spawnPos, Rage = rage, Track = TRACKS[model], Scripted = model:FindFirstChild("TargetOverride") ~= nil, Target = model:FindFirstChild("TargetOverride"), StartAt = os.clock() + (rage > 0 and 0.2 or ChaserConfig.HeadStart) }
 	TRACKS[model] = nil
 	Remotes.Event("ChaserFX"):FireClient(player, "Chase", { Name = cfg.Name, Emoji = cfg.Emoji, Rage = rage })
 	Svc.Net.Notify(player, cfg.Name .. (rage > 0 and (" is ENRAGED (x" .. rage .. ")!") or " is chasing you!") .. " RUN HOME!", "error")
@@ -776,20 +833,15 @@ local function spawnSleepers()
 			local _, size = model:GetBoundingBox()
 			model.Name = model.Name .. " (asleep)"
 			for _, d in ipairs(model:GetDescendants()) do
-				if d:IsA("BasePart") then
+				if d:IsA("Script") then
+					d:Destroy() -- sleepers don't run their controller
+				elseif d:IsA("BasePart") then
 					d.Anchored = true
 					d.CanCollide = false
 				end
 			end
-			if model:GetAttribute("Animal") then
-				-- animals nap standing on the ground, facing the corridor
-				local rootPart = model.PrimaryPart
-				local up = rootPart and rootPart.Position.Y or size.Y / 2
-				model:PivotTo(CFrame.new(pos + Vector3.new(0, up, 0)) * CFrame.Angles(0, math.rad(-side * 90), 0))
-			else
-				-- lying on its back, head toward the corridor center
-				model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
-			end
+			-- lying on its back, head toward the corridor center
+			model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
 			model.Parent = Svc.Map.ChaserFolder
 			say(model, "💤", nil)
 		end
@@ -847,17 +899,26 @@ function CarryService.Start()
 					elseif Svc.Map.IsInBase(root.Position) then
 						sendHome(c, "Hmph! Safe zone... I'll get you next time!")
 					elseif os.clock() < ch.StartAt then
-						ch.Humanoid:MoveTo(ch.Root.Position)
+						if ch.Scripted then
+							steer(ch, nil, ch.Cfg.Speed)
+						else
+							ch.Humanoid:MoveTo(ch.Root.Position)
+						end
 					else
-						-- aim a little ahead of where you're running
-						local lead = root.AssemblyLinearVelocity * Vector3.new(1, 0, 1) * 0.35
-						ch.Humanoid:MoveTo(root.Position + lead)
 						-- catch-up sprint when you've pulled away
 						local base = ch.Cfg.Speed + (ch.Rage or 0) * ChaserConfig.RageSpeed
 						local far = (ch.Root.Position - root.Position).Magnitude > ChaserConfig.SprintDistance
-						ch.Humanoid.WalkSpeed = far and base * ChaserConfig.SprintMult or base
-						if ChaserConfig.ChaseJump and ch.Root.AssemblyLinearVelocity.Magnitude < 2 then
-							ch.Humanoid.Jump = true
+						local speed = far and base * ChaserConfig.SprintMult or base
+						if ch.Scripted then
+							steer(ch, character, speed) -- its own pathfinding + run/attack animation
+						else
+							-- aim a little ahead of where you're running
+							local lead = root.AssemblyLinearVelocity * Vector3.new(1, 0, 1) * 0.35
+							ch.Humanoid:MoveTo(root.Position + lead)
+							ch.Humanoid.WalkSpeed = speed
+							if ChaserConfig.ChaseJump and ch.Root.AssemblyLinearVelocity.Magnitude < 2 then
+								ch.Humanoid.Jump = true
+							end
 						end
 						local reach = ChaserConfig.CatchDistance * math.max(1, ch.Cfg.Scale)
 						if (ch.Root.Position - root.Position).Magnitude <= reach then
@@ -875,8 +936,13 @@ function CarryService.Start()
 					table.remove(returning, i)
 					despawnModel(ch.Model, nil, 0)
 				elseif (ch.Root.Position - ch.Home).Magnitude < 6 then
-					ch.Humanoid:MoveTo(ch.Root.Position) -- waits at home, watching its boxes
-				else
+					-- waits at home, watching its boxes
+					if ch.Scripted then
+						steer(ch, nil, ch.Cfg.Speed)
+					else
+						ch.Humanoid:MoveTo(ch.Root.Position)
+					end
+				elseif not ch.Scripted then
 					ch.Humanoid:MoveTo(ch.Home)
 				end
 			end

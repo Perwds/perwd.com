@@ -1,0 +1,1423 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXFC6962642AC4423691AEB1CBF6BC60A8">
+    <Properties>
+      <string name="Name">Arcade cabinet</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIOAAAAYXJjYWRlX2NhYmluZXQNAAAAU291cmNlQXNzZXRJZAYAumY6tAHdQg==</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBXA0C91C73DBA342C78AD5E7953DCCBE28">
+      <Properties>
+        <string name="Name">Arcade Game</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">RBX639A6EE977264735A1EB71CD8E08BEF7</Ref>
+      </Properties>
+      <Item class="Part" referent="RBXC55CB991852045009D70F7835CC6CA3E">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294563374</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.40539175</X>
+            <Y>0.432431347</Y>
+            <Z>2.1621567</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>2.90806057</X>
+            <Y>6.48647423</Y>
+            <Z>0.700176348</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX0152AB03E7304EA89E145477E8473D50">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279069100</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>4.3243134</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>2.93776565</X>
+            <Y>4.8648567</Y>
+            <Z>1.23989897</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX20DCDACD1686471282165DDB2C732B71">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279069100</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.40539175</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>2.90806057</X>
+            <Y>3.78377835</Y>
+            <Z>0.700176348</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX639A6EE977264735A1EB71CD8E08BEF7">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>7.56754845</X>
+            <Y>0.864862693</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.065849287</X>
+            <Y>0.432437887</Y>
+            <Z>-0.218860258</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX6483553FC3BF4806AEAEDC3A0EDE30C3">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>2.1621567</X>
+            <Y>1.29729407</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.214374665</X>
+            <Y>1.51351611</Y>
+            <Z>-2.91747236</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXF81EC02B60AA4AB980ECED9E263546AB">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>0.864862693</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.184669589</X>
+            <Y>2.59459485</Y>
+            <Z>-2.37774973</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX449B5DCBB0FE4E09A0871716769D1814">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>1.72972539</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.125259438</X>
+            <Y>1.72973183</Y>
+            <Z>-1.29830551</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX267C3570FD61474D87A46BA6302C48AF">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>0.864862693</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.125259438</X>
+            <Y>3.02702577</Y>
+            <Z>-1.29830551</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX4E084E6ADA82473191F8CFAC7751EE4F">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>5.18917629</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.065849287</X>
+            <Y>3.45945722</Y>
+            <Z>-0.218860258</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX7DB5DAD1B2234265A3ABF52A9D08514E">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>3.24323505</X>
+            <Y>5.18917629</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.0529751395</X>
+            <Y>3.45945464</Y>
+            <Z>1.94003024</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX9B47F112E7254E52803F226D4178A419">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.40539175</X>
+            <Y>0.864862693</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.00643501158</X>
+            <Y>6.48647423</Y>
+            <Z>0.860584994</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX02712AB3F24746429EBF5903FA5C9298">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.40539175</X>
+            <Y>0.432431347</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.00643501158</X>
+            <Y>7.13512165</Y>
+            <Z>0.860584994</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX605430BA02744BD8B03EB9FC76DFDCC3">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4291045404</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>1.08107835</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">0</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-1.32352499</X>
+            <Y>3.13513376</Y>
+            <Z>-3.39778483</Z>
+            <R00>0</R00>
+            <R01>-0.998488784</R01>
+            <R02>0.0549549796</R02>
+            <R10>1</R10>
+            <R11>0</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0.0549549721</R21>
+            <R22>0.998488903</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX435679BC9F6B4224996DDA564486EEE4">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4283144011</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.894775662</X>
+            <Y>3.24324124</Y>
+            <Z>-2.43716091</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX8CEE90E5D8CB401CA8B65F3195189204">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279069100</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.835365511</X>
+            <Y>2.81081057</Y>
+            <Z>-3.51660514</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX3B9C07E51FD04070A7BB9BC2F842F69F">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4286297832</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>2.1621567</X>
+            <Y>0.432431347</Y>
+            <Z>3.24323505</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.107431444</X>
+            <Y>4.97296443</Y>
+            <Z>-0.974467398</Z>
+            <R00>0</R00>
+            <R01>-0.0549549796</R01>
+            <R02>-0.998488784</R02>
+            <R10>1</R10>
+            <R11>0</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>-0.998488903</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXC2654092FE3E4D8E93F1F37E83131E20">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279639346</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>0.432431347</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.244079741</X>
+            <Y>2.37837912</Y>
+            <Z>-3.45719498</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX1DDFE1C8BF034188BC62594537BA3D57">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294563374</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>7.56754845</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>2.84865042</X>
+            <Y>2.7027</Y>
+            <Z>-0.379266842</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX50FD408B86E64B758477E83BDCA88C3E">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294563374</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>7.56754845</X>
+            <Y>0.432431347</Y>
+            <Z>2.1621567</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>2.84865042</X>
+            <Y>1.08107861</Y>
+            <Z>-0.379266842</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXF2624EC139B24DF9A329A0F5CC82C924">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294563374</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.40539175</X>
+            <Y>0.432431347</Y>
+            <Z>5.40539175</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.00643501158</X>
+            <Y>7.56755258</Y>
+            <Z>0.860587056</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXCC8045FFF6A6498F80603559FD9E326F">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279069100</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>6.4864701</X>
+            <Y>0.432431347</Y>
+            <Z>7.56754845</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>0.153971573</X>
+            <Y>3.78377835</Y>
+            <Z>3.7750847</Z>
+            <R00>0.998488784</R00>
+            <R01>0.0549549796</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>-0.0549549721</R20>
+            <R21>0.998488903</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX9632C9CA986A4DADBDAB4F4A7E3F5EB0">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294563374</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.08107835</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-0.184669589</X>
+            <Y>3.24324124</Y>
+            <Z>-2.37775076</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>0.998488784</R02>
+            <R10>0</R10>
+            <R11>-1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>-0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXFCA14B71A7AA4F979EE8A325233001D8">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294563374</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>7.56754845</X>
+            <Y>0.432431347</Y>
+            <Z>2.1621567</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-2.98036136</X>
+            <Y>1.08107835</Y>
+            <Z>-0.0584681086</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXB0FCD1F30037440FB9D7F24371E13872">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294563374</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>7.56754845</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-2.98034487</X>
+            <Y>2.7027</Y>
+            <Z>-0.0584516126</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX9F55DD3E6C9747CF821B7B45BA88A9CB">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279069100</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.40539175</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-2.92093472</X>
+            <Y>3.78377835</Y>
+            <Z>1.02099158</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXF4A0379119B34962B0E72A71434D843F">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4279069100</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>4.3243134</X>
+            <Y>0.432431347</Y>
+            <Z>1.08107835</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-2.89122964</X>
+            <Y>4.8648567</Y>
+            <Z>1.5607142</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBXA9BC105242C844419C401224A1E3FFE2">
+        <Properties>
+          <string name="Name">Smooth Block Model</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4294563374</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>5.40539175</X>
+            <Y>0.432431347</Y>
+            <Z>2.1621567</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-2.92093472</X>
+            <Y>6.48647423</Y>
+            <Z>1.02099158</Z>
+            <R00>0.0549549796</R00>
+            <R01>-0.998488784</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>0</R11>
+            <R12>-1</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0549549721</R21>
+            <R22>0</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

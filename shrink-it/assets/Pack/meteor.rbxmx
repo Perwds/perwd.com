@@ -1,0 +1,1721 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXBEDADD53CEC54D95A715781266FBA0BD">
+    <Properties>
+      <string name="Name">Meteor</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIGAAAAbWV0ZW9yDQAAAFNvdXJjZUFzc2V0SWQGAADwGoBx/0E=</BinaryString>
+    </Properties>
+    <Item class="MeshPart" referent="RBX062A0CE006074BD0944DBF40A5F00C95">
+      <Properties>
+        <string name="Name">OldMeteor</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4294938141</Color3uint8>
+        <bool name="Anchored">true</bool>
+        
+        <token name="RenderFidelity">1</token>
+        <token name="Material">288</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>3.64288874</X>
+          <Y>3.75680941</Y>
+          <Z>3.64647948</Z>
+        </Vector3>
+        <token name="CollisionFidelity">0</token>
+        <Vector3 name="InitialSize">
+          <X>44.0447388</X>
+          <Y>45.4221039</Y>
+          <Z>44.0881424</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>0.0101610465</X>
+          <Y>2.09637173</Y>
+          <Z>0.028515156</Z>
+          <R00>-0.205345869</R00>
+          <R01>-7.32745704e-08</R01>
+          <R02>-0.978689492</R02>
+          <R10>-1.40172389e-07</R10>
+          <R11>1</R11>
+          <R12>-4.54595011e-08</R12>
+          <R20>0.978689611</R20>
+          <R21>1.27850385e-07</R21>
+          <R22>-0.205345884</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>rbxassetid://6585577547</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="Attachment" referent="RBX8FA0A5009EBF44F3972CDFA9B4E987E3">
+        <Properties>
+          <string name="Name">Attachment</string>
+          <bool name="Visible">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="archivable">true</bool>
+        </Properties>
+        <Item class="ParticleEmitter" referent="RBXB66E24E11E6F4016B0C5359D8541FAA2">
+          <Properties>
+            <string name="Name">Flare</string>
+            <bool name="WindAffectsDrag">false</bool>
+            <ColorSequence name="Color">0 1 0.243137255 0.0549019612 0 1 1 0.243137255 0.0549019612 0 </ColorSequence>
+            <float name="Drag">0</float>
+            <float name="ZOffset">1</float>
+            <float name="TimeScale">1</float>
+            <float name="LightInfluence">1</float>
+            <Content name="Texture">
+              <url>rbxassetid://6583154921</url>
+            </Content>
+            <float name="ShapePartial">1</float>
+            <NumberRange name="Lifetime">2 2 </NumberRange>
+            <NumberRange name="Speed">0.100000001 0.100000001 </NumberRange>
+            <float name="Brightness">1</float>
+            <bool name="archivable">true</bool>
+            <NumberSequence name="size">0 7.0999999 0 1 7.0999999 0 </NumberSequence>
+            <bool name="Enabled">true</bool>
+            <Vector3 name="Acceleration">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <NumberRange name="RotSpeed">-10 10 </NumberRange>
+            <token name="ShapeInOut">0</token>
+            <token name="ShapeStyle">0</token>
+            <bool name="LockedToPart">true</bool>
+            <float name="Rate">10</float>
+            <float name="VelocityInheritance">0</float>
+            <NumberRange name="Rotation">-180 180 </NumberRange>
+            <NumberSequence name="Transparency">0 1 0 0.254879445 0 0 0.490241081 0 0 0.725602746 0 0 1 1 0 </NumberSequence>
+            <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+            <token name="Orientation">3</token>
+            <float name="LightEmission">1</float>
+            <token name="EmissionDirection">1</token>
+            <token name="shape">0</token>
+            <Vector2 name="SpreadAngle">
+              <X>360</X>
+              <Y>360</Y>
+            </Vector2>
+          </Properties>
+        </Item>
+        <Item class="PointLight" referent="RBXAAE767A20CD9452DAC12DA655028C4B0">
+          <Properties>
+            <string name="Name">PointLight</string>
+            <bool name="Enabled">true</bool>
+            <bool name="Shadows">true</bool>
+            <Color3 name="Color">
+              <R>1</R>
+              <G>0.631372571</G>
+              <B>0.0392156877</B>
+            </Color3>
+            <float name="Brightness">13.3400002</float>
+            <bool name="archivable">true</bool>
+            <float name="Range">1.83447478</float>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="Attachment" referent="RBX19F024C0054C4553AA8F35CB14F54559">
+        <Properties>
+          <string name="Name">Attachment</string>
+          <bool name="Visible">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>-16.722044</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="archivable">true</bool>
+        </Properties>
+        <Item class="ParticleEmitter" referent="RBXAB52C63C01EE431EBB6224C0F70389B0">
+          <Properties>
+            <string name="Name">shockwave</string>
+            <bool name="WindAffectsDrag">false</bool>
+            <ColorSequence name="Color">0 1 1 1 0 1 1 1 1 0 </ColorSequence>
+            <float name="Drag">0</float>
+            <float name="ZOffset">2</float>
+            <float name="TimeScale">0.550000012</float>
+            <float name="LightInfluence">1</float>
+            <Content name="Texture">
+              <url>rbxassetid://5875237725</url>
+            </Content>
+            <float name="ShapePartial">1</float>
+            <NumberRange name="Lifetime">0.25 0.25 </NumberRange>
+            <NumberRange name="Speed">52 52 </NumberRange>
+            <float name="Brightness">1</float>
+            <bool name="archivable">true</bool>
+            <NumberSequence name="size">0 0.555555224 0 0.233065441 10 0 0.471726209 10 0 1 10 0 </NumberSequence>
+            <bool name="Enabled">true</bool>
+            <Vector3 name="Acceleration">
+              <X>0</X>
+              <Y>10</Y>
+              <Z>0</Z>
+            </Vector3>
+            <NumberRange name="RotSpeed">0 0 </NumberRange>
+            <token name="ShapeInOut">0</token>
+            <token name="ShapeStyle">0</token>
+            <bool name="LockedToPart">true</bool>
+            <float name="Rate">10</float>
+            <float name="VelocityInheritance">1</float>
+            <NumberRange name="Rotation">-180 180 </NumberRange>
+            <NumberSequence name="Transparency">0 1 0 0.45809412 0.75 0 1 1 0 </NumberSequence>
+            <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+            <token name="Orientation">3</token>
+            <float name="LightEmission">1</float>
+            <token name="EmissionDirection">1</token>
+            <token name="shape">0</token>
+            <Vector2 name="SpreadAngle">
+              <X>1</X>
+              <Y>1</Y>
+            </Vector2>
+          </Properties>
+        </Item>
+        <Item class="PointLight" referent="RBX8EECDA1451314A179DFC3DF24264FE04">
+          <Properties>
+            <string name="Name">PointLight</string>
+            <bool name="Enabled">true</bool>
+            <bool name="Shadows">true</bool>
+            <Color3 name="Color">
+              <R>1</R>
+              <G>0.333333343</G>
+              <B>0</B>
+            </Color3>
+            <float name="Brightness">37.5</float>
+            <bool name="archivable">true</bool>
+            <float name="Range">1.83447478</float>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="MeshPart" referent="RBX8846739B53F94FFEB595F548F16C5ADB">
+        <Properties>
+          <string name="Name">Meshes/meteor_Icosphere_cell.004 (1)</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288700213</Color3uint8>
+          <bool name="Anchored">true</bool>
+          
+          <token name="RenderFidelity">1</token>
+          <token name="Material">800</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>4.08588915</X>
+            <Y>4.13544174</Y>
+            <Z>4.06975961</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>49.4008789</X>
+            <Y>49.9999924</Y>
+            <Z>49.2058601</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <CoordinateFrame name="CFrame">
+            <X>2.67865699e-17</X>
+            <Y>2.06772362</Y>
+            <Z>2.18170276e-17</Z>
+            <R00>-0.20534946</R00>
+            <R01>-5.69909162e-07</R01>
+            <R02>-0.978688717</R02>
+            <R10>-9.67521828e-07</R10>
+            <R11>1</R11>
+            <R12>-3.79312695e-07</R12>
+            <R20>0.978688836</R20>
+            <R21>8.69011274e-07</R21>
+            <R22>-0.205349475</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://6585577423</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="Attachment" referent="RBX1197334806D74765B935314BFABDE290">
+          <Properties>
+            <string name="Name">Core</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.261474609</X>
+              <Y>-17.764801</Y>
+              <Z>-0.892578125</Z>
+              <R00>1</R00>
+              <R01>1.40070961e-06</R01>
+              <R02>5.59748628e-07</R02>
+              <R10>-5.59749026e-07</R10>
+              <R11>2.96531653e-07</R11>
+              <R12>1</R12>
+              <R20>1.40070949e-06</R20>
+              <R21>-1</R21>
+              <R22>2.96532448e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+        </Item>
+        <Item class="ParticleEmitter" referent="RBXAD641607787F4BFA91A15B0A55C890CE">
+          <Properties>
+            <string name="Name">Flames</string>
+            <bool name="WindAffectsDrag">false</bool>
+            <ColorSequence name="Color">0 0 0 0 0 1 0 0 0 0 </ColorSequence>
+            <float name="Drag">1</float>
+            <float name="ZOffset">-4</float>
+            <float name="TimeScale">1</float>
+            <float name="LightInfluence">0</float>
+            <Content name="Texture">
+              <url>rbxassetid://306272582</url>
+            </Content>
+            <float name="ShapePartial">1</float>
+            <NumberRange name="Lifetime">0.600000024 0.600000024 </NumberRange>
+            <NumberRange name="Speed">0 0 </NumberRange>
+            <float name="Brightness">1</float>
+            <bool name="archivable">true</bool>
+            <NumberSequence name="size">0 6.25 0 0.361963183 0.989583135 0 1 0 0 </NumberSequence>
+            <bool name="Enabled">true</bool>
+            <Vector3 name="Acceleration">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <NumberRange name="RotSpeed">-180 0 </NumberRange>
+            <token name="ShapeInOut">0</token>
+            <token name="ShapeStyle">0</token>
+            <bool name="LockedToPart">false</bool>
+            <float name="Rate">200</float>
+            <float name="VelocityInheritance">100</float>
+            <NumberRange name="Rotation">-360 360 </NumberRange>
+            <NumberSequence name="Transparency">0 0 0 0.599693239 1 0 1 1 0 </NumberSequence>
+            <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+            <token name="Orientation">0</token>
+            <float name="LightEmission">0.600000024</float>
+            <token name="EmissionDirection">2</token>
+            <token name="shape">0</token>
+            <Vector2 name="SpreadAngle">
+              <X>0</X>
+              <Y>0</Y>
+            </Vector2>
+          </Properties>
+        </Item>
+        <Item class="Attachment" referent="RBX4BB4E424771843E3AAC4D4502BD2E917">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>22.7590942</X>
+              <Y>20.2190933</Y>
+              <Z>-0.892456055</Z>
+              <R00>1</R00>
+              <R01>1.40070961e-06</R01>
+              <R02>5.59748628e-07</R02>
+              <R10>-5.59749026e-07</R10>
+              <R11>2.96531653e-07</R11>
+              <R12>1</R12>
+              <R20>1.40070949e-06</R20>
+              <R21>-1</R21>
+              <R22>2.96532448e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX03590CEC4D4043DCB007F58F20836AB3">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX4BB4E424771843E3AAC4D4502BD2E917</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXC7C0E8F5783A45F18F9A7BF7F95F9BCC">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>15.3521118</X>
+              <Y>20.2191544</Y>
+              <Z>-15.6733398</Z>
+              <R00>0.696891427</R00>
+              <R01>-0.717176735</R01>
+              <R02>5.9797344e-07</R02>
+              <R10>-2.16286836e-07</R10>
+              <R11>6.23618917e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.717176735</R20>
+              <R21>-0.696891427</R21>
+              <R22>2.79478797e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBXA870F082F6F94669AFEC28A642EC433D">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXC7C0E8F5783A45F18F9A7BF7F95F9BCC</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXF23EBCC978BD48C7A40ACC593203700B">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.848632812</X>
+              <Y>4.63430023</Y>
+              <Z>-18.336792</Z>
+              <R00>-0.00805657823</R00>
+              <R01>-0.999967635</R01>
+              <R02>6.06597041e-07</R02>
+              <R10>2.07915818e-07</R10>
+              <R11>6.0494159e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.999967575</R20>
+              <R21>0.00805657823</R21>
+              <R22>2.03035327e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX612E1BD9E7B848928B2F43874744EF50">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXF23EBCC978BD48C7A40ACC593203700B</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX0A02B66C9F3E4F1A9400F5F7ABE988CF">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-6.76467896</X>
+              <Y>4.63460541</Y>
+              <Z>-14.8271484</Z>
+              <R00>-0.462847769</R00>
+              <R01>-0.886437833</R01>
+              <R02>5.46370984e-07</R02>
+              <R10>4.67951168e-07</R10>
+              <R11>3.72029319e-07</R11>
+              <R12>1</R12>
+              <R20>-0.886437774</R20>
+              <R21>0.462847799</R21>
+              <R22>2.42616693e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX5A78655046384CFC8BAC4DFDEF554308">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX0A02B66C9F3E4F1A9400F5F7ABE988CF</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX245BAAF01E9A4443BB7671E6A235722A">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>18.8900452</X>
+              <Y>20.2191162</Y>
+              <Z>17.1513672</Z>
+              <R00>0.704287171</R00>
+              <R01>0.709915161</R01>
+              <R02>5.49678759e-07</R02>
+              <R10>-5.61956938e-07</R10>
+              <R11>-2.16786006e-07</R11>
+              <R12>1</R12>
+              <R20>0.709915221</R20>
+              <R21>-0.704287171</R21>
+              <R22>2.46262147e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBXAC588BF2F4F24BC1AFD4F656CDC94A07">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX245BAAF01E9A4443BB7671E6A235722A</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX1E071AE8F3AB4B94817BE08A4F1B1161">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>1.09338379</X>
+              <Y>4.63436127</Y>
+              <Z>-16.9641113</Z>
+              <R00>0.0103330705</R00>
+              <R01>-0.999946594</R01>
+              <R02>5.27151258e-07</R02>
+              <R10>2.06118486e-07</R10>
+              <R11>5.29309318e-07</R11>
+              <R12>1</R12>
+              <R20>-0.999946654</R20>
+              <R21>-0.0103330696</R21>
+              <R22>2.11576861e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX3EDB06447E6B4DA4A61567C7480704A6">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX1E071AE8F3AB4B94817BE08A4F1B1161</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX25D4A57139E64551A235068D3897963B">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-16.8355103</X>
+              <Y>20.2190933</Y>
+              <Z>-16.0775146</Z>
+              <R00>0.743554533</R00>
+              <R01>0.668675303</R01>
+              <R02>5.4428159e-07</R02>
+              <R10>-5.38515167e-07</R10>
+              <R11>-2.15151076e-07</R11>
+              <R12>1</R12>
+              <R20>0.668675363</R20>
+              <R21>-0.743554533</R21>
+              <R22>2.00115252e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBXCA553A5AB5D24DFCB39D77EE5AF92783">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX25D4A57139E64551A235068D3897963B</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX6777DB6331E048A8AB79184710B670B9">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>2.16448975</X>
+              <Y>20.2189941</Y>
+              <Z>25.2758789</Z>
+              <R00>0.0489919558</R00>
+              <R01>0.998799205</R01>
+              <R02>5.17181547e-07</R02>
+              <R10>-3.01397819e-07</R10>
+              <R11>-5.03019521e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>0.998799264</R20>
+              <R21>-0.0489919521</R21>
+              <R22>2.76391972e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX710BED944F894590AF2BF1C4F7D0C90B">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX6777DB6331E048A8AB79184710B670B9</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXE35BA6F5B396411C871B93414932A388">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-0.209503174</X>
+              <Y>20.2189102</Y>
+              <Z>-23.12146</Z>
+              <R00>0.0489919558</R00>
+              <R01>0.998799205</R01>
+              <R02>5.17181547e-07</R02>
+              <R10>-3.01397819e-07</R10>
+              <R11>-5.03019521e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>0.998799264</R20>
+              <R21>-0.0489919521</R21>
+              <R22>2.76391972e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBXED0D15F6932A4088B9C8EE70FA24043A">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXE35BA6F5B396411C871B93414932A388</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX3B4AB47F32C846E6A937DDD2C2798EBD">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-14.5646057</X>
+              <Y>4.6344223</Y>
+              <Z>-6.69689941</Z>
+              <R00>-0.936888456</R00>
+              <R01>-0.349628597</R01>
+              <R02>5.65802964e-07</R02>
+              <R10>6.36523396e-07</R10>
+              <R11>-8.73739907e-08</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.349628597</R20>
+              <R21>0.936888456</R21>
+              <R22>3.04406456e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBXADC2489B0D324435A3EC7013A76B853D">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX3B4AB47F32C846E6A937DDD2C2798EBD</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX55997B73D904401AA508C667F6F4B6F5">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>1.12548828</X>
+              <Y>9.80117035</Y>
+              <Z>16.039917</Z>
+              <R00>-0.00805657823</R00>
+              <R01>-0.999967635</R01>
+              <R02>6.06597041e-07</R02>
+              <R10>2.07915818e-07</R10>
+              <R11>6.0494159e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.999967575</R20>
+              <R21>0.00805657823</R21>
+              <R22>2.03035327e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX5EB362CF644848D7BA2FAF94E98D77C0">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX55997B73D904401AA508C667F6F4B6F5</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX94880E7297D745E5A0834E0B71DA65DD">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>11.6444397</X>
+              <Y>4.63444519</Y>
+              <Z>11.2058105</Z>
+              <R00>-0.66094172</R00>
+              <R01>-0.7504372</R01>
+              <R02>6.42997861e-07</R02>
+              <R10>6.74450632e-07</R10>
+              <R11>2.62813842e-07</R11>
+              <R12>1</R12>
+              <R20>-0.75043726</R20>
+              <R21>0.66094172</R21>
+              <R22>3.32428215e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX3A3415AC315B44CDBAAFD79BF841A246">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX94880E7297D745E5A0834E0B71DA65DD</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX44A2F95D34D34823B6A0AE206CF0EFC1">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>12.479187</X>
+              <Y>4.63448334</Y>
+              <Z>-13.1755371</Z>
+              <R00>0.662650049</R00>
+              <R01>-0.748929262</R01>
+              <R02>6.15899296e-07</R02>
+              <R10>-1.85075166e-07</R10>
+              <R11>6.58619228e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.748929262</R20>
+              <R21>-0.662650049</R21>
+              <R22>2.97825864e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX87AC3874D602487BB31E729CBE7BABE0">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX44A2F95D34D34823B6A0AE206CF0EFC1</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX71EDAB6C11B84366A10AE5503AA45C4A">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.752716064</X>
+              <Y>4.63450623</Y>
+              <Z>16.0098877</Z>
+              <R00>0.0103330705</R00>
+              <R01>-0.999946594</R01>
+              <R02>5.27151258e-07</R02>
+              <R10>2.06118486e-07</R10>
+              <R11>5.29309318e-07</R11>
+              <R12>1</R12>
+              <R20>-0.999946654</R20>
+              <R21>-0.0103330696</R21>
+              <R22>2.11576861e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX1DB0902D88A44737AC035ACA7EF04646">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX71EDAB6C11B84366A10AE5503AA45C4A</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX76041B3DCD8847F7A9E8575C16E3581D">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>17.4818115</X>
+              <Y>4.63454437</Y>
+              <Z>5.2623291</Z>
+              <R00>-0.936888456</R00>
+              <R01>-0.349628597</R01>
+              <R02>5.65802964e-07</R02>
+              <R10>6.36523396e-07</R10>
+              <R11>-8.73739907e-08</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.349628597</R20>
+              <R21>0.936888456</R21>
+              <R22>3.04406456e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX730CA5271EA14BC0911964A0F449E130">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX76041B3DCD8847F7A9E8575C16E3581D</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXB2B56DD0C5744740866036A57635C73E">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-13.7529907</X>
+              <Y>20.2189713</Y>
+              <Z>14.2788086</Z>
+              <R00>0.696891427</R00>
+              <R01>-0.717176735</R01>
+              <R02>5.9797344e-07</R02>
+              <R10>-2.16286836e-07</R10>
+              <R11>6.23618917e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.717176735</R20>
+              <R21>-0.696891427</R21>
+              <R22>2.79478797e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX3C81153DF07F4882AFE6F99257FC031F">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXB2B56DD0C5744740866036A57635C73E</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXF3841C9A13774A1AA2F7DDEC2D696D1B">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-10.301178</X>
+              <Y>9.80126953</Y>
+              <Z>12.5708008</Z>
+              <R00>0.662650049</R00>
+              <R01>-0.748929262</R01>
+              <R02>6.15899296e-07</R02>
+              <R10>-1.85075166e-07</R10>
+              <R11>6.58619228e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.748929262</R20>
+              <R21>-0.662650049</R21>
+              <R22>2.97825864e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX4E11B14794E748EF9D0A1810B0A28FDE">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXF3841C9A13774A1AA2F7DDEC2D696D1B</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX4BB21BB6E90A45A0A55390CD6F25D9D0">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-10.1502991</X>
+              <Y>4.6344223</Y>
+              <Z>-13.5402832</Z>
+              <R00>-0.66094172</R00>
+              <R01>-0.7504372</R01>
+              <R02>6.42997861e-07</R02>
+              <R10>6.74450632e-07</R10>
+              <R11>2.62813842e-07</R11>
+              <R12>1</R12>
+              <R20>-0.75043726</R20>
+              <R21>0.66094172</R21>
+              <R22>3.32428215e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBXB0EB3F67B01A40A9AB342C4E464E65AC">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX4BB21BB6E90A45A0A55390CD6F25D9D0</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX0EEBF6E812284B9D93B33613A05437CE">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>17.1065063</X>
+              <Y>20.2191772</Y>
+              <Z>14.4462891</Z>
+              <R00>0.743554533</R00>
+              <R01>0.668675303</R01>
+              <R02>5.4428159e-07</R02>
+              <R10>-5.38515167e-07</R10>
+              <R11>-2.15151076e-07</R11>
+              <R12>1</R12>
+              <R20>0.668675363</R20>
+              <R21>-0.743554533</R21>
+              <R22>2.00115252e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX926E1CFA30B344529A0817D37421DE92">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX0EEBF6E812284B9D93B33613A05437CE</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXB530B08DBB6643FE9FDD719639517C23">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>21.4825134</X>
+              <Y>20.2191544</Y>
+              <Z>-1.49707031</Z>
+              <R00>0.997735143</R00>
+              <R01>-0.0672661066</R01>
+              <R02>5.97626467e-07</R02>
+              <R10>-5.78538334e-07</R10>
+              <R11>3.03250062e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.0672661066</R20>
+              <R21>-0.997735143</R21>
+              <R22>2.63647223e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX23A14B093403480F850585494175B84C">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXB530B08DBB6643FE9FDD719639517C23</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXB4F896B9FD2043E4B205626C766F14EA">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-15.2364197</X>
+              <Y>20.2191544</Y>
+              <Z>-17.2475586</Z>
+              <R00>0.704287171</R00>
+              <R01>0.709915161</R01>
+              <R02>5.49678759e-07</R02>
+              <R10>-5.61956938e-07</R10>
+              <R11>-2.16786006e-07</R11>
+              <R12>1</R12>
+              <R20>0.709915221</R20>
+              <R21>-0.704287171</R21>
+              <R22>2.46262147e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX49A72FE79BBF42F583483F57B9D14CBA">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXB4F896B9FD2043E4B205626C766F14EA</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX1F7D42B74F534EB7A2606F96F46C79DD">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-20.1867981</X>
+              <Y>20.2190323</Y>
+              <Z>1.31225586</Z>
+              <R00>0.997735143</R00>
+              <R01>-0.0672661066</R01>
+              <R02>5.97626467e-07</R02>
+              <R10>-5.78538334e-07</R10>
+              <R11>3.03250062e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.0672661066</R20>
+              <R21>-0.997735143</R21>
+              <R22>2.63647223e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX01A3B7D7787340E9A4C9DBCB2FD53F3A">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX1F7D42B74F534EB7A2606F96F46C79DD</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX7D3DF478E50A471E843F44744C01C3EB">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-22.8888855</X>
+              <Y>20.2190323</Y>
+              <Z>-0.892456055</Z>
+              <R00>1</R00>
+              <R01>1.40070961e-06</R01>
+              <R02>5.59748628e-07</R02>
+              <R10>-5.59749026e-07</R10>
+              <R11>2.96531653e-07</R11>
+              <R12>1</R12>
+              <R20>1.40070949e-06</R20>
+              <R21>-1</R21>
+              <R22>2.96532448e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX32170B986B184DE6A3A5707D0EF3EB36">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">false</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX7D3DF478E50A471E843F44744C01C3EB</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX286EE7B6FF0448B583622C0DC7D1F8F9">
+          <Properties>
+            <string name="Name">Orange Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>9.06710815</X>
+              <Y>4.63444519</Y>
+              <Z>15.4938965</Z>
+              <R00>-0.462847769</R00>
+              <R01>-0.886437833</R01>
+              <R02>5.46370984e-07</R02>
+              <R10>4.67951168e-07</R10>
+              <R11>3.72029319e-07</R11>
+              <R12>1</R12>
+              <R20>-0.886437774</R20>
+              <R21>0.462847799</R21>
+              <R22>2.42616693e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBXCFC1C4618A6841A3849F601311C28393">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 0.333333343 0 0 1 1 0.333333343 0 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX286EE7B6FF0448B583622C0DC7D1F8F9</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.496917367 0.449999988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX00FBD4C8A0AD418D8F73FF4BDD5FFCF8">
+          <Properties>
+            <string name="Name">White Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>12.8495483</X>
+              <Y>5.57188416</Y>
+              <Z>12.5739746</Z>
+              <R00>-0.66094172</R00>
+              <R01>-0.7504372</R01>
+              <R02>6.42997861e-07</R02>
+              <R10>6.74450632e-07</R10>
+              <R11>2.62813842e-07</R11>
+              <R12>1</R12>
+              <R20>-0.75043726</R20>
+              <R21>0.66094172</R21>
+              <R22>3.32428215e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX2147B9173D0941CDBED3205CA5B4A3A3">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 1 1 0 1 1 1 1 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX00FBD4C8A0AD418D8F73FF4BDD5FFCF8</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.500616491 0.962499976 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXFEBB57817B884664AECB0B224560E5C2">
+          <Properties>
+            <string name="Name">White Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>16.6917114</X>
+              <Y>5.57198334</Y>
+              <Z>4.96740723</Z>
+              <R00>-0.936888456</R00>
+              <R01>-0.349628597</R01>
+              <R02>5.65802964e-07</R02>
+              <R10>6.36523396e-07</R10>
+              <R11>-8.73739907e-08</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.349628597</R20>
+              <R21>0.936888456</R21>
+              <R22>3.04406456e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX7912078E7B734513926DE70983FD5AC9">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 1 1 0 1 1 1 1 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXFEBB57817B884664AECB0B224560E5C2</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.501233041 0.887499988 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">-10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX81EE26822193407EA37E45AED5E5CB3E">
+          <Properties>
+            <string name="Name">White Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>0.855255127</X>
+              <Y>5.57198334</Y>
+              <Z>-17.5100098</Z>
+              <R00>-0.00805657823</R00>
+              <R01>-0.999967635</R01>
+              <R02>6.06597041e-07</R02>
+              <R10>2.07915818e-07</R10>
+              <R11>6.0494159e-07</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.999967575</R20>
+              <R21>0.00805657823</R21>
+              <R22>2.03035327e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX5EE04B2F0B6F4D4AAA0972AC72D99516">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 1 1 0 1 1 1 1 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX81EE26822193407EA37E45AED5E5CB3E</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.5 0.875 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBX012FDCB4D1E74B0383CD0F25CB38F69C">
+          <Properties>
+            <string name="Name">White Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-13.6293945</X>
+              <Y>5.57180023</Y>
+              <Z>-6.34777832</Z>
+              <R00>-0.936888456</R00>
+              <R01>-0.349628597</R01>
+              <R02>5.65802964e-07</R02>
+              <R10>6.36523396e-07</R10>
+              <R11>-8.73739907e-08</R11>
+              <R12>1.00000012</R12>
+              <R20>-0.349628597</R20>
+              <R21>0.936888456</R21>
+              <R22>3.04406456e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBX145ACF012BD24AB8AFA646CD9035DD49">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 1 1 0 1 1 1 1 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBX012FDCB4D1E74B0383CD0F25CB38F69C</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.501849532 0.893750012 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+        <Item class="Attachment" referent="RBXB8456CF09BBF4BE9BDC1B840C38D2B03">
+          <Properties>
+            <string name="Name">White Outline</string>
+            <bool name="Visible">false</bool>
+            <CoordinateFrame name="CFrame">
+              <X>-10.3764038</X>
+              <Y>5.57180023</Y>
+              <Z>-13.7969971</Z>
+              <R00>-0.66094172</R00>
+              <R01>-0.7504372</R01>
+              <R02>6.42997861e-07</R02>
+              <R10>6.74450632e-07</R10>
+              <R11>2.62813842e-07</R11>
+              <R12>1</R12>
+              <R20>-0.75043726</R20>
+              <R21>0.66094172</R21>
+              <R22>3.32428215e-07</R22>
+            </CoordinateFrame>
+            <bool name="archivable">true</bool>
+          </Properties>
+          <Item class="Beam" referent="RBXBB7CA6E931CB48B9B67CEED0040DA326">
+            <Properties>
+              <string name="Name">Beam</string>
+              <bool name="FaceCamera">true</bool>
+              <ColorSequence name="Color">0 1 1 1 0 1 1 1 1 0 </ColorSequence>
+              <float name="LightInfluence">1</float>
+              <float name="Width0">2.5</float>
+              <Ref name="Attachment0">RBX1197334806D74765B935314BFABDE290</Ref>
+              <float name="Brightness">1</float>
+              <bool name="archivable">true</bool>
+              <Ref name="Attachment1">RBXB8456CF09BBF4BE9BDC1B840C38D2B03</Ref>
+              <bool name="Enabled">true</bool>
+              <float name="TextureSpeed">2</float>
+              <Content name="Texture">
+                <url>rbxassetid://6252012740</url>
+              </Content>
+              <int name="Segments">50</int>
+              <NumberSequence name="Transparency">0 1 0 0.501233041 0.925000012 0 1 1 0 </NumberSequence>
+              <float name="CurveSize1">0</float>
+              <float name="CurveSize0">10</float>
+              <float name="LightEmission">0</float>
+              <float name="Width1">10</float>
+              <token name="TextureMode">0</token>
+              <float name="TextureLength">1</float>
+            </Properties>
+          </Item>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

@@ -1,0 +1,337 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXDD4CD6D5FCB94194B1328574A5984A20">
+    <Properties>
+      <string name="Name">Crashed space rocket</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIOAAAAY3Jhc2hlZF9yb2NrZXQNAAAAU291cmNlQXNzZXRJZAYAAAAwI59+QQ==</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX2CA6BD9A9E8644F79DBE756C25D2AEB2">
+      <Properties>
+        <string name="Name">Crash</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="Part" referent="RBXE815B63B373B4853863DC752A2BE05EE">
+        <Properties>
+          <string name="Name">Grass</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4280763949</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">1280</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>23.8681846</X>
+            <Y>0.867934019</Y>
+            <Z>23.8681846</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>1.2490009e-16</X>
+            <Y>0.43396701</Y>
+            <Z>-8.30932545e-16</Z>
+            <R00>0.0549549796</R00>
+            <R01>0</R01>
+            <R02>-0.998488784</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0.998488903</R20>
+            <R21>0</R21>
+            <R22>0.0549549721</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX6C95EF59CB89457BAF648B92D3410B27">
+        <Properties>
+          <string name="Name">Rocket</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>18.081958</X>
+            <Y>0.867934019</Y>
+            <Z>0.723278321</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-2.18516997</X>
+            <Y>5.01080433</Y>
+            <Z>-0.374606873</Z>
+            <R00>0.542093515</R00>
+            <R01>-0.631444573</R01>
+            <R02>-0.554447949</R02>
+            <R10>0.375843763</R10>
+            <R11>0.77232492</R11>
+            <R12>-0.51210922</R12>
+            <R20>0.751582444</R20>
+            <R21>0.0692253411</R21>
+            <R22>0.655996799</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="SpecialMesh" referent="RBX07D44602AE0F4CF2BF6A1FF51C5C58A3">
+          <Properties>
+            <string name="Name">Mesh</string>
+            <Vector3 name="Offset">
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Vector3>
+            <Vector3 name="VertexColor">
+              <X>1</X>
+              <Y>1</Y>
+              <Z>1</Z>
+            </Vector3>
+            <token name="MeshType">5</token>
+            <Vector3 name="Scale">
+              <X>18.081958</X>
+              <Y>18.081958</Y>
+              <Z>18.081958</Z>
+            </Vector3>
+            <Content name="MeshId">
+              <url>http://www.roblox.com/asset/?id=31601976</url>
+            </Content>
+            <bool name="archivable">true</bool>
+            <Content name="TextureId">
+              <url>http://www.roblox.com/asset/?id=31601599</url>
+            </Content>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="Part" referent="RBX4E114BF4C7384B9A84AD9773C231667B">
+        <Properties>
+          <string name="Name">Smoke</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4292178749</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>0.723278321</X>
+            <Y>0.289311333</Y>
+            <Z>0.723278321</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">1</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>6.77790343</X>
+            <Y>1.01258911</Y>
+            <Z>4.69756776</Z>
+            <R00>0.05495511</R00>
+            <R01>2.97572846e-08</R01>
+            <R02>-0.998488784</R02>
+            <R10>-9.31322575e-10</R10>
+            <R11>0.999999881</R11>
+            <R12>-2.98023224e-08</R12>
+            <R20>0.998488843</R20>
+            <R21>-1.6377858e-09</R21>
+            <R22>0.0549551211</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="Smoke" referent="RBX43C1E20E6EBB4B28AD3D5EFA051774D8">
+          <Properties>
+            <string name="Name">Smoke</string>
+            <bool name="Enabled">true</bool>
+            <float name="riseVelocity_xml">5</float>
+            <Color3 name="Color">
+              <R>0</R>
+              <G>0</G>
+              <B>0</B>
+            </Color3>
+            <float name="opacity_xml">1</float>
+            <bool name="archivable">true</bool>
+            <float name="size_xml">0.5</float>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="Part" referent="RBX92BE602832BC4C1D95209FF3DE15D135">
+        <Properties>
+          <string name="Name">Smoke</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4292178749</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>0.723278321</X>
+            <Y>0.289311333</Y>
+            <Z>0.723278321</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">1</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-7.65907883</X>
+            <Y>1.01258911</Y>
+            <Z>-7.54656047</Z>
+            <R00>0.05495511</R00>
+            <R01>2.97572846e-08</R01>
+            <R02>-0.998488784</R02>
+            <R10>-9.31322575e-10</R10>
+            <R11>0.999999881</R11>
+            <R12>-2.98023224e-08</R12>
+            <R20>0.998488843</R20>
+            <R21>-1.6377858e-09</R21>
+            <R22>0.0549551211</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+      <Item class="Part" referent="RBX3BA219DE364244A6AEB01C44C97AF6C2">
+        <Properties>
+          <string name="Name">Smoke</string>
+          <bool name="CanQuery">true</bool>
+          <Color3uint8 name="Color3uint8">4292178749</Color3uint8>
+          <bool name="Anchored">true</bool>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>0.723278321</X>
+            <Y>0.289311333</Y>
+            <Z>0.723278321</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">true</bool>
+          <token name="shape">1</token>
+          <float name="Transparency">1</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <CoordinateFrame name="CFrame">
+            <X>-11.6512692</X>
+            <Y>17.0483786</Y>
+            <Z>1.14153672</Z>
+            <R00>0.0549549498</R00>
+            <R01>-0.64493525</R01>
+            <R02>-0.762258708</R02>
+            <R10>3.72317788e-10</R10>
+            <R11>0.763412416</R11>
+            <R12>-0.645911336</R12>
+            <R20>0.998488903</R20>
+            <R21>0.0354960226</R21>
+            <R22>0.0419532843</R22>
+          </CoordinateFrame>
+          <bool name="Massless">false</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+        <Item class="Smoke" referent="RBXFF1143A4E4A04F508756B6C95F29732E">
+          <Properties>
+            <string name="Name">Smoke</string>
+            <bool name="Enabled">true</bool>
+            <float name="riseVelocity_xml">15</float>
+            <Color3 name="Color">
+              <R>0</R>
+              <G>0</G>
+              <B>0</B>
+            </Color3>
+            <float name="opacity_xml">1</float>
+            <bool name="archivable">true</bool>
+            <float name="size_xml">1</float>
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

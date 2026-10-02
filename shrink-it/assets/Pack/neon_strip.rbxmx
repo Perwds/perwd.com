@@ -1,0 +1,64 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX806E129F672B487383BD326A58D52298">
+    <Properties>
+      <string name="Name">Neon wall strip</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIKAAAAbmVvbl9zdHJpcA0AAABTb3VyY2VBc3NldElkBsAdB1Syu9ZC</BinaryString>
+    </Properties>
+    <Item class="Part" referent="RBX9A1B2C98B26C49A4B08FB6EC4024C3C9">
+      <Properties>
+        <string name="Name">Part</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4293782250</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">288</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>12</X>
+          <Y>0.444444444</Y>
+          <Z>0.444444444</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>0.222222222</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

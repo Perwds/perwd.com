@@ -1,0 +1,74 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXA91196FC0E874AEA8794D9A8941928C5">
+    <Properties>
+      <string name="Name">Skyscraper</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIKAAAAc2t5c2NyYXBlcg0AAABTb3VyY2VBc3NldElkAg8AAAAxMTEyODM3OTI4MTk2OTE=</BinaryString>
+    </Properties>
+    <Item class="MeshPart" referent="RBX82D4DFE1B8F842A69C5FE0106BEEAAD0">
+      <Properties>
+        <string name="Name">Mesh building</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <Content name="TextureID"><url>rbxassetid://6675849437</url></Content>
+        <token name="RenderFidelity">1</token>
+        <token name="Material">1296</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>59.0595381</X>
+          <Y>65.0015915</Y>
+          <Z>57.9043916</Z>
+        </Vector3>
+        <token name="CollisionFidelity">0</token>
+        <Vector3 name="InitialSize">
+          <X>50</X>
+          <Y>37.1202583</Y>
+          <Z>49.0220528</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>1.61279562e-15</X>
+          <Y>32.5007958</Y>
+          <Z>0</Z>
+          <R00>0.0549549796</R00>
+          <R01>0</R01>
+          <R02>-0.998488784</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0.998488903</R20>
+          <R21>0</R21>
+          <R22>0.0549549721</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>rbxassetid://6675849341</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

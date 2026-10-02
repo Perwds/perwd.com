@@ -627,26 +627,6 @@ local function treadmillLock()
 	end)
 end
 
--- ── blocky animal chasers: swing their legs while they run ─────────────
-local function animalLegs()
-	RunService.Stepped:Connect(function()
-		local t = os.clock()
-		for _, model in ipairs(CollectionService:GetTagged("AnimalChaser")) do
-			local root = model.PrimaryPart
-			if root then
-				local speed = (root.AssemblyLinearVelocity * Vector3.new(1, 0, 1)).Magnitude
-				local amp = math.clamp(speed / 30, 0, 1) * 0.9
-				local swing = math.sin(t * (6 + speed * 0.25)) * amp
-				for _, motor in ipairs(root:GetChildren()) do
-					if motor:IsA("Motor6D") then
-						motor.Transform = CFrame.Angles(motor.Name == "LegA" and swing or -swing, 0, 0)
-					end
-				end
-			end
-		end
-	end)
-end
-
 -- ── floating stand titles: gentle bob + a shine sliding across ─────────
 local function floatingTitles()
 	RunService.RenderStepped:Connect(function()
@@ -872,7 +852,6 @@ function Effects.Init()
 	task.spawn(hoverInfo)
 	task.spawn(treadmillLock)
 	task.spawn(floatingTitles)
-	task.spawn(animalLegs)
 	task.spawn(settingsLoop)
 	setupChat()
 	Remotes.Event("PvPFX").OnClientEvent:Connect(onPvPFX)

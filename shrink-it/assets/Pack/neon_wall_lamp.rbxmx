@@ -1,0 +1,523 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX013F0DA95A3B42E4BF6A07C9F393E445">
+    <Properties>
+      <string name="Name">Futuristic neon wall lamp</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">BAAAABAAAABCdWlsZGVyQ29tcG9zaXRlAwEQAAAAQ29tcG9zaXRlU291cmNlcwIEAAAAbGFtcAsAAABEZXNjcmlwdGlvbgJPAAAAV2FsbC1tb3VudGVkIHRleHR1cmVkIG1ldGFsIGxhbnRlcm4gd2l0aCBmb3JnZWQgYnJhY2tldCwgY3lhbiBnbGF6aW5nIGFuZCBsaWdodAsAAABQYWNrQXNzZXRJZAIOAAAAbmVvbl93YWxsX2xhbXA=</BinaryString>
+    </Properties>
+    <Item class="Part" referent="RBXC2462F9499DB404487B73C2BD692C460">
+      <Properties>
+        <string name="Name">Textured wall lantern</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">256</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>2.13333321</X>
+          <Y>4</Y>
+          <Z>1.33333325</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2</Y>
+          <Z>-0.289999993</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="SpecialMesh" referent="RBX4E2EE97235CE49618C25DE0416680CD7">
+        <Properties>
+          <string name="Name">Mesh</string>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="VertexColor">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <token name="MeshType">5</token>
+          <Vector3 name="Scale">
+            <X>1.33333325</X>
+            <Y>1.33333325</Y>
+            <Z>1.33333325</Z>
+          </Vector3>
+          <Content name="MeshId">
+            <url>http://www.roblox.com/asset/?id=123115084</url>
+          </Content>
+          <bool name="archivable">true</bool>
+          <Content name="TextureId">
+            <url>http://www.roblox.com/asset/?id=123115105 </url>
+          </Content>
+        </Properties>
+      </Item>
+      <Item class="PointLight" referent="RBX8DDA14440EB84E9782F2624E25459957">
+        <Properties>
+          <string name="Name">PointLight</string>
+          <bool name="Enabled">true</bool>
+          <bool name="Shadows">false</bool>
+          <Color3 name="Color">
+            <R>0.301960796</R>
+            <G>0.894117653</G>
+            <B>1</B>
+          </Color3>
+          <float name="Brightness">1.39999998</float>
+          <bool name="archivable">true</bool>
+          <float name="Range">20</float>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBX8896F98805A94B4E9B8E8306E40F5454">
+      <Properties>
+        <string name="Name">Wall mounting plate</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280757549</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.4666667</X>
+          <Y>2.9333334</Y>
+          <Z>0.226666669</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>1.80000003</Y>
+          <Z>0.990000018</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXC7A61B7F364C416CBE15081A564A5B8C">
+      <Properties>
+        <string name="Name">Lantern bracket arm</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280757549</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.293333332</X>
+          <Y>0.293333332</Y>
+          <Z>1.26666665</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>0.733333429</Y>
+          <Z>0.316666652</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX6A6A93DC9FCF417190F294DE465DE718">
+      <Properties>
+        <string name="Name">Forged angled support</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280757549</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.200000008</X>
+          <Y>0.200000008</Y>
+          <Z>1.57338985</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>0.800000032</Y>
+          <Z>0.316666652</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>0.805055797</R11>
+          <R12>-0.593199074</R12>
+          <R20>0</R20>
+          <R21>0.593199074</R21>
+          <R22>0.805055797</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXACA69E63F77B47A4BD1A29E40F8EE215">
+      <Properties>
+        <string name="Name">Cyan frosted glass panel</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4283294975</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">288</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.826666673</X>
+          <Y>1.29333337</Y>
+          <Z>0.0600000024</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>1.97333336</Y>
+          <Z>-1.0233333</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX7C3A3F14F741465490BDEE3A3D3ACFC2">
+      <Properties>
+        <string name="Name">Cyan glazing metal bead</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280757549</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.0933333337</X>
+          <Y>1.4666667</Y>
+          <Z>0.106666664</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>-0.453333338</X>
+          <Y>1.97333336</Y>
+          <Z>-1.05000002</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX02A03B5974D44A69AD81790F95E0EDE8">
+      <Properties>
+        <string name="Name">Cyan glazing metal bead</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280757549</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.0933333337</X>
+          <Y>1.4666667</Y>
+          <Z>0.106666664</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0.453333338</X>
+          <Y>1.97333336</Y>
+          <Z>-1.05000002</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBXDC55BC380D624953AB943BB3E4D6942A">
+      <Properties>
+        <string name="Name">Cyan glazing metal bead</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280757549</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1</X>
+          <Y>0.0933333337</Y>
+          <Z>0.106666664</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>1.26666673</Y>
+          <Z>-1.05000002</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX10ED00E78AA342A3A31BFEF8617E7576">
+      <Properties>
+        <string name="Name">Cyan glazing metal bead</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4280757549</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1</X>
+          <Y>0.0933333337</Y>
+          <Z>0.106666664</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.67999999</Y>
+          <Z>-1.05000002</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

@@ -1,0 +1,251 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBX4EC7634621CE4AD68D712E39F7174BD7">
+    <Properties>
+      <string name="Name">Wall mounted torch</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AwAAAAsAAABQYWNrQXNzZXRJZAIKAAAAd2FsbF90b3JjaA0AAABTb3VyY2VBc3NldElkAggAAAAzNjk5MTEzMQ0AAABTb3VyY2VDcmVhdG9yAgsAAABmYWxjb254d2luZw==</BinaryString>
+    </Properties>
+    <Item class="Part" referent="RBXA2F7E6876B27477ABB9E6C1B56E3C245">
+      <Properties>
+        <string name="Name">Handle</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">256</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>2.5</X>
+          <Y>5</Y>
+          <Z>2.5</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.5</Y>
+          <Z>0</Z>
+          <R00>0.99322027</R00>
+          <R01>0</R01>
+          <R02>0.116250247</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>-0.116250321</R20>
+          <R21>0</R21>
+          <R22>0.993219674</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="SpecialMesh" referent="RBX8B139ED349ED458386F4EA41F96958E5">
+        <Properties>
+          <string name="Name">Mesh</string>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="VertexColor">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <token name="MeshType">5</token>
+          <Vector3 name="Scale">
+            <X>2.5</X>
+            <Y>2.5</Y>
+            <Z>2.5</Z>
+          </Vector3>
+          <Content name="MeshId">
+            <url>http://www.roblox.com/asset/?id=31584522</url>
+          </Content>
+          <bool name="archivable">true</bool>
+          <Content name="TextureId">
+            <url>http://www.roblox.com/asset/?id=31585584</url>
+          </Content>
+        </Properties>
+      </Item>
+      <Item class="Attachment" referent="RBX5FF65A9659B64801AA799E2AEDA96C9D">
+        <Properties>
+          <string name="Name">Flame attachment</string>
+          <bool name="Visible">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0</X>
+            <Y>2</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="archivable">true</bool>
+        </Properties>
+        <Item class="PointLight" referent="RBX93B8FA856E3C44149E91C2B2555A520A">
+          <Properties>
+            <string name="Name">PointLight</string>
+            <bool name="Enabled">true</bool>
+            <bool name="Shadows">false</bool>
+            <Color3 name="Color">
+              <R>1</R>
+              <G>0.58431375</G>
+              <B>0.239215687</B>
+            </Color3>
+            <float name="Brightness">2</float>
+            <bool name="archivable">true</bool>
+            <float name="Range">20</float>
+          </Properties>
+        </Item>
+      </Item>
+      <Item class="Fire" referent="RBX3710011B60424EB284DC809B9BEB87EF">
+        <Properties>
+          <string name="Name">Fire</string>
+          <bool name="Enabled">true</bool>
+          <float name="heat_xml">4</float>
+          <Color3 name="Color">
+            <R>1</R>
+            <G>0.525490224</G>
+            <B>0.160784319</B>
+          </Color3>
+          <Color3 name="SecondaryColor">
+            <R>1</R>
+            <G>0.925490201</G>
+            <B>0.592156887</B>
+          </Color3>
+          <bool name="archivable">true</bool>
+          <float name="size_xml">2</float>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBX9AD9445738C34DF9A55F7201E487A645">
+      <Properties>
+        <string name="Name">Forged iron wall plate</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4281018660</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>1.12499997</X>
+          <Y>2.00000003</Y>
+          <Z>0.225000009</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.37499997</Y>
+          <Z>0.75000003</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+    <Item class="Part" referent="RBX9F02B515B9444C198600648F7A6BA2D3">
+      <Properties>
+        <string name="Name">Wall bracket</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4281018660</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">1088</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>0.250000004</X>
+          <Y>0.250000004</Y>
+          <Z>1.00000001</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>1.875</Y>
+          <Z>0.250000004</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

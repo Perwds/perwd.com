@@ -290,6 +290,7 @@ function RewardService.Start()
 		end
 		data.EquippedSkin = skin
 		player:SetAttribute("RaySkin", skin)
+		Svc.Shrink.RefreshTool(player) -- hold the matching ray gun
 		Svc.Data.MarkDirty(player)
 		return { ok = true }
 	end)

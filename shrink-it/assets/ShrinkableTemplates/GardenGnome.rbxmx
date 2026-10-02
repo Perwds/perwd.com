@@ -1,0 +1,92 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXA75FB9C7A9374F7B856D2AC4CC6DE738">
+    <Properties>
+      <string name="Name">Garden gnome</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIMAAAAZ2FyZGVuX2dub21lDQAAAFNvdXJjZUFzc2V0SWQGwNbRvWuV1kI=</BinaryString>
+    </Properties>
+    <Item class="Part" referent="RBX9B12BB40ABC54765A1F153F33F607E41">
+      <Properties>
+        <string name="Name">Handle</string>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <token name="Material">256</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>2.1361264</X>
+          <Y>5.00001547</Y>
+          <Z>2.57912773</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <token name="shape">1</token>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>2.50000397</Y>
+          <Z>0</Z>
+          <R00>-0.999997199</R00>
+          <R01>1.21071935e-08</R01>
+          <R02>-0.00049156975</R02>
+          <R10>2.07219273e-08</R10>
+          <R11>0.99999845</R11>
+          <R12>6.67170639e-08</R12>
+          <R20>0.000491586165</R20>
+          <R21>3.50778606e-08</R21>
+          <R22>-0.99999851</R22>
+        </CoordinateFrame>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="SpecialMesh" referent="RBXEADD3C82167042FC82C09820EAFAF067">
+        <Properties>
+          <string name="Name">Mesh</string>
+          <Vector3 name="Offset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="VertexColor">
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Vector3>
+          <token name="MeshType">5</token>
+          <Vector3 name="Scale">
+            <X>1.66139868</X>
+            <Y>1.66139868</Y>
+            <Z>1.66139868</Z>
+          </Vector3>
+          <Content name="MeshId">
+            <url>http://www.roblox.com/asset/?id=180520004 </url>
+          </Content>
+          <bool name="archivable">true</bool>
+          <Content name="TextureId">
+            <url>http://www.roblox.com/asset/?id=180886364</url>
+          </Content>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v12 (night wall, animal chasers)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v13 (your asset pack)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 13 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────

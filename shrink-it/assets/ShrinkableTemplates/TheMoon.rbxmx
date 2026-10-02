@@ -1,0 +1,98 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXD7ECA855AD6A44AA878348FC31F6A83C">
+    <Properties>
+      <string name="Name">The Moon</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">null</Ref>
+      <BinaryString name="AttributesSerialize">AgAAAAsAAABQYWNrQXNzZXRJZAIEAAAAbW9vbg0AAABTb3VyY2VBc3NldElkAgsAAAAxMTM3MjE3NDkzNA==</BinaryString>
+    </Properties>
+    <Item class="MeshPart" referent="RBXC67400BCEA6D465A9F101CA7573CD54C">
+      <Properties>
+        <string name="Name">Moon</string>
+        <token name="FluidFidelity">0</token>
+        <bool name="CanQuery">true</bool>
+        <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+        <bool name="Anchored">true</bool>
+        <Content name="TextureID"><url>rbxassetid://5985984466</url></Content>
+        <token name="RenderFidelity">1</token>
+        <token name="Material">256</token>
+        <bool name="archivable">true</bool>
+        <Vector3 name="size">
+          <X>29.2938972</X>
+          <Y>29.2585015</Y>
+          <Z>29.2938972</Z>
+        </Vector3>
+        <token name="CollisionFidelity">0</token>
+        <Vector3 name="InitialSize">
+          <X>6.36671495</X>
+          <Y>6.366714</Y>
+          <Z>6.36671495</Z>
+        </Vector3>
+        <bool name="CanCollide">false</bool>
+        <string name="CollisionGroup">Default</string>
+        <bool name="CanTouch">true</bool>
+        <CoordinateFrame name="CFrame">
+          <X>0</X>
+          <Y>14.9827408</Y>
+          <Z>-4.1427365e-16</Z>
+          <R00>0.998190761</R00>
+          <R01>-0.0243952554</R01>
+          <R02>0.0549550243</R02>
+          <R10>0.0244321786</R10>
+          <R11>0.9997015</R11>
+          <R12>0</R12>
+          <R20>-0.0549386144</R20>
+          <R21>0.00134267076</R21>
+          <R22>0.998488903</R22>
+        </CoordinateFrame>
+        <Content name="MeshId"><url>rbxassetid://6510695035</url></Content>
+        <float name="Transparency">0</float>
+        <CoordinateFrame name="PivotOffset">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <float name="Reflectance">0</float>
+        <bool name="DoubleSided">false</bool>
+        <bool name="Massless">false</bool>
+        <bool name="CastShadow">true</bool>
+        <string name="MaterialVariantSerialized" />
+      </Properties>
+      <Item class="SurfaceAppearance" referent="RBXF736A674804C462C973F80883957638F">
+        <Properties>
+          <string name="Name">SurfaceAppearance</string>
+          <Content name="ColorMap"><url>rbxassetid://5578458623</url></Content>
+          <token name="AlphaMode">0</token>
+          <Content name="RoughnessMap"><url>rbxassetid://1302869033</url></Content>
+          <Color3 name="Color">
+            <R>1</R>
+            <G>1</G>
+            <B>1</B>
+          </Color3>
+          <float name="EmissiveStrength">1</float>
+          
+          <token name="ResampleMode">0</token>
+          <Color3 name="EmissiveTint">
+            <R>1</R>
+            <G>1</G>
+            <B>1</B>
+          </Color3>
+          
+          <bool name="archivable">true</bool>
+          <Content name="NormalMap"><url>rbxassetid://5578458435</url></Content>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+</roblox>
