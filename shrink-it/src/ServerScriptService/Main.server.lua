@@ -21,6 +21,7 @@ local ORDER = {
 	"Event",
 	"Economy",
 	"Museum",
+	"Carry",
 	"Index",
 	"Area",
 	"Spawn",

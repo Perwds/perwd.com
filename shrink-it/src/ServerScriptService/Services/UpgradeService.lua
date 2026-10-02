@@ -41,14 +41,17 @@ function UpgradeService.Start()
 			local newTier = TierConfig.MaxTierForRayPower(data.Upgrades.RayPower)
 			if newTier > oldTier then
 				local t = TierConfig.Tiers[newTier]
-				Svc.Net.Notify(player, "⚡ You can now shrink " .. t.Name .. " objects! " .. t.Area .. " unlocked!", "success")
+				Svc.Net.Notify(player, "⚡ You can now shrink " .. t.Name .. " objects in " .. t.Area .. "!", "success")
 			end
 			if data.Upgrades.RayPower >= u.MaxLevel then
 				Svc.Net.Notify(player, "🏴‍☠️ MAX RAY POWER! Museum Raids unlocked (opt-in in the Museum menu).", "success")
 			end
 		end
-		if id == "MuseumSize" then
+		if id == "MuseumSize" or id == "MultiShrink" then
 			Svc.Museum.Recompute(player)
+		end
+		if id == "Speed" then
+			Svc.Monetization.ApplyMovement(player)
 		end
 		Svc.Economy.UpdateIncome(player)
 		Svc.Data.MarkDirty(player)

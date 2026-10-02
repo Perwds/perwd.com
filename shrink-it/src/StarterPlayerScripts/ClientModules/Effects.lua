@@ -28,6 +28,7 @@ local Remotes = require(Shared.Remotes)
 
 local Modules = script.Parent
 local State = require(Modules.State)
+local HUD = require(Modules.HUD)
 
 local Effects = {}
 
@@ -327,7 +328,44 @@ local function onRaidSync(p)
 	end
 end
 
+-- ── carry results (caught by a chaser / delivered at base) ─────────────
+local function shakeCamera(seconds, strength)
+	local camera = workspace.CurrentCamera
+	local start = os.clock()
+	local conn
+	conn = RunService.RenderStepped:Connect(function()
+		local t = os.clock() - start
+		if t > seconds then
+			conn:Disconnect()
+			return
+		end
+		local a = strength * (1 - t / seconds)
+		camera.CFrame *= CFrame.Angles(math.rad((math.random() - 0.5) * a), math.rad((math.random() - 0.5) * a), 0)
+	end)
+end
+
+local function onCarryFX(kind, p)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if kind == "Caught" then
+		HUD.Splash(p.Emoji .. " CAUGHT!", Color3.fromRGB(255, 70, 70))
+		shakeCamera(0.6, 6)
+		playSoundAt(root and root.Position or Vector3.zero, GameConfig.Sounds.TooBig, 0.8)
+		if root then
+			-- knocked back toward the base (client owns its own character physics)
+			root.AssemblyLinearVelocity = Vector3.new(0, 45, -55)
+		end
+	elseif kind == "Deposit" then
+		HUD.Splash("DELIVERED! +" .. Format.Coins(p.Income) .. "/s", Color3.fromRGB(120, 255, 120))
+		if root then
+			burst(root.Position, Color3.fromRGB(255, 220, 60), 60, 1.6)
+			burst(root.Position, Color3.fromRGB(120, 255, 140), 40, 1.2)
+			playSoundAt(root.Position, GameConfig.Sounds.Reward, 0.7)
+		end
+	end
+end
+
 function Effects.Init()
+	Remotes.Event("CarryFX").OnClientEvent:Connect(onCarryFX)
 	Remotes.Event("ShrinkFX").OnClientEvent:Connect(playShrink)
 	Remotes.Event("ChargeFX").OnClientEvent:Connect(onChargeFX)
 	Remotes.Event("RaidSync").OnClientEvent:Connect(onRaidSync)

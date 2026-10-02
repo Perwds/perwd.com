@@ -27,7 +27,7 @@ function RebirthMenu.Build(ctx)
 	local mult = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(255, 210, 60), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 36), Position = UDim2.fromOffset(0, 64), Parent = content })
 	local bar = UIKit.ProgressBar({ Size = UDim2.new(1, -80, 0, 38), Position = UDim2.fromOffset(40, 108), Colors = UIKit.Colors.Yellow, Parent = content })
 	local rewards = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(110, 200, 255), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 32), Position = UDim2.fromOffset(0, 154), Parent = content })
-	UIKit.Label({ Text = "Resets Coins, upgrades, paid gates & museum. Keeps Index, Gems, Tokens, skins & Huge exclusives.", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, -40, 0, 26), Position = UDim2.fromOffset(20, 190), Parent = content })
+	UIKit.Label({ Text = "Resets Coins, upgrades & museum. Keeps Index, Gems, Tokens, skins & Huge exclusives.", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, -40, 0, 26), Position = UDim2.fromOffset(20, 190), Parent = content })
 
 	local rebirthButton, rebirthLabel = UIKit.Button({ Text = "REBIRTH!", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(260, 64), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(0.5, -10, 0, 226), Parent = content, OnClick = function()
 		UIKit.Confirm(ctx.Screen, "Rebirth?", "Your coins, upgrades and museum will reset for a permanent boost. Continue?", function()

@@ -45,23 +45,23 @@ ObjectConfig.Objects = {
 	SportsCar = { Name = "Sports Car", Tier = 3, Rarity = "Epic", BaseIncome = 6_000, Size = V(7, 4, 15), Color = C(255, 40, 40), Shape = "Block", Emoji = "🏎️" },
 
 	-- ── Tier 4 · Large · Harbor ─────────────────────────────────────
-	House = { Name = "House", Tier = 4, Rarity = "Common", BaseIncome = 15_000, Size = V(24, 20, 24), Color = C(230, 200, 160), Shape = "Block", Emoji = "🏠" },
-	Bus = { Name = "Bus", Tier = 4, Rarity = "Common", BaseIncome = 20_000, Size = V(9, 11, 32), Color = C(255, 200, 30), Shape = "Block", Emoji = "🚌" },
-	Windmill = { Name = "Windmill", Tier = 4, Rarity = "Uncommon", BaseIncome = 35_000, Size = V(12, 34, 12), Color = C(240, 240, 240), Shape = "Cylinder", Emoji = "🌬️" },
-	Boat = { Name = "Boat", Tier = 4, Rarity = "Rare", BaseIncome = 50_000, Size = V(12, 12, 30), Color = C(250, 250, 250), Shape = "Block", Emoji = "⛵" },
-	Lighthouse = { Name = "Lighthouse", Tier = 4, Rarity = "Epic", BaseIncome = 120_000, Size = V(10, 40, 10), Color = C(230, 60, 60), Shape = "Cylinder", Emoji = "🗼" },
+	House = { Name = "House", Tier = 4, Rarity = "Common", BaseIncome = 15_000, Size = V(20, 16, 20), Color = C(230, 200, 160), Shape = "Block", Emoji = "🏠" },
+	Bus = { Name = "Bus", Tier = 4, Rarity = "Common", BaseIncome = 20_000, Size = V(8, 10, 26), Color = C(255, 200, 30), Shape = "Block", Emoji = "🚌" },
+	Windmill = { Name = "Windmill", Tier = 4, Rarity = "Uncommon", BaseIncome = 35_000, Size = V(10, 28, 10), Color = C(240, 240, 240), Shape = "Cylinder", Emoji = "🌬️" },
+	Boat = { Name = "Boat", Tier = 4, Rarity = "Rare", BaseIncome = 50_000, Size = V(10, 10, 24), Color = C(250, 250, 250), Shape = "Block", Emoji = "⛵" },
+	Lighthouse = { Name = "Lighthouse", Tier = 4, Rarity = "Epic", BaseIncome = 120_000, Size = V(9, 32, 9), Color = C(230, 60, 60), Shape = "Cylinder", Emoji = "🗼" },
 
 	-- ── Tier 5 · Huge · Skyline ─────────────────────────────────────
-	Skyscraper = { Name = "Skyscraper", Tier = 5, Rarity = "Common", BaseIncome = 400_000, Size = V(22, 70, 22), Color = C(110, 150, 190), Shape = "Block", Emoji = "🏙️" },
-	FerrisWheel = { Name = "Ferris Wheel", Tier = 5, Rarity = "Rare", BaseIncome = 700_000, Size = V(8, 55, 55), Color = C(255, 100, 180), Shape = "Cylinder", Emoji = "🎡" },
-	CruiseShip = { Name = "Cruise Ship", Tier = 5, Rarity = "Epic", BaseIncome = 1_200_000, Size = V(22, 26, 70), Color = C(245, 245, 255), Shape = "Block", Emoji = "🛳️" },
-	Rocket = { Name = "Rocket", Tier = 5, Rarity = "Legendary", BaseIncome = 3_000_000, Size = V(12, 60, 12), Color = C(230, 230, 240), Shape = "Cylinder", Emoji = "🚀" },
+	Skyscraper = { Name = "Skyscraper", Tier = 5, Rarity = "Common", BaseIncome = 400_000, Size = V(16, 50, 16), Color = C(110, 150, 190), Shape = "Block", Emoji = "🏙️" },
+	FerrisWheel = { Name = "Ferris Wheel", Tier = 5, Rarity = "Rare", BaseIncome = 700_000, Size = V(6, 40, 40), Color = C(255, 100, 180), Shape = "Cylinder", Emoji = "🎡" },
+	CruiseShip = { Name = "Cruise Ship", Tier = 5, Rarity = "Epic", BaseIncome = 1_200_000, Size = V(16, 18, 46), Color = C(245, 245, 255), Shape = "Block", Emoji = "🛳️" },
+	Rocket = { Name = "Rocket", Tier = 5, Rarity = "Legendary", BaseIncome = 3_000_000, Size = V(9, 44, 9), Color = C(230, 230, 240), Shape = "Cylinder", Emoji = "🚀" },
 
 	-- ── Tier 6 · Colossal · Summit ──────────────────────────────────
-	Mountain = { Name = "Mountain", Tier = 6, Rarity = "Epic", BaseIncome = 10_000_000, Size = V(85, 70, 85), Color = C(120, 110, 100), Shape = "Ball", Emoji = "⛰️" },
-	Volcano = { Name = "Volcano", Tier = 6, Rarity = "Legendary", BaseIncome = 25_000_000, Size = V(80, 65, 80), Color = C(90, 40, 30), Shape = "Ball", Emoji = "🌋" },
-	Glacier = { Name = "Glacier", Tier = 6, Rarity = "Mythic", BaseIncome = 80_000_000, Size = V(80, 45, 70), Color = C(170, 230, 255), Shape = "Block", Emoji = "❄️" },
-	TheMoon = { Name = "The Moon", Tier = 6, Rarity = "Secret", BaseIncome = 500_000_000, Size = V(60, 60, 60), Color = C(220, 220, 210), Shape = "Ball", FloatHeight = 70, Emoji = "🌕" },
+	Mountain = { Name = "Mountain", Tier = 6, Rarity = "Epic", BaseIncome = 10_000_000, Size = V(46, 40, 46), Color = C(120, 110, 100), Shape = "Ball", Emoji = "⛰️" },
+	Volcano = { Name = "Volcano", Tier = 6, Rarity = "Legendary", BaseIncome = 25_000_000, Size = V(44, 36, 44), Color = C(90, 40, 30), Shape = "Ball", Emoji = "🌋" },
+	Glacier = { Name = "Glacier", Tier = 6, Rarity = "Mythic", BaseIncome = 80_000_000, Size = V(42, 28, 36), Color = C(170, 230, 255), Shape = "Block", Emoji = "❄️" },
+	TheMoon = { Name = "The Moon", Tier = 6, Rarity = "Secret", BaseIncome = 500_000_000, Size = V(36, 36, 36), Color = C(220, 220, 210), Shape = "Ball", FloatHeight = 45, Emoji = "🌕" },
 
 	-- ── Exclusives (never spawn; rewards & Robux only, kept through Rebirth) ──
 	HugeTeddy = { Name = "Huge Teddy", Tier = 1, Rarity = "Mythic", BaseIncome = 50_000, Size = V(6, 7, 5), Color = C(190, 130, 80), Shape = "Ball", Exclusive = true, Emoji = "🧸" },

@@ -22,6 +22,7 @@ local EVENTS = {
 	"TooBig", -- server rejected: object too big
 	"EventSync", -- current server event / server luck
 	"RaidSync", -- raid start / zap / end
+	"CarryFX", -- caught by a chaser / delivered loot
 	-- client → server
 	"ChargeStart",
 	"ChargeCancel",

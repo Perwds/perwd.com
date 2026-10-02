@@ -13,6 +13,128 @@
         </Properties>
         <Item class="ModuleScript" referent="3">
           <Properties>
+            <string name="Name">ChaserConfig</string>
+            <string name="Source"><![CDATA[--[[
+	📍 LOCATION: ReplicatedStorage > Shared > Config > ChaserConfig (ModuleScript)
+
+	When you shrink something, the zone's owner comes running after you!
+	Make it back to the SAFE ZONE (your base) to keep your loot. Get caught and you drop it all.
+
+	Speed is in studs/sec (players start at 16; buy "Run Speed" upgrades to outrun later chasers).
+	Colors / HeadProps build a simple look on a standard R15 body. To use your own NPC instead,
+	put a Model with a Humanoid + HumanoidRootPart in ServerStorage > Chasers named "Tier1".."Tier6".
+]]
+
+local ChaserConfig = {}
+
+local RGB = Color3.fromRGB
+
+ChaserConfig.CatchDistance = 5 -- studs
+ChaserConfig.HeadStart = 1.5 -- seconds the chaser waits ("!") before running
+ChaserConfig.SpawnBehind = 45 -- studs deeper into the zone than the shrunk object
+ChaserConfig.RunAnimation = "rbxassetid://913376220" -- Roblox default R15 run
+
+ChaserConfig.Chasers = {
+	[1] = {
+		Name = "Grandpa Joe",
+		Emoji = "👴",
+		Speed = 12,
+		Shout = "HEY! THAT'S MY STUFF, YOU WHIPPERSNAPPER!",
+		CaughtLine = "Hah! Back to my yard!",
+		Skin = RGB(234, 184, 146),
+		Shirt = RGB(150, 110, 80),
+		Pants = RGB(90, 90, 110),
+		Scale = 0.95,
+		HeadProps = {
+			{ Name = "FlatCap", Size = Vector3.new(1.3, 0.35, 1.4), Offset = Vector3.new(0, 0.62, -0.05), Color = RGB(110, 85, 60), Material = Enum.Material.Fabric },
+			{ Name = "Beard", Size = Vector3.new(1, 0.7, 0.4), Offset = Vector3.new(0, -0.45, -0.55), Color = RGB(240, 240, 240), Material = Enum.Material.Fabric },
+		},
+	},
+	[2] = {
+		Name = "Angry Neighbor",
+		Emoji = "😠",
+		Speed = 14,
+		Shout = "GET OFF MY LAWN!",
+		CaughtLine = "And STAY out!",
+		Skin = RGB(200, 140, 100),
+		Shirt = RGB(230, 70, 70),
+		Pants = RGB(60, 80, 140),
+		Scale = 1,
+		HeadProps = {
+			{ Name = "Cap", Size = Vector3.new(1.3, 0.35, 1.5), Offset = Vector3.new(0, 0.62, -0.1), Color = RGB(40, 120, 220), Material = Enum.Material.Fabric },
+		},
+	},
+	[3] = {
+		Name = "Officer Doug",
+		Emoji = "👮",
+		Speed = 17,
+		Shout = "STOP RIGHT THERE!",
+		CaughtLine = "You're under arrest... for shrinking!",
+		Skin = RGB(160, 110, 80),
+		Shirt = RGB(30, 50, 110),
+		Pants = RGB(25, 30, 60),
+		Scale = 1.05,
+		HeadProps = {
+			{ Name = "PoliceHat", Size = Vector3.new(1.35, 0.45, 1.45), Offset = Vector3.new(0, 0.66, 0), Color = RGB(25, 35, 80), Material = Enum.Material.SmoothPlastic },
+			{ Name = "Badge", Size = Vector3.new(0.3, 0.3, 0.1), Offset = Vector3.new(0, 0.7, -0.75), Color = RGB(255, 210, 60), Material = Enum.Material.Neon },
+		},
+	},
+	[4] = {
+		Name = "Captain Barnacle",
+		Emoji = "🏴‍☠️",
+		Speed = 19,
+		Shout = "ARRR! THIEF ON DECK!",
+		CaughtLine = "Walk the plank, landlubber!",
+		Skin = RGB(210, 160, 120),
+		Shirt = RGB(150, 30, 30),
+		Pants = RGB(40, 30, 25),
+		Scale = 1.1,
+		HeadProps = {
+			{ Name = "PirateHat", Size = Vector3.new(1.8, 0.5, 1.2), Offset = Vector3.new(0, 0.7, 0), Color = RGB(25, 25, 25), Material = Enum.Material.Fabric },
+			{ Name = "EyePatch", Size = Vector3.new(0.35, 0.3, 0.1), Offset = Vector3.new(0.25, 0.1, -0.6), Color = RGB(10, 10, 10), Material = Enum.Material.SmoothPlastic },
+		},
+	},
+	[5] = {
+		Name = "Security Bot",
+		Emoji = "🤖",
+		Speed = 21,
+		Shout = "INTRUDER DETECTED. INITIATING PURSUIT.",
+		CaughtLine = "TARGET NEUTRALIZED. BEEP BOOP.",
+		Skin = RGB(170, 175, 190),
+		Shirt = RGB(90, 95, 110),
+		Pants = RGB(60, 65, 80),
+		Scale = 1.15,
+		HeadProps = {
+			{ Name = "Visor", Size = Vector3.new(1.1, 0.3, 0.2), Offset = Vector3.new(0, 0.1, -0.6), Color = RGB(255, 40, 40), Material = Enum.Material.Neon },
+			{ Name = "Antenna", Size = Vector3.new(0.15, 0.8, 0.15), Offset = Vector3.new(0, 0.95, 0), Color = RGB(255, 40, 40), Material = Enum.Material.Neon },
+		},
+	},
+	[6] = {
+		Name = "The Yeti",
+		Emoji = "🦍",
+		Speed = 24,
+		Shout = "ROOOOAAAARRR!!!",
+		CaughtLine = "*happy yeti noises*",
+		Skin = RGB(235, 240, 250),
+		Shirt = RGB(235, 240, 250),
+		Pants = RGB(225, 232, 245),
+		Scale = 1.7,
+		HeadProps = {
+			{ Name = "Horns", Size = Vector3.new(1.6, 0.3, 0.3), Offset = Vector3.new(0, 0.6, 0), Color = RGB(140, 140, 150), Material = Enum.Material.Slate },
+		},
+	},
+}
+
+function ChaserConfig.Get(tier)
+	return ChaserConfig.Chasers[tier] or ChaserConfig.Chasers[1]
+end
+
+return ChaserConfig
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="4">
+          <Properties>
             <string name="Name">EventConfig</string>
             <string name="Source"><![CDATA[--[[
 	📍 LOCATION: ReplicatedStorage > Shared > Config > EventConfig (ModuleScript)
@@ -66,7 +188,7 @@ return EventConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="4">
+        <Item class="ModuleScript" referent="5">
           <Properties>
             <string name="Name">GameConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -90,20 +212,21 @@ GameConfig.MaxReceiptHistory = 200 -- purchase ids remembered per player for ide
 -- ── Museum / items ────────────────────────────────────────────────────
 GameConfig.MaxItems = 400 -- pocket cap; lowest-earning item is auto-sold when exceeded
 GameConfig.SellSeconds = 120 -- selling an item gives this many seconds of its income
-GameConfig.DisplayMaxSize = 3.2 -- studs; displayed objects are scaled to fit this
+GameConfig.DisplayMaxSize = 2.9 -- studs; displayed objects are scaled to fit this
 GameConfig.PlotCount = 8
 
 -- ── Shrink Ray ───────────────────────────────────────────────────────
 GameConfig.ShrinkCooldown = 0.25 -- min seconds between shots
 GameConfig.ChargeTolerance = 0.8 -- server accepts a shot after chargeTime * this (latency allowance)
 GameConfig.RangeTolerance = 8 -- extra studs the server allows over the client's range
-GameConfig.MultiShrinkRadius = 30 -- extra targets must be within this distance of the main target
+GameConfig.MultiShrinkRadius = 30
+GameConfig.CarryDisplaySize = 2.6 -- size of each object stacked above your head -- extra targets must be within this distance of the main target
 GameConfig.ShrinkFxTime = 0.9 -- seconds the tween plays before the server removes the object
 GameConfig.AutoShrinkExtraDelay = 0.75
 
 -- ── Movement ────────────────────────────────────────────────────────
 GameConfig.BaseWalkSpeed = 16
-GameConfig.SpeedBootsWalkSpeed = 28
+GameConfig.SpeedBootsBonus = 8 -- added on top of the Run Speed upgrade
 
 -- ── VIP ─────────────────────────────────────────────────────────────
 GameConfig.VIP = {
@@ -157,7 +280,7 @@ return GameConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="5">
+        <Item class="ModuleScript" referent="6">
           <Properties>
             <string name="Name">MonetizationConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -186,14 +309,14 @@ MonetizationConfig.GamePasses = {
 	VIP = { Id = 0, Name = "VIP", Emoji = "👑", Image = "rbxassetid://0", PriceLabel = "R$ 399", Description = "Chat tag, VIP lounge & gem fountain, 1.5x everything." }, -- 🔧 REPLACE Id
 	AutoShrink = { Id = 0, Name = "Auto Shrink", Emoji = "🤖", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "Automatically zaps the nearest valid object." }, -- 🔧 REPLACE Id
 	InstantCharge = { Id = 0, Name = "Instant Charge", Emoji = "⚡", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Your ray charges instantly." }, -- 🔧 REPLACE Id
-	MultiShrink3 = { Id = 0, Name = "Multi-Shrink x3", Emoji = "✨", Image = "rbxassetid://0", PriceLabel = "R$ 349", Description = "Triple your Multi-Shrink targets." }, -- 🔧 REPLACE Id
+	MultiShrink3 = { Id = 0, Name = "Multi-Shrink x3", Emoji = "✨", Image = "rbxassetid://0", PriceLabel = "R$ 349", Description = "Triple your carry capacity." }, -- 🔧 REPLACE Id
 	ExtraPedestals = { Id = 0, Name = "+20 Pedestals", Emoji = "🏛️", Image = "rbxassetid://0", PriceLabel = "R$ 249", Description = "20 extra museum pedestals." }, -- 🔧 REPLACE Id
 	GoldenRay = { Id = 0, Name = "Golden Ray", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "2x Golden & Diamond chance." }, -- 🔧 REPLACE Id
 	CosmicHunter = { Id = 0, Name = "Cosmic Hunter", Emoji = "🌌", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "2x Cosmic chance." }, -- 🔧 REPLACE Id
 	LongRange = { Id = 0, Name = "Long Range Ray", Emoji = "🔭", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "+50% ray range." }, -- 🔧 REPLACE Id
-	Teleport = { Id = 0, Name = "Teleport", Emoji = "🌀", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Teleport to any unlocked area." }, -- 🔧 REPLACE Id
+	Teleport = { Id = 0, Name = "Teleport", Emoji = "🌀", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Teleport to the start of any zone." }, -- 🔧 REPLACE Id
 	OfflineEarnings = { Id = 0, Name = "Offline Earnings", Emoji = "😴", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "Earn 50% income while offline (8h max)." }, -- 🔧 REPLACE Id
-	SpeedBoots = { Id = 0, Name = "Speed Boots", Emoji = "👟", Image = "rbxassetid://0", PriceLabel = "R$ 79", Description = "Run much faster." }, -- 🔧 REPLACE Id
+	SpeedBoots = { Id = 0, Name = "Speed Boots", Emoji = "👟", Image = "rbxassetid://0", PriceLabel = "R$ 79", Description = "+8 run speed. Outrun every chaser!" }, -- 🔧 REPLACE Id
 	RainbowRay = { Id = 0, Name = "Rainbow Ray Beam", Emoji = "🌈", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "Cosmetic rainbow beam skin." }, -- 🔧 REPLACE Id
 	RaidShield = { Id = 0, Name = "Raid Shield", Emoji = "🛡️", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "3x longer raid protection, 2x revenge rewards." }, -- 🔧 REPLACE Id
 }
@@ -259,7 +382,7 @@ return MonetizationConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="6">
+        <Item class="ModuleScript" referent="7">
           <Properties>
             <string name="Name">ObjectConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -309,23 +432,23 @@ ObjectConfig.Objects = {
 	SportsCar = { Name = "Sports Car", Tier = 3, Rarity = "Epic", BaseIncome = 6_000, Size = V(7, 4, 15), Color = C(255, 40, 40), Shape = "Block", Emoji = "🏎️" },
 
 	-- ── Tier 4 · Large · Harbor ─────────────────────────────────────
-	House = { Name = "House", Tier = 4, Rarity = "Common", BaseIncome = 15_000, Size = V(24, 20, 24), Color = C(230, 200, 160), Shape = "Block", Emoji = "🏠" },
-	Bus = { Name = "Bus", Tier = 4, Rarity = "Common", BaseIncome = 20_000, Size = V(9, 11, 32), Color = C(255, 200, 30), Shape = "Block", Emoji = "🚌" },
-	Windmill = { Name = "Windmill", Tier = 4, Rarity = "Uncommon", BaseIncome = 35_000, Size = V(12, 34, 12), Color = C(240, 240, 240), Shape = "Cylinder", Emoji = "🌬️" },
-	Boat = { Name = "Boat", Tier = 4, Rarity = "Rare", BaseIncome = 50_000, Size = V(12, 12, 30), Color = C(250, 250, 250), Shape = "Block", Emoji = "⛵" },
-	Lighthouse = { Name = "Lighthouse", Tier = 4, Rarity = "Epic", BaseIncome = 120_000, Size = V(10, 40, 10), Color = C(230, 60, 60), Shape = "Cylinder", Emoji = "🗼" },
+	House = { Name = "House", Tier = 4, Rarity = "Common", BaseIncome = 15_000, Size = V(20, 16, 20), Color = C(230, 200, 160), Shape = "Block", Emoji = "🏠" },
+	Bus = { Name = "Bus", Tier = 4, Rarity = "Common", BaseIncome = 20_000, Size = V(8, 10, 26), Color = C(255, 200, 30), Shape = "Block", Emoji = "🚌" },
+	Windmill = { Name = "Windmill", Tier = 4, Rarity = "Uncommon", BaseIncome = 35_000, Size = V(10, 28, 10), Color = C(240, 240, 240), Shape = "Cylinder", Emoji = "🌬️" },
+	Boat = { Name = "Boat", Tier = 4, Rarity = "Rare", BaseIncome = 50_000, Size = V(10, 10, 24), Color = C(250, 250, 250), Shape = "Block", Emoji = "⛵" },
+	Lighthouse = { Name = "Lighthouse", Tier = 4, Rarity = "Epic", BaseIncome = 120_000, Size = V(9, 32, 9), Color = C(230, 60, 60), Shape = "Cylinder", Emoji = "🗼" },
 
 	-- ── Tier 5 · Huge · Skyline ─────────────────────────────────────
-	Skyscraper = { Name = "Skyscraper", Tier = 5, Rarity = "Common", BaseIncome = 400_000, Size = V(22, 70, 22), Color = C(110, 150, 190), Shape = "Block", Emoji = "🏙️" },
-	FerrisWheel = { Name = "Ferris Wheel", Tier = 5, Rarity = "Rare", BaseIncome = 700_000, Size = V(8, 55, 55), Color = C(255, 100, 180), Shape = "Cylinder", Emoji = "🎡" },
-	CruiseShip = { Name = "Cruise Ship", Tier = 5, Rarity = "Epic", BaseIncome = 1_200_000, Size = V(22, 26, 70), Color = C(245, 245, 255), Shape = "Block", Emoji = "🛳️" },
-	Rocket = { Name = "Rocket", Tier = 5, Rarity = "Legendary", BaseIncome = 3_000_000, Size = V(12, 60, 12), Color = C(230, 230, 240), Shape = "Cylinder", Emoji = "🚀" },
+	Skyscraper = { Name = "Skyscraper", Tier = 5, Rarity = "Common", BaseIncome = 400_000, Size = V(16, 50, 16), Color = C(110, 150, 190), Shape = "Block", Emoji = "🏙️" },
+	FerrisWheel = { Name = "Ferris Wheel", Tier = 5, Rarity = "Rare", BaseIncome = 700_000, Size = V(6, 40, 40), Color = C(255, 100, 180), Shape = "Cylinder", Emoji = "🎡" },
+	CruiseShip = { Name = "Cruise Ship", Tier = 5, Rarity = "Epic", BaseIncome = 1_200_000, Size = V(16, 18, 46), Color = C(245, 245, 255), Shape = "Block", Emoji = "🛳️" },
+	Rocket = { Name = "Rocket", Tier = 5, Rarity = "Legendary", BaseIncome = 3_000_000, Size = V(9, 44, 9), Color = C(230, 230, 240), Shape = "Cylinder", Emoji = "🚀" },
 
 	-- ── Tier 6 · Colossal · Summit ──────────────────────────────────
-	Mountain = { Name = "Mountain", Tier = 6, Rarity = "Epic", BaseIncome = 10_000_000, Size = V(85, 70, 85), Color = C(120, 110, 100), Shape = "Ball", Emoji = "⛰️" },
-	Volcano = { Name = "Volcano", Tier = 6, Rarity = "Legendary", BaseIncome = 25_000_000, Size = V(80, 65, 80), Color = C(90, 40, 30), Shape = "Ball", Emoji = "🌋" },
-	Glacier = { Name = "Glacier", Tier = 6, Rarity = "Mythic", BaseIncome = 80_000_000, Size = V(80, 45, 70), Color = C(170, 230, 255), Shape = "Block", Emoji = "❄️" },
-	TheMoon = { Name = "The Moon", Tier = 6, Rarity = "Secret", BaseIncome = 500_000_000, Size = V(60, 60, 60), Color = C(220, 220, 210), Shape = "Ball", FloatHeight = 70, Emoji = "🌕" },
+	Mountain = { Name = "Mountain", Tier = 6, Rarity = "Epic", BaseIncome = 10_000_000, Size = V(46, 40, 46), Color = C(120, 110, 100), Shape = "Ball", Emoji = "⛰️" },
+	Volcano = { Name = "Volcano", Tier = 6, Rarity = "Legendary", BaseIncome = 25_000_000, Size = V(44, 36, 44), Color = C(90, 40, 30), Shape = "Ball", Emoji = "🌋" },
+	Glacier = { Name = "Glacier", Tier = 6, Rarity = "Mythic", BaseIncome = 80_000_000, Size = V(42, 28, 36), Color = C(170, 230, 255), Shape = "Block", Emoji = "❄️" },
+	TheMoon = { Name = "The Moon", Tier = 6, Rarity = "Secret", BaseIncome = 500_000_000, Size = V(36, 36, 36), Color = C(220, 220, 210), Shape = "Ball", FloatHeight = 45, Emoji = "🌕" },
 
 	-- ── Exclusives (never spawn; rewards & Robux only, kept through Rebirth) ──
 	HugeTeddy = { Name = "Huge Teddy", Tier = 1, Rarity = "Mythic", BaseIncome = 50_000, Size = V(6, 7, 5), Color = C(190, 130, 80), Shape = "Ball", Exclusive = true, Emoji = "🧸" },
@@ -414,7 +537,7 @@ return ObjectConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="7">
+        <Item class="ModuleScript" referent="8">
           <Properties>
             <string name="Name">RarityConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -464,7 +587,7 @@ return RarityConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="8">
+        <Item class="ModuleScript" referent="9">
           <Properties>
             <string name="Name">RewardConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -593,15 +716,16 @@ return RewardConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="9">
+        <Item class="ModuleScript" referent="10">
           <Properties>
             <string name="Name">TierConfig</string>
             <string name="Source"><![CDATA[--[[
 	📍 LOCATION: ReplicatedStorage > Shared > Config > TierConfig (ModuleScript)
 
 	Size tiers. Each tier lives in its own map area.
-	An area opens when your Ray Power level reaches RayPowerRequired, OR when you pay GateCost coins.
-	You can only SHRINK objects whose tier <= your Ray Power tier (otherwise: "TOO BIG!").
+	The map is one long corridor: your base, then zone 1, zone 2 ... zone 6, each longer than the last.
+	Every zone is open to walk into. You can only SHRINK objects whose tier <= your Ray Power tier
+	(otherwise: "TOO BIG!"). Each zone has its own chaser (see ChaserConfig).
 ]]
 
 local TierConfig = {}
@@ -609,63 +733,57 @@ local TierConfig = {}
 TierConfig.Tiers = {
 	{
 		Name = "Tiny",
-		Area = "Suburbs",
+		Area = "Grandpa's Backyard",
 		RayPowerRequired = 1,
-		GateCost = 0,
 		Color = Color3.fromRGB(126, 214, 104),
 		RespawnTime = 12,
-		AreaDepth = 170, -- studs along the map strip (map width is fixed, see MapService)
-		SpawnPoints = 22,
+		AreaDepth = 320, -- studs along the corridor (corridor width is fixed, see MapService)
+		SpawnPoints = 26,
 	},
 	{
 		Name = "Small",
-		Area = "Park",
+		Area = "Neighborhood",
 		RayPowerRequired = 5,
-		GateCost = 2_500,
 		Color = Color3.fromRGB(92, 196, 230),
 		RespawnTime = 20,
-		AreaDepth = 200,
-		SpawnPoints = 18,
+		AreaDepth = 420,
+		SpawnPoints = 26,
 	},
 	{
 		Name = "Medium",
 		Area = "Downtown",
 		RayPowerRequired = 10,
-		GateCost = 60_000,
 		Color = Color3.fromRGB(255, 196, 70),
 		RespawnTime = 35,
-		AreaDepth = 250,
-		SpawnPoints = 14,
+		AreaDepth = 520,
+		SpawnPoints = 22,
 	},
 	{
 		Name = "Large",
 		Area = "Harbor",
 		RayPowerRequired = 16,
-		GateCost = 5_000_000,
 		Color = Color3.fromRGB(255, 130, 70),
 		RespawnTime = 55,
-		AreaDepth = 320,
-		SpawnPoints = 10,
+		AreaDepth = 620,
+		SpawnPoints = 18,
 	},
 	{
 		Name = "Huge",
 		Area = "Skyline",
 		RayPowerRequired = 23,
-		GateCost = 1_000_000_000,
 		Color = Color3.fromRGB(190, 110, 255),
 		RespawnTime = 80,
-		AreaDepth = 400,
-		SpawnPoints = 8,
+		AreaDepth = 720,
+		SpawnPoints = 14,
 	},
 	{
 		Name = "Colossal",
 		Area = "Summit",
 		RayPowerRequired = 30,
-		GateCost = 100_000_000_000,
 		Color = Color3.fromRGB(255, 80, 120),
 		RespawnTime = 120,
-		AreaDepth = 480,
-		SpawnPoints = 6,
+		AreaDepth = 820,
+		SpawnPoints = 10,
 	},
 }
 
@@ -688,7 +806,7 @@ return TierConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="10">
+        <Item class="ModuleScript" referent="11">
           <Properties>
             <string name="Name">UpgradeConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -700,7 +818,7 @@ return TierConfig
 
 local UpgradeConfig = {}
 
-UpgradeConfig.Order = { "RayPower", "ChargeSpeed", "Range", "Luck", "MultiShrink", "MuseumSize" }
+UpgradeConfig.Order = { "RayPower", "Speed", "MultiShrink", "ChargeSpeed", "Range", "Luck", "MuseumSize" }
 
 UpgradeConfig.Upgrades = {
 	RayPower = {
@@ -715,6 +833,20 @@ UpgradeConfig.Upgrades = {
 		end,
 		Format = function(v)
 			return "Lv " .. v
+		end,
+	},
+	Speed = {
+		Name = "Run Speed",
+		Description = "Run faster so the chasers can't catch you.",
+		Emoji = "👟",
+		MaxLevel = 20,
+		BaseCost = 150,
+		CostGrowth = 2.05,
+		Value = function(level)
+			return 16 + (level - 1)
+		end,
+		Format = function(v)
+			return v .. " speed"
 		end,
 	},
 	ChargeSpeed = {
@@ -760,17 +892,17 @@ UpgradeConfig.Upgrades = {
 		end,
 	},
 	MultiShrink = {
-		Name = "Multi-Shrink",
-		Description = "Zap several nearby objects at once.",
-		Emoji = "✨",
-		MaxLevel = 5,
-		BaseCost = 5_000,
-		CostGrowth = 12,
+		Name = "Carry Capacity",
+		Description = "Carry more objects per trip (and zap several at once).",
+		Emoji = "🎒",
+		MaxLevel = 8,
+		BaseCost = 1_500,
+		CostGrowth = 7,
 		Value = function(level)
 			return level
 		end,
 		Format = function(v)
-			return v .. " target" .. (v == 1 and "" or "s")
+			return v .. " object" .. (v == 1 and "" or "s")
 		end,
 	},
 	MuseumSize = {
@@ -781,7 +913,7 @@ UpgradeConfig.Upgrades = {
 		BaseCost = 300,
 		CostGrowth = 2.1,
 		Value = function(level)
-			return 8 + 4 * (level - 1)
+			return 8 + 2 * (level - 1) -- max 46 (+20 with the pass = 66 = 11 x 6 grid)
 		end,
 		Format = function(v)
 			return v .. " pedestals"
@@ -811,7 +943,7 @@ return UpgradeConfig
           </Properties>
         </Item>
       </Item>
-      <Item class="ModuleScript" referent="11">
+      <Item class="ModuleScript" referent="12">
         <Properties>
           <string name="Name">Format</string>
           <string name="Source"><![CDATA[--[[
@@ -894,7 +1026,7 @@ return Format
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="12">
+      <Item class="ModuleScript" referent="13">
         <Properties>
           <string name="Name">Formulas</string>
           <string name="Source"><![CDATA[--[[
@@ -987,7 +1119,7 @@ function Formulas.RayStats(data, passes)
 	if passes.LongRange then
 		range *= 1.5
 	end
-	local multi = Formulas.UpgradeValue("MultiShrink", up.MultiShrink)
+	local multi = Formulas.UpgradeValue("MultiShrink", up.MultiShrink) -- carry capacity
 	if passes.MultiShrink3 then
 		multi *= 3
 	end
@@ -995,7 +1127,13 @@ function Formulas.RayStats(data, passes)
 	if passes.ExtraPedestals then
 		pedestals += 20
 	end
+	local walk = Formulas.UpgradeValue("Speed", up.Speed or 1)
+	if passes.SpeedBoots then
+		walk += GameConfig.SpeedBootsBonus
+	end
 	return {
+		WalkSpeed = walk,
+		Carry = multi,
 		ChargeTime = charge,
 		Range = range,
 		Multi = multi,
@@ -1005,14 +1143,9 @@ function Formulas.RayStats(data, passes)
 	}
 end
 
-function Formulas.IsTierUnlocked(data, tier)
-	if tier <= 1 then
-		return true
-	end
-	if TierConfig.MaxTierForRayPower(data.Upgrades.RayPower) >= tier then
-		return true
-	end
-	return data.GatesOpened[tostring(tier)] == true
+-- Every zone is open to walk into (no gates). Kept as a hook in case you want locked zones later.
+function Formulas.IsTierUnlocked(_data, _tier)
+	return true
 end
 
 -- ── Rebirth ──────────────────────────────────────────────────────────
@@ -1079,7 +1212,7 @@ return Formulas
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="13">
+      <Item class="ModuleScript" referent="14">
         <Properties>
           <string name="Name">InfinitePackGen</string>
           <string name="Source"><![CDATA[--[[
@@ -1196,7 +1329,7 @@ return Gen
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="14">
+      <Item class="ModuleScript" referent="15">
         <Properties>
           <string name="Name">Remotes</string>
           <string name="Source"><![CDATA[--[[
@@ -1223,6 +1356,7 @@ local EVENTS = {
 	"TooBig", -- server rejected: object too big
 	"EventSync", -- current server event / server luck
 	"RaidSync", -- raid start / zap / end
+	"CarryFX", -- caught by a chaser / delivered loot
 	-- client → server
 	"ChargeStart",
 	"ChargeCancel",
@@ -1271,7 +1405,7 @@ return Remotes
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="15">
+      <Item class="ModuleScript" referent="16">
         <Properties>
           <string name="Name">RewardUtil</string>
           <string name="Source"><![CDATA[--[[
@@ -1374,11 +1508,11 @@ return RewardUtil
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="16">
+  <Item class="ServerScriptService" referent="17">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Script" referent="17">
+    <Item class="Script" referent="18">
       <Properties>
         <string name="Name">Main</string>
         <token name="RunContext">0</token>
@@ -1405,6 +1539,7 @@ local ORDER = {
 	"Event",
 	"Economy",
 	"Museum",
+	"Carry",
 	"Index",
 	"Area",
 	"Spawn",
@@ -1496,19 +1631,20 @@ print("[ShrinkIt] Server ready 🔬")
 ]]></string>
       </Properties>
     </Item>
-    <Item class="Folder" referent="18">
+    <Item class="Folder" referent="19">
       <Properties>
         <string name="Name">Services</string>
       </Properties>
-      <Item class="ModuleScript" referent="19">
+      <Item class="ModuleScript" referent="20">
         <Properties>
           <string name="Name">AreaService</string>
           <string name="Source"><![CDATA[--[[
 	📍 LOCATION: ServerScriptService > Services > AreaService (ModuleScript)
 
-	Area gates (Ray Power OR coins), teleports, VIP lounge & fountain.
-	Gates are solid on the server; the client makes UNLOCKED gates passable locally.
-	The server also checks positions so nobody can glitch into a locked area or the VIP room.
+	Zones are always open (no gates, no coin cost). This service handles:
+	  • Teleports (Teleport gamepass → start of any zone; anyone → base / own museum),
+	    blocked while you're carrying loot so nobody can skip the run home.
+	  • VIP lounge enforcement + VIP gem fountain.
 ]]
 
 local Players = game:GetService("Players")
@@ -1517,8 +1653,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local TierConfig = require(Shared.Config.TierConfig)
-local Formulas = require(Shared.Formulas)
-local Format = require(Shared.Format)
 
 local AreaService = {}
 local Svc
@@ -1527,47 +1661,17 @@ function AreaService.Init(registry)
 	Svc = registry
 end
 
-function AreaService.IsTierUnlocked(player, tier)
-	local data = Svc.Data.Get(player)
-	return data ~= nil and Formulas.IsTierUnlocked(data, tier)
+-- Zones are always open; kept so other services can ask.
+function AreaService.IsTierUnlocked(_player, _tier)
+	return true
 end
 
-local function lobbyCFrame()
+local function baseCFrame()
 	local spawn = Svc.Map.LobbySpawn
-	return spawn and spawn.CFrame * CFrame.new(0, 4, 0) or CFrame.new(0, 5, 0)
-end
-
-local function areaEntryCFrame(tier)
-	local area = Svc.Map.Areas[tier]
-	if not area or not area.Floor then
-		return nil
-	end
-	local f = area.Floor
-	return f.CFrame * CFrame.new(0, f.Size.Y / 2 + 4, -f.Size.Z / 2 + 15)
+	return spawn and spawn.CFrame * CFrame.new(0, 4, 0) or CFrame.new(0, 5, -60)
 end
 
 function AreaService.Start()
-	Svc.Net.Handle("OpenGate", function(player, tier)
-		local data = Svc.Data.Get(player)
-		local t = type(tier) == "number" and TierConfig.Tiers[tier]
-		if not t or tier <= 1 then
-			return { ok = false }
-		end
-		if Formulas.IsTierUnlocked(data, tier) then
-			return { ok = false, msg = "Already open!" }
-		end
-		if not Formulas.IsTierUnlocked(data, tier - 1) then
-			return { ok = false, msg = "Open " .. TierConfig.Tiers[tier - 1].Area .. " first!" }
-		end
-		if not Svc.Economy.Spend(player, "Coins", t.GateCost) then
-			return { ok = false, msg = "Need " .. Format.Coins(t.GateCost) }
-		end
-		data.GatesOpened[tostring(tier)] = true
-		Svc.Data.MarkDirty(player)
-		Svc.Net.Notify(player, "🔓 " .. t.Area .. " is open!", "success")
-		return { ok = true }
-	end)
-
 	Svc.Net.Handle("Teleport", function(player, dest)
 		if not Svc.Session.Throttle(player, "tp", 2) then
 			return { ok = false, msg = "Slow down!" }
@@ -1576,8 +1680,11 @@ function AreaService.Start()
 		if not character then
 			return { ok = false }
 		end
-		if dest == "Lobby" then
-			character:PivotTo(lobbyCFrame())
+		if Svc.Carry.IsCarrying(player) then
+			return { ok = false, msg = "🎒 No teleporting while carrying loot — run it home!" }
+		end
+		if dest == "Lobby" or dest == "Base" then
+			character:PivotTo(baseCFrame())
 			return { ok = true }
 		elseif dest == "Museum" then
 			Svc.Museum.TeleportHome(player)
@@ -1586,10 +1693,7 @@ function AreaService.Start()
 			if not Svc.Session.HasPass(player, "Teleport") then
 				return { ok = false, msg = "Requires the Teleport gamepass!" }
 			end
-			if not AreaService.IsTierUnlocked(player, dest) then
-				return { ok = false, msg = "That area is locked!" }
-			end
-			local cf = areaEntryCFrame(dest)
+			local cf = Svc.Map.ZoneStartCFrame(dest)
 			if cf then
 				character:PivotTo(cf)
 			end
@@ -1617,23 +1721,16 @@ function AreaService.Start()
 		end)
 	end
 
-	-- position enforcement (anti-glitch for gates & VIP room)
+	-- VIP lounge enforcement (the door is only passable on VIP clients; this catches glitchers)
 	task.spawn(function()
 		while true do
 			task.wait(1.5)
 			for _, player in ipairs(Players:GetPlayers()) do
-				local data = Svc.Data.Get(player)
 				local character = player.Character
 				local root = character and character:FindFirstChild("HumanoidRootPart")
-				if data and root then
-					local tier = Svc.Map.GetAreaAt(root.Position)
-					if tier and not Formulas.IsTierUnlocked(data, tier) then
-						character:PivotTo(areaEntryCFrame(tier - 1) or lobbyCFrame())
-						Svc.Net.Notify(player, "🔒 That area is locked!", "error")
-					elseif Svc.Map.VIPRoom and not Svc.Session.HasPass(player, "VIP") and Svc.Map.IsInPart(Svc.Map.VIPRoom, root.Position) then
-						character:PivotTo(lobbyCFrame())
-						Svc.Net.Notify(player, "👑 VIP lounge is for VIP pass owners!", "error")
-					end
+				if root and Svc.Map.VIPRoom and not Svc.Session.HasPass(player, "VIP") and Svc.Map.IsInPart(Svc.Map.VIPRoom, root.Position) then
+					character:PivotTo(baseCFrame())
+					Svc.Net.Notify(player, "👑 The VIP lounge is for VIP pass owners!", "error")
 				end
 			end
 		end
@@ -1644,7 +1741,426 @@ return AreaService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="20">
+      <Item class="ModuleScript" referent="21">
+        <Properties>
+          <string name="Name">CarryService</string>
+          <string name="Source"><![CDATA[--[[
+	📍 LOCATION: ServerScriptService > Services > CarryService (ModuleScript)
+
+	The core loop:
+	  1. Shrink an object → it's stacked above your head (you're CARRYING it).
+	  2. The zone's chaser (Grandpa Joe, the Angry Neighbor, Officer Doug, ...) comes running after you.
+	  3. Run back into the SAFE ZONE (your base) → everything you carry goes into your museum
+	     and starts earning coins every second.
+	  4. Get caught (or die) → you drop everything you were carrying.
+
+	Carry capacity = the "Carry Capacity" upgrade (x3 with the Multi-Shrink gamepass).
+	Chasers are server-controlled NPCs (network owner = server), so clients can't cheat them.
+]]
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerScriptService = game:GetService("ServerScriptService")
+local ServerStorage = game:GetService("ServerStorage")
+
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local GameConfig = require(Shared.Config.GameConfig)
+local ChaserConfig = require(Shared.Config.ChaserConfig)
+local Formulas = require(Shared.Formulas)
+local Format = require(Shared.Format)
+local Remotes = require(Shared.Remotes)
+local ModelFactory = require(ServerScriptService.Services.ModelFactory)
+
+local CarryService = {}
+local Svc
+
+local carrying = {} -- [player] = { Items = { { Id, V, Model } }, Chaser = record? }
+
+function CarryService.Init(registry)
+	Svc = registry
+end
+
+local function getState(player)
+	local c = carrying[player]
+	if not c then
+		c = { Items = {}, Chaser = nil }
+		carrying[player] = c
+	end
+	return c
+end
+
+function CarryService.Count(player)
+	local c = carrying[player]
+	return c and #c.Items or 0
+end
+
+function CarryService.Capacity(player)
+	local stats = Svc.Shrink.GetStats(player)
+	return stats and stats.Carry or 1
+end
+
+function CarryService.IsCarrying(player)
+	return CarryService.Count(player) > 0
+end
+
+-- ── visuals: carried objects stacked above the head ─────────────────
+local function attachVisual(player, item, index)
+	local character = player.Character
+	local head = character and character:FindFirstChild("Head")
+	if not head then
+		return
+	end
+	local model = ModelFactory.Create(item.Id)
+	model.Name = "Carried"
+	ModelFactory.FitToSize(model, GameConfig.CarryDisplaySize)
+	ModelFactory.ApplyVariant(model, item.V, false)
+	local step = GameConfig.CarryDisplaySize + 0.4
+	model:PivotTo(head.CFrame * CFrame.new(0, 1.4 + step / 2 + (index - 1) * step, 0))
+	model.Parent = character
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.CanCollide = false
+			d.CanQuery = false
+			d.CanTouch = false
+			d.Massless = true
+			local weld = Instance.new("WeldConstraint")
+			weld.Part0 = head
+			weld.Part1 = d
+			weld.Parent = d
+			d.Anchored = false
+		end
+	end
+	item.Model = model
+end
+
+local function clearVisuals(c)
+	for _, item in ipairs(c.Items) do
+		if item.Model then
+			item.Model:Destroy()
+		end
+	end
+end
+
+-- ── chaser NPCs ─────────────────────────────────────────────────────
+local function billboard(model, name, text, color, offset)
+	local head = model:FindFirstChild("Head") or model.PrimaryPart
+	if not head then
+		return nil
+	end
+	local old = head:FindFirstChild(name)
+	if old then
+		old:Destroy()
+	end
+	local gui = Instance.new("BillboardGui")
+	gui.Name = name
+	gui.Size = UDim2.fromOffset(text and #text > 20 and 360 or 220, 50)
+	gui.StudsOffset = Vector3.new(0, offset, 0)
+	gui.AlwaysOnTop = true
+	gui.MaxDistance = 250
+	gui.Parent = head
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = color
+	label.Text = text
+	label.Parent = gui
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 3
+	stroke.Parent = label
+	return gui
+end
+
+local function say(model, text, seconds)
+	local gui = billboard(model, "Bubble", text, Color3.fromRGB(255, 255, 255), 5.5)
+	if gui and seconds then
+		task.delay(seconds, function()
+			if gui.Parent then
+				gui:Destroy()
+			end
+		end)
+	end
+end
+
+local function fallbackRig(cfg)
+	local model = Instance.new("Model")
+	local root = Instance.new("Part")
+	root.Name = "HumanoidRootPart"
+	root.Size = Vector3.new(2, 2, 1)
+	root.Transparency = 1
+	root.Parent = model
+	local torso = Instance.new("Part")
+	torso.Name = "Torso"
+	torso.Size = Vector3.new(2, 2, 1)
+	torso.Color = cfg.Shirt
+	torso.Parent = model
+	local legs = Instance.new("Part")
+	legs.Name = "Legs"
+	legs.Size = Vector3.new(2, 2, 1)
+	legs.Color = cfg.Pants
+	legs.CFrame = CFrame.new(0, -2, 0)
+	legs.Parent = model
+	local head = Instance.new("Part")
+	head.Name = "Head"
+	head.Size = Vector3.new(1.2, 1.2, 1.2)
+	head.Color = cfg.Skin
+	head.CFrame = CFrame.new(0, 1.6, 0)
+	head.Parent = model
+	for _, p in ipairs({ torso, legs, head }) do
+		local w = Instance.new("WeldConstraint")
+		w.Part0 = root
+		w.Part1 = p
+		w.Parent = p
+	end
+	local hum = Instance.new("Humanoid")
+	hum.RigType = Enum.HumanoidRigType.R15
+	hum.RequiresNeck = false
+	hum.HipHeight = 3
+	hum.Parent = model
+	model.PrimaryPart = root
+	return model
+end
+
+local function buildChaser(tier)
+	local cfg = ChaserConfig.Get(tier)
+	local folder = ServerStorage:FindFirstChild("Chasers")
+	local custom = folder and folder:FindFirstChild("Tier" .. tier)
+	local model
+	if custom then
+		model = custom:Clone()
+	else
+		local desc = Instance.new("HumanoidDescription")
+		desc.HeadColor = cfg.Skin
+		desc.LeftArmColor = cfg.Skin
+		desc.RightArmColor = cfg.Skin
+		desc.TorsoColor = cfg.Shirt
+		desc.LeftLegColor = cfg.Pants
+		desc.RightLegColor = cfg.Pants
+		desc.HeightScale = cfg.Scale
+		desc.WidthScale = cfg.Scale
+		desc.DepthScale = cfg.Scale
+		desc.HeadScale = cfg.Scale
+		local ok, result = pcall(Players.CreateHumanoidModelFromDescription, Players, desc, Enum.HumanoidRigType.R15)
+		model = ok and result or fallbackRig(cfg)
+		local head = model:FindFirstChild("Head")
+		if head then
+			for _, prop in ipairs(cfg.HeadProps or {}) do
+				local p = Instance.new("Part")
+				p.Name = prop.Name
+				p.Size = prop.Size * cfg.Scale
+				p.Color = prop.Color
+				p.Material = prop.Material or Enum.Material.SmoothPlastic
+				p.CanCollide = false
+				p.CanQuery = false
+				p.Massless = true
+				p.CFrame = head.CFrame * CFrame.new(prop.Offset * cfg.Scale)
+				p.Parent = model
+				local w = Instance.new("WeldConstraint")
+				w.Part0 = head
+				w.Part1 = p
+				w.Parent = p
+			end
+		end
+	end
+	model.Name = cfg.Name
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.CanQuery = false
+			d.Anchored = false
+		elseif d:IsA("LocalScript") or d:IsA("Script") then
+			d:Destroy()
+		end
+	end
+	local hum = model:FindFirstChildOfClass("Humanoid")
+	hum.WalkSpeed = cfg.Speed
+	hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+	hum.MaxHealth = 1e9
+	hum.Health = 1e9
+	hum.BreakJointsOnDeath = false
+	billboard(model, "NameTag", cfg.Emoji .. " " .. cfg.Name, Color3.fromRGB(255, 120, 120), 3.5)
+	return model, hum, cfg
+end
+
+local function despawnChaser(c, line)
+	local ch = c.Chaser
+	if not ch then
+		return
+	end
+	c.Chaser = nil
+	if not ch.Model.Parent then
+		return
+	end
+	ch.Humanoid:MoveTo(ch.Root.Position)
+	if line then
+		say(ch.Model, line, 2)
+	end
+	task.delay(line and 2 or 0, function()
+		if ch.Model then
+			ch.Model:Destroy()
+		end
+	end)
+end
+
+local function spawnChaser(player, c, tier, fromPos)
+	local ok, model, hum, cfg = pcall(buildChaser, tier)
+	if not ok then
+		warn("[CarryService] chaser failed: " .. tostring(model))
+		return
+	end
+	local root = model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart
+	local target = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local spawnPos = Svc.Map.ClampToZone(tier, fromPos + Vector3.new(0, 0, ChaserConfig.SpawnBehind))
+	local _, size = model:GetBoundingBox()
+	spawnPos += Vector3.new(0, size.Y / 2, 0)
+	local lookAt = target and Vector3.new(target.Position.X, spawnPos.Y, target.Position.Z) or (spawnPos - Vector3.new(0, 0, 1))
+	model:PivotTo(CFrame.lookAt(spawnPos, lookAt))
+	model.Parent = Svc.Map.ChaserFolder
+	pcall(function()
+		root:SetNetworkOwner(nil)
+	end)
+	-- run animation (Roblox default R15 run)
+	pcall(function()
+		local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
+		local anim = Instance.new("Animation")
+		anim.AnimationId = ChaserConfig.RunAnimation
+		local track = animator:LoadAnimation(anim)
+		track.Looped = true
+		track:Play()
+	end)
+	say(model, "❗ " .. cfg.Shout, 3)
+	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, StartAt = os.clock() + ChaserConfig.HeadStart }
+	Svc.Net.Notify(player, cfg.Emoji .. " " .. cfg.Name .. " is chasing you! RUN BACK TO BASE! 🏃", "error")
+end
+
+-- ── public API ──────────────────────────────────────────────────────
+-- Called right after a successful shrink. fromPos = where the object was.
+function CarryService.Add(player, id, variant, fromPos)
+	local c = getState(player)
+	local item = { Id = id, V = variant }
+	table.insert(c.Items, item)
+	attachVisual(player, item, #c.Items)
+	local tier = Svc.Map.GetAreaAt(fromPos)
+	if tier and (not c.Chaser or c.Chaser.Tier < tier) then
+		if c.Chaser then
+			despawnChaser(c, nil)
+		end
+		spawnChaser(player, c, tier, fromPos)
+	end
+	Svc.Data.MarkDirty(player)
+end
+
+function CarryService.Deposit(player)
+	local c = carrying[player]
+	if not c or #c.Items == 0 then
+		return
+	end
+	local mult = Svc.Economy.GetIncomeMultiplier(player)
+	local income = 0
+	local count = #c.Items
+	for _, item in ipairs(c.Items) do
+		Svc.Museum.AddItem(player, item.Id, item.V)
+		income += Formulas.ItemBaseIncome(item) * mult
+	end
+	clearVisuals(c)
+	c.Items = {}
+	despawnChaser(c, "Darn! They got away...")
+	Remotes.Event("CarryFX"):FireClient(player, "Deposit", { Count = count, Income = income })
+	Svc.Net.Notify(player, string.format("🏛️ Delivered %d object%s! +%s/s", count, count == 1 and "" or "s", Format.Coins(income)), "success")
+	Svc.Data.MarkDirty(player)
+end
+
+-- reason: "caught" | "died" | "left" | "rebirth"
+function CarryService.DropAll(player, reason)
+	local c = carrying[player]
+	if not c then
+		return
+	end
+	local count = #c.Items
+	local ch = c.Chaser
+	clearVisuals(c)
+	c.Items = {}
+	if reason == "caught" and ch then
+		despawnChaser(c, ch.Cfg.Emoji .. " " .. ch.Cfg.CaughtLine)
+		Remotes.Event("CarryFX"):FireClient(player, "Caught", { By = ch.Cfg.Name, Emoji = ch.Cfg.Emoji, Count = count })
+		Svc.Net.Notify(player, ch.Cfg.Emoji .. " " .. ch.Cfg.Name .. " caught you! You dropped " .. count .. " object" .. (count == 1 and "" or "s") .. ".", "error")
+	else
+		despawnChaser(c, nil)
+		if reason == "died" and count > 0 then
+			Svc.Net.Notify(player, "💀 You dropped what you were carrying!", "error")
+		end
+	end
+	if player.Parent then
+		Svc.Data.MarkDirty(player)
+	end
+end
+
+function CarryService.OnPlayerLoaded(player)
+	local function hook(character)
+		local hum = character:WaitForChild("Humanoid", 10)
+		if hum then
+			hum.Died:Connect(function()
+				CarryService.DropAll(player, "died")
+			end)
+		end
+	end
+	player.CharacterAdded:Connect(function(character)
+		CarryService.DropAll(player, "died")
+		hook(character)
+	end)
+	if player.Character then
+		task.spawn(hook, player.Character)
+	end
+end
+
+function CarryService.OnPlayerRemoving(player)
+	CarryService.DropAll(player, "left")
+	carrying[player] = nil
+end
+
+function CarryService.Start()
+	Svc.Data.AddSyncProvider(function(player, payload)
+		local c = carrying[player]
+		payload.Carry = {
+			Count = c and #c.Items or 0,
+			Capacity = CarryService.Capacity(player),
+			Chaser = c and c.Chaser and (c.Chaser.Cfg.Emoji .. " " .. c.Chaser.Cfg.Name) or nil,
+		}
+	end)
+
+	task.spawn(function()
+		while true do
+			task.wait(0.1)
+			for player, c in pairs(carrying) do
+				local character = player.Character
+				local root = character and character:FindFirstChild("HumanoidRootPart")
+				local hum = character and character:FindFirstChildOfClass("Humanoid")
+				if #c.Items > 0 and root and hum and hum.Health > 0 and Svc.Map.IsInBase(root.Position) then
+					CarryService.Deposit(player)
+				elseif c.Chaser then
+					local ch = c.Chaser
+					if not ch.Model.Parent or not root or #c.Items == 0 then
+						despawnChaser(c, nil)
+					elseif os.clock() < ch.StartAt then
+						ch.Humanoid:MoveTo(ch.Root.Position)
+					else
+						ch.Humanoid:MoveTo(root.Position)
+						local reach = ChaserConfig.CatchDistance * math.max(1, ch.Cfg.Scale)
+						if (ch.Root.Position - root.Position).Magnitude <= reach then
+							CarryService.DropAll(player, "caught")
+						end
+					end
+				end
+			end
+		end
+	end)
+end
+
+return CarryService
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="22">
         <Properties>
           <string name="Name">DataService</string>
           <string name="Source"><![CDATA[--[[
@@ -1680,7 +2196,7 @@ local TEMPLATE = {
 	TotalShrinks = 0,
 	RaidsWon = 0,
 	NextUid = 1,
-	Upgrades = { RayPower = 1, ChargeSpeed = 1, Range = 1, Luck = 1, MultiShrink = 1, MuseumSize = 1 },
+	Upgrades = { RayPower = 1, Speed = 1, ChargeSpeed = 1, Range = 1, Luck = 1, MultiShrink = 1, MuseumSize = 1 },
 	TokenUpgrades = { Income = 0, Luck = 0, Charge = 0 },
 	Items = {}, -- { { U = uid, Id = "SodaCan", V = "Golden", S = true? (stolen copy) } }
 	Index = {}, -- ["SodaCan:Golden"] = true
@@ -1984,7 +2500,7 @@ return DataService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="21">
+      <Item class="ModuleScript" referent="23">
         <Properties>
           <string name="Name">EconomyService</string>
           <string name="Source"><![CDATA[--[[
@@ -2197,7 +2713,7 @@ return EconomyService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="22">
+      <Item class="ModuleScript" referent="24">
         <Properties>
           <string name="Name">EventService</string>
           <string name="Source"><![CDATA[--[[
@@ -2345,7 +2861,7 @@ return EventService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="23">
+      <Item class="ModuleScript" referent="25">
         <Properties>
           <string name="Name">IndexService</string>
           <string name="Source"><![CDATA[--[[
@@ -2420,7 +2936,7 @@ return IndexService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="24">
+      <Item class="ModuleScript" referent="26">
         <Properties>
           <string name="Name">InfinitePackService</string>
           <string name="Source"><![CDATA[--[[
@@ -2542,7 +3058,7 @@ return InfinitePackService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="25">
+      <Item class="ModuleScript" referent="27">
         <Properties>
           <string name="Name">LeaderboardService</string>
           <string name="Source"><![CDATA[--[[
@@ -2710,21 +3226,26 @@ return LeaderboardService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="26">
+      <Item class="ModuleScript" referent="28">
         <Properties>
           <string name="Name">MapDecor</string>
           <string name="Source"><![CDATA[--[[
 	📍 LOCATION: ServerScriptService > Services > MapDecor (ModuleScript)
 	(Helper module used by MapService when it generates the map; not a service.)
 
-	Themed scenery for the generated world:
-	  Lobby (fountain, title sign, trees, flower beds) · Plot plaza (trees, lamps)
-	  1 Suburbs (road, houses, fences) · 2 Park (paths, trees, hedges, flowers)
-	  3 Downtown (road, city blocks, street lamps) · 4 Harbor (sand, water, docks, crates)
-	  5 Skyline (huge glass towers with neon) · 6 Summit (rocky peaks, snow, pines)
+	Themed scenery for the generated corridor map:
+	  Base       · stone path, fountain, trees, flowers, lamps, safe-zone line
+	  Zone 1     · Grandpa's Backyard: picket fences, garden beds, sunflowers, shed, Grandpa's cottage
+	  Zone 2     · Neighborhood: road + sidewalks, rows of houses, mailboxes, street lamps
+	  Zone 3     · Downtown: wide road, crosswalks, city blocks with glowing windows, cones
+	  Zone 4     · Harbor: sand, sea with docks, warehouses, crates & barrels, lighthouse
+	  Zone 5     · Skyline: giant glass towers, neon edge lights
+	  Zone 6     · Summit: snow, rocky peaks, pine forest
+	  Walls      · tall checkered walls in each zone's colors with a grass/ice cap
+	  Arches     · a sign at the start of every zone (name, Ray Power, who's chasing you)
 
-	All decoration has CanQuery = false so the Shrink Ray aims straight through it,
-	and it stays in the border strips (|x| > 110) so it never blocks object spawns.
+	Everything here has CanQuery = false so the Shrink Ray aims straight through it,
+	and it stays in the outer strips (|x| > 74) so it never overlaps object spawn points.
 ]]
 
 local Lighting = game:GetService("Lighting")
@@ -2750,6 +3271,14 @@ local function part(parent, size, cframe, color, material, shape)
 	return p
 end
 
+local function deco(parent, size, cframe, color, material, shape)
+	local p = part(parent, size, cframe, color, material, shape)
+	p.CanCollide = false
+	p.CanTouch = false
+	p.CastShadow = false
+	return p
+end
+
 local function wedge(parent, size, cframe, color, material)
 	local w = Instance.new("WedgePart")
 	w.Anchored = true
@@ -2769,98 +3298,139 @@ local function folder(parent, name)
 	return f
 end
 
+local function sign(target, face, text, color, ppS)
+	local gui = Instance.new("SurfaceGui")
+	gui.Face = face
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = ppS or 12
+	gui.LightInfluence = 0
+	gui.Parent = target
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = color or Color3.new(1, 1, 1)
+	label.Text = text
+	label.Parent = gui
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 5
+	stroke.Parent = label
+	return label
+end
+
+-- vertical cylinder helper (Roblox cylinders run along X)
+local function upright(pos, height)
+	return CFrame.new(pos + Vector3.new(0, height / 2, 0)) * CFrame.Angles(0, 0, math.rad(90))
+end
+
 -- ── props ─────────────────────────────────────────────────────────────
 local function tree(parent, pos, scale, leaf)
 	scale = scale or 1
 	local trunkH = 8 * scale
-	part(parent, Vector3.new(trunkH, 1.8 * scale, 1.8 * scale), CFrame.new(pos + Vector3.new(0, trunkH / 2, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(120, 80, 45), Enum.Material.Wood, Enum.PartType.Cylinder)
+	part(parent, Vector3.new(trunkH, 1.8 * scale, 1.8 * scale), upright(pos, trunkH), RGB(120, 80, 45), Enum.Material.Wood, Enum.PartType.Cylinder)
 	local leafColor = leaf or RGB(70, 170, 70)
 	part(parent, Vector3.one * 9 * scale, CFrame.new(pos + Vector3.new(0, trunkH + 2.5 * scale, 0)), leafColor, Enum.Material.Grass, Enum.PartType.Ball)
 	part(parent, Vector3.one * 6 * scale, CFrame.new(pos + Vector3.new(2.5 * scale, trunkH + 0.5 * scale, 1.5 * scale)), leafColor:Lerp(RGB(255, 255, 255), 0.1), Enum.Material.Grass, Enum.PartType.Ball)
+	part(parent, Vector3.one * 5 * scale, CFrame.new(pos + Vector3.new(-2 * scale, trunkH + 1 * scale, -2 * scale)), leafColor:Lerp(RGB(0, 0, 0), 0.08), Enum.Material.Grass, Enum.PartType.Ball)
 end
 
 local function pine(parent, pos, scale)
 	scale = scale or 1
-	part(parent, Vector3.new(6 * scale, 1.5 * scale, 1.5 * scale), CFrame.new(pos + Vector3.new(0, 3 * scale, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(100, 70, 40), Enum.Material.Wood, Enum.PartType.Cylinder)
+	part(parent, Vector3.new(6 * scale, 1.5 * scale, 1.5 * scale), upright(pos, 6 * scale), RGB(100, 70, 40), Enum.Material.Wood, Enum.PartType.Cylinder)
 	for i, s in ipairs({ 9, 7, 5, 3 }) do
 		part(parent, Vector3.new(s * scale, 3 * scale, s * scale), CFrame.new(pos + Vector3.new(0, (4 + i * 2.6) * scale, 0)) * CFrame.Angles(0, math.rad(45 * i), 0), RGB(35, 110, 60), Enum.Material.Grass)
 	end
 	part(parent, Vector3.new(2.4, 1.2, 2.4) * scale, CFrame.new(pos + Vector3.new(0, 15.6 * scale, 0)), RGB(245, 250, 255), Enum.Material.Snow)
 end
 
-local function lamp(parent, pos)
-	part(parent, Vector3.new(14, 0.8, 0.8), CFrame.new(pos + Vector3.new(0, 7, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(50, 50, 60), Enum.Material.Metal, Enum.PartType.Cylinder)
-	local bulb = part(parent, Vector3.one * 2, CFrame.new(pos + Vector3.new(0, 14.5, 0)), RGB(255, 240, 190), Enum.Material.Neon, Enum.PartType.Ball)
-	bulb.CanCollide = false
+local function lamp(parent, pos, color)
+	part(parent, Vector3.new(14, 0.8, 0.8), upright(pos, 14), RGB(50, 50, 60), Enum.Material.Metal, Enum.PartType.Cylinder)
+	local bulb = deco(parent, Vector3.one * 2, CFrame.new(pos + Vector3.new(0, 14.5, 0)), color or RGB(255, 240, 190), Enum.Material.Neon, Enum.PartType.Ball)
 	local light = Instance.new("PointLight")
-	light.Range = 22
-	light.Brightness = 1.5
-	light.Color = RGB(255, 230, 180)
+	light.Range = 20
+	light.Brightness = 1.3
+	light.Color = color or RGB(255, 230, 180)
 	light.Parent = bulb
 end
 
+local FLOWER_COLORS = { RGB(255, 90, 120), RGB(255, 220, 60), RGB(170, 110, 255), RGB(255, 255, 255), RGB(255, 140, 60) }
 local function flowers(parent, pos, radius)
-	local colors = { RGB(255, 90, 120), RGB(255, 220, 60), RGB(170, 110, 255), RGB(255, 255, 255), RGB(255, 140, 60) }
-	part(parent, Vector3.new(0.4, radius * 2, radius * 2), CFrame.new(pos + Vector3.new(0, 0.2, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(90, 60, 40), Enum.Material.Ground, Enum.PartType.Cylinder)
+	deco(parent, Vector3.new(0.4, radius * 2, radius * 2), CFrame.new(pos + Vector3.new(0, 0.2, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(90, 60, 40), Enum.Material.Ground, Enum.PartType.Cylinder)
 	for i = 1, 10 do
 		local a = i / 10 * math.pi * 2
 		local r = radius * (0.3 + (i % 3) * 0.22)
-		local f = part(parent, Vector3.one * 1.2, CFrame.new(pos + Vector3.new(math.cos(a) * r, 0.9, math.sin(a) * r)), colors[(i % #colors) + 1], Enum.Material.SmoothPlastic, Enum.PartType.Ball)
-		f.CanCollide = false
+		deco(parent, Vector3.one * 1.2, CFrame.new(pos + Vector3.new(math.cos(a) * r, 0.9, math.sin(a) * r)), FLOWER_COLORS[(i % #FLOWER_COLORS) + 1], Enum.Material.SmoothPlastic, Enum.PartType.Ball)
 	end
 end
 
-local function house(parent, pos, facingSign, color)
+local function sunflower(parent, pos)
+	deco(parent, Vector3.new(7, 0.4, 0.4), upright(pos, 7), RGB(70, 150, 60), Enum.Material.Grass, Enum.PartType.Cylinder)
+	deco(parent, Vector3.new(0.4, 2.6, 2.6), CFrame.new(pos + Vector3.new(0, 7.2, 0)) * CFrame.Angles(0, math.rad(90), 0) * CFrame.Angles(0, 0, 0), RGB(255, 210, 40), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+	deco(parent, Vector3.new(0.5, 1.2, 1.2), CFrame.new(pos + Vector3.new(0, 7.2, 0)) * CFrame.Angles(0, math.rad(90), 0), RGB(110, 70, 30), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+end
+
+local function gardenBed(parent, pos, length)
+	part(parent, Vector3.new(6, 1, length), CFrame.new(pos + Vector3.new(0, 0.5, 0)), RGB(120, 80, 50), Enum.Material.Ground)
+	for z = -length / 2 + 2, length / 2 - 2, 2.5 do
+		deco(parent, Vector3.new(1, 1.6, 1), CFrame.new(pos + Vector3.new(-1.5, 1.6, z)), RGB(80, 180, 70), Enum.Material.Grass)
+		deco(parent, Vector3.new(1, 1.2, 1), CFrame.new(pos + Vector3.new(1.5, 1.4, z + 1)), RGB(255, 120, 60), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+	end
+end
+
+local function fence(parent, fromPos, toPos, color)
+	color = color or RGB(250, 250, 250)
+	local delta = toPos - fromPos
+	local len = delta.Magnitude
+	local cf = CFrame.lookAt(fromPos + delta / 2, toPos)
+	part(parent, Vector3.new(0.4, 0.5, len), cf * CFrame.new(0, 2.4, 0), color)
+	part(parent, Vector3.new(0.4, 0.5, len), cf * CFrame.new(0, 1.1, 0), color)
+	for i = 0, math.floor(len / 3) do
+		part(parent, Vector3.new(0.6, 3.4, 0.9), CFrame.new(fromPos + delta.Unit * i * 3 + Vector3.new(0, 1.7, 0)), color)
+	end
+end
+
+local function house(parent, pos, facingSign, color, roofColor)
 	-- facingSign: +1 = front faces +X, -1 = faces -X
 	local body = Vector3.new(16, 11, 18)
 	local base = CFrame.new(pos + Vector3.new(0, body.Y / 2, 0)) * CFrame.Angles(0, facingSign > 0 and math.rad(-90) or math.rad(90), 0)
 	part(parent, body, base, color, Enum.Material.SmoothPlastic)
-	-- gable roof (two wedges)
-	local roofColor = RGB(190, 60, 55)
-	-- a WedgePart is tallest at its back (+Z), so the front half is unrotated and the back half is flipped
+	roofColor = roofColor or RGB(190, 60, 55)
+	-- a WedgePart is tallest at its back (+Z): front half unrotated, back half flipped
 	wedge(parent, Vector3.new(body.X + 1, 6, body.Z / 2 + 1), base * CFrame.new(0, body.Y / 2 + 3, -body.Z / 4), roofColor)
 	wedge(parent, Vector3.new(body.X + 1, 6, body.Z / 2 + 1), base * CFrame.new(0, body.Y / 2 + 3, body.Z / 4) * CFrame.Angles(0, math.pi, 0), roofColor)
-	-- door + windows on the front (-Z of `base`)
 	part(parent, Vector3.new(3.5, 6, 0.4), base * CFrame.new(0, -body.Y / 2 + 3, -body.Z / 2 - 0.1), RGB(110, 70, 40), Enum.Material.Wood)
 	for _, x in ipairs({ -5, 5 }) do
-		part(parent, Vector3.new(3, 3, 0.4), base * CFrame.new(x, 1, -body.Z / 2 - 0.1), RGB(170, 220, 255), Enum.Material.Glass).Transparency = 0.2
+		local w = part(parent, Vector3.new(3, 3, 0.4), base * CFrame.new(x, 1, -body.Z / 2 - 0.1), RGB(170, 220, 255), Enum.Material.Glass)
+		w.Transparency = 0.2
+		part(parent, Vector3.new(3.8, 0.4, 0.6), base * CFrame.new(x, -0.7, -body.Z / 2 - 0.2), RGB(255, 255, 255))
 	end
-	-- chimney
 	part(parent, Vector3.new(2, 5, 2), base * CFrame.new(4, body.Y / 2 + 4, 3), RGB(140, 90, 80), Enum.Material.Brick)
+	return base
 end
 
-local function fence(parent, fromPos, toPos)
-	local delta = toPos - fromPos
-	local len = delta.Magnitude
-	local mid = fromPos + delta / 2
-	local cf = CFrame.lookAt(mid, toPos)
-	part(parent, Vector3.new(0.5, 0.6, len), cf * CFrame.new(0, 2.2, 0), RGB(250, 250, 250))
-	part(parent, Vector3.new(0.5, 0.6, len), cf * CFrame.new(0, 1.0, 0), RGB(250, 250, 250))
-	for i = 0, math.floor(len / 4) do
-		part(parent, Vector3.new(0.6, 3.2, 0.6), CFrame.new(fromPos + delta.Unit * i * 4 + Vector3.new(0, 1.6, 0)), RGB(255, 255, 255))
-	end
+local function mailbox(parent, pos, color)
+	part(parent, Vector3.new(3.4, 0.4, 0.4), upright(pos, 3.4), RGB(90, 70, 50), Enum.Material.Wood, Enum.PartType.Cylinder)
+	part(parent, Vector3.new(1, 1, 1.8), CFrame.new(pos + Vector3.new(0, 3.8, 0)), color or RGB(40, 80, 200))
+	deco(parent, Vector3.new(0.1, 0.8, 0.3), CFrame.new(pos + Vector3.new(0.55, 4.2, 0.4)), RGB(230, 40, 40))
 end
 
 local function tower(parent, pos, w, h, d, color, windowColor, material)
 	local body = part(parent, Vector3.new(w, h, d), CFrame.new(pos + Vector3.new(0, h / 2, 0)), color, material or Enum.Material.SmoothPlastic)
-	-- glowing window bands
-	local bands = math.floor(h / 9)
-	for i = 1, bands do
-		local y = i * 9 - h / 2 - 2
-		local band = part(parent, Vector3.new(w + 0.3, 2.2, d + 0.3), body.CFrame * CFrame.new(0, y, 0), windowColor, Enum.Material.Neon)
+	for i = 1, math.floor(h / 9) do
+		local band = deco(parent, Vector3.new(w + 0.3, 2.2, d + 0.3), body.CFrame * CFrame.new(0, i * 9 - h / 2 - 2, 0), windowColor, Enum.Material.Neon)
 		band.Transparency = 0.25
-		band.CanCollide = false
 	end
-	-- roof cap
 	part(parent, Vector3.new(w * 0.6, 3, d * 0.6), body.CFrame * CFrame.new(0, h / 2 + 1.5, 0), color:Lerp(RGB(0, 0, 0), 0.3), Enum.Material.Metal)
 	return body
 end
 
-local function road(parent, z0, depth, width, color)
+local function road(parent, z0, depth, width, color, dashes)
 	part(parent, Vector3.new(width, 0.2, depth), CFrame.new(0, 0.1, z0 + depth / 2), color or RGB(55, 55, 65), Enum.Material.Asphalt)
-	for z = z0 + 6, z0 + depth - 6, 14 do
-		local dash = part(parent, Vector3.new(1, 0.22, 7), CFrame.new(0, 0.12, z + 3.5), RGB(255, 210, 60), Enum.Material.SmoothPlastic)
-		dash.CanCollide = false
+	if dashes ~= false then
+		for z = z0 + 6, z0 + depth - 10, 14 do
+			deco(parent, Vector3.new(1, 0.22, 7), CFrame.new(0, 0.12, z + 3.5), RGB(255, 210, 60), Enum.Material.SmoothPlastic)
+		end
 	end
 end
 
@@ -2875,113 +3445,264 @@ local function crate(parent, pos)
 	part(parent, Vector3.one * 5, CFrame.new(pos + Vector3.new(0, 2.5, 0)) * CFrame.Angles(0, math.rad(math.random(0, 90)), 0), RGB(170, 120, 70), Enum.Material.WoodPlanks)
 end
 
--- iterate both border strips: fn(x, sideSign) for x on left (-1) and right (+1)
-local function bothSides(width, inset, fn)
-	fn(-(width / 2 - inset), -1)
-	fn(width / 2 - inset, 1)
+local function barrel(parent, pos)
+	part(parent, Vector3.new(4.5, 3.2, 3.2), upright(pos, 4.5), RGB(140, 90, 50), Enum.Material.Wood, Enum.PartType.Cylinder)
+	for _, y in ipairs({ 1, 3.5 }) do
+		deco(parent, Vector3.new(0.3, 3.35, 3.35), CFrame.new(pos + Vector3.new(0, y, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(70, 70, 75), Enum.Material.Metal, Enum.PartType.Cylinder)
+	end
 end
 
--- ── public ────────────────────────────────────────────────────────────
+local function cone(parent, pos)
+	deco(parent, Vector3.new(2, 0.3, 2), CFrame.new(pos + Vector3.new(0, 0.15, 0)), RGB(255, 120, 20))
+	deco(parent, Vector3.new(2.2, 1.2, 1.2), upright(pos, 2.2), RGB(255, 120, 20), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+	deco(parent, Vector3.new(0.4, 1.25, 1.25), CFrame.new(pos + Vector3.new(0, 1.3, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(255, 255, 255), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+end
+
+-- ── floor & wall styles ──────────────────────────────────────────────
 MapDecor.FloorStyle = {
-	[1] = { Material = Enum.Material.Grass, Color = RGB(120, 200, 95) },
-	[2] = { Material = Enum.Material.Grass, Color = RGB(95, 185, 85) },
-	[3] = { Material = Enum.Material.Concrete, Color = RGB(165, 165, 175) },
-	[4] = { Material = Enum.Material.Sand, Color = RGB(235, 215, 160) },
-	[5] = { Material = Enum.Material.Pavement, Color = RGB(120, 115, 150) },
-	[6] = { Material = Enum.Material.Slate, Color = RGB(130, 125, 125) },
+	[1] = { Material = Enum.Material.SmoothPlastic, Color = RGB(110, 210, 80) },
+	[2] = { Material = Enum.Material.SmoothPlastic, Color = RGB(95, 195, 75) },
+	[3] = { Material = Enum.Material.Concrete, Color = RGB(170, 170, 180) },
+	[4] = { Material = Enum.Material.Sand, Color = RGB(238, 216, 160) },
+	[5] = { Material = Enum.Material.Pavement, Color = RGB(110, 105, 140) },
+	[6] = { Material = Enum.Material.Snow, Color = RGB(235, 242, 252) },
 }
 
--- Max |x| object spawn points may use, so decor in the border never overlaps spawns.
-MapDecor.SpawnHalfWidth = 105
+local WALL_STYLE = {
+	Base = { A = RGB(90, 175, 225), B = RGB(70, 150, 205), Cap = RGB(110, 210, 80), Material = Enum.Material.SmoothPlastic },
+	[1] = { A = RGB(205, 125, 75), B = RGB(180, 100, 58), Cap = RGB(110, 210, 80), Material = Enum.Material.SmoothPlastic },
+	[2] = { A = RGB(185, 85, 65), B = RGB(160, 70, 55), Cap = RGB(95, 195, 75), Material = Enum.Material.Brick },
+	[3] = { A = RGB(150, 150, 162), B = RGB(128, 128, 140), Cap = RGB(80, 80, 92), Material = Enum.Material.Concrete },
+	[4] = { A = RGB(160, 112, 65), B = RGB(135, 92, 52), Cap = RGB(60, 150, 220), Material = Enum.Material.WoodPlanks },
+	[5] = { A = RGB(62, 72, 112), B = RGB(46, 54, 90), Cap = RGB(200, 90, 255), Material = Enum.Material.Glass },
+	[6] = { A = RGB(205, 222, 242), B = RGB(182, 202, 228), Cap = RGB(250, 252, 255), Material = Enum.Material.Ice },
+}
 
-function MapDecor.Area(areaModel, tier, z0, depth, width)
-	local decor = folder(areaModel, "Decor")
+-- One straight wall from a to b (XZ), built from alternating checker panels + a cap.
+local function wallRun(parent, a, b, height, style)
+	local delta = b - a
+	local len = delta.Magnitude
+	local dir = delta.Unit
+	local panel = 20
+	local count = math.max(1, math.floor(len / panel + 0.5))
+	local seg = len / count
+	for i = 0, count - 1 do
+		local mid = a + dir * (seg * (i + 0.5))
+		local cf = CFrame.lookAt(mid, mid + dir)
+		local lower = part(parent, Vector3.new(2, height / 2, seg), cf * CFrame.new(0, height / 4, 0), (i % 2 == 0) and style.A or style.B, style.Material)
+		lower.CanQuery = false
+		part(parent, Vector3.new(2, height / 2, seg), cf * CFrame.new(0, height * 3 / 4, 0), (i % 2 == 0) and style.B or style.A, style.Material)
+	end
+	local cf = CFrame.lookAt(a + delta / 2, b)
+	part(parent, Vector3.new(3, 2, len + 1), cf * CFrame.new(0, height + 1, 0), style.Cap, Enum.Material.SmoothPlastic)
+end
+
+-- opts: { BaseWidth, BaseDepth, Corridor, Height, Zones = { {Tier, StartZ, Depth} } }
+function MapDecor.Walls(parent, opts)
+	local h = opts.Height
+	local bw, bd, cw = opts.BaseWidth / 2 + 1, opts.BaseDepth, opts.Corridor / 2 + 1
+	local base = WALL_STYLE.Base
+	wallRun(parent, Vector3.new(-bw, 0, 0), Vector3.new(-bw, 0, -bd), h, base)
+	wallRun(parent, Vector3.new(bw, 0, 0), Vector3.new(bw, 0, -bd), h, base)
+	wallRun(parent, Vector3.new(-bw, 0, -bd - 1), Vector3.new(bw, 0, -bd - 1), h, base)
+	wallRun(parent, Vector3.new(-bw, 0, 0), Vector3.new(-cw, 0, 0), h, base)
+	wallRun(parent, Vector3.new(cw, 0, 0), Vector3.new(bw, 0, 0), h, base)
+	local endZ = 0
+	for _, z in ipairs(opts.Zones) do
+		local style = WALL_STYLE[z.Tier] or base
+		wallRun(parent, Vector3.new(-cw, 0, z.StartZ), Vector3.new(-cw, 0, z.StartZ + z.Depth), h, style)
+		wallRun(parent, Vector3.new(cw, 0, z.StartZ), Vector3.new(cw, 0, z.StartZ + z.Depth), h, style)
+		endZ = z.StartZ + z.Depth
+	end
+	wallRun(parent, Vector3.new(-cw, 0, endZ + 1), Vector3.new(cw, 0, endZ + 1), h, WALL_STYLE[#opts.Zones] or base)
+	-- invisible ceiling-height blockers so nobody climbs out
+	for _, x in ipairs({ -cw, cw }) do
+		local p = part(parent, Vector3.new(2, 400, endZ), CFrame.new(x, 200 + h, endZ / 2), RGB(0, 0, 0))
+		p.Transparency = 1
+	end
+	for _, x in ipairs({ -bw, bw }) do
+		local p = part(parent, Vector3.new(2, 400, bd), CFrame.new(x, 200 + h, -bd / 2), RGB(0, 0, 0))
+		p.Transparency = 1
+	end
+end
+
+-- Arch + sign at the start of each zone.
+function MapDecor.ZoneArch(zone, tier, t, z, width)
+	local ChaserConfig = require(game:GetService("ReplicatedStorage").Shared.Config.ChaserConfig)
+	local chaser = ChaserConfig.Get(tier)
+	local arch = folder(zone, "Arch")
+	local color = t.Color
+	for _, side in ipairs({ -1, 1 }) do
+		part(arch, Vector3.new(8, 40, 8), CFrame.new(side * (width / 2 - 6), 20, z), color, Enum.Material.SmoothPlastic)
+		deco(arch, Vector3.new(9, 2, 9), CFrame.new(side * (width / 2 - 6), 41, z), RGB(255, 255, 255), Enum.Material.Neon)
+	end
+	local beam = part(arch, Vector3.new(width - 4, 14, 3), CFrame.new(0, 36, z), RGB(40, 40, 60), Enum.Material.SmoothPlastic)
+	beam.CanCollide = false
+	sign(beam, Enum.NormalId.Front, string.format("ZONE %d · %s\n%s Watch out for %s!  ·  Ray Power %d+", tier, string.upper(t.Area), chaser.Emoji, chaser.Name, t.RayPowerRequired), color:Lerp(RGB(255, 255, 255), 0.35), 8)
+	sign(beam, Enum.NormalId.Back, tier == 1 and "🏠 SAFE ZONE ⬇  drop off your loot!" or "⬇ BACK TO BASE ⬇", RGB(120, 255, 140), 8)
+	-- floor line
+	deco(arch, Vector3.new(width - 4, 0.25, 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(255, 60, 60) or color, Enum.Material.Neon)
+end
+
+-- ── zones ────────────────────────────────────────────────────────────
+function MapDecor.Zone(zoneModel, tier, z0, depth, width)
+	local decor = folder(zoneModel, "Decor")
 	local zEnd = z0 + depth
-	if tier == 1 then -- Suburbs
-		road(decor, z0, depth, 26)
-		local colors = { RGB(255, 245, 220), RGB(190, 225, 255), RGB(255, 210, 220), RGB(210, 255, 210), RGB(255, 235, 170) }
+	local edge = width / 2 -- 100
+	local function sides(fn)
+		fn(-1)
+		fn(1)
+	end
+
+	if tier == 1 then -- Grandpa's Backyard
+		sides(function(s)
+			fence(decor, Vector3.new(s * 73, 0, z0 + 8), Vector3.new(s * 73, 0, zEnd - 8))
+		end)
 		local i = 0
-		for z = z0 + 18, zEnd - 14, 32 do
-			bothSides(width, 18, function(x, side)
+		for z = z0 + 20, zEnd - 20, 26 do
+			i += 1
+			sides(function(s)
+				if (i + (s > 0 and 1 or 0)) % 3 == 0 then
+					tree(decor, Vector3.new(s * 88, 0, z), 1.1)
+				elseif (i + (s > 0 and 1 or 0)) % 3 == 1 then
+					gardenBed(decor, Vector3.new(s * 86, 0, z), 16)
+				else
+					for k = 0, 2 do
+						sunflower(decor, Vector3.new(s * (82 + k * 5), 0, z + k * 2))
+					end
+				end
+			end)
+		end
+		-- Grandpa's cottage + rocking chair near the end of the yard
+		local cf = house(decor, Vector3.new(-86, 0, zEnd - 40), 1, RGB(255, 240, 210), RGB(120, 80, 60))
+		local signPart = part(decor, Vector3.new(12, 3, 0.5), cf * CFrame.new(0, 8.5, -9.4), RGB(120, 80, 50), Enum.Material.Wood)
+		sign(signPart, Enum.NormalId.Front, "👴 GRANDPA'S HOUSE", RGB(255, 230, 160), 20)
+		part(decor, Vector3.new(3, 0.5, 3), CFrame.new(-75, 1.5, zEnd - 52), RGB(140, 90, 50), Enum.Material.Wood)
+		part(decor, Vector3.new(3, 3, 0.5), CFrame.new(-75, 3, zEnd - 50.8), RGB(140, 90, 50), Enum.Material.Wood)
+		-- garden shed on the other side
+		local shed = part(decor, Vector3.new(12, 9, 10), CFrame.new(87, 4.5, z0 + 60), RGB(120, 160, 110), Enum.Material.WoodPlanks)
+		wedge(decor, Vector3.new(12.5, 3, 10.5), shed.CFrame * CFrame.new(0, 6, 0) * CFrame.Angles(0, math.rad(90), 0), RGB(150, 70, 60))
+		mailbox(decor, Vector3.new(-70, 0, zEnd - 25))
+		-- scattered grass tufts & flowers across the yard
+		for _ = 1, 60 do
+			local p = Vector3.new(math.random(-70, 70), 0, math.random(z0 + 5, zEnd - 5))
+			deco(decor, Vector3.new(0.6, 1, 0.6), CFrame.new(p + Vector3.new(0, 0.5, 0)), RGB(70, 170, 60), Enum.Material.Grass)
+			if math.random() < 0.35 then
+				deco(decor, Vector3.one * 0.9, CFrame.new(p + Vector3.new(0.6, 0.8, 0.3)), FLOWER_COLORS[math.random(1, #FLOWER_COLORS)], Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+			end
+		end
+	elseif tier == 2 then -- Neighborhood
+		road(decor, z0, depth, 30)
+		sides(function(s)
+			part(decor, Vector3.new(8, 0.6, depth), CFrame.new(s * 19, 0.3, z0 + depth / 2), RGB(200, 200, 205), Enum.Material.Concrete) -- sidewalk
+			part(decor, Vector3.new(0.6, 0.8, depth), CFrame.new(s * 15.2, 0.4, z0 + depth / 2), RGB(240, 240, 245), Enum.Material.Concrete) -- curb
+		end)
+		local colors = { RGB(255, 245, 220), RGB(190, 225, 255), RGB(255, 210, 220), RGB(210, 255, 210), RGB(255, 235, 170), RGB(230, 210, 255) }
+		local roofs = { RGB(190, 60, 55), RGB(70, 80, 110), RGB(120, 80, 60), RGB(60, 120, 80) }
+		local i = 0
+		for z = z0 + 24, zEnd - 18, 34 do
+			sides(function(s)
 				i += 1
-				house(decor, Vector3.new(x, 0, z), -side, colors[(i % #colors) + 1])
-				fence(decor, Vector3.new(x - side * 12, 0, z - 13), Vector3.new(x - side * 12, 0, z + 13))
+				house(decor, Vector3.new(s * 88, 0, z), -s, colors[(i % #colors) + 1], roofs[(i % #roofs) + 1])
+				mailbox(decor, Vector3.new(s * 76, 0, z - 8), colors[((i + 2) % #colors) + 1]:Lerp(RGB(0, 0, 0), 0.4))
+				fence(decor, Vector3.new(s * 75, 0, z + 4), Vector3.new(s * 75, 0, z + 15))
+				tree(decor, Vector3.new(s * 84, 0, z + 17), 0.8)
 			end)
-			bothSides(width, 34, function(x)
-				tree(decor, Vector3.new(x, 0, z + 16), 0.9)
-			end)
-		end
-	elseif tier == 2 then -- Park
-		road(decor, z0, depth, 14, RGB(215, 190, 140))
-		for z = z0 + 10, zEnd - 8, 16 do
-			bothSides(width, 10, function(x)
-				tree(decor, Vector3.new(x + math.random(-3, 3), 0, z), 1 + math.random() * 0.4, math.random() < 0.3 and RGB(240, 150, 190) or nil)
-			end)
-		end
-		for z = z0 + 24, zEnd - 20, 40 do
-			bothSides(width, 30, function(x)
-				flowers(decor, Vector3.new(x, 0, z), 5)
-				part(decor, Vector3.new(4, 3, 16), CFrame.new(x, 1.5, z + 18), RGB(60, 140, 60), Enum.Material.Grass) -- hedge
+			sides(function(s)
+				lamp(decor, Vector3.new(s * 23, 0, z))
 			end)
 		end
 	elseif tier == 3 then -- Downtown
-		road(decor, z0, depth, 34)
-		local palette = { RGB(200, 120, 100), RGB(150, 160, 190), RGB(220, 200, 160), RGB(120, 130, 150), RGB(180, 150, 200) }
-		for z = z0 + 16, zEnd - 14, 30 do
-			bothSides(width, 18, function(x)
-				tower(decor, Vector3.new(x, 0, z), 24, math.random(36, 80), 24, palette[math.random(1, #palette)], RGB(255, 230, 150))
-			end)
-			bothSides(width, 38, function(x)
-				lamp(decor, Vector3.new(x, 0, z + 15))
-			end)
-		end
-	elseif tier == 4 then -- Harbor
-		-- right side: sea + docks, left side: warehouses & crates
-		local sea = part(decor, Vector3.new(36, 1, depth), CFrame.new(width / 2 - 18, 0.05, z0 + depth / 2), RGB(40, 140, 220), Enum.Material.Glass)
-		sea.Transparency = 0.25
-		sea.CanCollide = false
-		for z = z0 + 20, zEnd - 20, 50 do
-			part(decor, Vector3.new(30, 1, 8), CFrame.new(width / 2 - 22, 1, z), RGB(150, 105, 60), Enum.Material.WoodPlanks)
-			for _, dx in ipairs({ -12, 0, 12 }) do
-				part(decor, Vector3.new(6, 1.2, 1.2), CFrame.new(width / 2 - 22 + dx, -1.5, z + 4) * CFrame.Angles(0, 0, math.rad(90)), RGB(110, 80, 50), Enum.Material.Wood, Enum.PartType.Cylinder)
+		road(decor, z0, depth, 44)
+		sides(function(s)
+			part(decor, Vector3.new(10, 0.6, depth), CFrame.new(s * 27, 0.3, z0 + depth / 2), RGB(195, 195, 200), Enum.Material.Concrete)
+		end)
+		for z = z0 + 40, zEnd - 30, 120 do -- crosswalks
+			for x = -18, 18, 6 do
+				deco(decor, Vector3.new(3, 0.24, 10), CFrame.new(x, 0.14, z), RGB(250, 250, 250))
 			end
 		end
-		for z = z0 + 24, zEnd - 24, 44 do
-			tower(decor, Vector3.new(-(width / 2 - 20), 0, z), 28, 18, 32, RGB(150, 70, 60), RGB(255, 220, 140), Enum.Material.Brick)
-			crate(decor, Vector3.new(-(width / 2 - 42), 0, z + 6))
-			crate(decor, Vector3.new(-(width / 2 - 40), 5, z + 6))
-			crate(decor, Vector3.new(-(width / 2 - 44), 0, z - 4))
+		local palette = { RGB(200, 120, 100), RGB(150, 160, 190), RGB(220, 200, 160), RGB(120, 130, 150), RGB(180, 150, 200), RGB(110, 170, 160) }
+		for z = z0 + 16, zEnd - 14, 28 do
+			sides(function(s)
+				tower(decor, Vector3.new(s * 87, 0, z), 22, math.random(36, 90), 24, palette[math.random(1, #palette)], RGB(255, 230, 150))
+			end)
 		end
+		for z = z0 + 10, zEnd - 10, 36 do
+			sides(function(s)
+				lamp(decor, Vector3.new(s * 31, 0, z), RGB(255, 245, 210))
+			end)
+		end
+		for _ = 1, 10 do
+			cone(decor, Vector3.new(math.random(-20, 20), 0, math.random(z0 + 10, zEnd - 10)))
+		end
+	elseif tier == 4 then -- Harbor
+		local sea = deco(decor, Vector3.new(30, 1, depth), CFrame.new(edge - 15, 0.1, z0 + depth / 2), RGB(40, 140, 220), Enum.Material.Glass)
+		sea.Transparency = 0.2
+		sea.CanCollide = true
+		for z = z0 + 30, zEnd - 30, 60 do
+			part(decor, Vector3.new(34, 1, 8), CFrame.new(edge - 22, 1, z), RGB(150, 105, 60), Enum.Material.WoodPlanks)
+			barrel(decor, Vector3.new(edge - 30, 1.5, z + 1))
+		end
+		for z = z0 + 30, zEnd - 30, 52 do
+			tower(decor, Vector3.new(-86, 0, z), 24, 18, 34, RGB(150, 70, 60), RGB(255, 220, 140), Enum.Material.Brick)
+			crate(decor, Vector3.new(-71, 0, z + 8))
+			crate(decor, Vector3.new(-71, 5, z + 8))
+			crate(decor, Vector3.new(-72, 0, z - 6))
+			barrel(decor, Vector3.new(-70, 0, z + 20))
+		end
+		-- lighthouse at the far end
+		local base = Vector3.new(80, 0, zEnd - 30)
+		part(decor, Vector3.new(36, 12, 12), upright(base, 36), RGB(245, 245, 245), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+		for _, y in ipairs({ 6, 18, 30 }) do
+			part(decor, Vector3.new(5, 12.4, 12.4), CFrame.new(base + Vector3.new(0, y, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(220, 50, 50), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+		end
+		local light = deco(decor, Vector3.one * 7, CFrame.new(base + Vector3.new(0, 40, 0)), RGB(255, 240, 150), Enum.Material.Neon, Enum.PartType.Ball)
+		local pl = Instance.new("PointLight")
+		pl.Range = 60
+		pl.Brightness = 2
+		pl.Parent = light
 	elseif tier == 5 then -- Skyline
 		local neon = { RGB(255, 80, 200), RGB(80, 220, 255), RGB(180, 120, 255), RGB(255, 200, 80) }
-		for z = z0 + 22, zEnd - 20, 42 do
-			bothSides(width, 22, function(x)
-				local body = tower(decor, Vector3.new(x, 0, z), 32, math.random(110, 220), 32, RGB(70, 90, 130), neon[math.random(1, #neon)], Enum.Material.Glass)
+		for z = z0 + 24, zEnd - 20, 40 do
+			sides(function(s)
+				local body = tower(decor, Vector3.new(s * 87, 0, z), 22, math.random(100, 220), 30, RGB(70, 90, 130), neon[math.random(1, #neon)], Enum.Material.Glass)
 				body.Reflectance = 0.15
 			end)
 		end
+		sides(function(s)
+			deco(decor, Vector3.new(1, 0.3, depth), CFrame.new(s * 73, 0.2, z0 + depth / 2), RGB(200, 90, 255), Enum.Material.Neon)
+		end)
 	elseif tier == 6 then -- Summit
-		for z = z0 + 30, zEnd - 30, 60 do
-			bothSides(width, 22, function(x)
-				rock(decor, Vector3.new(x, 18, z), Vector3.new(44, 50, 48), RGB(110, 105, 105), true)
-				rock(decor, Vector3.new(x - (x > 0 and 6 or -6), 8, z + 30), Vector3.new(24, 20, 24), RGB(125, 120, 118), false)
+		for z = z0 + 30, zEnd - 30, 55 do
+			sides(function(s)
+				rock(decor, Vector3.new(s * 92, 16, z), Vector3.new(30, 44, 40), RGB(110, 105, 105), true)
+				pine(decor, Vector3.new(s * 79, 0, z + 26), 1.1)
 			end)
-			bothSides(width, 46, function(x)
-				pine(decor, Vector3.new(x, 0, z + 18), 1.1)
-			end)
+		end
+		for _ = 1, 25 do
+			deco(decor, Vector3.new(math.random(3, 8), 1, math.random(3, 8)), CFrame.new(math.random(-65, 65), 0.4, math.random(z0 + 10, zEnd - 10)), RGB(250, 252, 255), Enum.Material.Snow)
 		end
 	end
 end
 
-function MapDecor.Lobby(lobby, depth)
-	local decor = folder(lobby, "Decor")
+-- ── base ─────────────────────────────────────────────────────────────
+function MapDecor.Base(base, width, depth)
+	local decor = folder(base, "Decor")
+	-- stone path from the back of the base to the corridor
+	part(decor, Vector3.new(30, 0.2, depth), CFrame.new(0, 0.1, -depth / 2), RGB(205, 200, 190), Enum.Material.Cobblestone)
+	-- side paths to each column of plots
+	for _, z in ipairs({ -60, -155, -250, -345 }) do
+		part(decor, Vector3.new(120, 0.2, 10), CFrame.new(0, 0.11, z), RGB(205, 200, 190), Enum.Material.Cobblestone)
+	end
+
 	-- fountain
-	local center = Vector3.new(0, 0, 28)
+	local center = Vector3.new(0, 0, -205)
 	part(decor, Vector3.new(2, 26, 26), CFrame.new(center + Vector3.new(0, 1, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(225, 225, 235), Enum.Material.Marble, Enum.PartType.Cylinder)
-	local water = part(decor, Vector3.new(0.4, 23, 23), CFrame.new(center + Vector3.new(0, 2.1, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(80, 190, 255), Enum.Material.Glass, Enum.PartType.Cylinder)
+	local water = deco(decor, Vector3.new(0.4, 23, 23), CFrame.new(center + Vector3.new(0, 2.1, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(80, 190, 255), Enum.Material.Glass, Enum.PartType.Cylinder)
 	water.Transparency = 0.2
 	part(decor, Vector3.new(9, 3, 3), CFrame.new(center + Vector3.new(0, 6, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(235, 235, 245), Enum.Material.Marble, Enum.PartType.Cylinder)
-	local orb = part(decor, Vector3.one * 5, CFrame.new(center + Vector3.new(0, 12.5, 0)), RGB(120, 230, 255), Enum.Material.Neon, Enum.PartType.Ball)
+	local orb = deco(decor, Vector3.one * 5, CFrame.new(center + Vector3.new(0, 12.5, 0)), RGB(120, 230, 255), Enum.Material.Neon, Enum.PartType.Ball)
 	local spray = Instance.new("ParticleEmitter")
 	spray.Texture = "rbxasset://textures/particles/sparkles_main.dds"
 	spray.Color = ColorSequence.new(RGB(160, 230, 255))
@@ -2993,58 +3714,32 @@ function MapDecor.Lobby(lobby, depth)
 	spray.Size = NumberSequence.new(0.6, 0)
 	spray.Parent = orb
 
-	-- big title sign over the path into the Suburbs
-	local sign = part(decor, Vector3.new(90, 22, 2), CFrame.lookAt(Vector3.new(0, 40, depth / 2 - 4), Vector3.new(0, 40, 0)), RGB(40, 40, 70), Enum.Material.SmoothPlastic)
-	local gui = Instance.new("SurfaceGui")
-	gui.Face = Enum.NormalId.Front
-	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-	gui.PixelsPerStud = 15
-	gui.Parent = sign
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.FredokaOne
-	label.TextScaled = true
-	label.TextColor3 = RGB(255, 220, 60)
-	label.Text = "SHRINK IT! 🔬\n➜ Suburbs"
-	label.Parent = gui
-	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 6
-	stroke.Parent = label
-	for _, x in ipairs({ -46, 46 }) do
-		part(decor, Vector3.new(4, 52, 4), CFrame.new(x, 26, depth / 2 - 4), RGB(255, 200, 60), Enum.Material.SmoothPlastic)
+	-- title above the spawn
+	local title = part(decor, Vector3.new(70, 16, 2), CFrame.lookAt(Vector3.new(0, 34, -110), Vector3.new(0, 34, 0)), RGB(40, 40, 70), Enum.Material.SmoothPlastic)
+	title.CanCollide = false
+	sign(title, Enum.NormalId.Front, "SHRINK IT! 🔬", RGB(255, 220, 60), 14)
+	for _, x in ipairs({ -33, 33 }) do
+		part(decor, Vector3.new(3, 42, 3), CFrame.new(x, 21, -110), RGB(255, 200, 60), Enum.Material.SmoothPlastic)
 	end
+	local how = part(decor, Vector3.new(60, 8, 1), CFrame.lookAt(Vector3.new(0, 22, -110.5), Vector3.new(0, 22, 0)), RGB(255, 255, 255), Enum.Material.SmoothPlastic)
+	how.CanCollide = false
+	how.Transparency = 1
+	sign(how, Enum.NormalId.Front, "🔬 Shrink stuff → 🎒 run it back here → 💰 cash every second!", RGB(255, 255, 255), 14)
 
-	-- trees & flowers around the edges (avoiding boards, VIP room and like sign)
-	for _, x in ipairs({ -110, -80, 80 }) do
-		tree(decor, Vector3.new(x, 0, depth / 2 - 10), 1.1)
+	-- trees along the outer edges, flowers & lamps along the path
+	for z = -20, -depth + 20, -40 do
+		tree(decor, Vector3.new(-width / 2 + 16, 0, z), 1.1)
+		tree(decor, Vector3.new(width / 2 - 16, 0, z), 1.1)
 	end
-	for _, x in ipairs({ -110, -60, 60, 110 }) do
-		tree(decor, Vector3.new(x, 0, -depth / 2 + 10), 1.1)
+	for z = -30, -depth + 60, -50 do
+		lamp(decor, Vector3.new(-19, 0, z))
+		lamp(decor, Vector3.new(19, 0, z))
 	end
-	flowers(decor, Vector3.new(-40, 0, 28), 6)
-	flowers(decor, Vector3.new(40, 0, 28), 6)
-	for _, z in ipairs({ -60, -30, 0 }) do
-		lamp(decor, Vector3.new(-26, 0, z))
-		lamp(decor, Vector3.new(26, 0, z))
-	end
-end
-
-function MapDecor.Plaza(plotsFolder, centerZ, width, depth)
-	local decor = folder(plotsFolder, "Decor")
-	for x = -width / 2 + 10, width / 2 - 10, 40 do
-		tree(decor, Vector3.new(x, 0, centerZ - depth / 2 + 6), 1)
-	end
-	for z = centerZ - depth / 2 + 30, centerZ + depth / 2 - 30, 50 do
-		tree(decor, Vector3.new(-width / 2 + 6, 0, z), 1)
-		tree(decor, Vector3.new(width / 2 - 6, 0, z), 1)
-	end
-	-- lamps along the walkways between plots
-	for _, x in ipairs({ -150, 0, 150 }) do
-		for z = centerZ - depth / 2 + 20, centerZ + depth / 2 - 20, 45 do
-			lamp(decor, Vector3.new(x, 0, z))
-		end
-	end
+	flowers(decor, Vector3.new(-40, 0, -40), 6)
+	flowers(decor, Vector3.new(40, 0, -40), 6)
+	flowers(decor, Vector3.new(40, 0, -150), 6)
+	flowers(decor, Vector3.new(-40, 0, -260), 5)
+	flowers(decor, Vector3.new(40, 0, -260), 5)
 end
 
 function MapDecor.Lighting()
@@ -3055,15 +3750,15 @@ function MapDecor.Lighting()
 	Lighting.OutdoorAmbient = RGB(150, 150, 165)
 	if not Lighting:FindFirstChildOfClass("Atmosphere") then
 		local atmosphere = Instance.new("Atmosphere")
-		atmosphere.Density = 0.28
-		atmosphere.Haze = 1
+		atmosphere.Density = 0.25
+		atmosphere.Haze = 0.8
 		atmosphere.Color = RGB(200, 220, 255)
 		atmosphere.Decay = RGB(120, 160, 220)
 		atmosphere.Parent = Lighting
 	end
 	if not Lighting:FindFirstChildOfClass("ColorCorrectionEffect") then
 		local cc = Instance.new("ColorCorrectionEffect")
-		cc.Saturation = 0.18
+		cc.Saturation = 0.2
 		cc.Contrast = 0.06
 		cc.Parent = Lighting
 	end
@@ -3080,24 +3775,34 @@ return MapDecor
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="27">
+      <Item class="ModuleScript" referent="29">
         <Properties>
           <string name="Name">MapService</string>
           <string name="Source"><![CDATA[--[[
 	📍 LOCATION: ServerScriptService > Services > MapService (ModuleScript)
 
-	If Workspace has no "ShrinkItMap" model, this builds a complete placeholder world:
-	lobby, 6 gated tier areas with spawn points, 8 museum plots, VIP lounge, Like sign
-	and 4 leaderboard boards. Build your own map later using the SAME names (see README),
-	and this service will just read it instead of generating one.
+	Layout (bird's-eye; you run "up" the corridor and back down to the base):
+
+	          ┌──────────┐  ← end wall
+	          │ ZONE 6   │  Summit (820 long)
+	          │ ZONE 5   │  Skyline (720)
+	          │ ZONE 4   │  Harbor (620)
+	          │ ZONE 3   │  Downtown (520)
+	          │ ZONE 2   │  Neighborhood (420)
+	          │ ZONE 1   │  Grandpa's Backyard (320)
+	   ┌──────┴──SAFE────┴──────┐  ← z = 0 (safe-zone line)
+	   │ plots   BASE     plots │  spawn, fountain, like sign, leaderboards, VIP lounge
+	   └────────────────────────┘
+
+	If Workspace has no "ShrinkItMap", this builds it all (with themed scenery from MapDecor).
+	Build your own map later using the SAME names and this service will just read it:
 
 	ShrinkItMap
-	├─ Lobby (Model)          → SpawnLocation, VIPRoom (Part, region), VIPDoor, VIPFountain, LikeSign, Board_<Stat>
-	├─ Areas (Folder)
-	│   └─ Area_<tier> (Model, attr Tier) → Floor (Part), Gate (Part, attr Tier), SpawnPoints (Folder of Parts)
-	├─ Plots (Folder)
-	│   └─ Plot_<n> (Model, attr PlotId) → Floor (Part), MuseumBuilding (Model: Body, Sign), SpawnPad (Part)
-	└─ LiveObjects (Folder)   → spawned shrinkables live here
+	├─ Base (Model)  → Floor, SafeZone (invisible Part covering the base), SpawnLocation,
+	│                  VIPRoom (invisible region Part), VIPDoor, VIPFountain, LikeSign, Board_<Stat>
+	├─ Zones (Folder) → Zone_1..Zone_6 (Model, attr Tier) → Floor (Part), SpawnPoints (Folder of Parts)
+	├─ Plots (Folder) → Plot_1..Plot_8 (Model, attr PlotId) → Floor, MuseumBuilding (Model w/ "Sign"), SpawnPad
+	└─ LiveObjects (Folder), Chasers (Folder)
 ]]
 
 local CollectionService = game:GetService("CollectionService")
@@ -3110,12 +3815,16 @@ local GameConfig = require(Shared.Config.GameConfig)
 local MapDecor = require(script.Parent.MapDecor)
 
 local MapService = {}
-MapService.Areas = {} -- [tier] = { Tier, Model, Floor, Gate, SpawnPoints = {Part} }
+MapService.Areas = {} -- [tier] = { Tier, Model, Floor, SpawnPoints = {Part}, StartZ, EndZ }
 MapService.Plots = {} -- [id] = { Id, Model, Floor, Building, Pedestals (Folder), SpawnPad }
 MapService.Boards = {} -- [stat] = Part
 
-local WIDTH = 300
-local LOBBY_DEPTH = 160
+local CORRIDOR = 200 -- corridor width (x from -100 to 100)
+local BASE_W = 420 -- base width
+local BASE_D = 420 -- base depth (z from -420 to 0)
+local WALL_H = 46
+MapService.CorridorWidth = CORRIDOR
+MapService.DecorBand = 26 -- outer strip of each zone reserved for scenery
 
 local function part(props)
 	local p = Instance.new("Part")
@@ -3131,24 +3840,24 @@ local function part(props)
 	return p
 end
 
-local function surfaceText(target, face, text, color, bg)
+local function surfaceText(target, face, text, color, ppS)
 	local gui = Instance.new("SurfaceGui")
 	gui.Face = face
 	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-	gui.PixelsPerStud = 20
+	gui.PixelsPerStud = ppS or 20
+	gui.LightInfluence = 0
 	gui.Parent = target
 	local label = Instance.new("TextLabel")
+	label.Name = "Label"
 	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundColor3 = bg or Color3.fromRGB(30, 30, 40)
-	label.BackgroundTransparency = bg and 0 or 1
+	label.BackgroundTransparency = 1
 	label.Font = Enum.Font.FredokaOne
 	label.TextScaled = true
 	label.TextColor3 = color or Color3.new(1, 1, 1)
 	label.Text = text
-	label.Name = "Label"
 	label.Parent = gui
 	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 3
+	stroke.Thickness = 4
 	stroke.Parent = label
 	return gui, label
 end
@@ -3164,44 +3873,84 @@ local function maxObjectSize(tier)
 	return m
 end
 
+-- ── plots ─────────────────────────────────────────────────────────────
+-- Plot local space: +Z = front (faces the base's center path), building at the back (-Z).
+local function buildPlot(parent, id, cframe)
+	local plot = Instance.new("Model")
+	plot.Name = "Plot_" .. id
+	plot:SetAttribute("PlotId", id)
+	plot:SetAttribute("OwnerUserId", 0)
+	plot.Parent = parent
+	local floor = part({ Name = "Floor", Size = Vector3.new(90, 1, 80), CFrame = cframe * CFrame.new(0, -0.45, 0), Color = Color3.fromRGB(250, 240, 215), Material = Enum.Material.WoodPlanks, Parent = plot })
+	-- colored border
+	for _, side in ipairs({ -1, 1 }) do
+		part({ Name = "Border", Size = Vector3.new(1.5, 1.4, 80), CFrame = floor.CFrame * CFrame.new(side * 45.5, 0.3, 0), Color = Color3.fromRGB(255, 200, 60), Material = Enum.Material.SmoothPlastic, CanQuery = false, Parent = plot })
+	end
+	local building = Instance.new("Model")
+	building.Name = "MuseumBuilding"
+	building:SetAttribute("RaidBuilding", true)
+	building:SetAttribute("PlotId", id)
+	building.Parent = plot
+	local body = part({ Name = "Body", Size = Vector3.new(46, 22, 16), CFrame = floor.CFrame * CFrame.new(0, 11.5, -31), Color = Color3.fromRGB(245, 240, 255), Material = Enum.Material.Marble, Parent = building })
+	part({ Name = "Roof", Size = Vector3.new(50, 3, 20), CFrame = floor.CFrame * CFrame.new(0, 24, -31), Color = Color3.fromRGB(255, 95, 95), Parent = building })
+	local pediment = Instance.new("WedgePart")
+	pediment.Name = "Pediment"
+	pediment.Anchored = true
+	pediment.Size = Vector3.new(50, 6, 6)
+	pediment.CFrame = floor.CFrame * CFrame.new(0, 28.5, -24) * CFrame.Angles(0, math.pi, 0)
+	pediment.Color = Color3.fromRGB(255, 95, 95)
+	pediment.Parent = building
+	for c = -2, 2 do
+		part({ Name = "Column", Shape = Enum.PartType.Cylinder, Size = Vector3.new(22, 2.6, 2.6), CFrame = floor.CFrame * CFrame.new(c * 10, 11.5, -21.5) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.new(1, 1, 1), Material = Enum.Material.Marble, Parent = building })
+	end
+	building.PrimaryPart = body
+	local sign = part({ Name = "Sign", Size = Vector3.new(34, 5, 1), CFrame = floor.CFrame * CFrame.new(0, 19, -22.4), Color = Color3.fromRGB(40, 40, 60), Parent = building })
+	surfaceText(sign, Enum.NormalId.Back, "Empty Plot", Color3.new(1, 1, 1))
+	local pedestals = Instance.new("Folder")
+	pedestals.Name = "Pedestals"
+	pedestals.Parent = plot
+	part({ Name = "SpawnPad", Size = Vector3.new(10, 1, 10), CFrame = floor.CFrame * CFrame.new(0, 0.1, 47), Color = Color3.fromRGB(90, 200, 255), Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Parent = plot })
+end
+
+-- ── build ─────────────────────────────────────────────────────────────
 local function buildMap()
 	local map = Instance.new("Model")
 	map.Name = "ShrinkItMap"
+	local rng = Random.new(1337)
 
-	-- ── Lobby ─────────────────────────────────────────────
-	local lobby = Instance.new("Model")
-	lobby.Name = "Lobby"
-	lobby.Parent = map
-	part({ Name = "Floor", Size = Vector3.new(WIDTH, 2, LOBBY_DEPTH), CFrame = CFrame.new(0, -1, 0), Color = Color3.fromRGB(235, 235, 245), Material = Enum.Material.SmoothPlastic, Parent = lobby })
+	-- ── Base (safe zone) ──────────────────────────────────
+	local base = Instance.new("Model")
+	base.Name = "Base"
+	base.Parent = map
+	part({ Name = "Floor", Size = Vector3.new(BASE_W, 2, BASE_D), CFrame = CFrame.new(0, -1, -BASE_D / 2), Color = Color3.fromRGB(105, 205, 80), Material = Enum.Material.SmoothPlastic, Parent = base })
+	part({ Name = "SafeZone", Size = Vector3.new(BASE_W, 200, BASE_D), CFrame = CFrame.new(0, 99, -BASE_D / 2), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "SpawnLocation"
 	spawn.Anchored = true
 	spawn.Size = Vector3.new(14, 1, 14)
-	spawn.CFrame = CFrame.new(0, 0.5, -20)
+	spawn.CFrame = CFrame.new(0, 0.5, -70)
 	spawn.Duration = 0
 	spawn.Neutral = true
 	spawn.Color = Color3.fromRGB(90, 200, 255)
 	spawn.Material = Enum.Material.Neon
-	spawn.Parent = lobby
-	MapDecor.Lobby(lobby, LOBBY_DEPTH)
+	spawn.Parent = base
 
-	-- VIP lounge (corner of the lobby)
-	local vipCenter = Vector3.new(120, 0, 52)
-	part({ Name = "VIPRoom", Size = Vector3.new(56, 24, 52), CFrame = CFrame.new(vipCenter + Vector3.new(0, 12, 0)), Transparency = 1, CanCollide = false, CanQuery = false, Parent = lobby })
-	local wallColor = Color3.fromRGB(255, 205, 60)
-	part({ Name = "VIPWall", Size = Vector3.new(56, 24, 2), CFrame = CFrame.new(vipCenter + Vector3.new(0, 12, 26)), Color = wallColor, Parent = lobby })
-	part({ Name = "VIPWall", Size = Vector3.new(56, 24, 2), CFrame = CFrame.new(vipCenter + Vector3.new(0, 12, -26)), Color = wallColor, Parent = lobby })
-	part({ Name = "VIPWall", Size = Vector3.new(2, 24, 52), CFrame = CFrame.new(vipCenter + Vector3.new(28, 12, 0)), Color = wallColor, Parent = lobby })
-	part({ Name = "VIPWall", Size = Vector3.new(2, 24, 16), CFrame = CFrame.new(vipCenter + Vector3.new(-28, 12, 18)), Color = wallColor, Parent = lobby })
-	part({ Name = "VIPWall", Size = Vector3.new(2, 24, 16), CFrame = CFrame.new(vipCenter + Vector3.new(-28, 12, -18)), Color = wallColor, Parent = lobby })
-	part({ Name = "VIPRoof", Size = Vector3.new(56, 2, 52), CFrame = CFrame.new(vipCenter + Vector3.new(0, 25, 0)), Color = wallColor, Parent = lobby })
-	local door = part({ Name = "VIPDoor", Size = Vector3.new(2, 24, 20), CFrame = CFrame.new(vipCenter + Vector3.new(-28, 12, 0)), Color = Color3.fromRGB(255, 230, 120), Material = Enum.Material.ForceField, Transparency = 0.3, Parent = lobby })
-	surfaceText(door, Enum.NormalId.Left, "👑 VIP ONLY", Color3.fromRGB(255, 220, 60))
-	local fountain = part({ Name = "VIPFountain", Shape = Enum.PartType.Cylinder, Size = Vector3.new(3, 12, 12), CFrame = CFrame.new(vipCenter + Vector3.new(6, 1.5, 0)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(120, 230, 255), Material = Enum.Material.Neon, Parent = lobby })
+	-- VIP lounge (back center)
+	local vip = Vector3.new(0, 0, -BASE_D + 32)
+	local gold = Color3.fromRGB(255, 205, 60)
+	part({ Name = "VIPRoom", Size = Vector3.new(70, 24, 52), CFrame = CFrame.new(vip + Vector3.new(0, 12, 0)), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(70, 24, 2), CFrame = CFrame.new(vip + Vector3.new(0, 12, -26)), Color = gold, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(2, 24, 52), CFrame = CFrame.new(vip + Vector3.new(-35, 12, 0)), Color = gold, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(2, 24, 52), CFrame = CFrame.new(vip + Vector3.new(35, 12, 0)), Color = gold, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(23, 24, 2), CFrame = CFrame.new(vip + Vector3.new(-23.5, 12, 26)), Color = gold, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(23, 24, 2), CFrame = CFrame.new(vip + Vector3.new(23.5, 12, 26)), Color = gold, Parent = base })
+	part({ Name = "VIPRoof", Size = Vector3.new(72, 2, 54), CFrame = CFrame.new(vip + Vector3.new(0, 25, 0)), Color = gold, Parent = base })
+	local door = part({ Name = "VIPDoor", Size = Vector3.new(24, 24, 2), CFrame = CFrame.new(vip + Vector3.new(0, 12, 26)), Color = Color3.fromRGB(255, 230, 120), Material = Enum.Material.ForceField, Transparency = 0.3, Parent = base })
+	surfaceText(door, Enum.NormalId.Back, "👑 VIP ONLY", gold)
+	local fountain = part({ Name = "VIPFountain", Shape = Enum.PartType.Cylinder, Size = Vector3.new(3, 12, 12), CFrame = CFrame.new(vip + Vector3.new(0, 1.5, -6)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(120, 230, 255), Material = Enum.Material.Neon, Parent = base })
 	local fb = Instance.new("BillboardGui")
 	fb.Size = UDim2.fromOffset(220, 60)
 	fb.StudsOffset = Vector3.new(0, 6, 0)
-	fb.AlwaysOnTop = true
 	fb.Parent = fountain
 	local fl = Instance.new("TextLabel")
 	fl.Size = UDim2.fromScale(1, 1)
@@ -3213,129 +3962,102 @@ local function buildMap()
 	fl.Parent = fb
 	Instance.new("UIStroke", fl).Thickness = 2
 
-	-- Like sign
-	part({ Name = "LikeSign", Size = Vector3.new(30, 18, 2), CFrame = CFrame.lookAt(Vector3.new(146, 10, -30), Vector3.new(0, 10, -30)), Color = Color3.fromRGB(40, 40, 60), Parent = lobby })
-
-	-- Leaderboards
+	-- Like sign & leaderboards (center strip, facing the spawn)
+	part({ Name = "LikeSign", Size = Vector3.new(34, 20, 2), CFrame = CFrame.lookAt(Vector3.new(-45, 11, -150), Vector3.new(-45, 11, -60)), Color = Color3.fromRGB(40, 40, 60), Parent = base })
 	local stats = { "MuseumValue", "TotalShrinks", "Rebirths", "RaidsWon" }
 	for i, stat in ipairs(stats) do
-		local z = -55 + (i - 1) * 34
-		part({ Name = "Board_" .. stat, Size = Vector3.new(30, 26, 2), CFrame = CFrame.lookAt(Vector3.new(-146, 14, z), Vector3.new(0, 14, z)), Color = Color3.fromRGB(30, 30, 45), Parent = lobby })
+		local x = -57 + (i - 1) * 38
+		part({ Name = "Board_" .. stat, Size = Vector3.new(34, 26, 2), CFrame = CFrame.lookAt(Vector3.new(x, 14, -300), Vector3.new(x, 14, 0)), Color = Color3.fromRGB(30, 30, 45), Parent = base })
 	end
 
-	-- ── Areas ─────────────────────────────────────────────
-	local areas = Instance.new("Folder")
-	areas.Name = "Areas"
-	areas.Parent = map
-	local z = LOBBY_DEPTH / 2
-	local rng = Random.new(1337)
-	for tier, t in ipairs(TierConfig.Tiers) do
-		local area = Instance.new("Model")
-		area.Name = "Area_" .. tier
-		area:SetAttribute("Tier", tier)
-		area:SetAttribute("AreaName", t.Area)
-		area.Parent = areas
-		local depth = t.AreaDepth
-		local style = MapDecor.FloorStyle[tier] or { Material = Enum.Material.Grass, Color = t.Color }
-		part({ Name = "Floor", Size = Vector3.new(WIDTH, 2, depth), CFrame = CFrame.new(0, -1, z + depth / 2), Color = style.Color, Material = style.Material, Parent = area })
-		MapDecor.Area(area, tier, z, depth, WIDTH)
-		local sign = part({ Name = "AreaSign", Size = Vector3.new(40, 8, 1), CFrame = CFrame.new(0, 30, z + 2), Transparency = 1, CanCollide = false, CanQuery = false, Parent = area })
-		surfaceText(sign, Enum.NormalId.Front, t.Area .. " · " .. t.Name, t.Color)
-		if tier > 1 then
-			local gate = part({ Name = "Gate", Size = Vector3.new(WIDTH, 300, 2), CFrame = CFrame.new(0, 150, z), Color = t.Color, Material = Enum.Material.ForceField, Transparency = 0.35, CanQuery = false, Parent = area })
-			gate:SetAttribute("Tier", tier)
-			CollectionService:AddTag(gate, "AreaGate")
-			local _, label = surfaceText(gate, Enum.NormalId.Front, "", Color3.new(1, 1, 1))
-			label.Parent.PixelsPerStud = 4
-			label.Size = UDim2.new(0, 220 * 4, 0, 40 * 4)
-			label.Position = UDim2.new(0.5, -110 * 4, 1, -50 * 4)
-			label.Text = "🔒 " .. t.Area .. "\nRay Power " .. t.RayPowerRequired .. " or pay coins (Upgrades menu)"
+	-- plots: 4 down each side of the base, fronts facing the center path
+	local plotsFolder = Instance.new("Folder")
+	plotsFolder.Name = "Plots"
+	plotsFolder.Parent = map
+	local id = 0
+	for _, zc in ipairs({ -60, -155, -250, -345 }) do
+		for _, side in ipairs({ -1, 1 }) do
+			id += 1
+			if id <= GameConfig.PlotCount then
+				-- left plots face +X, right plots face -X
+				local cf = CFrame.new(side * 135, 0, zc) * CFrame.Angles(0, side < 0 and math.rad(90) or math.rad(-90), 0)
+				buildPlot(plotsFolder, id, cf)
+			end
 		end
-		-- spawn points
+	end
+
+	MapDecor.Base(base, BASE_W, BASE_D)
+
+	-- ── Zones (one long corridor) ─────────────────────────
+	local zones = Instance.new("Folder")
+	zones.Name = "Zones"
+	zones.Parent = map
+	local z = 0
+	for tier, t in ipairs(TierConfig.Tiers) do
+		local zone = Instance.new("Model")
+		zone.Name = "Zone_" .. tier
+		zone:SetAttribute("Tier", tier)
+		zone:SetAttribute("AreaName", t.Area)
+		zone.Parent = zones
+		local depth = t.AreaDepth
+		local style = MapDecor.FloorStyle[tier]
+		part({ Name = "Floor", Size = Vector3.new(CORRIDOR, 2, depth), CFrame = CFrame.new(0, -1, z + depth / 2), Color = style.Color, Material = style.Material, Parent = zone })
+		MapDecor.ZoneArch(zone, tier, t, z, CORRIDOR)
+		MapDecor.Zone(zone, tier, z, depth, CORRIDOR)
+
+		-- spawn points (kept out of the scenery strips along the walls)
 		local points = Instance.new("Folder")
 		points.Name = "SpawnPoints"
-		points.Parent = area
+		points.Parent = zone
 		local size = maxObjectSize(tier)
+		local halfX = math.max(8, CORRIDOR / 2 - MapService.DecorBand - size / 2)
 		local spacing = size + 10
-		local margin = size / 2 + 8
-		local halfX = math.max(10, MapDecor.SpawnHalfWidth - size / 2) -- keep clear of border scenery
 		local placed = {}
 		local tries = 0
-		while #placed < t.SpawnPoints and tries < 2000 do
+		while #placed < t.SpawnPoints and tries < 3000 do
 			tries += 1
 			local px = rng:NextNumber(-halfX, halfX)
-			local pz = rng:NextNumber(z + margin + 10, z + depth - margin)
-			local okSpot = true
+			local pz = rng:NextNumber(z + size / 2 + 22, z + depth - size / 2 - 10)
+			local ok = true
 			for _, p in ipairs(placed) do
 				if (Vector2.new(px, pz) - p).Magnitude < spacing then
-					okSpot = false
+					ok = false
 					break
 				end
 			end
-			if okSpot then
+			if ok then
 				table.insert(placed, Vector2.new(px, pz))
-				part({ Name = "SpawnPoint", Size = Vector3.new(2, 1, 2), CFrame = CFrame.new(px, 0.5, pz), Transparency = 1, CanCollide = false, CanQuery = false, Parent = points })
+				part({ Name = "SpawnPoint", Size = Vector3.new(2, 1, 2), CFrame = CFrame.new(px, 0.5, pz), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = points })
 			end
 		end
 		z += depth
 	end
 
-	-- invisible boundary walls for the area strip (no walking around gates)
-	local boundary = Instance.new("Folder")
-	boundary.Name = "Boundary"
-	boundary.Parent = map
-	local stripStart = -LOBBY_DEPTH / 2
-	local stripLen = z - stripStart
-	for _, x in ipairs({ -WIDTH / 2 - 1, WIDTH / 2 + 1 }) do
-		part({ Name = "Wall", Size = Vector3.new(2, 400, stripLen), CFrame = CFrame.new(x, 200, stripStart + stripLen / 2), Transparency = 1, CanQuery = false, Parent = boundary })
-	end
-	part({ Name = "Wall", Size = Vector3.new(WIDTH, 400, 2), CFrame = CFrame.new(0, 200, z + 1), Transparency = 1, CanQuery = false, Parent = boundary })
-
-	-- ── Plots ─────────────────────────────────────────────
-	local plotsFolder = Instance.new("Folder")
-	plotsFolder.Name = "Plots"
-	plotsFolder.Parent = map
-	part({ Name = "Plaza", Size = Vector3.new(640, 2, 340), CFrame = CFrame.new(0, -1.05, -LOBBY_DEPTH / 2 - 170), Color = Color3.fromRGB(200, 205, 215), Material = Enum.Material.Concrete, Parent = plotsFolder })
-	local xs = { -225, -75, 75, 225 }
-	local zs = { -LOBBY_DEPTH / 2 - 90, -LOBBY_DEPTH / 2 - 250 }
-	local id = 0
-	for _, pz in ipairs(zs) do
-		for _, px in ipairs(xs) do
-			id += 1
-			if id > GameConfig.PlotCount then
-				break
+	-- ── Walls ────────────────────────────────────────────
+	local walls = Instance.new("Folder")
+	walls.Name = "Walls"
+	walls.Parent = map
+	MapDecor.Walls(walls, {
+		BaseWidth = BASE_W,
+		BaseDepth = BASE_D,
+		Corridor = CORRIDOR,
+		Height = WALL_H,
+		Zones = (function()
+			local list, zz = {}, 0
+			for tier, t in ipairs(TierConfig.Tiers) do
+				table.insert(list, { Tier = tier, StartZ = zz, Depth = t.AreaDepth })
+				zz += t.AreaDepth
 			end
-			local plot = Instance.new("Model")
-			plot.Name = "Plot_" .. id
-			plot:SetAttribute("PlotId", id)
-			plot:SetAttribute("OwnerUserId", 0)
-			plot.Parent = plotsFolder
-			part({ Name = "Floor", Size = Vector3.new(140, 1, 150), CFrame = CFrame.new(px, -0.45, pz), Color = Color3.fromRGB(250, 245, 230), Material = Enum.Material.WoodPlanks, Parent = plot })
-			local building = Instance.new("Model")
-			building.Name = "MuseumBuilding"
-			building:SetAttribute("RaidBuilding", true)
-			building:SetAttribute("PlotId", id)
-			building.Parent = plot
-			local body = part({ Name = "Body", Size = Vector3.new(60, 28, 26), CFrame = CFrame.new(px, 14, pz - 75 + 14), Color = Color3.fromRGB(245, 240, 255), Material = Enum.Material.Marble, Parent = building })
-			part({ Name = "Roof", Size = Vector3.new(66, 4, 32), CFrame = CFrame.new(px, 30, pz - 75 + 14), Color = Color3.fromRGB(255, 90, 90), Parent = building })
-			for c = -2, 2 do
-				part({ Name = "Column", Shape = Enum.PartType.Cylinder, Size = Vector3.new(26, 3, 3), CFrame = CFrame.new(px + c * 12, 13, pz - 75 + 29) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Marble, Parent = building })
-			end
-			building.PrimaryPart = body
-			local signPart = part({ Name = "Sign", Size = Vector3.new(40, 6, 1), CFrame = CFrame.new(px, 24, pz - 75 + 27.6), Color = Color3.fromRGB(40, 40, 60), Parent = building })
-			surfaceText(signPart, Enum.NormalId.Back, "Empty Plot", Color3.new(1, 1, 1))
-			local pedestals = Instance.new("Folder")
-			pedestals.Name = "Pedestals"
-			pedestals.Parent = plot
-			part({ Name = "SpawnPad", Size = Vector3.new(10, 1, 10), CFrame = CFrame.new(px, 0.1, pz + 70), Color = Color3.fromRGB(90, 200, 255), Material = Enum.Material.Neon, CanCollide = false, Parent = plot })
-		end
-	end
-
-	MapDecor.Plaza(plotsFolder, -LOBBY_DEPTH / 2 - 170, 640, 340)
+			return list
+		end)(),
+	})
 
 	local live = Instance.new("Folder")
 	live.Name = "LiveObjects"
 	live.Parent = map
+	local chasers = Instance.new("Folder")
+	chasers.Name = "Chasers"
+	chasers.Parent = map
 
 	MapDecor.Lighting()
 	map.Parent = workspace
@@ -3343,28 +4065,31 @@ local function buildMap()
 end
 
 local function readMap(map)
-	local lobby = map:WaitForChild("Lobby")
-	MapService.Lobby = lobby
-	MapService.LobbySpawn = lobby:FindFirstChild("SpawnLocation")
-	MapService.VIPRoom = lobby:FindFirstChild("VIPRoom")
-	MapService.VIPDoor = lobby:FindFirstChild("VIPDoor")
-	MapService.VIPFountain = lobby:FindFirstChild("VIPFountain")
-	MapService.LikeSign = lobby:FindFirstChild("LikeSign")
+	local base = map:FindFirstChild("Base") or map:WaitForChild("Lobby")
+	MapService.Base = base
+	MapService.SafeZone = base:FindFirstChild("SafeZone") or base:FindFirstChild("Floor")
+	MapService.LobbySpawn = base:FindFirstChild("SpawnLocation")
+	MapService.VIPRoom = base:FindFirstChild("VIPRoom")
+	MapService.VIPDoor = base:FindFirstChild("VIPDoor")
+	MapService.VIPFountain = base:FindFirstChild("VIPFountain")
+	MapService.LikeSign = base:FindFirstChild("LikeSign")
 	if MapService.VIPDoor then
 		CollectionService:AddTag(MapService.VIPDoor, "VIPDoor")
 	end
-	for _, child in ipairs(lobby:GetChildren()) do
+	for _, child in ipairs(base:GetChildren()) do
 		local stat = string.match(child.Name, "^Board_(%w+)$")
 		if stat then
 			MapService.Boards[stat] = child
 		end
 	end
 
-	for _, area in ipairs(map:WaitForChild("Areas"):GetChildren()) do
-		local tier = area:GetAttribute("Tier") or tonumber(string.match(area.Name, "%d+"))
-		if tier then
+	local zones = map:FindFirstChild("Zones") or map:FindFirstChild("Areas")
+	for _, zone in ipairs(zones and zones:GetChildren() or {}) do
+		local tier = zone:GetAttribute("Tier") or tonumber(string.match(zone.Name, "%d+"))
+		local floor = zone:FindFirstChild("Floor")
+		if tier and floor then
 			local points = {}
-			local folder = area:FindFirstChild("SpawnPoints")
+			local folder = zone:FindFirstChild("SpawnPoints")
 			if folder then
 				for _, p in ipairs(folder:GetChildren()) do
 					if p:IsA("BasePart") then
@@ -3372,12 +4097,14 @@ local function readMap(map)
 					end
 				end
 			end
-			local gate = area:FindFirstChild("Gate")
-			if gate then
-				gate:SetAttribute("Tier", tier)
-				CollectionService:AddTag(gate, "AreaGate")
-			end
-			MapService.Areas[tier] = { Tier = tier, Model = area, Floor = area:FindFirstChild("Floor"), Gate = gate, SpawnPoints = points }
+			MapService.Areas[tier] = {
+				Tier = tier,
+				Model = zone,
+				Floor = floor,
+				SpawnPoints = points,
+				StartZ = floor.Position.Z - floor.Size.Z / 2,
+				EndZ = floor.Position.Z + floor.Size.Z / 2,
+			}
 		end
 	end
 
@@ -3399,32 +4126,22 @@ local function readMap(map)
 		end
 	end
 
-	MapService.LiveObjects = map:FindFirstChild("LiveObjects")
-	if not MapService.LiveObjects then
-		local live = Instance.new("Folder")
-		live.Name = "LiveObjects"
-		live.Parent = map
-		MapService.LiveObjects = live
+	local function ensureFolder(name)
+		local f = map:FindFirstChild(name)
+		if not f then
+			f = Instance.new("Folder")
+			f.Name = name
+			f.Parent = map
+		end
+		return f
 	end
+	MapService.LiveObjects = ensureFolder("LiveObjects")
+	MapService.ChaserFolder = ensureFolder("Chasers")
 end
 
 function MapService.Init(_registry)
 	local map = workspace:FindFirstChild("ShrinkItMap") or buildMap()
 	readMap(map)
-end
-
--- Returns the tier of the area containing `position`, or nil (lobby / plots).
-function MapService.GetAreaAt(position)
-	for tier, area in pairs(MapService.Areas) do
-		local floor = area.Floor
-		if floor then
-			local rel = floor.CFrame:PointToObjectSpace(position)
-			if math.abs(rel.X) <= floor.Size.X / 2 and math.abs(rel.Z) <= floor.Size.Z / 2 and rel.Y > -10 and rel.Y < 400 then
-				return tier
-			end
-		end
-	end
-	return nil
 end
 
 function MapService.IsInPart(region, position)
@@ -3433,26 +4150,67 @@ function MapService.IsInPart(region, position)
 	end
 	local rel = region.CFrame:PointToObjectSpace(position)
 	local s = region.Size / 2
-	return math.abs(rel.X) <= s.X and math.abs(rel.Y) <= s.Y and math.abs(rel.Z) <= s.Z
+	return math.abs(rel.X) <= s.X and math.abs(rel.Y) <= s.Y + 50 and math.abs(rel.Z) <= s.Z
 end
 
-function MapService.RandomPointInArea(tier, margin)
+-- Is this position inside the base / safe zone?
+function MapService.IsInBase(position)
+	return MapService.IsInPart(MapService.SafeZone, position)
+end
+
+-- Returns the tier of the zone containing `position`, or nil (base).
+function MapService.GetAreaAt(position)
+	for tier, area in pairs(MapService.Areas) do
+		local floor = area.Floor
+		local rel = floor.CFrame:PointToObjectSpace(position)
+		if math.abs(rel.X) <= floor.Size.X / 2 and math.abs(rel.Z) <= floor.Size.Z / 2 and rel.Y > -10 and rel.Y < 400 then
+			return tier
+		end
+	end
+	return nil
+end
+
+-- Where you appear when teleporting to a zone.
+function MapService.ZoneStartCFrame(tier)
 	local area = MapService.Areas[tier]
-	if not area or not area.Floor then
+	if not area then
 		return nil
 	end
 	local f = area.Floor
-	local hx = math.max(1, f.Size.X / 2 - (margin or 10))
-	local hz = math.max(1, f.Size.Z / 2 - (margin or 10))
+	return f.CFrame * CFrame.new(0, f.Size.Y / 2 + 4, -f.Size.Z / 2 + 14)
+end
+
+-- Random point on a zone's floor, outside the scenery strips. margin = half the object's footprint.
+function MapService.RandomPointInArea(tier, margin)
+	local area = MapService.Areas[tier]
+	if not area then
+		return nil
+	end
+	local f = area.Floor
+	local hx = math.max(1, f.Size.X / 2 - MapService.DecorBand - (margin or 10))
+	local hz = math.max(1, f.Size.Z / 2 - (margin or 10) - 10)
 	local offset = Vector3.new(math.random() * 2 * hx - hx, f.Size.Y / 2, math.random() * 2 * hz - hz)
 	return (f.CFrame * CFrame.new(offset)).Position
+end
+
+-- Clamps a position into a zone's walkable floor (used to place chasers).
+function MapService.ClampToZone(tier, position)
+	local area = MapService.Areas[tier]
+	if not area then
+		return position
+	end
+	local f = area.Floor
+	local rel = f.CFrame:PointToObjectSpace(position)
+	local hx, hz = f.Size.X / 2 - 8, f.Size.Z / 2 - 8
+	rel = Vector3.new(math.clamp(rel.X, -hx, hx), f.Size.Y / 2 + 3, math.clamp(rel.Z, -hz, hz))
+	return (f.CFrame * CFrame.new(rel)).Position
 end
 
 return MapService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="28">
+      <Item class="ModuleScript" referent="30">
         <Properties>
           <string name="Name">ModelFactory</string>
           <string name="Source"><![CDATA[--[[
@@ -3698,7 +4456,7 @@ return ModelFactory
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="29">
+      <Item class="ModuleScript" referent="31">
         <Properties>
           <string name="Name">MonetizationService</string>
           <string name="Source"><![CDATA[--[[
@@ -3739,10 +4497,14 @@ local function applyPassEffects(player)
 	player:SetAttribute("VIP", s.Passes.VIP == true)
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local stats = Svc.Shrink.GetStats(player)
 	if humanoid then
-		humanoid.WalkSpeed = s.Passes.SpeedBoots and GameConfig.SpeedBootsWalkSpeed or GameConfig.BaseWalkSpeed
+		humanoid.WalkSpeed = stats and stats.WalkSpeed or GameConfig.BaseWalkSpeed
 	end
 end
+
+-- Re-applies walk speed etc. (call after Speed upgrades / rebirth).
+MonetizationService.ApplyMovement = applyPassEffects
 
 function MonetizationService.HasPass(player, key)
 	return Svc.Session.HasPass(player, key)
@@ -3919,7 +4681,7 @@ return MonetizationService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="30">
+      <Item class="ModuleScript" referent="32">
         <Properties>
           <string name="Name">MuseumService</string>
           <string name="Source"><![CDATA[--[[
@@ -3949,9 +4711,9 @@ local plotOf = {} -- [player] = plot record from MapService.Plots
 local slots = {} -- [player] = { [i] = { Model = pedestalModel, Uid = number? } }
 local refreshQueued = {}
 
-local COLS = 10
-local SPACING_X = 12
-local SPACING_Z = 10
+local COLS = 11
+local SPACING_X = 7.6
+local SPACING_Z = 7
 
 function MuseumService.Init(registry)
 	Svc = registry
@@ -3962,7 +4724,7 @@ local function pedestalCFrame(plot, i)
 	local row = math.floor((i - 1) / COLS)
 	local col = (i - 1) % COLS
 	local x = (col - (COLS - 1) / 2) * SPACING_X
-	local z = floor.Size.Z / 2 - 10 - row * SPACING_Z
+	local z = floor.Size.Z / 2 - 5 - row * SPACING_Z
 	return floor.CFrame * CFrame.new(x, floor.Size.Y / 2, z)
 end
 
@@ -3972,7 +4734,7 @@ local function makePedestal(player, plot, i)
 	local base = Instance.new("Part")
 	base.Name = "Base"
 	base.Anchored = true
-	base.Size = Vector3.new(5, 2.4, 5)
+	base.Size = Vector3.new(4.6, 2.4, 4.6)
 	base.Material = Enum.Material.Marble
 	base.Color = Color3.fromRGB(245, 245, 250)
 	base.CFrame = pedestalCFrame(plot, i) * CFrame.new(0, 1.2, 0)
@@ -3981,7 +4743,7 @@ local function makePedestal(player, plot, i)
 	trim.Name = "Trim"
 	trim.Anchored = true
 	trim.CanCollide = false
-	trim.Size = Vector3.new(5.3, 0.3, 5.3)
+	trim.Size = Vector3.new(4.9, 0.3, 4.9)
 	trim.Material = Enum.Material.Neon
 	trim.Color = Color3.fromRGB(90, 200, 255)
 	trim.CFrame = base.CFrame * CFrame.new(0, 1.05, 0)
@@ -3990,11 +4752,11 @@ local function makePedestal(player, plot, i)
 	glass.Name = "Glass"
 	glass.Anchored = true
 	glass.CanCollide = false
-	glass.Size = Vector3.new(4.6, 4.6, 4.6)
+	glass.Size = Vector3.new(4.2, 4.2, 4.2)
 	glass.Material = Enum.Material.Glass
 	glass.Transparency = 0.8
 	glass.Color = Color3.fromRGB(200, 240, 255)
-	glass.CFrame = base.CFrame * CFrame.new(0, 1.2 + 2.3, 0)
+	glass.CFrame = base.CFrame * CFrame.new(0, 1.2 + 2.1, 0)
 	glass.Parent = model
 	model.PrimaryPart = base
 	model:SetAttribute("PedestalSlot", i)
@@ -4275,6 +5037,9 @@ function MuseumService.Start()
 		if not Svc.Session.Throttle(player, "tp", 2) then
 			return { ok = false, msg = "Slow down!" }
 		end
+		if Svc.Carry.IsCarrying(player) then
+			return { ok = false, msg = "🎒 No teleporting while carrying loot — run it home!" }
+		end
 		MuseumService.TeleportHome(player)
 		return { ok = true }
 	end)
@@ -4296,7 +5061,7 @@ return MuseumService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="31">
+      <Item class="ModuleScript" referent="33">
         <Properties>
           <string name="Name">NetService</string>
           <string name="Source"><![CDATA[--[[
@@ -4392,7 +5157,7 @@ return NetService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="32">
+      <Item class="ModuleScript" referent="34">
         <Properties>
           <string name="Name">RaidService</string>
           <string name="Source"><![CDATA[--[[
@@ -4653,13 +5418,13 @@ return RaidService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="33">
+      <Item class="ModuleScript" referent="35">
         <Properties>
           <string name="Name">RebirthService</string>
           <string name="Source"><![CDATA[--[[
 	📍 LOCATION: ServerScriptService > Services > RebirthService (ModuleScript)
 
-	Rebirth: resets Coins, upgrades, paid gates and the museum (Exclusive "Huge" items are kept)
+	Rebirth: resets Coins, upgrades and the museum (Exclusive "Huge" items are kept)
 	for a permanent income multiplier, Gems and Rebirth Tokens.
 	The Index, Gems, Tokens, token upgrades, skins and potions are kept.
 ]]
@@ -4695,6 +5460,7 @@ function RebirthService.DoRebirth(player, free)
 		Svc.Raid.EndRaidsFor(player)
 	end
 
+	Svc.Carry.DropAll(player, "rebirth")
 	local rewards = Formulas.RebirthRewards(data.Rebirths)
 	data.Rebirths += 1
 	data.Coins = 0
@@ -4714,6 +5480,7 @@ function RebirthService.DoRebirth(player, free)
 	data.RebirthTokens += rewards.Tokens
 
 	Svc.Museum.Recompute(player)
+	Svc.Monetization.ApplyMovement(player)
 	Svc.Economy.AddCoins(player, 0) -- push currency
 	Svc.Data.MarkDirty(player)
 	Svc.Net.Popup(player, "Rebirth", {
@@ -4748,7 +5515,7 @@ return RebirthService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="34">
+      <Item class="ModuleScript" referent="36">
         <Properties>
           <string name="Name">RewardService</string>
           <string name="Source"><![CDATA[--[[
@@ -5059,7 +5826,7 @@ return RewardService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="35">
+      <Item class="ModuleScript" referent="37">
         <Properties>
           <string name="Name">SessionService</string>
           <string name="Source"><![CDATA[--[[
@@ -5126,7 +5893,7 @@ return SessionService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="36">
+      <Item class="ModuleScript" referent="38">
         <Properties>
           <string name="Name">ShrinkService</string>
           <string name="Source"><![CDATA[--[[
@@ -5286,15 +6053,25 @@ function ShrinkService.Capture(player, model)
 		return false
 	end
 	local data = Svc.Data.Get(player)
+	local fromPos = model:GetPivot().Position
 	Remotes.Event("ShrinkFX"):FireAllClients(model, player, claimed.Variant, false)
 	Svc.Spawn.Remove(model, claimed, GameConfig.ShrinkFxTime)
-	local item = Svc.Museum.AddItem(player, claimed.Id, claimed.Variant)
+	-- you now CARRY it; it only goes into the museum once you run it back to base
+	local session = Svc.Session.Get(player)
+	session.PendingCarry = (session.PendingCarry or 0) + 1
+	task.delay(GameConfig.ShrinkFxTime * 0.85, function()
+		session.PendingCarry -= 1
+		if player.Parent then
+			Svc.Carry.Add(player, claimed.Id, claimed.Variant, fromPos)
+		end
+	end)
 	data.TotalShrinks += 1
 	Svc.Data.MarkDirty(player)
 
-	if item then
+	local item = { Id = claimed.Id, V = claimed.Variant }
+	do
 		local income = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player)
-		Svc.Net.Notify(player, "+ " .. Formulas.ItemName(item) .. "  (+" .. Format.Coins(income) .. "/s)", "shrink")
+		Svc.Net.Notify(player, "🎒 " .. Formulas.ItemName(item) .. " (+" .. Format.Coins(income) .. "/s) — bring it back to base!", "shrink")
 		local def = ObjectConfig.Get(claimed.Id)
 		local variant = RarityConfig.GetVariant(claimed.Variant)
 		local rarity = RarityConfig.GetRarity(def.Rarity)
@@ -5369,6 +6146,12 @@ local function onFire(player, target, extras)
 		return
 	end
 
+	local room = stats.Carry - Svc.Carry.Count(player) - (s.PendingCarry or 0)
+	if room <= 0 then
+		Svc.Net.Notify(player, "🎒 Hands full! Run back to base to drop off your loot.", "error")
+		return
+	end
+
 	local info, reason, tooBigInfo = ShrinkService.CheckObject(player, target, stats, root)
 	if not info then
 		if reason == "toobig" then
@@ -5385,18 +6168,18 @@ local function onFire(player, target, extras)
 	end
 	ShrinkService.Capture(player, target)
 
-	-- Multi-Shrink extras
-	if type(extras) == "table" and stats.Multi > 1 then
+	-- Multi-Shrink extras (limited by how much room you have left to carry)
+	if type(extras) == "table" and room > 1 then
 		local origin = target:GetPivot().Position
 		local seen = { [target] = true }
 		local count = 1
-		for i = 1, math.min(#extras, stats.Multi - 1) do
+		for i = 1, math.min(#extras, room - 1) do
 			local extra = extras[i]
 			if typeof(extra) == "Instance" and not seen[extra] and targetKind(extra) == "object" then
 				seen[extra] = true
 				if (extra:GetPivot().Position - origin).Magnitude <= GameConfig.MultiShrinkRadius + 10 then
 					local extraInfo = ShrinkService.CheckObject(player, extra, stats, root)
-					if extraInfo and count < stats.Multi then
+					if extraInfo and count < room then
 						count += 1
 						ShrinkService.Capture(player, extra)
 					end
@@ -5414,7 +6197,7 @@ local function autoShrinkLoop()
 		for _, player in ipairs(Players:GetPlayers()) do
 			local s = Svc.Session.Get(player)
 			local data = Svc.Data.Get(player)
-			if s and data and s.Passes.AutoShrink and data.Settings.AutoShrink and now >= s.NextAuto then
+			if s and data and s.Passes.AutoShrink and data.Settings.AutoShrink and now >= s.NextAuto and Svc.Carry.Count(player) < Svc.Carry.Capacity(player) then
 				local root = rootOf(player)
 				local stats = ShrinkService.GetStats(player)
 				if root and stats then
@@ -5472,7 +6255,7 @@ return ShrinkService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="37">
+      <Item class="ModuleScript" referent="39">
         <Properties>
           <string name="Name">SpawnService</string>
           <string name="Source"><![CDATA[--[[
@@ -5611,6 +6394,7 @@ function SpawnService.SpawnAt(tier, position, opts)
 		Static = false,
 	}
 	decorate(model, id, variant, info)
+	ModelFactory.SetCollision(model, false) -- never block players running home
 	model.Parent = Svc.Map.LiveObjects
 	active[model] = info
 	return model, info
@@ -5843,7 +6627,7 @@ return SpawnService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="38">
+      <Item class="ModuleScript" referent="40">
         <Properties>
           <string name="Name">UpgradeService</string>
           <string name="Source"><![CDATA[--[[
@@ -5889,14 +6673,17 @@ function UpgradeService.Start()
 			local newTier = TierConfig.MaxTierForRayPower(data.Upgrades.RayPower)
 			if newTier > oldTier then
 				local t = TierConfig.Tiers[newTier]
-				Svc.Net.Notify(player, "⚡ You can now shrink " .. t.Name .. " objects! " .. t.Area .. " unlocked!", "success")
+				Svc.Net.Notify(player, "⚡ You can now shrink " .. t.Name .. " objects in " .. t.Area .. "!", "success")
 			end
 			if data.Upgrades.RayPower >= u.MaxLevel then
 				Svc.Net.Notify(player, "🏴‍☠️ MAX RAY POWER! Museum Raids unlocked (opt-in in the Museum menu).", "success")
 			end
 		end
-		if id == "MuseumSize" then
+		if id == "MuseumSize" or id == "MultiShrink" then
 			Svc.Museum.Recompute(player)
+		end
+		if id == "Speed" then
+			Svc.Monetization.ApplyMovement(player)
 		end
 		Svc.Economy.UpdateIncome(player)
 		Svc.Data.MarkDirty(player)
@@ -5930,15 +6717,15 @@ return UpgradeService
       </Item>
     </Item>
   </Item>
-  <Item class="StarterPlayer" referent="39">
+  <Item class="StarterPlayer" referent="41">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="40">
+    <Item class="StarterPlayerScripts" referent="42">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="LocalScript" referent="41">
+      <Item class="LocalScript" referent="43">
         <Properties>
           <string name="Name">ClientMain</string>
           <string name="Source"><![CDATA[--[[
@@ -5964,11 +6751,11 @@ print("[ShrinkIt] Client ready 🔬")
 ]]></string>
         </Properties>
       </Item>
-      <Item class="Folder" referent="42">
+      <Item class="Folder" referent="44">
         <Properties>
           <string name="Name">ClientModules</string>
         </Properties>
-        <Item class="ModuleScript" referent="43">
+        <Item class="ModuleScript" referent="45">
           <Properties>
             <string name="Name">Effects</string>
             <string name="Source"><![CDATA[--[[
@@ -6001,6 +6788,7 @@ local Remotes = require(Shared.Remotes)
 
 local Modules = script.Parent
 local State = require(Modules.State)
+local HUD = require(Modules.HUD)
 
 local Effects = {}
 
@@ -6300,7 +7088,44 @@ local function onRaidSync(p)
 	end
 end
 
+-- ── carry results (caught by a chaser / delivered at base) ─────────────
+local function shakeCamera(seconds, strength)
+	local camera = workspace.CurrentCamera
+	local start = os.clock()
+	local conn
+	conn = RunService.RenderStepped:Connect(function()
+		local t = os.clock() - start
+		if t > seconds then
+			conn:Disconnect()
+			return
+		end
+		local a = strength * (1 - t / seconds)
+		camera.CFrame *= CFrame.Angles(math.rad((math.random() - 0.5) * a), math.rad((math.random() - 0.5) * a), 0)
+	end)
+end
+
+local function onCarryFX(kind, p)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if kind == "Caught" then
+		HUD.Splash(p.Emoji .. " CAUGHT!", Color3.fromRGB(255, 70, 70))
+		shakeCamera(0.6, 6)
+		playSoundAt(root and root.Position or Vector3.zero, GameConfig.Sounds.TooBig, 0.8)
+		if root then
+			-- knocked back toward the base (client owns its own character physics)
+			root.AssemblyLinearVelocity = Vector3.new(0, 45, -55)
+		end
+	elseif kind == "Deposit" then
+		HUD.Splash("DELIVERED! +" .. Format.Coins(p.Income) .. "/s", Color3.fromRGB(120, 255, 120))
+		if root then
+			burst(root.Position, Color3.fromRGB(255, 220, 60), 60, 1.6)
+			burst(root.Position, Color3.fromRGB(120, 255, 140), 40, 1.2)
+			playSoundAt(root.Position, GameConfig.Sounds.Reward, 0.7)
+		end
+	end
+end
+
 function Effects.Init()
+	Remotes.Event("CarryFX").OnClientEvent:Connect(onCarryFX)
 	Remotes.Event("ShrinkFX").OnClientEvent:Connect(playShrink)
 	Remotes.Event("ChargeFX").OnClientEvent:Connect(onChargeFX)
 	Remotes.Event("RaidSync").OnClientEvent:Connect(onRaidSync)
@@ -6359,7 +7184,7 @@ return Effects
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="44">
+        <Item class="ModuleScript" referent="46">
           <Properties>
             <string name="Name">HUD</string>
             <string name="Source"><![CDATA[--[[
@@ -6391,6 +7216,8 @@ local screen
 local menus = {} -- [name] = menu
 local menuOrder = {}
 local badgeSetters = {}
+local carryFrame, carryLabel, splashLabel
+local splashToken = 0
 
 -- ── helpers ───────────────────────────────────────────────────────────
 local KIND_COLORS = {
@@ -6594,6 +7421,27 @@ function HUD.ShowTooBig(needRayPower, screenPos)
 	end)
 end
 
+-- Big centered text that pops and fades (CAUGHT!, DELIVERED!, ...)
+function HUD.Splash(text, color)
+	splashToken += 1
+	local token = splashToken
+	splashLabel.Text = text
+	splashLabel.TextColor3 = color or Color3.new(1, 1, 1)
+	splashLabel.TextTransparency = 0
+	splashLabel.Visible = true
+	UIKit.Pop(splashLabel, 1.8)
+	task.delay(1.6, function()
+		if token ~= splashToken then
+			return
+		end
+		UIKit.Tween(splashLabel, 0.35, { TextTransparency = 1 })
+		task.wait(0.35)
+		if token == splashToken then
+			splashLabel.Visible = false
+		end
+	end)
+end
+
 -- ── build ─────────────────────────────────────────────────────────────
 local LEFT_BUTTONS = {
 	{ Menu = "Gifts", Label = "Gifts", Emoji = "🎁", Colors = UIKit.Colors.Pink },
@@ -6711,7 +7559,16 @@ local function buildTopBits()
 	UIKit.AutoScale(eventFrame)
 	eventLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = eventFrame })
 
-	raidFrame = UIKit.Card({ Name = "RaidBanner", Size = UDim2.fromOffset(560, 50), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 64), Colors = UIKit.Colors.Red, Parent = screen, CornerRadius = 25 })
+	carryFrame = UIKit.Card({ Name = "CarryBanner", Size = UDim2.fromOffset(640, 54), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 64), Colors = UIKit.Colors.Orange, Parent = screen, CornerRadius = 27 })
+	carryFrame.Visible = false
+	UIKit.AutoScale(carryFrame)
+	carryLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 3, Parent = carryFrame })
+
+	splashLabel = UIKit.Label({ Name = "Splash", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.38), Size = UDim2.fromOffset(900, 110), StrokeThickness = 6, ZIndex = 120, Parent = screen })
+	splashLabel.Visible = false
+	UIKit.AutoScale(splashLabel)
+
+	raidFrame = UIKit.Card({ Name = "RaidBanner", Size = UDim2.fromOffset(560, 50), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 124), Colors = UIKit.Colors.Red, Parent = screen, CornerRadius = 25 })
 	raidFrame.Visible = false
 	UIKit.AutoScale(raidFrame)
 	raidLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 3, Parent = raidFrame })
@@ -6786,6 +7643,16 @@ local function refreshTimers()
 	if ev and ev.ServerLuckUntil and ev.ServerLuckUntil > now then
 		boostChip(3, "🌠 Server Luck " .. Format.Clock(ev.ServerLuckUntil - now), UIKit.Colors.Blue)
 	end
+	-- carry banner
+	local carry = data and data.Carry
+	if carry and carry.Count > 0 then
+		carryFrame.Visible = true
+		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
+		carryLabel.Text = string.format("🎒 %d/%d  ·  RUN BACK TO BASE! ⬇%s", carry.Count, carry.Capacity, chaser)
+		UIKit.SetButtonColors(carryFrame, carry.Chaser and UIKit.Colors.Red or UIKit.Colors.Orange)
+	else
+		carryFrame.Visible = false
+	end
 	-- raid banner
 	if data and data.ActiveRaid then
 		raidFrame.Visible = true
@@ -6847,6 +7714,7 @@ function HUD.Init()
 
 	State.CurrencyChanged:Connect(refreshCurrencies)
 	State.Changed:Connect(function()
+		refreshTimers()
 		refreshCurrencies()
 		refreshBadges()
 		for _, m in pairs(menus) do
@@ -6887,11 +7755,11 @@ return HUD
 ]]></string>
           </Properties>
         </Item>
-        <Item class="Folder" referent="45">
+        <Item class="Folder" referent="47">
           <Properties>
             <string name="Name">Menus</string>
           </Properties>
-          <Item class="ModuleScript" referent="46">
+          <Item class="ModuleScript" referent="48">
             <Properties>
               <string name="Name">GiftsMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -7020,7 +7888,7 @@ return GiftsMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="47">
+          <Item class="ModuleScript" referent="49">
             <Properties>
               <string name="Name">IndexMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -7208,7 +8076,7 @@ return IndexMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="48">
+          <Item class="ModuleScript" referent="50">
             <Properties>
               <string name="Name">InfinitePackMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -7458,7 +8326,7 @@ return InfinitePackMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="49">
+          <Item class="ModuleScript" referent="51">
             <Properties>
               <string name="Name">MuseumMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -7510,7 +8378,7 @@ function MuseumMenu.Build(ctx)
 		ctx.HUD.Result(State.Action("Teleport", "Museum"))
 		panel.Close()
 	end })
-	UIKit.Button({ Text = "🏙️ Lobby", Colors = UIKit.Colors.Blue, Size = UDim2.fromOffset(150, 46), LayoutOrder = 4, Parent = controls, OnClick = function()
+	UIKit.Button({ Text = "🏠 Base", Colors = UIKit.Colors.Blue, Size = UDim2.fromOffset(150, 46), LayoutOrder = 4, Parent = controls, OnClick = function()
 		ctx.HUD.Result(State.Action("Teleport", "Lobby"))
 		panel.Close()
 	end })
@@ -7643,7 +8511,7 @@ return MuseumMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="50">
+          <Item class="ModuleScript" referent="52">
             <Properties>
               <string name="Name">RebirthMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -7675,7 +8543,7 @@ function RebirthMenu.Build(ctx)
 	local mult = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(255, 210, 60), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 36), Position = UDim2.fromOffset(0, 64), Parent = content })
 	local bar = UIKit.ProgressBar({ Size = UDim2.new(1, -80, 0, 38), Position = UDim2.fromOffset(40, 108), Colors = UIKit.Colors.Yellow, Parent = content })
 	local rewards = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(110, 200, 255), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 32), Position = UDim2.fromOffset(0, 154), Parent = content })
-	UIKit.Label({ Text = "Resets Coins, upgrades, paid gates & museum. Keeps Index, Gems, Tokens, skins & Huge exclusives.", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, -40, 0, 26), Position = UDim2.fromOffset(20, 190), Parent = content })
+	UIKit.Label({ Text = "Resets Coins, upgrades & museum. Keeps Index, Gems, Tokens, skins & Huge exclusives.", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, -40, 0, 26), Position = UDim2.fromOffset(20, 190), Parent = content })
 
 	local rebirthButton, rebirthLabel = UIKit.Button({ Text = "REBIRTH!", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(260, 64), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(0.5, -10, 0, 226), Parent = content, OnClick = function()
 		UIKit.Confirm(ctx.Screen, "Rebirth?", "Your coins, upgrades and museum will reset for a permanent boost. Continue?", function()
@@ -7749,7 +8617,7 @@ return RebirthMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="51">
+          <Item class="ModuleScript" referent="53">
             <Properties>
               <string name="Name">ShopMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -7962,13 +8830,13 @@ return ShopMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="52">
+          <Item class="ModuleScript" referent="54">
             <Properties>
               <string name="Name">UpgradesMenu</string>
               <string name="Source"><![CDATA[--[[
 	📍 LOCATION: StarterPlayer > StarterPlayerScripts > ClientModules > Menus > UpgradesMenu (ModuleScript)
 
-	Ray upgrades (Ray Power, Charge Speed, Range, Luck, Multi-Shrink, Museum Size) + area gates.
+	Ray upgrades: Ray Power, Run Speed, Carry Capacity, Charge Speed, Range, Luck, Museum Size.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -8009,18 +8877,6 @@ function UpgradesMenu.Build(ctx)
 		rows[id] = { Info = info, Button = button, Label = label, U = u }
 	end
 
-	UIKit.Label({ Text = "🚪 Area Gates", TextColor3 = Color3.fromRGB(255, 170, 60), StrokeThickness = 3, Size = UDim2.new(1, -20, 0, 40), LayoutOrder = 50, Parent = list })
-	local gates = {}
-	for tier = 2, #TierConfig.Tiers do
-		local t = TierConfig.Tiers[tier]
-		local row = UIKit.Card({ Size = UDim2.new(1, -20, 0, 64), LayoutOrder = 50 + tier, Colors = { t.Color:Lerp(Color3.new(1, 1, 1), 0.6), t.Color:Lerp(Color3.new(1, 1, 1), 0.3) }, Parent = list, CornerRadius = 16 })
-		local text = UIKit.Label({ Text = "", TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 2.5, Size = UDim2.new(1, -260, 1, -16), Position = UDim2.fromOffset(16, 8), Parent = row })
-		local button, label = UIKit.Button({ Text = "", Colors = UIKit.Colors.Yellow, Size = UDim2.fromOffset(220, 48), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Parent = row, OnClick = function()
-			ctx.HUD.Result(State.Action("OpenGate", tier))
-		end })
-		gates[tier] = { Text = text, Button = button, Label = label, T = t }
-	end
-
 	local menu = { Panel = panel }
 
 	function menu.Refresh()
@@ -8044,17 +8900,6 @@ function UpgradesMenu.Build(ctx)
 			if id == "RayPower" then
 				local tier = TierConfig.MaxTierForRayPower(level)
 				row.Info.Text ..= "  ·  shrinks " .. TierConfig.Tiers[tier].Name
-			end
-		end
-		for tier, g in pairs(gates) do
-			local open = Formulas.IsTierUnlocked(data, tier)
-			g.Text.Text = string.format("%s (%s) · Ray Power %d or %s", g.T.Area, g.T.Name, g.T.RayPowerRequired, Format.Coins(g.T.GateCost))
-			if open then
-				g.Label.Text = "✔ OPEN"
-				UIKit.SetButtonColors(g.Button, UIKit.Colors.Gray)
-			else
-				g.Label.Text = "🔓 " .. Format.Coins(g.T.GateCost)
-				UIKit.SetButtonColors(g.Button, State.Coins >= g.T.GateCost and UIKit.Colors.Green or UIKit.Colors.Yellow)
 			end
 		end
 	end
@@ -8084,7 +8929,7 @@ return UpgradesMenu
             </Properties>
           </Item>
         </Item>
-        <Item class="ModuleScript" referent="53">
+        <Item class="ModuleScript" referent="55">
           <Properties>
             <string name="Name">Prices</string>
             <string name="Source"><![CDATA[--[[
@@ -8134,7 +8979,7 @@ return Prices
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="54">
+        <Item class="ModuleScript" referent="56">
           <Properties>
             <string name="Name">RayController</string>
             <string name="Source"><![CDATA[--[[
@@ -8291,7 +9136,9 @@ local function stopCharge(fire)
 	if fire then
 		local extras = {}
 		local stats = State.Data and State.Data.Stats
-		if c.Kind == "object" and stats and stats.Multi > 1 then
+		local carry = State.Data and State.Data.Carry
+		local room = carry and (carry.Capacity - carry.Count) or 1
+		if c.Kind == "object" and stats and room > 1 then
 			local origin = c.Target:GetPivot().Position
 			local candidates = {}
 			for _, model in ipairs(CollectionService:GetTagged("Shrinkable")) do
@@ -8306,7 +9153,7 @@ local function stopCharge(fire)
 			table.sort(candidates, function(a, b)
 				return a.D < b.D
 			end)
-			for i = 1, math.min(#candidates, stats.Multi - 1) do
+			for i = 1, math.min(#candidates, room - 1) do
 				table.insert(extras, candidates[i].Model)
 			end
 		end
@@ -8329,6 +9176,11 @@ local function startCharge()
 	end
 	local stats = State.Data.Stats
 	if kind == "object" then
+		local carry = State.Data.Carry
+		if carry and carry.Count >= carry.Capacity then
+			HUD.Notify("🎒 Hands full! Run back to base to drop off your loot.", "error")
+			return
+		end
 		local tier = target:GetAttribute("Tier") or 1
 		if tier > stats.MaxTier then
 			HUD.ShowTooBig(TierConfig.Tiers[tier] and TierConfig.Tiers[tier].RayPowerRequired)
@@ -8452,7 +9304,7 @@ return RayController
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="55">
+        <Item class="ModuleScript" referent="57">
           <Properties>
             <string name="Name">State</string>
             <string name="Source"><![CDATA[--[[
@@ -8541,7 +9393,7 @@ return State
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="56">
+        <Item class="ModuleScript" referent="58">
           <Properties>
             <string name="Name">UIKit</string>
             <string name="Source"><![CDATA[--[[

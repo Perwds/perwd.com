@@ -88,7 +88,7 @@ function Formulas.RayStats(data, passes)
 	if passes.LongRange then
 		range *= 1.5
 	end
-	local multi = Formulas.UpgradeValue("MultiShrink", up.MultiShrink)
+	local multi = Formulas.UpgradeValue("MultiShrink", up.MultiShrink) -- carry capacity
 	if passes.MultiShrink3 then
 		multi *= 3
 	end
@@ -96,7 +96,13 @@ function Formulas.RayStats(data, passes)
 	if passes.ExtraPedestals then
 		pedestals += 20
 	end
+	local walk = Formulas.UpgradeValue("Speed", up.Speed or 1)
+	if passes.SpeedBoots then
+		walk += GameConfig.SpeedBootsBonus
+	end
 	return {
+		WalkSpeed = walk,
+		Carry = multi,
 		ChargeTime = charge,
 		Range = range,
 		Multi = multi,
@@ -106,14 +112,9 @@ function Formulas.RayStats(data, passes)
 	}
 end
 
-function Formulas.IsTierUnlocked(data, tier)
-	if tier <= 1 then
-		return true
-	end
-	if TierConfig.MaxTierForRayPower(data.Upgrades.RayPower) >= tier then
-		return true
-	end
-	return data.GatesOpened[tostring(tier)] == true
+-- Every zone is open to walk into (no gates). Kept as a hook in case you want locked zones later.
+function Formulas.IsTierUnlocked(_data, _tier)
+	return true
 end
 
 -- ── Rebirth ──────────────────────────────────────────────────────────

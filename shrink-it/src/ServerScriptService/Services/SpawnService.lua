@@ -134,6 +134,7 @@ function SpawnService.SpawnAt(tier, position, opts)
 		Static = false,
 	}
 	decorate(model, id, variant, info)
+	ModelFactory.SetCollision(model, false) -- never block players running home
 	model.Parent = Svc.Map.LiveObjects
 	active[model] = info
 	return model, info

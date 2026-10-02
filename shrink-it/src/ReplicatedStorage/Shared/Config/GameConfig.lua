@@ -19,20 +19,21 @@ GameConfig.MaxReceiptHistory = 200 -- purchase ids remembered per player for ide
 -- ── Museum / items ────────────────────────────────────────────────────
 GameConfig.MaxItems = 400 -- pocket cap; lowest-earning item is auto-sold when exceeded
 GameConfig.SellSeconds = 120 -- selling an item gives this many seconds of its income
-GameConfig.DisplayMaxSize = 3.2 -- studs; displayed objects are scaled to fit this
+GameConfig.DisplayMaxSize = 2.9 -- studs; displayed objects are scaled to fit this
 GameConfig.PlotCount = 8
 
 -- ── Shrink Ray ───────────────────────────────────────────────────────
 GameConfig.ShrinkCooldown = 0.25 -- min seconds between shots
 GameConfig.ChargeTolerance = 0.8 -- server accepts a shot after chargeTime * this (latency allowance)
 GameConfig.RangeTolerance = 8 -- extra studs the server allows over the client's range
-GameConfig.MultiShrinkRadius = 30 -- extra targets must be within this distance of the main target
+GameConfig.MultiShrinkRadius = 30
+GameConfig.CarryDisplaySize = 2.6 -- size of each object stacked above your head -- extra targets must be within this distance of the main target
 GameConfig.ShrinkFxTime = 0.9 -- seconds the tween plays before the server removes the object
 GameConfig.AutoShrinkExtraDelay = 0.75
 
 -- ── Movement ────────────────────────────────────────────────────────
 GameConfig.BaseWalkSpeed = 16
-GameConfig.SpeedBootsWalkSpeed = 28
+GameConfig.SpeedBootsBonus = 8 -- added on top of the Run Speed upgrade
 
 -- ── VIP ─────────────────────────────────────────────────────────────
 GameConfig.VIP = {

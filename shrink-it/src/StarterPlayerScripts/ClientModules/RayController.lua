@@ -152,7 +152,9 @@ local function stopCharge(fire)
 	if fire then
 		local extras = {}
 		local stats = State.Data and State.Data.Stats
-		if c.Kind == "object" and stats and stats.Multi > 1 then
+		local carry = State.Data and State.Data.Carry
+		local room = carry and (carry.Capacity - carry.Count) or 1
+		if c.Kind == "object" and stats and room > 1 then
 			local origin = c.Target:GetPivot().Position
 			local candidates = {}
 			for _, model in ipairs(CollectionService:GetTagged("Shrinkable")) do
@@ -167,7 +169,7 @@ local function stopCharge(fire)
 			table.sort(candidates, function(a, b)
 				return a.D < b.D
 			end)
-			for i = 1, math.min(#candidates, stats.Multi - 1) do
+			for i = 1, math.min(#candidates, room - 1) do
 				table.insert(extras, candidates[i].Model)
 			end
 		end
@@ -190,6 +192,11 @@ local function startCharge()
 	end
 	local stats = State.Data.Stats
 	if kind == "object" then
+		local carry = State.Data.Carry
+		if carry and carry.Count >= carry.Capacity then
+			HUD.Notify("🎒 Hands full! Run back to base to drop off your loot.", "error")
+			return
+		end
 		local tier = target:GetAttribute("Tier") or 1
 		if tier > stats.MaxTier then
 			HUD.ShowTooBig(TierConfig.Tiers[tier] and TierConfig.Tiers[tier].RayPowerRequired)

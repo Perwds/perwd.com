@@ -36,10 +36,14 @@ local function applyPassEffects(player)
 	player:SetAttribute("VIP", s.Passes.VIP == true)
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local stats = Svc.Shrink.GetStats(player)
 	if humanoid then
-		humanoid.WalkSpeed = s.Passes.SpeedBoots and GameConfig.SpeedBootsWalkSpeed or GameConfig.BaseWalkSpeed
+		humanoid.WalkSpeed = stats and stats.WalkSpeed or GameConfig.BaseWalkSpeed
 	end
 end
+
+-- Re-applies walk speed etc. (call after Speed upgrades / rebirth).
+MonetizationService.ApplyMovement = applyPassEffects
 
 function MonetizationService.HasPass(player, key)
 	return Svc.Session.HasPass(player, key)

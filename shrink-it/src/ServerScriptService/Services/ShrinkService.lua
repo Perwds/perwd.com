@@ -155,15 +155,25 @@ function ShrinkService.Capture(player, model)
 		return false
 	end
 	local data = Svc.Data.Get(player)
+	local fromPos = model:GetPivot().Position
 	Remotes.Event("ShrinkFX"):FireAllClients(model, player, claimed.Variant, false)
 	Svc.Spawn.Remove(model, claimed, GameConfig.ShrinkFxTime)
-	local item = Svc.Museum.AddItem(player, claimed.Id, claimed.Variant)
+	-- you now CARRY it; it only goes into the museum once you run it back to base
+	local session = Svc.Session.Get(player)
+	session.PendingCarry = (session.PendingCarry or 0) + 1
+	task.delay(GameConfig.ShrinkFxTime * 0.85, function()
+		session.PendingCarry -= 1
+		if player.Parent then
+			Svc.Carry.Add(player, claimed.Id, claimed.Variant, fromPos)
+		end
+	end)
 	data.TotalShrinks += 1
 	Svc.Data.MarkDirty(player)
 
-	if item then
+	local item = { Id = claimed.Id, V = claimed.Variant }
+	do
 		local income = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player)
-		Svc.Net.Notify(player, "+ " .. Formulas.ItemName(item) .. "  (+" .. Format.Coins(income) .. "/s)", "shrink")
+		Svc.Net.Notify(player, "🎒 " .. Formulas.ItemName(item) .. " (+" .. Format.Coins(income) .. "/s) — bring it back to base!", "shrink")
 		local def = ObjectConfig.Get(claimed.Id)
 		local variant = RarityConfig.GetVariant(claimed.Variant)
 		local rarity = RarityConfig.GetRarity(def.Rarity)
@@ -238,6 +248,12 @@ local function onFire(player, target, extras)
 		return
 	end
 
+	local room = stats.Carry - Svc.Carry.Count(player) - (s.PendingCarry or 0)
+	if room <= 0 then
+		Svc.Net.Notify(player, "🎒 Hands full! Run back to base to drop off your loot.", "error")
+		return
+	end
+
 	local info, reason, tooBigInfo = ShrinkService.CheckObject(player, target, stats, root)
 	if not info then
 		if reason == "toobig" then
@@ -254,18 +270,18 @@ local function onFire(player, target, extras)
 	end
 	ShrinkService.Capture(player, target)
 
-	-- Multi-Shrink extras
-	if type(extras) == "table" and stats.Multi > 1 then
+	-- Multi-Shrink extras (limited by how much room you have left to carry)
+	if type(extras) == "table" and room > 1 then
 		local origin = target:GetPivot().Position
 		local seen = { [target] = true }
 		local count = 1
-		for i = 1, math.min(#extras, stats.Multi - 1) do
+		for i = 1, math.min(#extras, room - 1) do
 			local extra = extras[i]
 			if typeof(extra) == "Instance" and not seen[extra] and targetKind(extra) == "object" then
 				seen[extra] = true
 				if (extra:GetPivot().Position - origin).Magnitude <= GameConfig.MultiShrinkRadius + 10 then
 					local extraInfo = ShrinkService.CheckObject(player, extra, stats, root)
-					if extraInfo and count < stats.Multi then
+					if extraInfo and count < room then
 						count += 1
 						ShrinkService.Capture(player, extra)
 					end
@@ -283,7 +299,7 @@ local function autoShrinkLoop()
 		for _, player in ipairs(Players:GetPlayers()) do
 			local s = Svc.Session.Get(player)
 			local data = Svc.Data.Get(player)
-			if s and data and s.Passes.AutoShrink and data.Settings.AutoShrink and now >= s.NextAuto then
+			if s and data and s.Passes.AutoShrink and data.Settings.AutoShrink and now >= s.NextAuto and Svc.Carry.Count(player) < Svc.Carry.Capacity(player) then
 				local root = rootOf(player)
 				local stats = ShrinkService.GetStats(player)
 				if root and stats then

@@ -1,7 +1,7 @@
 --[[
 	📍 LOCATION: StarterPlayer > StarterPlayerScripts > ClientModules > Menus > UpgradesMenu (ModuleScript)
 
-	Ray upgrades (Ray Power, Charge Speed, Range, Luck, Multi-Shrink, Museum Size) + area gates.
+	Ray upgrades: Ray Power, Run Speed, Carry Capacity, Charge Speed, Range, Luck, Museum Size.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -42,18 +42,6 @@ function UpgradesMenu.Build(ctx)
 		rows[id] = { Info = info, Button = button, Label = label, U = u }
 	end
 
-	UIKit.Label({ Text = "🚪 Area Gates", TextColor3 = Color3.fromRGB(255, 170, 60), StrokeThickness = 3, Size = UDim2.new(1, -20, 0, 40), LayoutOrder = 50, Parent = list })
-	local gates = {}
-	for tier = 2, #TierConfig.Tiers do
-		local t = TierConfig.Tiers[tier]
-		local row = UIKit.Card({ Size = UDim2.new(1, -20, 0, 64), LayoutOrder = 50 + tier, Colors = { t.Color:Lerp(Color3.new(1, 1, 1), 0.6), t.Color:Lerp(Color3.new(1, 1, 1), 0.3) }, Parent = list, CornerRadius = 16 })
-		local text = UIKit.Label({ Text = "", TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 2.5, Size = UDim2.new(1, -260, 1, -16), Position = UDim2.fromOffset(16, 8), Parent = row })
-		local button, label = UIKit.Button({ Text = "", Colors = UIKit.Colors.Yellow, Size = UDim2.fromOffset(220, 48), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Parent = row, OnClick = function()
-			ctx.HUD.Result(State.Action("OpenGate", tier))
-		end })
-		gates[tier] = { Text = text, Button = button, Label = label, T = t }
-	end
-
 	local menu = { Panel = panel }
 
 	function menu.Refresh()
@@ -77,17 +65,6 @@ function UpgradesMenu.Build(ctx)
 			if id == "RayPower" then
 				local tier = TierConfig.MaxTierForRayPower(level)
 				row.Info.Text ..= "  ·  shrinks " .. TierConfig.Tiers[tier].Name
-			end
-		end
-		for tier, g in pairs(gates) do
-			local open = Formulas.IsTierUnlocked(data, tier)
-			g.Text.Text = string.format("%s (%s) · Ray Power %d or %s", g.T.Area, g.T.Name, g.T.RayPowerRequired, Format.Coins(g.T.GateCost))
-			if open then
-				g.Label.Text = "✔ OPEN"
-				UIKit.SetButtonColors(g.Button, UIKit.Colors.Gray)
-			else
-				g.Label.Text = "🔓 " .. Format.Coins(g.T.GateCost)
-				UIKit.SetButtonColors(g.Button, State.Coins >= g.T.GateCost and UIKit.Colors.Green or UIKit.Colors.Yellow)
 			end
 		end
 	end

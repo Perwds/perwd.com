@@ -31,7 +31,7 @@ local TEMPLATE = {
 	TotalShrinks = 0,
 	RaidsWon = 0,
 	NextUid = 1,
-	Upgrades = { RayPower = 1, ChargeSpeed = 1, Range = 1, Luck = 1, MultiShrink = 1, MuseumSize = 1 },
+	Upgrades = { RayPower = 1, Speed = 1, ChargeSpeed = 1, Range = 1, Luck = 1, MultiShrink = 1, MuseumSize = 1 },
 	TokenUpgrades = { Income = 0, Luck = 0, Charge = 0 },
 	Items = {}, -- { { U = uid, Id = "SodaCan", V = "Golden", S = true? (stolen copy) } }
 	Index = {}, -- ["SodaCan:Golden"] = true

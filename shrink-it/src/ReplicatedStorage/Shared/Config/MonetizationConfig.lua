@@ -24,14 +24,14 @@ MonetizationConfig.GamePasses = {
 	VIP = { Id = 0, Name = "VIP", Emoji = "👑", Image = "rbxassetid://0", PriceLabel = "R$ 399", Description = "Chat tag, VIP lounge & gem fountain, 1.5x everything." }, -- 🔧 REPLACE Id
 	AutoShrink = { Id = 0, Name = "Auto Shrink", Emoji = "🤖", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "Automatically zaps the nearest valid object." }, -- 🔧 REPLACE Id
 	InstantCharge = { Id = 0, Name = "Instant Charge", Emoji = "⚡", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Your ray charges instantly." }, -- 🔧 REPLACE Id
-	MultiShrink3 = { Id = 0, Name = "Multi-Shrink x3", Emoji = "✨", Image = "rbxassetid://0", PriceLabel = "R$ 349", Description = "Triple your Multi-Shrink targets." }, -- 🔧 REPLACE Id
+	MultiShrink3 = { Id = 0, Name = "Multi-Shrink x3", Emoji = "✨", Image = "rbxassetid://0", PriceLabel = "R$ 349", Description = "Triple your carry capacity." }, -- 🔧 REPLACE Id
 	ExtraPedestals = { Id = 0, Name = "+20 Pedestals", Emoji = "🏛️", Image = "rbxassetid://0", PriceLabel = "R$ 249", Description = "20 extra museum pedestals." }, -- 🔧 REPLACE Id
 	GoldenRay = { Id = 0, Name = "Golden Ray", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "2x Golden & Diamond chance." }, -- 🔧 REPLACE Id
 	CosmicHunter = { Id = 0, Name = "Cosmic Hunter", Emoji = "🌌", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "2x Cosmic chance." }, -- 🔧 REPLACE Id
 	LongRange = { Id = 0, Name = "Long Range Ray", Emoji = "🔭", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "+50% ray range." }, -- 🔧 REPLACE Id
-	Teleport = { Id = 0, Name = "Teleport", Emoji = "🌀", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Teleport to any unlocked area." }, -- 🔧 REPLACE Id
+	Teleport = { Id = 0, Name = "Teleport", Emoji = "🌀", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Teleport to the start of any zone." }, -- 🔧 REPLACE Id
 	OfflineEarnings = { Id = 0, Name = "Offline Earnings", Emoji = "😴", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "Earn 50% income while offline (8h max)." }, -- 🔧 REPLACE Id
-	SpeedBoots = { Id = 0, Name = "Speed Boots", Emoji = "👟", Image = "rbxassetid://0", PriceLabel = "R$ 79", Description = "Run much faster." }, -- 🔧 REPLACE Id
+	SpeedBoots = { Id = 0, Name = "Speed Boots", Emoji = "👟", Image = "rbxassetid://0", PriceLabel = "R$ 79", Description = "+8 run speed. Outrun every chaser!" }, -- 🔧 REPLACE Id
 	RainbowRay = { Id = 0, Name = "Rainbow Ray Beam", Emoji = "🌈", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "Cosmetic rainbow beam skin." }, -- 🔧 REPLACE Id
 	RaidShield = { Id = 0, Name = "Raid Shield", Emoji = "🛡️", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "3x longer raid protection, 2x revenge rewards." }, -- 🔧 REPLACE Id
 }

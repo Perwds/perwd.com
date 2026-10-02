@@ -25,9 +25,9 @@ local plotOf = {} -- [player] = plot record from MapService.Plots
 local slots = {} -- [player] = { [i] = { Model = pedestalModel, Uid = number? } }
 local refreshQueued = {}
 
-local COLS = 10
-local SPACING_X = 12
-local SPACING_Z = 10
+local COLS = 11
+local SPACING_X = 7.6
+local SPACING_Z = 7
 
 function MuseumService.Init(registry)
 	Svc = registry
@@ -38,7 +38,7 @@ local function pedestalCFrame(plot, i)
 	local row = math.floor((i - 1) / COLS)
 	local col = (i - 1) % COLS
 	local x = (col - (COLS - 1) / 2) * SPACING_X
-	local z = floor.Size.Z / 2 - 10 - row * SPACING_Z
+	local z = floor.Size.Z / 2 - 5 - row * SPACING_Z
 	return floor.CFrame * CFrame.new(x, floor.Size.Y / 2, z)
 end
 
@@ -48,7 +48,7 @@ local function makePedestal(player, plot, i)
 	local base = Instance.new("Part")
 	base.Name = "Base"
 	base.Anchored = true
-	base.Size = Vector3.new(5, 2.4, 5)
+	base.Size = Vector3.new(4.6, 2.4, 4.6)
 	base.Material = Enum.Material.Marble
 	base.Color = Color3.fromRGB(245, 245, 250)
 	base.CFrame = pedestalCFrame(plot, i) * CFrame.new(0, 1.2, 0)
@@ -57,7 +57,7 @@ local function makePedestal(player, plot, i)
 	trim.Name = "Trim"
 	trim.Anchored = true
 	trim.CanCollide = false
-	trim.Size = Vector3.new(5.3, 0.3, 5.3)
+	trim.Size = Vector3.new(4.9, 0.3, 4.9)
 	trim.Material = Enum.Material.Neon
 	trim.Color = Color3.fromRGB(90, 200, 255)
 	trim.CFrame = base.CFrame * CFrame.new(0, 1.05, 0)
@@ -66,11 +66,11 @@ local function makePedestal(player, plot, i)
 	glass.Name = "Glass"
 	glass.Anchored = true
 	glass.CanCollide = false
-	glass.Size = Vector3.new(4.6, 4.6, 4.6)
+	glass.Size = Vector3.new(4.2, 4.2, 4.2)
 	glass.Material = Enum.Material.Glass
 	glass.Transparency = 0.8
 	glass.Color = Color3.fromRGB(200, 240, 255)
-	glass.CFrame = base.CFrame * CFrame.new(0, 1.2 + 2.3, 0)
+	glass.CFrame = base.CFrame * CFrame.new(0, 1.2 + 2.1, 0)
 	glass.Parent = model
 	model.PrimaryPart = base
 	model:SetAttribute("PedestalSlot", i)
@@ -350,6 +350,9 @@ function MuseumService.Start()
 	Svc.Net.Handle("TeleportMuseum", function(player)
 		if not Svc.Session.Throttle(player, "tp", 2) then
 			return { ok = false, msg = "Slow down!" }
+		end
+		if Svc.Carry.IsCarrying(player) then
+			return { ok = false, msg = "🎒 No teleporting while carrying loot — run it home!" }
 		end
 		MuseumService.TeleportHome(player)
 		return { ok = true }

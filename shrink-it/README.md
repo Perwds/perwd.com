@@ -1,11 +1,13 @@
 # Shrink It! 🔬 — Roblox game (Luau)
 
-Zap objects with your **Shrink Ray**, watch them squash with a "pop", and display them in your
-**Pocket Museum** for coins. Upgrade your ray, unlock bigger worlds (all the way up to the Moon),
-rebirth, complete the Index, and raid other museums in the endgame.
+Zap objects with your **Shrink Ray**, then **carry them back to your base** while the zone's owner chases you:
+Grandpa Joe in his backyard, the Angry Neighbor, Officer Doug, Captain Barnacle, a Security Bot and the Yeti.
+Make it into the safe zone and your loot goes on display in your **Pocket Museum**, earning coins every second.
+Upgrade your ray and your run speed, push further down the corridor (all the way to the Moon), rebirth,
+complete the Index, and raid other museums in the endgame.
 
 Everything is **server-authoritative**: the client only sends intent, and the server validates
-cooldowns, charge time, range, Ray Power vs. object size, area unlocks, ownership and costs.
+cooldowns, charge time, range, Ray Power vs. object size, carry capacity, ownership and costs.
 
 ---
 
@@ -25,6 +27,7 @@ Names in Studio must match the file names (without the extensions).
 | ↳ Config › MonetizationConfig | ModuleScript | `Config/MonetizationConfig.lua`: 🔧 pass/product IDs, skins, gem shop |
 | ↳ Config › RewardConfig | ModuleScript | `Config/RewardConfig.lua`: gifts, daily, index, likes, codes, Infinite Pack |
 | ↳ Config › EventConfig | ModuleScript | `Config/EventConfig.lua`: rotating events, event objects |
+| ↳ Config › ChaserConfig | ModuleScript | `Config/ChaserConfig.lua`: the 6 chasers (names, speeds, looks, lines) |
 | ↳ Format | ModuleScript | `Format.lua`: 14.3k / 1.2M / 4.5B, timers |
 | ↳ Formulas | ModuleScript | `Formulas.lua`: shared math (costs, stats, income) |
 | ↳ RewardUtil | ModuleScript | `RewardUtil.lua`: reward descriptions + odds |
@@ -32,7 +35,7 @@ Names in Studio must match the file names (without the extensions).
 | ↳ Remotes | ModuleScript | `Remotes.lua`: creates / finds all remotes |
 | **ServerScriptService › Main** | Script | `src/ServerScriptService/Main.server.lua` |
 | **ServerScriptService › Services** | Folder | `src/ServerScriptService/Services/` |
-| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, ModelFactory, MapDecor | ModuleScripts | one file each |
+| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, ModelFactory, MapDecor | ModuleScripts | one file each |
 | **StarterPlayer › StarterPlayerScripts › ClientMain** | LocalScript | `src/StarterPlayerScripts/ClientMain.client.lua` |
 | **StarterPlayer › StarterPlayerScripts › ClientModules** | Folder | `src/StarterPlayerScripts/ClientModules/` |
 | ↳ State, UIKit, HUD, Effects, RayController, Prices | ModuleScripts | one file each |
@@ -79,24 +82,25 @@ then paste in each file's contents. Every file starts with a `📍 LOCATION:` co
       Objects without a template get an auto-generated colored placeholder.
 - [ ] **Shrink Ray tool**: put a Tool named **`ShrinkRay`** in ServerStorage with a `Handle` part and an
       **Attachment named `Tip`** inside the Handle (where the beam starts). Otherwise a simple ray is generated.
+- [ ] **Chaser NPCs**: put Models (with a `Humanoid` + `HumanoidRootPart`) in **ServerStorage › Chasers** named
+      `Tier1` … `Tier6` to replace the generated characters. Names, speeds and lines live in `ChaserConfig`.
 - [ ] **Your own map**: build a Model in Workspace named **`ShrinkItMap`** with this structure, and the game will
       use it instead of generating one:
       ```
       ShrinkItMap (Model)
-      ├─ Lobby (Model): SpawnLocation, LikeSign (Part, front face shows the sign),
-      │                 Board_MuseumValue / Board_TotalShrinks / Board_Rebirths / Board_RaidsWon (Parts),
-      │                 VIPRoom (invisible Part covering the VIP area), VIPDoor (Part), VIPFountain (Part)
-      ├─ Areas (Folder)
-      │   └─ Area_1 … Area_6 (Model, attribute Tier = 1..6)
-      │        ├─ Floor (Part: defines the area bounds)
-      │        ├─ Gate (Part, solid wall blocking the entrance; not needed for Area_1)
+      ├─ Base (Model): Floor, SafeZone (invisible Part covering the whole base: entering it delivers loot),
+      │                SpawnLocation, LikeSign, Board_MuseumValue / Board_TotalShrinks / Board_Rebirths /
+      │                Board_RaidsWon (Parts), VIPRoom (invisible region Part), VIPDoor, VIPFountain
+      ├─ Zones (Folder)
+      │   └─ Zone_1 … Zone_6 (Model, attribute Tier = 1..6)
+      │        ├─ Floor (Part: defines the zone bounds)
       │        └─ SpawnPoints (Folder of small invisible Parts)
       ├─ Plots (Folder)
       │   └─ Plot_1 … Plot_8 (Model, attribute PlotId = n)
-      │        ├─ Floor (Part ~140×150; pedestals are laid out in front of the building on it)
+      │        ├─ Floor (Part 90×80; local +Z = front. Pedestals fill the front, building at the back)
       │        ├─ MuseumBuilding (Model with a "Sign" Part that has a SurfaceGui with a TextLabel named "Label")
       │        └─ SpawnPad (Part)
-      └─ LiveObjects (Folder, may be empty)
+      └─ LiveObjects (Folder), Chasers (Folder) — may be empty
       ```
       Tip: press Play once with no `ShrinkItMap`, then copy the generated map from the running game, paste it into
       Workspace in edit mode and decorate it.
@@ -119,11 +123,13 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 |---|---|
 | Hold-to-charge Shrink Ray, beam, squash + fly-to-pocket tween, pop sound, particles | `RayController`, `Effects`, `ShrinkService` |
 | "TOO BIG!" popup + charge bar near the crosshair + hover info | `HUD`, `RayController` |
-| 6 tiers / areas; gates open with Ray Power **or** coins; server position enforcement | `TierConfig`, `AreaService`, `MapService` |
+| One long walled corridor: base (safe zone) → 6 themed zones, each longer than the last; no gates or fees | `MapService`, `MapDecor`, `TierConfig` |
+| Carry loop: shrunk objects stack above your head; run them back to base to put them on display | `CarryService` |
+| Chasers: each zone's owner chases you when you grab something; get caught = drop everything | `CarryService`, `ChaserConfig` |
 | Rarities, variants (Golden x5, Diamond x10, Rainbow x25, Cosmic x100) with glow; luck-weighted rolls | `RarityConfig`, `SpawnService`, `ModelFactory` |
 | Event objects with server-wide announcement | `EventService`, `SpawnService` |
 | Pocket Museum: plots, pedestals, glass cases, "+$" floating text | `MuseumService`, `Effects` |
-| Upgrades: Ray Power, Charge Speed, Range, Luck, Multi-Shrink, Museum Size | `UpgradeConfig`, `UpgradeService` |
+| Upgrades: Ray Power, Run Speed, Carry Capacity, Charge Speed, Range, Luck, Museum Size | `UpgradeConfig`, `UpgradeService` |
 | Rebirth (multiplier, Gems, Tokens) + permanent Token upgrades | `RebirthService` |
 | The Index with per-area completion rewards (Normal set + full variant set) | `IndexService`, `IndexMenu` |
 | Museum Raids (opt-in, max Ray Power, copies only, shield, revenge window + bonus) | `RaidService` |

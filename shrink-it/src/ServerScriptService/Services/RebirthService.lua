@@ -1,7 +1,7 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > RebirthService (ModuleScript)
 
-	Rebirth: resets Coins, upgrades, paid gates and the museum (Exclusive "Huge" items are kept)
+	Rebirth: resets Coins, upgrades and the museum (Exclusive "Huge" items are kept)
 	for a permanent income multiplier, Gems and Rebirth Tokens.
 	The Index, Gems, Tokens, token upgrades, skins and potions are kept.
 ]]
@@ -37,6 +37,7 @@ function RebirthService.DoRebirth(player, free)
 		Svc.Raid.EndRaidsFor(player)
 	end
 
+	Svc.Carry.DropAll(player, "rebirth")
 	local rewards = Formulas.RebirthRewards(data.Rebirths)
 	data.Rebirths += 1
 	data.Coins = 0
@@ -56,6 +57,7 @@ function RebirthService.DoRebirth(player, free)
 	data.RebirthTokens += rewards.Tokens
 
 	Svc.Museum.Recompute(player)
+	Svc.Monetization.ApplyMovement(player)
 	Svc.Economy.AddCoins(player, 0) -- push currency
 	Svc.Data.MarkDirty(player)
 	Svc.Net.Popup(player, "Rebirth", {

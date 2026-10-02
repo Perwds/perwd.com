@@ -7,7 +7,7 @@
 
 local UpgradeConfig = {}
 
-UpgradeConfig.Order = { "RayPower", "ChargeSpeed", "Range", "Luck", "MultiShrink", "MuseumSize" }
+UpgradeConfig.Order = { "RayPower", "Speed", "MultiShrink", "ChargeSpeed", "Range", "Luck", "MuseumSize" }
 
 UpgradeConfig.Upgrades = {
 	RayPower = {
@@ -22,6 +22,20 @@ UpgradeConfig.Upgrades = {
 		end,
 		Format = function(v)
 			return "Lv " .. v
+		end,
+	},
+	Speed = {
+		Name = "Run Speed",
+		Description = "Run faster so the chasers can't catch you.",
+		Emoji = "👟",
+		MaxLevel = 20,
+		BaseCost = 150,
+		CostGrowth = 2.05,
+		Value = function(level)
+			return 16 + (level - 1)
+		end,
+		Format = function(v)
+			return v .. " speed"
 		end,
 	},
 	ChargeSpeed = {
@@ -67,17 +81,17 @@ UpgradeConfig.Upgrades = {
 		end,
 	},
 	MultiShrink = {
-		Name = "Multi-Shrink",
-		Description = "Zap several nearby objects at once.",
-		Emoji = "✨",
-		MaxLevel = 5,
-		BaseCost = 5_000,
-		CostGrowth = 12,
+		Name = "Carry Capacity",
+		Description = "Carry more objects per trip (and zap several at once).",
+		Emoji = "🎒",
+		MaxLevel = 8,
+		BaseCost = 1_500,
+		CostGrowth = 7,
 		Value = function(level)
 			return level
 		end,
 		Format = function(v)
-			return v .. " target" .. (v == 1 and "" or "s")
+			return v .. " object" .. (v == 1 and "" or "s")
 		end,
 	},
 	MuseumSize = {
@@ -88,7 +102,7 @@ UpgradeConfig.Upgrades = {
 		BaseCost = 300,
 		CostGrowth = 2.1,
 		Value = function(level)
-			return 8 + 4 * (level - 1)
+			return 8 + 2 * (level - 1) -- max 46 (+20 with the pass = 66 = 11 x 6 grid)
 		end,
 		Format = function(v)
 			return v .. " pedestals"

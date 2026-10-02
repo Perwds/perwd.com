@@ -27,6 +27,8 @@ local screen
 local menus = {} -- [name] = menu
 local menuOrder = {}
 local badgeSetters = {}
+local carryFrame, carryLabel, splashLabel
+local splashToken = 0
 
 -- ── helpers ───────────────────────────────────────────────────────────
 local KIND_COLORS = {
@@ -230,6 +232,27 @@ function HUD.ShowTooBig(needRayPower, screenPos)
 	end)
 end
 
+-- Big centered text that pops and fades (CAUGHT!, DELIVERED!, ...)
+function HUD.Splash(text, color)
+	splashToken += 1
+	local token = splashToken
+	splashLabel.Text = text
+	splashLabel.TextColor3 = color or Color3.new(1, 1, 1)
+	splashLabel.TextTransparency = 0
+	splashLabel.Visible = true
+	UIKit.Pop(splashLabel, 1.8)
+	task.delay(1.6, function()
+		if token ~= splashToken then
+			return
+		end
+		UIKit.Tween(splashLabel, 0.35, { TextTransparency = 1 })
+		task.wait(0.35)
+		if token == splashToken then
+			splashLabel.Visible = false
+		end
+	end)
+end
+
 -- ── build ─────────────────────────────────────────────────────────────
 local LEFT_BUTTONS = {
 	{ Menu = "Gifts", Label = "Gifts", Emoji = "🎁", Colors = UIKit.Colors.Pink },
@@ -347,7 +370,16 @@ local function buildTopBits()
 	UIKit.AutoScale(eventFrame)
 	eventLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = eventFrame })
 
-	raidFrame = UIKit.Card({ Name = "RaidBanner", Size = UDim2.fromOffset(560, 50), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 64), Colors = UIKit.Colors.Red, Parent = screen, CornerRadius = 25 })
+	carryFrame = UIKit.Card({ Name = "CarryBanner", Size = UDim2.fromOffset(640, 54), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 64), Colors = UIKit.Colors.Orange, Parent = screen, CornerRadius = 27 })
+	carryFrame.Visible = false
+	UIKit.AutoScale(carryFrame)
+	carryLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 3, Parent = carryFrame })
+
+	splashLabel = UIKit.Label({ Name = "Splash", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.38), Size = UDim2.fromOffset(900, 110), StrokeThickness = 6, ZIndex = 120, Parent = screen })
+	splashLabel.Visible = false
+	UIKit.AutoScale(splashLabel)
+
+	raidFrame = UIKit.Card({ Name = "RaidBanner", Size = UDim2.fromOffset(560, 50), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 124), Colors = UIKit.Colors.Red, Parent = screen, CornerRadius = 25 })
 	raidFrame.Visible = false
 	UIKit.AutoScale(raidFrame)
 	raidLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 3, Parent = raidFrame })
@@ -422,6 +454,16 @@ local function refreshTimers()
 	if ev and ev.ServerLuckUntil and ev.ServerLuckUntil > now then
 		boostChip(3, "🌠 Server Luck " .. Format.Clock(ev.ServerLuckUntil - now), UIKit.Colors.Blue)
 	end
+	-- carry banner
+	local carry = data and data.Carry
+	if carry and carry.Count > 0 then
+		carryFrame.Visible = true
+		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
+		carryLabel.Text = string.format("🎒 %d/%d  ·  RUN BACK TO BASE! ⬇%s", carry.Count, carry.Capacity, chaser)
+		UIKit.SetButtonColors(carryFrame, carry.Chaser and UIKit.Colors.Red or UIKit.Colors.Orange)
+	else
+		carryFrame.Visible = false
+	end
 	-- raid banner
 	if data and data.ActiveRaid then
 		raidFrame.Visible = true
@@ -483,6 +525,7 @@ function HUD.Init()
 
 	State.CurrencyChanged:Connect(refreshCurrencies)
 	State.Changed:Connect(function()
+		refreshTimers()
 		refreshCurrencies()
 		refreshBadges()
 		for _, m in pairs(menus) do
