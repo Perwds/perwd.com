@@ -16,6 +16,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
 local EventConfig = require(Shared.Config.EventConfig)
+local TierConfig = require(Shared.Config.TierConfig)
 
 local Modules = script.Parent
 local UIKit = require(Modules.UIKit)
@@ -43,14 +44,29 @@ local KIND_COLORS = {
 }
 
 local toastHolder
+local recentToasts = {} -- [text] = { Toast, Label, Count, Until }
+
 function HUD.Notify(text, kind)
-	if not toastHolder then
+	if not toastHolder or type(text) ~= "string" then
+		return
+	end
+	-- the same message again while it's still on screen: no new popup, just "x2", "x3"...
+	local recent = recentToasts[text]
+	if recent and recent.Toast.Parent and os.clock() < recent.Until then
+		recent.Count += 1
+		recent.Until = os.clock() + 3.2
+		recent.Label.Text = text .. "  x" .. recent.Count
+		if recent.Count <= 2 then
+			UIKit.Pop(recent.Toast, 0.9)
+		end
 		return
 	end
 	local colors = KIND_COLORS[kind] or KIND_COLORS.info
 	local toast = UIKit.Card({ Size = UDim2.fromOffset(math.clamp(#text * 13 + 60, 260, 720), 46), Colors = colors, Parent = toastHolder, CornerRadius = 14 })
 	toast.LayoutOrder = -math.floor(os.clock() * 100)
-	UIKit.Label({ Text = text, Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = toast })
+	local label = UIKit.Label({ Text = text, Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = toast })
+	local entry = { Toast = toast, Label = label, Count = 1, Until = os.clock() + 3.2 }
+	recentToasts[text] = entry
 	UIKit.Pop(toast, 0.6)
 	local children = {}
 	for _, c in ipairs(toastHolder:GetChildren()) do
@@ -64,7 +80,13 @@ function HUD.Notify(text, kind)
 		end)
 		children[#children]:Destroy()
 	end
-	task.delay(3.2, function()
+	task.spawn(function()
+		repeat
+			task.wait(math.max(0.1, entry.Until - os.clock()))
+		until os.clock() >= entry.Until or not toast.Parent
+		if recentToasts[text] == entry then
+			recentToasts[text] = nil
+		end
 		if toast.Parent then
 			UIKit.Tween(toast, 0.25, { BackgroundTransparency = 1 })
 			task.wait(0.25)
@@ -422,6 +444,37 @@ local function buildTopBits()
 	})
 	UIKit.AutoScale(boostHolder)
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Right, SortOrder = Enum.SortOrder.LayoutOrder, Parent = boostHolder })
+
+	-- 📍 which area you're in (top-right)
+	local areaPill = UIKit.Card({ Name = "AreaPill", Size = UDim2.fromOffset(250, 44), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 12), Colors = UIKit.Colors.Dark, Parent = screen, CornerRadius = 22 })
+	UIKit.AutoScale(areaPill)
+	local areaLabel = UIKit.Label({ Text = "📍 Safe Zone", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = areaPill })
+	local lastArea
+	task.spawn(function()
+		while true do
+			task.wait(0.4)
+			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if root then
+				local name, color = "🏠 Safe Zone", Color3.fromRGB(120, 230, 255)
+				if root.Position.Z >= 0 then
+					local z = 0
+					for _, t in ipairs(TierConfig.Tiers) do
+						z += t.AreaDepth
+						name, color = "📍 " .. t.Area, t.Color
+						if root.Position.Z < z then
+							break
+						end
+					end
+				end
+				if name ~= lastArea then
+					lastArea = name
+					areaLabel.Text = name
+					areaLabel.TextColor3 = color
+					UIKit.Pop(areaPill, 1.08)
+				end
+			end
+		end
+	end)
 end
 
 local function buildRayBits()
@@ -492,7 +545,7 @@ local function refreshTimers()
 		if (carry.Rage or 0) > 0 then
 			goal = string.rep("😡", carry.Rage) .. " " .. goal
 		end
-		carryLabel.Text = string.format("🎒 %d/%d  ·  %s%s", carry.Count, carry.Capacity, goal, chaser)
+		carryLabel.Text = string.format("🎒 %d/%s  ·  %s%s", carry.Count, carry.Capacity >= 999 and "∞" or tostring(carry.Capacity), goal, chaser)
 		UIKit.SetButtonColors(carryFrame, carry.Chaser and UIKit.Colors.Red or UIKit.Colors.Orange)
 		if dropButton then
 			dropButton.Visible = true

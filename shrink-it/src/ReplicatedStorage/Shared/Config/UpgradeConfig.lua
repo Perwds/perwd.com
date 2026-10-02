@@ -7,7 +7,7 @@
 
 local UpgradeConfig = {}
 
-UpgradeConfig.Order = { "RayPower", "Treadmill", "MultiShrink", "ChargeSpeed", "Range", "Luck", "MuseumSize" }
+UpgradeConfig.Order = { "RayPower", "Treadmill", "MultiShrink", "MuseumSize", "Income", "BoxSpeed", "Luck", "ChargeSpeed", "Range" }
 
 UpgradeConfig.Upgrades = {
 	RayPower = {
@@ -15,8 +15,8 @@ UpgradeConfig.Upgrades = {
 		Description = "Shrink everything faster. Big objects charge MUCH faster with more power.",
 		Emoji = "⚡",
 		MaxLevel = 30, -- reaching max also unlocks Museum Raids
-		BaseCost = 100,
-		CostGrowth = 2.2,
+		BaseCost = 80,
+		CostGrowth = 2.05,
 		Value = function(level)
 			return level
 		end,
@@ -29,8 +29,8 @@ UpgradeConfig.Upgrades = {
 		Description = "Stand on the treadmill in your plot (AFK works!) to train speed. Upgrade = faster training.",
 		Emoji = "🏃",
 		MaxLevel = 30,
-		BaseCost = 150,
-		CostGrowth = 2.05,
+		BaseCost = 120,
+		CostGrowth = 1.95,
 		Value = function(level) -- speed points per second while on the treadmill
 			return math.floor(level ^ 1.7 * 10 + 0.5) / 10
 		end,
@@ -82,16 +82,44 @@ UpgradeConfig.Upgrades = {
 	},
 	MultiShrink = {
 		Name = "Carry Capacity",
-		Description = "Carry more objects per trip (and zap several at once).",
+		Description = "Carry more per trip: 3 → 10. (2x / 5x / Infinite gamepasses in the Shop.)",
 		Emoji = "🎒",
 		MaxLevel = 8,
-		BaseCost = 1_500,
-		CostGrowth = 7,
+		BaseCost = 2_500,
+		CostGrowth = 5,
 		Value = function(level)
-			return level
+			return level + 2 -- 3 at the start, 10 at max
 		end,
 		Format = function(v)
 			return v .. " object" .. (v == 1 and "" or "s")
+		end,
+	},
+	Income = {
+		Name = "Income Boost",
+		Description = "Everything in your base earns more coins.",
+		Emoji = "💰",
+		MaxLevel = 25,
+		BaseCost = 400,
+		CostGrowth = 2.15,
+		Value = function(level)
+			return 1 + 0.1 * (level - 1) -- x1 → x3.4
+		end,
+		Format = function(v)
+			return string.format("x%.1f", v)
+		end,
+	},
+	BoxSpeed = {
+		Name = "Box Opening",
+		Description = "Boxes in your base open faster.",
+		Emoji = "📦",
+		MaxLevel = 15,
+		BaseCost = 250,
+		CostGrowth = 2.3,
+		Value = function(level) -- multiplier on the opening time
+			return math.max(0.3, 0.95 ^ (level - 1))
+		end,
+		Format = function(v)
+			return math.floor((1 - v) * 100 + 0.5) .. "% faster"
 		end,
 	},
 	MuseumSize = {
@@ -99,8 +127,8 @@ UpgradeConfig.Upgrades = {
 		Description = "More spots on your plot = more objects on display = more coins.",
 		Emoji = "🏛️",
 		MaxLevel = 20,
-		BaseCost = 300,
-		CostGrowth = 2.1,
+		BaseCost = 250,
+		CostGrowth = 2.0,
 		Value = function(level)
 			return 8 + 2 * (level - 1) -- max 46 (+20 with the pass = 66 = 11 x 6 grid)
 		end,

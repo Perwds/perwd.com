@@ -178,7 +178,11 @@ Shopkeepers are added when the server starts.
 | Rarities, variants (Golden x5, Diamond x10, Rainbow x25, Cosmic x100) with glow; luck-weighted rolls | `RarityConfig`, `SpawnService`, `ModelFactory` |
 | Event objects with server-wide announcement | `EventService`, `SpawnService` |
 | Pocket Museum: plots, pedestals, glass cases, "+$" floating text | `MuseumService`, `Effects` |
-| Upgrades: Ray Power, Treadmill, Carry Capacity, Charge Speed, Range, Luck, Museum Size + **⚡ Buy All** (keeps buying the cheapest affordable upgrade) | `UpgradeConfig`, `UpgradeService` |
+| Upgrades: Ray Power, Treadmill, Carry Capacity (3 → 10), Income Boost, Box Opening, Charge Speed, Range, Luck, Museum Size + **⚡ Buy All** (keeps buying the cheapest affordable upgrade) | `UpgradeConfig`, `UpgradeService` |
+| Carry gamepasses: **2x Carry**, **5x Carry**, **Infinite Carry** (R$ 4999); also **Fast Boxes**, **Big Sizes** passes and **Open All Boxes Now** / **+30 Min of Training** products | `MonetizationConfig`, `Formulas.RayStats` |
+| You hold the top thing **in your hands** (rest on your back). Boxes are as big as the size inside them (sparkles + "HUGE!" tag); hover a box in a base to see its 🍀 luck | `CarryService`, `ModelFactory.CreateBox`, `Effects` |
+| Treadmill locks you in place and you run (jump to get off); 📍 area name top-right; studded menu backgrounds (animated in shops) | `Effects`, `HUD`, `UIKit.Studs` |
+| **Your own textures**: paste asset IDs into `TextureConfig` (ground per zone, plot floors, shop counters, box faces, menu backgrounds) | `TextureConfig`, `MapService.ApplyTextures` |
 | Rebirth (multiplier, Gems, Tokens) + permanent Token upgrades | `RebirthService` |
 | The Index with per-area completion rewards (Normal set + full variant set) | `IndexService`, `IndexMenu` |
 | Museum Raids (opt-in, max Ray Power, copies only, shield, revenge window + bonus) | `RaidService` |

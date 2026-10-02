@@ -108,6 +108,9 @@ end
 
 function SpawnService.RollSize(player)
 	local luck = math.sqrt(variantMults(player).Golden)
+	if Svc.Session.HasPass(player, "BigSizes") then
+		luck *= 3
+	end
 	local entries = {}
 	for _, entry in ipairs(GameConfig.Sizes) do
 		table.insert(entries, { entry.Mult, entry.Weight * (entry.Lucky and luck or 1) })
@@ -131,7 +134,7 @@ function SpawnService.RollContents(player, box)
 		end
 	end
 	local id = weightedPick(entries) or ObjectConfig.IdsForTier(1, false)[1]
-	return id, box.V or SpawnService.RollVariant(player), SpawnService.RollSize(player)
+	return id, box.V or SpawnService.RollVariant(player), box.Z or SpawnService.RollSize(player)
 end
 
 -- ── world boxes ───────────────────────────────────────────────────────
@@ -236,7 +239,14 @@ function SpawnService.Claim(model, player)
 	if info.ClaimCount >= GameConfig.Boxes.MaxClaims then
 		retire(model, info, GameConfig.ShrinkFxTime + 0.2)
 	end
-	return { R = info.Box.R, T = info.Box.T, V = info.Box.V }, info
+	-- your copy of the box already knows its SIZE (the box is that big) and your LUCK when you grabbed it
+	return { R = info.Box.R, T = info.Box.T, V = info.Box.V, Z = SpawnService.RollSize(player), L = SpawnService.LuckOf(player, info.Box) }, info
+end
+
+-- Luck shown when hovering a box: your luck (upgrades, passes, events) x how good the box rarity is.
+function SpawnService.LuckOf(player, box)
+	local luck = math.sqrt(variantMults(player).Golden)
+	return math.floor(luck * (GameConfig.Boxes.RarityBoost[box.R] or 1) * 10 + 0.5) / 10
 end
 
 -- Bonus box that is not tied to a spawn point (Giant Rush, events).

@@ -1,7 +1,7 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > CarryService (ModuleScript)
 
-	Everything you carry above your head:
+	Everything you carry (the top thing in your HANDS, the rest on your back):
 	  • BOXES you shrank in the zones ({ Kind = "Box", Box = { R, T, V } }).
 	  • OBJECTS you picked up from a pedestal ({ Kind = "Item", U = uid }). These are shown at their
 	    REAL size (GameConfig.HoldBaseSize x the object's size), on pedestals they all look the same size.
@@ -15,7 +15,7 @@
 	Objects you hold are never lost to chasers (they go back to your pocket), but other players can
 	steal them with a bat (PvPService) when you carry them outside the safe zone.
 
-	Capacity = the "Carry Capacity" upgrade (x3 with the Multi-Shrink gamepass).
+	Capacity = the "Carry Capacity" upgrade (3 → 10), x2 / x5 / Infinite with the carry gamepasses.
 	Chasers are server-controlled NPCs (network owner = server), so clients can't cheat them.
 ]]
 
@@ -36,6 +36,7 @@ local Svc
 
 local carrying = {} -- [player] = { Items = { entry }, Chaser = record?, Rage = { [tier] = { Level, CoolAt } } }
 local returning = {} -- chasers walking back home after catching someone
+local TRACKS = {} -- model → run animation track (handed to the chaser record)
 
 function CarryService.Init(registry)
 	Svc = registry
@@ -102,45 +103,93 @@ local function buildVisual(entry)
 		return model
 	end
 	local model = ModelFactory.CreateBox(entry.Box)
-	ModelFactory.FitToSize(model, GameConfig.CarryDisplaySize)
+	ModelFactory.FitToSize(model, ModelFactory.BoxStuds(entry.Box))
 	return model
 end
 
+local HOLD_ANIM = "rbxassetid://507768375" -- default R15 "holding a tool" pose (arm out)
+
+local function weldAll(model, anchor)
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.CanCollide = false
+			d.CanQuery = false
+			d.CanTouch = false
+			d.Massless = true
+			local weld = Instance.new("WeldConstraint")
+			weld.Part0 = anchor
+			weld.Part1 = d
+			weld.Parent = d
+			d.Anchored = false
+		end
+	end
+end
+
+local function setHoldPose(player, c, on)
+	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if on and hum and not (c.HoldTrack and c.HoldTrack.IsPlaying) then
+		pcall(function()
+			local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
+			local anim = Instance.new("Animation")
+			anim.AnimationId = HOLD_ANIM
+			c.HoldTrack = animator:LoadAnimation(anim)
+			c.HoldTrack.Priority = Enum.AnimationPriority.Action
+			c.HoldTrack.Looped = true
+			c.HoldTrack:Play(0.15)
+		end)
+	elseif not on and c.HoldTrack then
+		pcall(function()
+			c.HoldTrack:Stop(0.2)
+		end)
+		c.HoldTrack = nil
+	end
+end
+
+-- The top thing is held in your HANDS in front of you (at its real size); the rest ride on your back.
 local function restack(player, c)
 	local character = player.Character
-	local head = character and character:FindFirstChild("Head")
-	local y = 1.2
-	for _, entry in ipairs(c.Items) do
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	local back = character and (character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")) or root
+	local y = 0
+	for i, entry in ipairs(c.Items) do
 		if entry.Model then
 			entry.Model:Destroy()
 			entry.Model = nil
 		end
-		if head then
+		if root then
 			local model = buildVisual(entry)
 			model.Name = "Carried"
-			local _, size = model:GetBoundingBox()
-			model:PivotTo(head.CFrame * CFrame.new(0, y + size.Y / 2, 0))
-			y += size.Y + 0.3
-			for _, d in ipairs(model:GetDescendants()) do
-				if d:IsA("BasePart") then
-					d.CanCollide = false
-					d.CanQuery = false
-					d.CanTouch = false
-					d.Massless = true
-					local weld = Instance.new("WeldConstraint")
-					weld.Part0 = head
-					weld.Part1 = d
-					weld.Parent = d
-					d.Anchored = false
-				end
+			if i == #c.Items then
+				-- in your hands: bottom at waist height, just in front of your chest
+				local _, size = model:GetBoundingBox()
+				model:PivotTo(root.CFrame * CFrame.new(0, -0.6 + size.Y / 2, -(size.Z / 2 + 1.4)))
+				weldAll(model, root)
+			else
+				-- small copies stacked on your back like a backpack
+				local _, size0 = model:GetBoundingBox()
+				local scale = math.min(1, 1.8 / math.max(size0.X, size0.Y, size0.Z))
+				pcall(function()
+					model:ScaleTo(model:GetScale() * scale)
+				end)
+				local _, size = model:GetBoundingBox()
+				model:PivotTo(back.CFrame * CFrame.new(0, -0.4 + y + size.Y / 2, 0.6 + size.Z / 2))
+				y += size.Y + 0.1
+				weldAll(model, back)
 			end
 			model.Parent = character
 			entry.Model = model
 		end
 	end
+	setHoldPose(player, c, #c.Items > 0)
 end
 
 local function clearVisuals(c)
+	if c.HoldTrack then
+		pcall(function()
+			c.HoldTrack:Stop(0.2)
+		end)
+		c.HoldTrack = nil
+	end
 	for _, entry in ipairs(c.Items) do
 		if entry.Model then
 			entry.Model:Destroy()
@@ -367,8 +416,54 @@ local function sendHome(c, line)
 	end
 	say(ch.Model, line, 2.5)
 	ch.Humanoid.WalkSpeed = ch.Cfg.Speed * 0.6
-	ch.ReturnUntil = os.clock() + 12
+	ch.ReturnUntil = os.clock() + ChaserConfig.DropLifetime + 2 -- stays around while your boxes are on the ground
+	ch.Victim = c
 	table.insert(returning, ch)
+end
+
+-- Makes `ch` (already in the world) chase `player` again with `rage` — the SAME person turns around.
+local function setRage(player, ch, rage)
+	ch.Rage = rage
+	ch.Humanoid.WalkSpeed = ch.Cfg.Speed + rage * ChaserConfig.RageSpeed
+	if ch.Track then
+		pcall(function()
+			ch.Track:AdjustSpeed(1 + rage * 0.15)
+		end)
+	end
+	if rage > 0 then
+		say(ch.Model, string.rep("😡", rage) .. " GIVE THAT BACK!!", 3)
+		billboard(ch.Model, "Rage", string.rep("💢", rage), Color3.fromRGB(255, 60, 60), 7.5)
+		local fire = ch.Root:FindFirstChild("RageFire") or Instance.new("Fire")
+		fire.Name = "RageFire"
+		fire.Size = 2 + rage
+		fire.Heat = 0
+		fire.Color = Color3.fromRGB(255, 60, 40)
+		fire.Parent = ch.Root
+	end
+	Remotes.Event("ChaserFX"):FireClient(player, "Chase", { Name = ch.Cfg.Name, Emoji = ch.Cfg.Emoji, Rage = rage })
+	Svc.Net.Notify(player, ch.Cfg.Emoji .. " " .. ch.Cfg.Name .. (rage > 0 and (" is ENRAGED (x" .. rage .. ")!") or " is chasing you!") .. " RUN HOME! 🏃", "error")
+end
+
+local function resumeChase(player, c, ch, rage)
+	for i = #returning, 1, -1 do
+		if returning[i] == ch then
+			table.remove(returning, i)
+		end
+	end
+	ch.Victim = nil
+	c.Chaser = ch
+	ch.StartAt = os.clock() + 0.2
+	setRage(player, ch, rage)
+end
+
+-- the chaser of `tier` that is still walking home from catching this player (if any)
+local function returningFor(c, tier)
+	for _, ch in ipairs(returning) do
+		if ch.Victim == c and ch.Tier == tier and ch.Model.Parent then
+			return ch
+		end
+	end
+	return nil
 end
 
 local function spawnChaser(player, c, tier, fromPos, rage)
@@ -397,6 +492,7 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 		local track = animator:LoadAnimation(anim)
 		track.Looped = true
 		track:Play(0.1, 1, 1 + rage * 0.15)
+		TRACKS[model] = track
 	end)
 	if rage > 0 then
 		say(model, string.rep("😡", rage) .. " GIVE THAT BACK!!", 3)
@@ -409,7 +505,8 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 	else
 		say(model, "❗ " .. cfg.Shout, 3)
 	end
-	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, Home = spawnPos, Rage = rage, StartAt = os.clock() + (rage > 0 and 0.2 or ChaserConfig.HeadStart) }
+	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, Home = spawnPos, Rage = rage, Track = TRACKS[model], StartAt = os.clock() + (rage > 0 and 0.2 or ChaserConfig.HeadStart) }
+	TRACKS[model] = nil
 	Remotes.Event("ChaserFX"):FireClient(player, "Chase", { Name = cfg.Name, Emoji = cfg.Emoji, Rage = rage })
 	Svc.Net.Notify(player, cfg.Emoji .. " " .. cfg.Name .. (rage > 0 and (" is ENRAGED (x" .. rage .. ")!") or " is chasing you!") .. " RUN HOME! 🏃", "error")
 end
@@ -419,7 +516,19 @@ local function chaseIfNeeded(player, c, tier, fromPos, forceRage)
 		return
 	end
 	if forceRage and c.Chaser and c.Chaser.Tier == tier then
-		despawnChaser(c, nil) -- respawn it angrier
+		setRage(player, c.Chaser, rageLevel(c, tier)) -- same person, just angrier
+		return
+	end
+	-- the one who caught you is still walking home → it turns around and comes back for you
+	if not c.Chaser or c.Chaser.Tier < tier then
+		local back = returningFor(c, tier)
+		if back then
+			if c.Chaser then
+				despawnChaser(c, nil)
+			end
+			resumeChase(player, c, back, rageLevel(c, tier))
+			return
+		end
 	end
 	if not c.Chaser or c.Chaser.Tier < tier then
 		if c.Chaser then
@@ -432,7 +541,7 @@ end
 -- ── dropped boxes (after being caught / dying / dropping) ────────────
 local function dropBoxOnGround(box, position, droppedBy)
 	local model = ModelFactory.CreateBox(box)
-	ModelFactory.FitToSize(model, GameConfig.CarryDisplaySize * 1.3)
+	ModelFactory.FitToSize(model, ModelFactory.BoxStuds(box))
 	ModelFactory.PlaceOnGround(model, position, math.random() * math.pi * 2)
 	ModelFactory.SetCollision(model, false)
 	model.Name = "DroppedBox"
@@ -742,9 +851,11 @@ function CarryService.Start()
 				local ch = returning[i]
 				if not ch.Model.Parent then
 					table.remove(returning, i)
-				elseif os.clock() >= ch.ReturnUntil or (ch.Root.Position - ch.Home).Magnitude < 6 then
+				elseif os.clock() >= ch.ReturnUntil then
 					table.remove(returning, i)
 					despawnModel(ch.Model, nil, 0)
+				elseif (ch.Root.Position - ch.Home).Magnitude < 6 then
+					ch.Humanoid:MoveTo(ch.Root.Position) -- waits at home, watching its boxes
 				else
 					ch.Humanoid:MoveTo(ch.Home)
 				end

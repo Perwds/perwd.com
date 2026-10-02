@@ -19,6 +19,7 @@ local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 local TextChatService = game:GetService("TextChatService")
 local TweenService = game:GetService("TweenService")
 
@@ -541,6 +542,91 @@ local function watchBoxes()
 	CollectionService:GetInstanceAddedSignal("Shrinkable"):Connect(hook)
 end
 
+-- ── treadmill: stepping on YOUR treadmill locks you in place and you RUN (AFK-able) ─────
+-- Press jump (Space / jump button) to hop off.
+local RUN_R15 = "rbxassetid://913376220"
+local RUN_R6 = "rbxassetid://180426354"
+local function treadmillLock()
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "TreadmillHint"
+	gui.ResetOnSpawn = false
+	gui.Parent = player:WaitForChild("PlayerGui")
+	local hint = Instance.new("TextLabel")
+	hint.AnchorPoint = Vector2.new(0.5, 1)
+	hint.Position = UDim2.new(0.5, 0, 1, -190)
+	hint.Size = UDim2.fromOffset(420, 34)
+	hint.BackgroundTransparency = 1
+	hint.Font = Enum.Font.FredokaOne
+	hint.TextScaled = true
+	hint.TextColor3 = Color3.fromRGB(120, 255, 140)
+	hint.Text = "🏃 TRAINING SPEED!  Jump to get off"
+	hint.Visible = false
+	hint.Parent = gui
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 3
+	stroke.Parent = hint
+
+	local locked, track, exitUntil = nil, nil, 0
+	local function unlock(hopOff)
+		if not locked then
+			return
+		end
+		local cf, len = locked.CF, locked.Len
+		locked = nil
+		hint.Visible = false
+		if track then
+			track:Stop(0.2)
+			track = nil
+		end
+		local character = player.Character
+		local hum = character and character:FindFirstChildOfClass("Humanoid")
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		if hum then
+			hum.AutoRotate = true
+		end
+		if hopOff and root and cf then
+			exitUntil = os.clock() + 2.5
+			-- off the back end of the belt
+			root.CFrame = cf * CFrame.new(0, 3.5, len / 2 + 3.5)
+		end
+	end
+	UserInputService.JumpRequest:Connect(function()
+		unlock(true)
+	end)
+	RunService.RenderStepped:Connect(function()
+		local character = player.Character
+		local hum = character and character:FindFirstChildOfClass("Humanoid")
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		local cf = player:GetAttribute("TreadmillCF")
+		local want = player:GetAttribute("Training") == true and cf ~= nil and os.clock() > exitUntil and hum and root and hum.Health > 0
+		if not want then
+			unlock(false)
+			return
+		end
+		if not locked then
+			locked = { CF = cf, Len = player:GetAttribute("TreadmillLen") or 11 }
+			hum.AutoRotate = false
+			hint.Visible = true
+			pcall(function()
+				local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
+				local anim = Instance.new("Animation")
+				anim.AnimationId = hum.RigType == Enum.HumanoidRigType.R15 and RUN_R15 or RUN_R6
+				track = animator:LoadAnimation(anim)
+				track.Priority = Enum.AnimationPriority.Action
+				track.Looped = true
+				track:Play(0.2)
+			end)
+		end
+		-- pinned to the middle of the belt, facing the console
+		local up = (player:GetAttribute("TreadmillTop") or 0.15) + hum.HipHeight + root.Size.Y / 2
+		root.CFrame = locked.CF * CFrame.new(0, up, 0)
+		root.AssemblyLinearVelocity = Vector3.zero
+		if track then
+			track:AdjustSpeed(math.clamp(hum.WalkSpeed / 24, 1, 2.5))
+		end
+	end)
+end
+
 -- ── hover info: point at anyone's pedestal object ────────────────────
 local function hoverInfo()
 	local gui = Instance.new("ScreenGui")
@@ -598,6 +684,21 @@ local function hoverInfo()
 			lines[2].Text = "💰 +" .. Format.Coins(pedestal:GetAttribute("Income") or 0) .. "/s"
 			lines[2].TextColor3 = Color3.fromRGB(120, 255, 120)
 			lines[3].Text = "⚖️ " .. (pedestal:GetAttribute("Weight") or "?") .. "  ·  📏 " .. (pedestal:GetAttribute("SizeName") or "Normal")
+			local owner = pedestal:GetAttribute("OwnerUserId") == player.UserId and "You" or (pedestal:GetAttribute("OwnerName") or "?")
+			lines[4].Text = "👤 " .. owner
+			lines[4].TextColor3 = Color3.fromRGB(190, 200, 230)
+			frame.Position = UDim2.fromOffset(mouse.X + 18, mouse.Y + 10)
+			frame.Visible = true
+		elseif pedestal and pedestal:GetAttribute("State") == "Box" then
+			-- an opening box: shows its LUCK (and how big it is)
+			local luck = pedestal:GetAttribute("BoxLuck")
+			lines[1].Text = pedestal:GetAttribute("ItemName") or "Mystery Box"
+			lines[1].TextColor3 = Color3.fromRGB(255, 230, 120)
+			lines[2].Text = "🍀 Luck x" .. (luck and string.format("%.1f", luck) or "1.0")
+			lines[2].TextColor3 = Color3.fromRGB(120, 255, 140)
+			local readyAt = pedestal:GetAttribute("BoxReadyAt")
+			local left = readyAt and math.max(0, readyAt - State.Now()) or 0
+			lines[3].Text = "📏 " .. (pedestal:GetAttribute("SizeName") or "Normal") .. "  ·  ⏳ " .. (left > 0 and Format.Time(left) or "Ready!")
 			local owner = pedestal:GetAttribute("OwnerUserId") == player.UserId and "You" or (pedestal:GetAttribute("OwnerName") or "?")
 			lines[4].Text = "👤 " .. owner
 			lines[4].TextColor3 = Color3.fromRGB(190, 200, 230)
@@ -731,6 +832,7 @@ function Effects.Init()
 	Audio.Init()
 	task.spawn(watchBoxes)
 	task.spawn(hoverInfo)
+	task.spawn(treadmillLock)
 	task.spawn(settingsLoop)
 	setupChat()
 	Remotes.Event("PvPFX").OnClientEvent:Connect(onPvPFX)

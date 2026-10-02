@@ -27,7 +27,20 @@ function NetService.Handle(action, fn)
 	handlers[action] = fn
 end
 
+local lastNotify = setmetatable({}, { __mode = "k" }) -- [player] = { [text] = os.clock() }
+
 function NetService.Notify(player, text, kind)
+	-- the same error spammed (holding a button, several prompts at once) is sent once per 1.5s
+	local seen = lastNotify[player]
+	if not seen then
+		seen = {}
+		lastNotify[player] = seen
+	end
+	local now = os.clock()
+	if kind == "error" and seen[text] and now - seen[text] < 1.5 then
+		return
+	end
+	seen[text] = now
 	Remotes.Event("Notify"):FireClient(player, text, kind or "info")
 end
 

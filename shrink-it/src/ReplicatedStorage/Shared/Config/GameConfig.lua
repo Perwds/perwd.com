@@ -8,8 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v10.7 (buy all upgrades)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 11 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v11 (hands, treadmill, carry passes)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 12 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -82,7 +82,9 @@ GameConfig.Sizes = {
 	{ Name = "Giant", Mult = 3, Weight = 1.5, Lucky = true },
 	{ Name = "Colossal", Mult = 5, Weight = 0.3, Lucky = true },
 }
-GameConfig.HoldBaseSize = 3 -- studs: a Normal object held above your head is this big (x its size Mult)
+GameConfig.HoldBaseSize = 6 -- studs: a Normal object is this big in your hands AND on the ground in your base (x its size Mult)
+GameConfig.InfiniteCarry = 999 -- "Infinite Carry" gamepass (shown as ∞)
+GameConfig.BoxBaseSize = 4 -- studs: a Normal-size box in your hands / on your base floor (x its size ^ 0.75)
 
 GameConfig.CarryDisplaySize = 2.6 -- size of each object stacked above your head -- extra targets must be within this distance of the main target
 GameConfig.ShrinkFxTime = 0.9 -- seconds the tween plays before the server removes the object

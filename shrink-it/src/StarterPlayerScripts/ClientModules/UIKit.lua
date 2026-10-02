@@ -458,6 +458,72 @@ end)
 -- ── Pop-up panel ──────────────────────────────────────────────────────
 -- props: Parent (ScreenGui), Title, Emoji, Size (UDim2 offset), Colors (title accent)
 -- returns panel { Holder, Frame, Content, Open(), Close(), Toggle(), IsOpen(), OnOpen, OnClose }
+-- Lego-style studs over a panel background. animated = the studs slowly slide (shops).
+local movingStuds = {}
+function UIKit.Studs(frame, animated, radius, onDark)
+	local STEP, DOT = 44, 24
+	local clip = UIKit.Create("Frame", {
+		Name = "Studs",
+		BackgroundTransparency = 1,
+		Size = UDim2.fromScale(1, 1),
+		ClipsDescendants = true,
+		ZIndex = 50,
+		Parent = frame,
+	})
+	UIKit.Corner(clip, radius or 26)
+	local grid = UIKit.Create("Frame", {
+		Name = "Grid",
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(-STEP, -STEP),
+		Size = UDim2.new(1, STEP * 2, 1, STEP * 2),
+		ZIndex = 50,
+		Parent = clip,
+	})
+	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(DOT, DOT), CellPadding = UDim2.fromOffset(STEP - DOT, STEP - DOT), Parent = grid })
+	local TextureConfig = require(game:GetService("ReplicatedStorage").Shared.Config.TextureConfig)
+	local custom = TextureConfig.UI.PanelStuds
+	if animated and TextureConfig.Has(TextureConfig.UI.ShopBackground) then
+		custom = TextureConfig.UI.ShopBackground
+	end
+	if TextureConfig.Has(custom) then
+		-- your own tiled picture instead of the drawn studs
+		grid:ClearAllChildren()
+		local tile = TextureConfig.UI.PanelStudsTile or 64
+		UIKit.Create("ImageLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Image = custom, ScaleType = Enum.ScaleType.Tile, TileSize = UDim2.fromOffset(tile, tile), ImageTransparency = 0.6, ZIndex = 50, Parent = grid })
+		if animated then
+			table.insert(movingStuds, { Grid = grid, Frame = frame, Step = tile })
+		end
+		return clip
+	end
+	local size = frame.AbsoluteSize.Magnitude > 0 and frame.AbsoluteSize or Vector2.new(1000, 760)
+	local count = math.ceil((size.X + STEP * 3) / STEP) * math.ceil((size.Y + STEP * 3) / STEP)
+	for _ = 1, math.min(count, 900) do
+		local stud = UIKit.Create("Frame", { BackgroundColor3 = onDark and Color3.new(1, 1, 1) or Color3.fromRGB(70, 90, 140), BackgroundTransparency = onDark and 0.93 or 0.9, ZIndex = 50, Parent = grid })
+		UIKit.Corner(stud, UDim.new(1, 0))
+		UIKit.Create("UIStroke", { Thickness = 2, Color = onDark and Color3.new(0, 0, 0) or Color3.fromRGB(40, 50, 90), Transparency = onDark and 0.7 or 0.82, Parent = stud })
+	end
+	if animated then
+		table.insert(movingStuds, { Grid = grid, Frame = frame, Step = STEP })
+	end
+	return clip
+end
+
+task.spawn(function()
+	local RunService = game:GetService("RunService")
+	RunService.RenderStepped:Connect(function()
+		if #movingStuds == 0 then
+			return
+		end
+		local t = os.clock() * 14
+		for _, m in ipairs(movingStuds) do
+			if m.Frame.Parent and m.Frame.Visible then
+				local o = t % m.Step
+				m.Grid.Position = UDim2.fromOffset(-m.Step + o, -m.Step + o)
+			end
+		end
+	end)
+end)
+
 function UIKit.Panel(props)
 	local size = props.Size or UDim2.fromOffset(760, 520)
 	local holder = UIKit.Create("Frame", {
@@ -488,6 +554,7 @@ function UIKit.Panel(props)
 	UIKit.Corner(frame, 26)
 	UIKit.Stroke(frame, 6, UIKit.Outline, true)
 	UIKit.Gradient(frame, { Color3.fromRGB(255, 255, 255), Color3.fromRGB(228, 234, 248) })
+	UIKit.Studs(frame, props.Animated == true, 26, false)
 
 	-- title pill overlapping the top-left edge
 	local titleBar = UIKit.Create("Frame", {
@@ -600,14 +667,7 @@ function UIKit._HeaderPanel(props, holder, frame, anim, panel)
 	UIKit.Corner(frame, 10)
 	UIKit.Stroke(frame, 6, UIKit.Outline, true)
 	-- faint stud pattern on the body
-	local dots = UIKit.Create("Frame", { Name = "Studs", BackgroundTransparency = 1, ClipsDescendants = true, Size = UDim2.fromScale(1, 1), ZIndex = 50, Parent = frame })
-	UIKit.Corner(dots, 10)
-	local grid = UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(10, 10), CellPadding = UDim2.fromOffset(22, 22), Parent = dots })
-	grid.StartCorner = Enum.StartCorner.TopLeft
-	for _ = 1, 600 do
-		local d = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.94, ZIndex = 50, Parent = dots })
-		UIKit.Corner(d, UDim.new(1, 0))
-	end
+	UIKit.Studs(frame, props.Animated == true, 10, true)
 	local headerH = props.HeaderHeight or 84
 	local header = UIKit.Create("Frame", {
 		Name = "Header",

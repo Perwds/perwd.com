@@ -61,7 +61,7 @@ local function showOdds(ctx, reward)
 end
 
 function InfinitePackMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Infinite Pack", Emoji = "♾️", Size = UDim2.fromOffset(940, 600), Colors = UIKit.Colors.Purple })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Infinite Pack", Animated = true, Emoji = "♾️", Size = UDim2.fromOffset(940, 600), Colors = UIKit.Colors.Purple })
 	local content = panel.Content
 
 	local timer = UIKit.Label({ Text = "", TextColor3 = Color3.new(1, 1, 1), StrokeThickness = 3.5, Size = UDim2.new(1, 0, 0, 40), Position = UDim2.fromOffset(0, 12), Parent = content })

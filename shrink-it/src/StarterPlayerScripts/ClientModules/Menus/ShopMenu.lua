@@ -21,7 +21,7 @@ local Prices = require(Modules.Prices)
 local ShopMenu = {}
 
 function ShopMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Shop", Style = "Header", Size = UDim2.fromOffset(960, 660), Colors = { Color3.fromRGB(255, 225, 70), Color3.fromRGB(245, 150, 20) } })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Shop", Animated = true, Style = "Header", Size = UDim2.fromOffset(960, 660), Colors = { Color3.fromRGB(255, 225, 70), Color3.fromRGB(245, 150, 20) } })
 	local content = panel.Content
 
 	local tabsBar = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 52), Position = UDim2.fromOffset(0, 18), Parent = content })

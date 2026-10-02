@@ -26,6 +26,8 @@ local CARD_COLORS = {
 	Range = UIKit.Colors.Red,
 	Luck = UIKit.Colors.Purple,
 	MuseumSize = UIKit.Colors.Blue,
+	Income = UIKit.Colors.Yellow,
+	BoxSpeed = UIKit.Colors.Orange,
 }
 
 function UpgradesMenu.Build(ctx)

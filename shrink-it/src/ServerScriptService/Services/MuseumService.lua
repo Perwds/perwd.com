@@ -169,6 +169,11 @@ local function setPrompt(pedestal, action, hold)
 	end
 end
 
+local function yawOf(part)
+	local look = part.CFrame.LookVector
+	return math.atan2(-look.X, -look.Z)
+end
+
 -- Shows what's on a pedestal: nothing, an opening box, or the object.
 local function setDisplay(pedestal, slot, data)
 	local old = pedestal:FindFirstChild("Display")
@@ -182,6 +187,7 @@ local function setDisplay(pedestal, slot, data)
 	pedestal:SetAttribute("BoxReadyAt", nil)
 	pedestal:SetAttribute("Weight", nil)
 	pedestal:SetAttribute("SizeName", nil)
+	pedestal:SetAttribute("BoxLuck", nil)
 	pedestal:SetAttribute("Income", 0)
 	local base = pedestal.PrimaryPart
 	local top = base.Position + Vector3.new(0, base.Size.Y / 2, 0) -- right on the ground
@@ -189,8 +195,12 @@ local function setDisplay(pedestal, slot, data)
 	if slot and slot.Box then
 		local box = ModelFactory.CreateBox(slot.Box)
 		box.Name = "Display"
+		ModelFactory.FitToSize(box, ModelFactory.BoxStuds(slot.Box))
 		ModelFactory.SetCollision(box, false)
-		ModelFactory.PlaceOnGround(box, top, math.rad(-15))
+		ModelFactory.PlaceOnGround(box, top, yawOf(base))
+		pedestal:SetAttribute("BoxLuck", slot.Box.L)
+		pedestal:SetAttribute("SizeName", Formulas.SizeInfo(slot.Box.Z).Name)
+		pedestal:SetAttribute("ItemName", Formulas.BoxName(slot.Box))
 		box.Parent = pedestal
 		pedestal:SetAttribute("State", "Box")
 		pedestal:SetAttribute("BoxReadyAt", slot.Box.ReadyAt)
@@ -202,10 +212,11 @@ local function setDisplay(pedestal, slot, data)
 	if item then
 		local display = ModelFactory.Create(item.Id)
 		display.Name = "Display"
-		ModelFactory.FitToSize(display, GameConfig.DisplayMaxSize)
-		ModelFactory.Simplify(display, 0.07)
+		-- exactly as big as when you hold it (real size), standing where you put it
+		ModelFactory.FitToSize(display, GameConfig.HoldBaseSize * (item.Z or 1))
+		ModelFactory.Simplify(display, 0.06)
 		ModelFactory.SetCollision(display, false)
-		ModelFactory.PlaceOnGround(display, top, math.rad(-20))
+		ModelFactory.PlaceOnGround(display, top, yawOf(base))
 		ModelFactory.ApplyVariant(display, item.V, false)
 		display.Parent = pedestal
 		pedestal:SetAttribute("State", "Item")
@@ -418,8 +429,8 @@ function onPrompt(player, i, placeAt)
 		local entry = Svc.Carry.TakeTop(player)
 		if entry and entry.Kind == "Box" then
 			local box = entry.Box
-			local seconds = Formulas.BoxOpenSeconds(box)
-			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Id = box.Id, ReadyAt = os.time() + seconds }, P = placeAt }
+			local seconds = Formulas.BoxOpenSeconds(box, data, Svc.Session.Get(player).Passes)
+			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Z = box.Z, L = box.L, Id = box.Id, ReadyAt = os.time() + seconds }, P = placeAt }
 			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = seconds })
 		elseif entry and entry.Kind == "Item" and findItem(data, entry.U) and not slottedSet(data)[entry.U] then
 			data.Slots[key] = { U = entry.U, P = placeAt }
@@ -472,7 +483,7 @@ function MuseumService.OpenReadyBoxes(player)
 			local id, rolledVariant, size = Svc.Spawn.RollContents(player, slot.Box)
 			local item = MuseumService.AddItem(player, id, rolledVariant, { Z = size }, true)
 			if item then
-				data.Slots[key] = { U = item.U }
+				data.Slots[key] = { U = item.U, P = slot.P } -- stays exactly where you put the box
 				opened = true
 				local pedestal = pedestalModel(player, tonumber(key))
 				local income = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player)

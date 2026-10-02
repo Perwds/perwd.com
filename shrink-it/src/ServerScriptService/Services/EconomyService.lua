@@ -30,6 +30,7 @@ function EconomyService.GetIncomeMultiplier(player)
 	local m = Formulas.RebirthMultiplier(data.Rebirths)
 	m *= 1 + data.TokenUpgrades.Income * UpgradeConfig.TokenUpgrades.Income.PerLevel
 	m *= 1 + Formulas.IndexIncomeBonus(data)
+	m *= Formulas.UpgradeValue("Income", data.Upgrades.Income or 1)
 	if Svc.Session.HasPass(player, "DoubleCoins") then
 		m *= 2
 	end

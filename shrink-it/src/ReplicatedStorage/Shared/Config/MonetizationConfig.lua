@@ -12,8 +12,8 @@
 local MonetizationConfig = {}
 
 MonetizationConfig.PassOrder = {
-	"DoubleCoins", "DoubleLuck", "VIP", "AutoShrink", "InstantCharge", "MultiShrink3",
-	"ExtraPedestals", "GoldenRay", "CosmicHunter", "LongRange", "Teleport", "OfflineEarnings",
+	"Carry2x", "Carry5x", "CarryInfinite", "DoubleCoins", "DoubleLuck", "VIP", "AutoShrink", "InstantCharge",
+	"ExtraPedestals", "FastBoxes", "BigSizes", "GoldenRay", "CosmicHunter", "LongRange", "Teleport", "OfflineEarnings",
 	"DoubleSpeed", "SpeedBoots", "RainbowRay", "RaidShield",
 }
 
@@ -24,7 +24,11 @@ MonetizationConfig.GamePasses = {
 	VIP = { Id = 0, Name = "VIP", Emoji = "👑", Image = "rbxassetid://0", PriceLabel = "R$ 399", Description = "Chat tag, VIP lounge & gem fountain, 1.5x everything." }, -- 🔧 REPLACE Id
 	AutoShrink = { Id = 0, Name = "Auto Shrink", Emoji = "🤖", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "Automatically zaps the nearest valid object." }, -- 🔧 REPLACE Id
 	InstantCharge = { Id = 0, Name = "Instant Charge", Emoji = "⚡", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Your ray charges instantly." }, -- 🔧 REPLACE Id
-	MultiShrink3 = { Id = 0, Name = "Multi-Shrink x3", Emoji = "✨", Image = "rbxassetid://0", PriceLabel = "R$ 349", Description = "Triple your carry capacity." }, -- 🔧 REPLACE Id
+	Carry2x = { Id = 0, Name = "2x Carry", Emoji = "🎒", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "Carry 2x more boxes per trip." }, -- 🔧 REPLACE Id
+	Carry5x = { Id = 0, Name = "5x Carry", Emoji = "🧳", Image = "rbxassetid://0", PriceLabel = "R$ 799", Description = "Carry 5x more boxes per trip." }, -- 🔧 REPLACE Id
+	CarryInfinite = { Id = 0, Name = "Infinite Carry", Emoji = "♾️", Image = "rbxassetid://0", PriceLabel = "R$ 4999", Description = "Carry as many boxes as you want. No limit. Ever." }, -- 🔧 REPLACE Id
+	FastBoxes = { Id = 0, Name = "Fast Boxes", Emoji = "⏩", Image = "rbxassetid://0", PriceLabel = "R$ 249", Description = "Boxes in your base open 2x faster." }, -- 🔧 REPLACE Id
+	BigSizes = { Id = 0, Name = "Big Sizes", Emoji = "📏", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "Huge, Giant & Colossal sizes are 3x more likely." }, -- 🔧 REPLACE Id
 	ExtraPedestals = { Id = 0, Name = "+20 Display Spots", Emoji = "🏛️", Image = "rbxassetid://0", PriceLabel = "R$ 249", Description = "20 extra spots in your plot." }, -- 🔧 REPLACE Id
 	GoldenRay = { Id = 0, Name = "Golden Ray", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "2x Golden & Diamond chance." }, -- 🔧 REPLACE Id
 	CosmicHunter = { Id = 0, Name = "Cosmic Hunter", Emoji = "🌌", Image = "rbxassetid://0", PriceLabel = "R$ 299", Description = "2x Cosmic chance." }, -- 🔧 REPLACE Id
@@ -42,7 +46,7 @@ MonetizationConfig.GamePasses = {
 -- Handler = special server logic instead of / in addition to Grant.
 MonetizationConfig.ProductOrder = {
 	"CoinsSmall", "CoinsMedium", "CoinsLarge", "GemsSmall", "GemsMedium", "GemsLarge",
-	"LuckPotion", "IncomePotion", "ServerLuck", "InstantRebirth", "SpawnGolden",
+	"LuckPotion", "IncomePotion", "ServerLuck", "OpenAllBoxes", "SpeedPoints", "InstantRebirth", "SpawnGolden",
 }
 -- (RoyalCrate is shown on its own "Crates" tab in the Shop, with its odds)
 
@@ -56,6 +60,8 @@ MonetizationConfig.Products = {
 	LuckPotion = { Id = 0, Name = "Luck Potion (15m)", Emoji = "🧪", Image = "rbxassetid://0", PriceLabel = "R$ 39", Grant = { Type = "LuckPotion", Minutes = 15 } }, -- 🔧 REPLACE Id
 	IncomePotion = { Id = 0, Name = "2x Income Potion (15m)", Emoji = "⚗️", Image = "rbxassetid://0", PriceLabel = "R$ 39", Grant = { Type = "IncomePotion", Minutes = 15 } }, -- 🔧 REPLACE Id
 	ServerLuck = { Id = 0, Name = "Server Luck Boost (30m)", Emoji = "🌠", Image = "rbxassetid://0", PriceLabel = "R$ 149", Grant = { Type = "ServerLuck", Minutes = 30 } }, -- 🔧 REPLACE Id
+	OpenAllBoxes = { Id = 0, Name = "Open All Boxes Now", Emoji = "📦", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "OpenAllBoxes" }, -- 🔧 REPLACE Id
+	SpeedPoints = { Id = 0, Name = "+30 Min of Training", Emoji = "🏃", Image = "rbxassetid://0", PriceLabel = "R$ 49", Handler = "SpeedPoints", Minutes = 30 }, -- 🔧 REPLACE Id
 	InstantRebirth = { Id = 0, Name = "Instant Rebirth", Emoji = "♻️", Image = "rbxassetid://0", PriceLabel = "R$ 99", Handler = "InstantRebirth" }, -- 🔧 REPLACE Id
 	SpawnGolden = { Id = 0, Name = "Spawn a Golden Object", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "SpawnGolden" }, -- 🔧 REPLACE Id
 

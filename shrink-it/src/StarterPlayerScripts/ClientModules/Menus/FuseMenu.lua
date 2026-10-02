@@ -62,7 +62,7 @@ end
 
 function FuseMenu.Build(ctx)
 	local need = GameConfig.Fuse.Count
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Fuse Machine", Style = "Header", Colors = { RGB(235, 110, 255), RGB(165, 30, 230) }, Size = UDim2.fromOffset(1000, 640) })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Fuse Machine", Animated = true, Style = "Header", Colors = { RGB(235, 110, 255), RGB(165, 30, 230) }, Size = UDim2.fromOffset(1000, 640) })
 	local content = panel.Content
 	local W = 1000 - 32
 

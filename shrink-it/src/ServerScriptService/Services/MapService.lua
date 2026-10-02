@@ -486,6 +486,61 @@ local function isOutdatedGeneratedMap(map)
 	return map:FindFirstChild("Lobby") ~= nil or map:FindFirstChild("Areas") ~= nil
 end
 
+-- Puts YOUR textures (TextureConfig) on the ground, plot floors and shop counters.
+local function texture(partObj, id, tile)
+	for _, face in ipairs({ Enum.NormalId.Top }) do
+		local t = Instance.new("Texture")
+		t.Name = "CustomTexture"
+		t.Texture = id
+		t.Face = face
+		t.StudsPerTileU = tile or 16
+		t.StudsPerTileV = tile or 16
+		t.Parent = partObj
+	end
+end
+
+function MapService.ApplyTextures(map)
+	local TextureConfig = require(ReplicatedStorage.Shared.Config.TextureConfig)
+	local base = map:FindFirstChild("Base")
+	local g = TextureConfig.Ground
+	if base and base:FindFirstChild("Floor") and TextureConfig.Has(g.Base.Id) then
+		texture(base.Floor, g.Base.Id, g.Base.Tile)
+	end
+	local zones = map:FindFirstChild("Zones")
+	for _, zone in ipairs(zones and zones:GetChildren() or {}) do
+		local cfg = g[zone:GetAttribute("Tier")]
+		if cfg and TextureConfig.Has(cfg.Id) and zone:FindFirstChild("Floor") then
+			texture(zone.Floor, cfg.Id, cfg.Tile)
+		end
+	end
+	local plots = map:FindFirstChild("Plots")
+	if TextureConfig.Has(TextureConfig.PlotFloor.Id) then
+		for _, plot in ipairs(plots and plots:GetChildren() or {}) do
+			local floor = plot:FindFirstChild("Floor")
+			if floor then
+				texture(floor, TextureConfig.PlotFloor.Id, TextureConfig.PlotFloor.Tile)
+			end
+		end
+	end
+	local stands = base and base:FindFirstChild("Stands")
+	if stands and TextureConfig.Has(TextureConfig.StandCounter.Id) then
+		for _, stand in ipairs(stands:GetChildren()) do
+			local prompt = stand:FindFirstChildWhichIsA("ProximityPrompt", true)
+			local counter = prompt and prompt.Parent
+			if counter and counter:IsA("BasePart") then
+				for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back, Enum.NormalId.Left, Enum.NormalId.Right }) do
+					local t = Instance.new("Texture")
+					t.Texture = TextureConfig.StandCounter.Id
+					t.Face = face
+					t.StudsPerTileU = TextureConfig.StandCounter.Tile
+					t.StudsPerTileV = TextureConfig.StandCounter.Tile
+					t.Parent = counter
+				end
+			end
+		end
+	end
+end
+
 function MapService.Init(_registry)
 	local existing = workspace:FindFirstChild("ShrinkItMap")
 	if existing and isOutdatedGeneratedMap(existing) then
@@ -497,6 +552,7 @@ function MapService.Init(_registry)
 	-- it's only generated here if it's missing.
 	local map = existing or buildMap()
 	safe("Shopkeepers", MapDecor.AddShopkeepers, map)
+	safe("Textures", MapService.ApplyTextures, map)
 	-- a map saved in the place file doesn't keep PrimaryPart links: restore them
 	for _, d in ipairs(map:GetDescendants()) do
 		if d:IsA("Model") and d.Name == "MuseumBuilding" and not d.PrimaryPart then

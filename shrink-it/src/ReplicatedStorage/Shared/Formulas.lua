@@ -162,10 +162,15 @@ function Formulas.RayStats(data, passes)
 	if passes.LongRange then
 		range *= 1.5
 	end
-	local multi = Formulas.UpgradeValue("MultiShrink", up.MultiShrink) -- carry capacity
-	if passes.MultiShrink3 then
-		multi *= 3
+	local carry = Formulas.UpgradeValue("MultiShrink", up.MultiShrink) -- carry capacity (3 → 10)
+	if passes.CarryInfinite then
+		carry = GameConfig.InfiniteCarry
+	elseif passes.Carry5x then
+		carry *= 5
+	elseif passes.Carry2x then
+		carry *= 2
 	end
+	local multi = math.min(carry, 10) -- zap several at once
 	local pedestals = Formulas.UpgradeValue("MuseumSize", up.MuseumSize)
 	if passes.ExtraPedestals then
 		pedestals += 20
@@ -177,7 +182,7 @@ function Formulas.RayStats(data, passes)
 	walk *= Formulas.TrailSpeed(data, passes)
 	return {
 		WalkSpeed = walk,
-		Carry = multi,
+		Carry = carry,
 		ChargeTime = charge,
 		Range = range,
 		Multi = multi,
@@ -271,11 +276,19 @@ function Formulas.BoxRarity(box)
 	return def and def.Rarity or "Common", def and def.Tier or 1
 end
 
-function Formulas.BoxOpenSeconds(box)
+-- data/passes optional: the "Box Opening" upgrade and the "Fast Boxes" pass make it quicker.
+function Formulas.BoxOpenSeconds(box, data, passes)
 	local cfg = GameConfig.Boxes
 	local rarity, tier = Formulas.BoxRarity(box)
 	local seconds = (cfg.OpenSeconds[rarity] or 10) + cfg.SecondsPerTier * tier
-	return seconds + (cfg.VariantExtra[box.V or "Normal"] or 0)
+	seconds += cfg.VariantExtra[box.V or "Normal"] or 0
+	if data and data.Upgrades then
+		seconds *= Formulas.UpgradeValue("BoxSpeed", data.Upgrades.BoxSpeed or 1)
+	end
+	if passes and passes.FastBoxes then
+		seconds *= 0.5
+	end
+	return math.max(1, math.floor(seconds + 0.5))
 end
 
 function Formulas.BoxName(box)

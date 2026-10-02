@@ -91,7 +91,7 @@ local function rarityColors(cfg)
 end
 
 function TrailsMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Trail Shop", Style = "Header", Colors = PURPLE, Size = UDim2.fromOffset(1060, 590) })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Trail Shop", Animated = true, Style = "Header", Colors = PURPLE, Size = UDim2.fromOffset(1060, 590) })
 	local content = panel.Content
 	local row = UIKit.Scroll({ Size = UDim2.fromScale(1, 1), Horizontal = true, Parent = content })
 	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 16), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center, Parent = row })

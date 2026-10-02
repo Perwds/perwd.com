@@ -97,6 +97,25 @@ local productHandlers = {
 	SpawnGolden = function(player)
 		Svc.Spawn.SpawnNear(player, "Golden")
 	end,
+	OpenAllBoxes = function(player, data)
+		local n = 0
+		for _, slot in pairs(data.Slots) do
+			if slot.Box and slot.Box.ReadyAt > os.time() then
+				slot.Box.ReadyAt = os.time()
+				n += 1
+			end
+		end
+		Svc.Museum.OpenReadyBoxes(player)
+		Svc.Net.Notify(player, "📦 Opened " .. n .. " box" .. (n == 1 and "" or "es") .. " instantly!", "success")
+	end,
+	SpeedPoints = function(player, data, key)
+		local product = MonetizationConfig.Products[key]
+		local s = Svc.Session.Get(player)
+		local gained = Formulas.TrainingRate(data, s and s.Passes or {}) * 60 * (product.Minutes or 30)
+		data.SpeedPoints = (data.SpeedPoints or 0) + gained
+		Svc.Monetization.ApplyMovement(player)
+		Svc.Net.Notify(player, "🏃 +" .. math.floor(gained) .. " speed points!", "success")
+	end,
 	RoyalCrate = function(player, _data, key)
 		local product = MonetizationConfig.Products[key]
 		for _ = 1, product.Count or 1 do

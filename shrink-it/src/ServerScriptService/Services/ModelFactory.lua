@@ -19,6 +19,7 @@ local ObjectConfig = require(Shared.Config.ObjectConfig)
 local ObjectModels = require(Shared.ObjectModels)
 local RarityConfig = require(Shared.Config.RarityConfig)
 local Formulas = require(Shared.Formulas)
+local TextureConfig = require(Shared.Config.TextureConfig)
 
 local ModelFactory = {}
 
@@ -180,11 +181,19 @@ function ModelFactory.CreateBox(box, legacyVariant)
 		gui.Face = face
 		gui.LightInfluence = 0
 		gui.Parent = body
+		if TextureConfig.Has(TextureConfig.Box.Face) then
+			local img = Instance.new("ImageLabel")
+			img.BackgroundTransparency = 1
+			img.Size = UDim2.fromScale(1, 1)
+			img.Image = TextureConfig.Box.Face
+			img.Parent = gui
+		end
 		local q = Instance.new("TextLabel")
 		q.BackgroundTransparency = 1
 		q.Size = UDim2.fromScale(1, 1)
 		q.Font = Enum.Font.FredokaOne
 		q.TextScaled = true
+		q.Visible = not TextureConfig.Has(TextureConfig.Box.Face)
 		q.Text = "?"
 		q.TextColor3 = Color3.new(1, 1, 1)
 		q.Parent = gui
@@ -195,6 +204,46 @@ function ModelFactory.CreateBox(box, legacyVariant)
 	model.PrimaryPart = body
 	model:SetAttribute("BoxRarity", rarityName)
 	ModelFactory.ApplyVariant(model, variantName, false)
+	-- the box scales with the size of what's inside, and big ones glow & sparkle
+	local z = type(box) == "table" and box.Z or 1
+	model:SetAttribute("BoxSize", z)
+	if z >= 1.4 then
+		local sizeInfo = Formulas.SizeInfo(z)
+		local glow = Instance.new("PointLight")
+		glow.Color = rarity.Color
+		glow.Range = 8 + z * 3
+		glow.Brightness = 1.5
+		glow.Parent = body
+		local sparkle = Instance.new("ParticleEmitter")
+		sparkle.Name = "SizeSparkles"
+		sparkle.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+		sparkle.Color = ColorSequence.new(rarity.Color, Color3.new(1, 1, 1))
+		sparkle.Size = NumberSequence.new(0.4 * z, 0)
+		sparkle.Lifetime = NumberRange.new(0.8, 1.4)
+		sparkle.Rate = 4 + z * 4
+		sparkle.Speed = NumberRange.new(1, 3)
+		sparkle.SpreadAngle = Vector2.new(180, 180)
+		sparkle.LightEmission = 1
+		sparkle.Parent = body
+		local tag = Instance.new("BillboardGui")
+		tag.Name = "SizeTag"
+		tag.Size = UDim2.fromOffset(110, 30)
+		tag.StudsOffsetWorldSpace = Vector3.new(0, body.Size.Y * 0.9, 0)
+		tag.MaxDistance = 90
+		tag.LightInfluence = 0
+		tag.Parent = body
+		local label = Instance.new("TextLabel")
+		label.BackgroundTransparency = 1
+		label.Size = UDim2.fromScale(1, 1)
+		label.Font = Enum.Font.FredokaOne
+		label.TextScaled = true
+		label.Text = sizeInfo.Name:upper() .. "!"
+		label.TextColor3 = Color3.fromRGB(255, 230, 90)
+		label.Parent = tag
+		local stroke = Instance.new("UIStroke")
+		stroke.Thickness = 2.5
+		stroke.Parent = label
+	end
 	return model
 end
 
@@ -203,6 +252,11 @@ function ModelFactory.PlaceOnGround(model, position, yaw)
 	local cf, size = model:GetBoundingBox()
 	local desired = position + Vector3.new(0, size.Y / 2, 0)
 	model:PivotTo(model:GetPivot() + (desired - cf.Position))
+end
+
+-- How big a box of yours is (studs): grows with the size of what's inside.
+function ModelFactory.BoxStuds(box)
+	return GameConfig.BoxBaseSize * ((type(box) == "table" and box.Z) or 1) ^ 0.75
 end
 
 -- Uniformly scales a model so its largest extent equals `maxSize`.

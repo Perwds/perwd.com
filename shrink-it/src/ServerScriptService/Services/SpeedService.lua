@@ -51,6 +51,11 @@ function SpeedService.Start()
 				if data and s then
 					local training = SpeedService.IsTraining(player)
 					if player:GetAttribute("Training") ~= training then
+						-- the client locks you onto the belt and plays a running animation (Effects.treadmillLock)
+						local belt = treadmillOf(player)
+						player:SetAttribute("TreadmillCF", training and belt and belt.CFrame or nil)
+						player:SetAttribute("TreadmillTop", training and belt and belt.Size.Y / 2 or nil)
+						player:SetAttribute("TreadmillLen", training and belt and belt.Size.Z or nil)
 						player:SetAttribute("Training", training)
 					end
 					if training then
