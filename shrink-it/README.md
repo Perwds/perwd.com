@@ -80,9 +80,11 @@ then paste in each file's contents. Every file starts with a `📍 LOCATION:` co
 - [ ] **Codes**: edit `RewardConfig.Codes` (case-insensitive; `RequiresLikes` locks a code until that goal is reached).
 
 ### Models & textures
-Every object, the museum, pedestals, chasers and the Shrink Ray are **built in code with detailed part models** using
-Roblox's built-in textured materials (wood planks, brick, marble, metal, glass, fabric, slate, ice, neon, …),
-so nothing needs uploading. See `ObjectModels` (all 31 objects), `MapService` (museum temple), `MuseumService`
+Every object, the museum, pedestals, chasers and the Shrink Ray are **built in code with detailed, realistic part
+models** (curves from sphere meshes, smooth cones, rounded boxes, rubber tyres with rims & spokes, tinted glass,
+printed number plates/signs) using Roblox's materials (metal, glass, rubber, leather, plaster, roof shingles, rock,
+snow, neon, …), so nothing needs uploading. Tiny details are stripped automatically when an object is shown small on
+a pedestal (`ModelFactory.Simplify`) to keep full museums fast. See `ObjectModels` (all 31 objects), `MapService` (museum temple), `MuseumService`
 (pedestals), `ShrinkService` (ray gun) and `ChaserConfig` (chaser outfits & props).
 
 ### ⭐ Real 3D models for the objects (2 minutes, recommended)

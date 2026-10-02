@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v10.1 (crates)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v10.2 (real models)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 10 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────

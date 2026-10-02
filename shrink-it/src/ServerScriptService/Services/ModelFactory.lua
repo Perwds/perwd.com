@@ -214,6 +214,20 @@ function ModelFactory.FitToSize(model, maxSize)
 	end
 end
 
+-- Removes details that are too small to see at the model's current size (keeps big museums fast).
+-- Call AFTER FitToSize. minSize = studs; parts whose largest side is smaller are deleted.
+function ModelFactory.Simplify(model, minSize)
+	minSize = minSize or 0.07
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") and d ~= model.PrimaryPart then
+			local s = d.Size
+			if math.max(s.X, s.Y, s.Z) < minSize then
+				d:Destroy()
+			end
+		end
+	end
+end
+
 function ModelFactory.SetCollision(model, canCollide)
 	for _, d in ipairs(model:GetDescendants()) do
 		if d:IsA("BasePart") then

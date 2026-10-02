@@ -195,6 +195,7 @@ local function setDisplay(pedestal, slot, data)
 		local display = ModelFactory.Create(item.Id)
 		display.Name = "Display"
 		ModelFactory.FitToSize(display, GameConfig.DisplayMaxSize)
+		ModelFactory.Simplify(display, 0.07)
 		ModelFactory.SetCollision(display, false)
 		ModelFactory.PlaceOnGround(display, top, math.rad(-20))
 		ModelFactory.ApplyVariant(display, item.V, false)

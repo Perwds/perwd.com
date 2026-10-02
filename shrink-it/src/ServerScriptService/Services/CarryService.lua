@@ -97,6 +97,7 @@ local function buildVisual(entry)
 	if entry.Kind == "Item" then
 		local model = ModelFactory.Create(entry.Id)
 		ModelFactory.FitToSize(model, entryHeight(entry))
+		ModelFactory.Simplify(model, 0.06)
 		ModelFactory.ApplyVariant(model, entry.V, false)
 		return model
 	end
