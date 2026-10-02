@@ -49,33 +49,70 @@ local function makeTool()
 		tool.CanBeDropped = false
 		tool.RequiresHandle = true
 		tool.ToolTip = "Hold to charge on an object!"
+		-- Handle = the grip; every other piece is welded to it. Barrel points toward -Z.
 		local handle = Instance.new("Part")
 		handle.Name = "Handle"
-		handle.Size = Vector3.new(0.8, 1, 3)
-		handle.Color = Color3.fromRGB(60, 60, 80)
-		handle.Material = Enum.Material.SmoothPlastic
+		handle.Size = Vector3.new(0.45, 1.2, 0.6)
+		handle.Color = Color3.fromRGB(35, 35, 45)
+		handle.Material = Enum.Material.Fabric
 		handle.CanCollide = false
 		handle.Massless = true
+		handle.CFrame = CFrame.new()
 		handle.Parent = tool
-		local barrel = Instance.new("Part")
-		barrel.Name = "Barrel"
-		barrel.Shape = Enum.PartType.Cylinder
-		barrel.Size = Vector3.new(1.4, 0.7, 0.7)
-		barrel.Color = Color3.fromRGB(80, 220, 255)
-		barrel.Material = Enum.Material.Neon
-		barrel.CanCollide = false
-		barrel.Massless = true
-		barrel.CFrame = handle.CFrame * CFrame.new(0, 0.1, -1.9) * CFrame.Angles(0, math.rad(90), 0)
-		barrel.Parent = tool
-		local weld = Instance.new("WeldConstraint")
-		weld.Part0 = handle
-		weld.Part1 = barrel
-		weld.Parent = handle
+		local function piece(name, shape, size, cf, color, material, extra)
+			local p = Instance.new("Part")
+			p.Name = name
+			if shape then
+				p.Shape = shape
+			end
+			p.Size = size
+			p.CFrame = cf
+			p.Color = color
+			p.Material = material
+			p.CanCollide = false
+			p.CanQuery = false
+			p.Massless = true
+			if extra then
+				for k, v in pairs(extra) do
+					p[k] = v
+				end
+			end
+			p.Parent = tool
+			local w = Instance.new("WeldConstraint")
+			w.Part0 = handle
+			w.Part1 = p
+			w.Parent = p
+			return p
+		end
+		local cyl = Enum.PartType.Cylinder
+		local alongZ = CFrame.Angles(0, math.rad(90), 0) -- cylinders run along X; turn them to point down the barrel
+		local metal = Color3.fromRGB(200, 205, 220)
+		local dark = Color3.fromRGB(45, 45, 60)
+		local glow = Color3.fromRGB(80, 230, 255)
+		piece("Body", nil, Vector3.new(0.7, 0.75, 2.2), CFrame.new(0, 0.85, -0.5), metal, Enum.Material.Metal)
+		piece("BodyStripe", nil, Vector3.new(0.72, 0.15, 2.0), CFrame.new(0, 0.85, -0.5), Color3.fromRGB(255, 90, 160), Enum.Material.Neon)
+		piece("Trigger", nil, Vector3.new(0.12, 0.35, 0.15), CFrame.new(0, 0.3, -0.45), dark, Enum.Material.Metal)
+		piece("TriggerGuard", nil, Vector3.new(0.14, 0.12, 0.6), CFrame.new(0, 0.1, -0.4), dark, Enum.Material.Metal)
+		piece("Barrel", cyl, Vector3.new(1.8, 0.45, 0.45), CFrame.new(0, 0.95, -2.3) * alongZ, metal, Enum.Material.Metal)
+		for i = 0, 2 do
+			piece("Coil", cyl, Vector3.new(0.14, 0.62, 0.62), CFrame.new(0, 0.95, -1.75 - i * 0.42) * alongZ, glow, Enum.Material.Neon)
+		end
+		piece("Emitter", cyl, Vector3.new(0.25, 0.95, 0.95), CFrame.new(0, 0.95, -3.2) * alongZ, dark, Enum.Material.Metal)
+		piece("EmitterGlow", Enum.PartType.Ball, Vector3.new(0.55, 0.55, 0.55), CFrame.new(0, 0.95, -3.3), glow, Enum.Material.Neon)
+		piece("Scope", cyl, Vector3.new(0.9, 0.22, 0.22), CFrame.new(0, 1.4, -0.7) * alongZ, dark, Enum.Material.Metal)
+		piece("ScopeLens", cyl, Vector3.new(0.05, 0.2, 0.2), CFrame.new(0, 1.4, -1.16) * alongZ, Color3.fromRGB(255, 80, 80), Enum.Material.Neon)
+		piece("Tank", cyl, Vector3.new(0.8, 0.42, 0.42), CFrame.new(0, 0.95, 0.75) * alongZ, Color3.fromRGB(180, 230, 255), Enum.Material.Glass, { Transparency = 0.4 })
+		piece("TankFluid", cyl, Vector3.new(0.7, 0.3, 0.3), CFrame.new(0, 0.95, 0.75) * alongZ, Color3.fromRGB(140, 255, 120), Enum.Material.Neon)
+		local light = Instance.new("PointLight")
+		light.Color = glow
+		light.Range = 6
+		light.Brightness = 1.5
+		light.Parent = tool:FindFirstChild("EmitterGlow")
 		local tip = Instance.new("Attachment")
 		tip.Name = "Tip"
-		tip.Position = Vector3.new(0, 0.1, -2.7)
+		tip.Position = Vector3.new(0, 0.95, -3.45)
 		tip.Parent = handle
-		tool.Grip = CFrame.new(0, -0.2, 0.6)
+		tool.Grip = CFrame.new(0, -0.1, 0.1)
 	end
 	tool.Name = TOOL_NAME
 	tool:SetAttribute("ShrinkRay", true)

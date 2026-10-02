@@ -32,6 +32,12 @@ ChaserConfig.Chasers = {
 		HeadProps = {
 			{ Name = "FlatCap", Size = Vector3.new(1.3, 0.35, 1.4), Offset = Vector3.new(0, 0.62, -0.05), Color = RGB(110, 85, 60), Material = Enum.Material.Fabric },
 			{ Name = "Beard", Size = Vector3.new(1, 0.7, 0.4), Offset = Vector3.new(0, -0.45, -0.55), Color = RGB(240, 240, 240), Material = Enum.Material.Fabric },
+			{ Name = "Glasses", Size = Vector3.new(1.05, 0.22, 0.08), Offset = Vector3.new(0, 0.12, -0.62), Color = RGB(30, 30, 30), Material = Enum.Material.Metal },
+			{ Name = "Mustache", Size = Vector3.new(0.8, 0.18, 0.15), Offset = Vector3.new(0, -0.18, -0.64), Color = RGB(240, 240, 240), Material = Enum.Material.Fabric },
+		},
+		HandProps = {
+			{ Name = "Cane", Size = Vector3.new(0.22, 3.4, 0.22), Offset = Vector3.new(0, -1.3, -0.25), Color = RGB(110, 70, 40), Material = Enum.Material.Wood },
+			{ Name = "CaneTop", Size = Vector3.new(0.22, 0.22, 0.7), Offset = Vector3.new(0, 0.35, -0.5), Color = RGB(110, 70, 40), Material = Enum.Material.Wood },
 		},
 	},
 	[2] = {
@@ -46,6 +52,11 @@ ChaserConfig.Chasers = {
 		Scale = 1,
 		HeadProps = {
 			{ Name = "Cap", Size = Vector3.new(1.3, 0.35, 1.5), Offset = Vector3.new(0, 0.62, -0.1), Color = RGB(40, 120, 220), Material = Enum.Material.Fabric },
+			{ Name = "Brim", Size = Vector3.new(1.1, 0.1, 0.6), Offset = Vector3.new(0, 0.48, -0.85), Color = RGB(40, 120, 220), Material = Enum.Material.Fabric },
+		},
+		HandProps = {
+			{ Name = "RakeHandle", Size = Vector3.new(0.2, 5, 0.2), Offset = Vector3.new(0, 0.6, -0.2), Color = RGB(150, 105, 60), Material = Enum.Material.Wood },
+			{ Name = "RakeHead", Size = Vector3.new(1.6, 0.25, 0.3), Offset = Vector3.new(0, 3.1, -0.2), Color = RGB(90, 90, 100), Material = Enum.Material.Metal },
 		},
 	},
 	[3] = {
@@ -61,6 +72,11 @@ ChaserConfig.Chasers = {
 		HeadProps = {
 			{ Name = "PoliceHat", Size = Vector3.new(1.35, 0.45, 1.45), Offset = Vector3.new(0, 0.66, 0), Color = RGB(25, 35, 80), Material = Enum.Material.SmoothPlastic },
 			{ Name = "Badge", Size = Vector3.new(0.3, 0.3, 0.1), Offset = Vector3.new(0, 0.7, -0.75), Color = RGB(255, 210, 60), Material = Enum.Material.Neon },
+			{ Name = "Visor", Size = Vector3.new(1.2, 0.08, 0.5), Offset = Vector3.new(0, 0.46, -0.8), Color = RGB(15, 15, 20), Material = Enum.Material.SmoothPlastic },
+			{ Name = "Shades", Size = Vector3.new(1.0, 0.22, 0.08), Offset = Vector3.new(0, 0.12, -0.62), Color = RGB(15, 15, 20), Material = Enum.Material.Glass },
+		},
+		HandProps = {
+			{ Name = "Baton", Size = Vector3.new(0.25, 2.2, 0.25), Offset = Vector3.new(0, -0.6, -0.3), Color = RGB(20, 20, 25), Material = Enum.Material.SmoothPlastic },
 		},
 	},
 	[4] = {
@@ -76,6 +92,12 @@ ChaserConfig.Chasers = {
 		HeadProps = {
 			{ Name = "PirateHat", Size = Vector3.new(1.8, 0.5, 1.2), Offset = Vector3.new(0, 0.7, 0), Color = RGB(25, 25, 25), Material = Enum.Material.Fabric },
 			{ Name = "EyePatch", Size = Vector3.new(0.35, 0.3, 0.1), Offset = Vector3.new(0.25, 0.1, -0.6), Color = RGB(10, 10, 10), Material = Enum.Material.SmoothPlastic },
+			{ Name = "Skull", Size = Vector3.new(0.3, 0.3, 0.05), Offset = Vector3.new(0, 0.75, -0.62), Color = RGB(250, 250, 250), Material = Enum.Material.SmoothPlastic },
+			{ Name = "Beard", Size = Vector3.new(1, 0.6, 0.4), Offset = Vector3.new(0, -0.45, -0.5), Color = RGB(60, 35, 25), Material = Enum.Material.Fabric },
+		},
+		HandProps = {
+			{ Name = "Cutlass", Size = Vector3.new(0.12, 2.8, 0.45), Offset = Vector3.new(0, -1.5, -0.3), Color = RGB(215, 220, 230), Material = Enum.Material.Metal },
+			{ Name = "Hilt", Size = Vector3.new(0.5, 0.15, 0.6), Offset = Vector3.new(0, -0.1, -0.3), Color = RGB(220, 180, 60), Material = Enum.Material.Metal },
 		},
 	},
 	[5] = {

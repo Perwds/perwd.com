@@ -14,6 +14,7 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local ObjectConfig = require(Shared.Config.ObjectConfig)
+local ObjectModels = require(script.Parent.ObjectModels)
 local RarityConfig = require(Shared.Config.RarityConfig)
 
 local ModelFactory = {}
@@ -96,7 +97,13 @@ function ModelFactory.Create(id)
 			model.PrimaryPart = model:FindFirstChildWhichIsA("BasePart", true)
 		end
 	else
-		model = placeholder(id, def)
+		-- detailed built-in model (ObjectModels), scaled to the size in ObjectConfig
+		model = ObjectModels.Build(id)
+		if model and def.Size then
+			ModelFactory.FitToSize(model, math.max(def.Size.X, def.Size.Y, def.Size.Z))
+		elseif not model then
+			model = placeholder(id, def)
+		end
 	end
 	CollectionService:RemoveTag(model, "Shrinkable")
 	for _, d in ipairs(model:GetDescendants()) do

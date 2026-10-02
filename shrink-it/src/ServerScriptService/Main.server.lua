@@ -7,7 +7,10 @@
 ]]
 
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
+
+local GameConfig = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"):WaitForChild("GameConfig"))
 
 local ServicesFolder = ServerScriptService:WaitForChild("Services")
 
@@ -67,6 +70,12 @@ for _, name in ipairs(ORDER) do
 end
 
 local function onPlayerAdded(player)
+	-- 8-player game (one plot each). Roblox's Max Players setting should already stop a 9th player;
+	-- this is a safety net in case it was left at the default.
+	if #Players:GetPlayers() > GameConfig.MaxPlayers then
+		player:Kick("This server is full (" .. GameConfig.MaxPlayers .. " players max). Please join another server!")
+		return
+	end
 	Registry.Session.Create(player)
 	local data = Registry.Data.Load(player)
 	if not data or not player.Parent then

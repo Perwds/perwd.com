@@ -35,7 +35,7 @@ Names in Studio must match the file names (without the extensions).
 | ↳ Remotes | ModuleScript | `Remotes.lua`: creates / finds all remotes |
 | **ServerScriptService › Main** | Script | `src/ServerScriptService/Main.server.lua` |
 | **ServerScriptService › Services** | Folder | `src/ServerScriptService/Services/` |
-| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, ModelFactory, MapDecor | ModuleScripts | one file each |
+| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, ModelFactory, ObjectModels, MapDecor | ModuleScripts | one file each |
 | **StarterPlayer › StarterPlayerScripts › ClientMain** | LocalScript | `src/StarterPlayerScripts/ClientMain.client.lua` |
 | **StarterPlayer › StarterPlayerScripts › ClientModules** | Folder | `src/StarterPlayerScripts/ClientModules/` |
 | ↳ State, UIKit, HUD, Effects, RayController, Prices | ModuleScripts | one file each |
@@ -58,7 +58,9 @@ then paste in each file's contents. Every file starts with a `📍 LOCATION:` co
 - [ ] **Publish the place** (File → Publish to Roblox). DataStores only work in published places.
 - [ ] **Game Settings → Security → Enable Studio Access to API Services**, so saving works while testing in Studio.
       Without it, Studio uses temporary data and prints a warning. That's fine for quick tests.
-- [ ] **Server size ≤ 8** (Game Settings → Places → Server Fill / Max Players), because there are 8 museum plots.
+- [ ] **Max Players = 8** — this is an 8-player game (one museum plot each). In Studio: **Game Settings → Places →
+      ⋯ next to your place → Edit → Server Size / Max Players = 8**. (The server also kicks a 9th player as a safety net,
+      see `GameConfig.MaxPlayers`.)
       (To allow more players, raise `GameConfig.PlotCount` and build or allow more plots.)
 - [ ] **Create the 15 Gamepasses** (Creator Dashboard → your experience → Monetization → Passes) and paste their
       IDs into `MonetizationConfig.GamePasses` (every line marked `-- 🔧 REPLACE Id`).
@@ -75,11 +77,17 @@ then paste in each file's contents. Every file starts with a `📍 LOCATION:` co
       Each reached goal reveals its code on the sign.
 - [ ] **Codes**: edit `RewardConfig.Codes` (case-insensitive; `RequiresLikes` locks a code until that goal is reached).
 
-### Optional: real art instead of placeholders
+### Models & textures
+Every object, the museum, pedestals, chasers and the Shrink Ray are **built in code with detailed part models** using
+Roblox's built-in textured materials (wood planks, brick, marble, metal, glass, fabric, slate, ice, neon, …),
+so nothing needs uploading. See `ObjectModels` (all 31 objects), `MapService` (museum temple), `MuseumService`
+(pedestals), `ShrinkService` (ray gun) and `ChaserConfig` (chaser outfits & props).
+
+### Optional: your own meshes instead of the built-in models
 - [ ] **Object models**: put Models in **ServerStorage › ShrinkableTemplates** (create the folder), each **named
       exactly like its ObjectConfig id** (e.g. `FerrisWheel`, `SodaCan`, `TheMoon`). Set a PrimaryPart. The game
       anchors them, removes scripts, places them on the ground, and scales them down for museum display.
-      Objects without a template get an auto-generated colored placeholder.
+      Objects without a template use the built-in detailed models from `ObjectModels`.
 - [ ] **Shrink Ray tool**: put a Tool named **`ShrinkRay`** in ServerStorage with a `Handle` part and an
       **Attachment named `Tip`** inside the Handle (where the beam starts). Otherwise a simple ray is generated.
 - [ ] **Chaser NPCs**: put Models (with a `Humanoid` + `HumanoidRootPart`) in **ServerStorage › Chasers** named

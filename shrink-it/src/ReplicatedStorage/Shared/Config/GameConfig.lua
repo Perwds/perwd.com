@@ -21,6 +21,7 @@ GameConfig.MaxItems = 400 -- pocket cap; lowest-earning item is auto-sold when e
 GameConfig.SellSeconds = 120 -- selling an item gives this many seconds of its income
 GameConfig.DisplayMaxSize = 2.9 -- studs; displayed objects are scaled to fit this
 GameConfig.PlotCount = 8
+GameConfig.MaxPlayers = 8 -- one museum plot per player. ALSO set Max Players = 8 in Game Settings (see README)
 
 -- ── Shrink Ray ───────────────────────────────────────────────────────
 GameConfig.ShrinkCooldown = 0.25 -- min seconds between shots

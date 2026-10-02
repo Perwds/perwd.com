@@ -197,6 +197,28 @@ local function buildChaser(tier)
 		desc.HeadScale = cfg.Scale
 		local ok, result = pcall(Players.CreateHumanoidModelFromDescription, Players, desc, Enum.HumanoidRigType.R15)
 		model = ok and result or fallbackRig(cfg)
+		local function attachProps(anchor, props)
+			if not anchor then
+				return
+			end
+			for _, prop in ipairs(props or {}) do
+				local p = Instance.new("Part")
+				p.Name = prop.Name
+				p.Size = prop.Size * cfg.Scale
+				p.Color = prop.Color
+				p.Material = prop.Material or Enum.Material.SmoothPlastic
+				p.CanCollide = false
+				p.CanQuery = false
+				p.Massless = true
+				p.CFrame = anchor.CFrame * CFrame.new(prop.Offset * cfg.Scale)
+				p.Parent = model
+				local w = Instance.new("WeldConstraint")
+				w.Part0 = anchor
+				w.Part1 = p
+				w.Parent = p
+			end
+		end
+		attachProps(model:FindFirstChild("RightHand"), cfg.HandProps)
 		local head = model:FindFirstChild("Head")
 		if head then
 			for _, prop in ipairs(cfg.HeadProps or {}) do

@@ -95,37 +95,105 @@ end
 
 -- ── plots ─────────────────────────────────────────────────────────────
 -- Plot local space: +Z = front (faces the base's center path), building at the back (-Z).
+local MARBLE = Color3.fromRGB(246, 243, 236)
+local GOLD = Color3.fromRGB(240, 190, 60)
+
+local function local_(floor, x, y, z)
+	return floor.CFrame * CFrame.new(x, y, z)
+end
+
 local function buildPlot(parent, id, cframe)
 	local plot = Instance.new("Model")
 	plot.Name = "Plot_" .. id
 	plot:SetAttribute("PlotId", id)
 	plot:SetAttribute("OwnerUserId", 0)
 	plot.Parent = parent
-	local floor = part({ Name = "Floor", Size = Vector3.new(90, 1, 80), CFrame = cframe * CFrame.new(0, -0.45, 0), Color = Color3.fromRGB(250, 240, 215), Material = Enum.Material.WoodPlanks, Parent = plot })
-	-- colored border
+	local floor = part({ Name = "Floor", Size = Vector3.new(90, 1, 80), CFrame = cframe * CFrame.new(0, -0.45, 0), Color = Color3.fromRGB(235, 228, 215), Material = Enum.Material.Marble, Parent = plot })
+	-- gold trim around the whole plot
 	for _, side in ipairs({ -1, 1 }) do
-		part({ Name = "Border", Size = Vector3.new(1.5, 1.4, 80), CFrame = floor.CFrame * CFrame.new(side * 45.5, 0.3, 0), Color = Color3.fromRGB(255, 200, 60), Material = Enum.Material.SmoothPlastic, CanQuery = false, Parent = plot })
+		part({ Name = "Trim", Size = Vector3.new(1.2, 1.3, 80), CFrame = local_(floor, side * 45.6, 0.2, 0), Color = GOLD, Material = Enum.Material.Metal, CanQuery = false, Parent = plot })
+		part({ Name = "Trim", Size = Vector3.new(92.4, 1.3, 1.2), CFrame = local_(floor, 0, 0.2, side * 40.6), Color = GOLD, Material = Enum.Material.Metal, CanQuery = false, Parent = plot })
 	end
+
+	-- ── the museum building (Greek temple) ──
 	local building = Instance.new("Model")
 	building.Name = "MuseumBuilding"
 	building:SetAttribute("RaidBuilding", true)
 	building:SetAttribute("PlotId", id)
 	building.Parent = plot
-	local body = part({ Name = "Body", Size = Vector3.new(46, 22, 16), CFrame = floor.CFrame * CFrame.new(0, 11.5, -31), Color = Color3.fromRGB(245, 240, 255), Material = Enum.Material.Marble, Parent = building })
-	part({ Name = "Roof", Size = Vector3.new(50, 3, 20), CFrame = floor.CFrame * CFrame.new(0, 24, -31), Color = Color3.fromRGB(255, 95, 95), Parent = building })
-	local pediment = Instance.new("WedgePart")
-	pediment.Name = "Pediment"
-	pediment.Anchored = true
-	pediment.Size = Vector3.new(50, 6, 6)
-	pediment.CFrame = floor.CFrame * CFrame.new(0, 28.5, -24) * CFrame.Angles(0, math.pi, 0)
-	pediment.Color = Color3.fromRGB(255, 95, 95)
-	pediment.Parent = building
-	for c = -2, 2 do
-		part({ Name = "Column", Shape = Enum.PartType.Cylinder, Size = Vector3.new(22, 2.6, 2.6), CFrame = floor.CFrame * CFrame.new(c * 10, 11.5, -21.5) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.new(1, 1, 1), Material = Enum.Material.Marble, Parent = building })
+	local function b(props)
+		props.Parent = building
+		return part(props)
+	end
+	-- stepped platform
+	for i, step in ipairs({ { 50, 22, 0.5 }, { 48, 21, 1.0 }, { 46, 20, 1.5 } }) do
+		b({ Name = "Step" .. i, Size = Vector3.new(step[1], 0.5, step[2]), CFrame = local_(floor, 0, step[3] - 0.25 + 0.5, -30 + (22 - step[2]) / 2), Color = MARBLE:Lerp(Color3.new(0.6, 0.6, 0.6), 0.1 * (3 - i)), Material = Enum.Material.Marble })
+	end
+	local body = b({ Name = "Body", Size = Vector3.new(42, 18, 13), CFrame = local_(floor, 0, 11, -33), Color = MARBLE, Material = Enum.Material.Marble })
+	-- columns with bases and capitals
+	for c = 0, 5 do
+		local x = -20 + c * 8
+		b({ Name = "ColumnBase", Size = Vector3.new(3, 0.8, 3), CFrame = local_(floor, x, 2.4, -23.5), Color = MARBLE, Material = Enum.Material.Marble })
+		b({ Name = "Column", Shape = Enum.PartType.Cylinder, Size = Vector3.new(17, 2.2, 2.2), CFrame = local_(floor, x, 11.3, -23.5) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.new(1, 1, 1), Material = Enum.Material.Marble })
+		for f = 0, 3 do -- fluting
+			local a = math.rad(f * 45)
+			b({ Name = "Flute", Size = Vector3.new(0.12, 16.6, 2.3), CFrame = local_(floor, x, 11.3, -23.5) * CFrame.Angles(0, a, 0), Color = Color3.fromRGB(225, 222, 215), Material = Enum.Material.Marble, CanQuery = false })
+		end
+		b({ Name = "Capital", Size = Vector3.new(3.4, 1, 3.4), CFrame = local_(floor, x, 20.2, -23.5), Color = MARBLE, Material = Enum.Material.Marble })
+		b({ Name = "CapitalGold", Size = Vector3.new(3.5, 0.25, 3.5), CFrame = local_(floor, x, 19.6, -23.5), Color = GOLD, Material = Enum.Material.Metal })
+	end
+	-- entablature + gold band
+	b({ Name = "Entablature", Size = Vector3.new(47, 2.6, 19), CFrame = local_(floor, 0, 22, -31), Color = MARBLE, Material = Enum.Material.Marble })
+	b({ Name = "GoldBand", Size = Vector3.new(47.3, 0.45, 19.3), CFrame = local_(floor, 0, 20.9, -31), Color = GOLD, Material = Enum.Material.Metal })
+	-- gable roof (two wedges, ridge running front-to-back) + colored tympanum
+	for _, s in ipairs({ -1, 1 }) do
+		local roof = Instance.new("WedgePart")
+		roof.Name = "Roof"
+		roof.Anchored = true
+		roof.Size = Vector3.new(19, 7, 23.5)
+		roof.CFrame = local_(floor, s * -11.75, 26.8, -31) * CFrame.Angles(0, math.rad(s * 90), 0)
+		roof.Color = Color3.fromRGB(200, 70, 60)
+		roof.Material = Enum.Material.Slate
+		roof.Parent = building
+		local tymp = Instance.new("WedgePart")
+		tymp.Name = "Tympanum"
+		tymp.Anchored = true
+		tymp.CanQuery = false
+		tymp.Size = Vector3.new(0.3, 5.6, 19)
+		tymp.CFrame = local_(floor, s * -9.5, 26.1, -21.4) * CFrame.Angles(0, math.rad(s * 90), 0)
+		tymp.Color = Color3.fromRGB(40, 70, 150)
+		tymp.Material = Enum.Material.Fabric
+		tymp.Parent = building
+	end
+	b({ Name = "Emblem", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.4, 2.6, 2.6), CFrame = local_(floor, 0, 25.8, -21.1) * CFrame.Angles(0, math.rad(90), 0), Color = GOLD, Material = Enum.Material.Metal, CanQuery = false })
+	-- grand glass doors with gold frame
+	b({ Name = "DoorFrame", Size = Vector3.new(9.5, 12, 0.4), CFrame = local_(floor, 0, 8, -26.35), Color = GOLD, Material = Enum.Material.Metal })
+	b({ Name = "Door", Size = Vector3.new(8.4, 11, 0.5), CFrame = local_(floor, 0, 7.6, -26.25), Color = Color3.fromRGB(120, 180, 220), Material = Enum.Material.Glass, Transparency = 0.25, Reflectance = 0.3 })
+	b({ Name = "DoorSplit", Size = Vector3.new(0.3, 11, 0.6), CFrame = local_(floor, 0, 7.6, -26.2), Color = GOLD, Material = Enum.Material.Metal })
+	-- tall windows + red banners
+	for _, x in ipairs({ -16, 16 }) do -- windows between columns; banners between the inner columns
+		b({ Name = "WindowFrame", Size = Vector3.new(4.6, 8.6, 0.3), CFrame = local_(floor, x, 10, -26.4), Color = GOLD, Material = Enum.Material.Metal })
+		b({ Name = "Window", Size = Vector3.new(4, 8, 0.4), CFrame = local_(floor, x, 10, -26.3), Color = Color3.fromRGB(150, 205, 240), Material = Enum.Material.Glass, Transparency = 0.2, Reflectance = 0.3 })
+		b({ Name = "Banner", Size = Vector3.new(3, 9, 0.2), CFrame = local_(floor, x * 0.5, 13, -26.45), Color = Color3.fromRGB(190, 30, 45), Material = Enum.Material.Fabric })
+		b({ Name = "BannerTrim", Size = Vector3.new(3.2, 0.4, 0.3), CFrame = local_(floor, x * 0.5, 17.4, -26.45), Color = GOLD, Material = Enum.Material.Metal })
+		b({ Name = "BannerStar", Size = Vector3.new(1.4, 1.4, 0.25), CFrame = local_(floor, x * 0.5, 13.5, -26.55) * CFrame.Angles(0, 0, math.rad(45)), Color = GOLD, Material = Enum.Material.Metal, CanQuery = false })
 	end
 	building.PrimaryPart = body
-	local sign = part({ Name = "Sign", Size = Vector3.new(34, 5, 1), CFrame = floor.CFrame * CFrame.new(0, 19, -22.4), Color = Color3.fromRGB(40, 40, 60), Parent = building })
-	surfaceText(sign, Enum.NormalId.Back, "Empty Plot", Color3.new(1, 1, 1))
+	local sign = b({ Name = "Sign", Size = Vector3.new(30, 2.2, 0.3), CFrame = local_(floor, 0, 22, -21.4), Color = Color3.fromRGB(35, 35, 55), Material = Enum.Material.SmoothPlastic })
+	surfaceText(sign, Enum.NormalId.Back, "Empty Plot", Color3.fromRGB(255, 225, 120), 30)
+
+	-- planters & lamps at the front corners
+	for _, s in ipairs({ -1, 1 }) do
+		part({ Name = "Planter", Size = Vector3.new(3.4, 2, 3.4), CFrame = local_(floor, s * 43, 1.5, 37), Color = MARBLE, Material = Enum.Material.Marble, CanQuery = false, Parent = plot })
+		part({ Name = "Shrub", Shape = Enum.PartType.Ball, Size = Vector3.new(3.2, 3.2, 3.2), CFrame = local_(floor, s * 43, 3.7, 37), Color = Color3.fromRGB(70, 160, 70), Material = Enum.Material.Grass, CanQuery = false, Parent = plot })
+		local post = part({ Name = "LampPost", Size = Vector3.new(0.6, 10, 0.6), CFrame = local_(floor, s * 41, 5.5, -18), Color = Color3.fromRGB(40, 40, 50), Material = Enum.Material.Metal, CanQuery = false, Parent = plot })
+		local bulb = part({ Name = "Lamp", Shape = Enum.PartType.Ball, Size = Vector3.new(1.8, 1.8, 1.8), CFrame = post.CFrame * CFrame.new(0, 5.6, 0), Color = Color3.fromRGB(255, 235, 170), Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Parent = plot })
+		local light = Instance.new("PointLight")
+		light.Range = 22
+		light.Color = Color3.fromRGB(255, 225, 170)
+		light.Parent = bulb
+	end
+
 	local pedestals = Instance.new("Folder")
 	pedestals.Name = "Pedestals"
 	pedestals.Parent = plot

@@ -42,36 +42,46 @@ local function pedestalCFrame(plot, i)
 	return floor.CFrame * CFrame.new(x, floor.Size.Y / 2, z)
 end
 
+local MARBLE = Color3.fromRGB(246, 243, 236)
+local GOLD = Color3.fromRGB(240, 190, 60)
+
 local function makePedestal(player, plot, i)
 	local model = Instance.new("Model")
 	model.Name = "Pedestal_" .. i
-	local base = Instance.new("Part")
-	base.Name = "Base"
-	base.Anchored = true
-	base.Size = Vector3.new(4.6, 2.4, 4.6)
-	base.Material = Enum.Material.Marble
-	base.Color = Color3.fromRGB(245, 245, 250)
-	base.CFrame = pedestalCFrame(plot, i) * CFrame.new(0, 1.2, 0)
-	base.Parent = model
-	local trim = Instance.new("Part")
-	trim.Name = "Trim"
-	trim.Anchored = true
-	trim.CanCollide = false
-	trim.Size = Vector3.new(4.9, 0.3, 4.9)
-	trim.Material = Enum.Material.Neon
-	trim.Color = Color3.fromRGB(90, 200, 255)
-	trim.CFrame = base.CFrame * CFrame.new(0, 1.05, 0)
-	trim.Parent = model
-	local glass = Instance.new("Part")
-	glass.Name = "Glass"
-	glass.Anchored = true
-	glass.CanCollide = false
-	glass.Size = Vector3.new(4.2, 4.2, 4.2)
-	glass.Material = Enum.Material.Glass
-	glass.Transparency = 0.8
-	glass.Color = Color3.fromRGB(200, 240, 255)
-	glass.CFrame = base.CFrame * CFrame.new(0, 1.2 + 2.1, 0)
-	glass.Parent = model
+	local origin = pedestalCFrame(plot, i)
+	local function piece(name, size, offset, color, material, extra)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Anchored = true
+		p.Size = size
+		p.CFrame = origin * CFrame.new(offset)
+		p.Color = color
+		p.Material = material
+		p.TopSurface = Enum.SurfaceType.Smooth
+		p.BottomSurface = Enum.SurfaceType.Smooth
+		if extra then
+			for k, v in pairs(extra) do
+				p[k] = v
+			end
+		end
+		p.Parent = model
+		return p
+	end
+	-- "Base" spans the full pedestal height (displays are placed on its top) and is the PrimaryPart
+	local base = piece("Base", Vector3.new(3.6, 2.4, 3.6), Vector3.new(0, 1.2, 0), MARBLE, Enum.Material.Marble)
+	piece("Plinth", Vector3.new(4.6, 0.5, 4.6), Vector3.new(0, 0.25, 0), Color3.fromRGB(70, 65, 80), Enum.Material.Marble)
+	piece("Top", Vector3.new(4.4, 0.3, 4.4), Vector3.new(0, 2.3, 0), MARBLE, Enum.Material.Marble)
+	piece("Trim", Vector3.new(4.5, 0.12, 4.5), Vector3.new(0, 2.5, 0), GOLD, Enum.Material.Metal, { CanCollide = false })
+	piece("Plaque", Vector3.new(1.8, 0.5, 0.06), Vector3.new(0, 1.3, 1.82), GOLD, Enum.Material.Metal, { CanCollide = false })
+	-- glass case with gold corner posts and top frame
+	piece("Glass", Vector3.new(3.9, 3.9, 3.9), Vector3.new(0, 4.55, 0), Color3.fromRGB(205, 240, 255), Enum.Material.Glass, { CanCollide = false, Transparency = 0.82, Reflectance = 0.15 })
+	for _, x in ipairs({ -1.95, 1.95 }) do
+		for _, z in ipairs({ -1.95, 1.95 }) do
+			piece("Post", Vector3.new(0.18, 4, 0.18), Vector3.new(x, 4.55, z), GOLD, Enum.Material.Metal, { CanCollide = false })
+		end
+		piece("Frame", Vector3.new(0.18, 0.18, 4.08), Vector3.new(x, 6.55, 0), GOLD, Enum.Material.Metal, { CanCollide = false })
+		piece("Frame", Vector3.new(4.08, 0.18, 0.18), Vector3.new(0, 6.55, x), GOLD, Enum.Material.Metal, { CanCollide = false })
+	end
 	model.PrimaryPart = base
 	model:SetAttribute("PedestalSlot", i)
 	model:SetAttribute("OwnerUserId", player.UserId)
