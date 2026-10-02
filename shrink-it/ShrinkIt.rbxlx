@@ -1,17 +1,23 @@
 <roblox version="4">
-  <Item class="ReplicatedStorage" referent="0">
+  <Item class="Lighting" referent="0">
+    <Properties>
+      <string name="Name">Lighting</string>
+      <token name="Technology">4</token>
+    </Properties>
+  </Item>
+  <Item class="ReplicatedStorage" referent="1">
     <Properties>
       <string name="Name">ReplicatedStorage</string>
     </Properties>
-    <Item class="Folder" referent="1">
+    <Item class="Folder" referent="2">
       <Properties>
         <string name="Name">Shared</string>
       </Properties>
-      <Item class="Folder" referent="2">
+      <Item class="Folder" referent="3">
         <Properties>
           <string name="Name">Config</string>
         </Properties>
-        <Item class="ModuleScript" referent="3">
+        <Item class="ModuleScript" referent="4">
           <Properties>
             <string name="Name">ChaserConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -155,7 +161,7 @@ return ChaserConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="4">
+        <Item class="ModuleScript" referent="5">
           <Properties>
             <string name="Name">EventConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -210,7 +216,7 @@ return EventConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="5">
+        <Item class="ModuleScript" referent="6">
           <Properties>
             <string name="Name">GameConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -317,7 +323,7 @@ return GameConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="6">
+        <Item class="ModuleScript" referent="7">
           <Properties>
             <string name="Name">MonetizationConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -433,7 +439,7 @@ return MonetizationConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="7">
+        <Item class="ModuleScript" referent="8">
           <Properties>
             <string name="Name">ObjectConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -588,7 +594,7 @@ return ObjectConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="8">
+        <Item class="ModuleScript" referent="9">
           <Properties>
             <string name="Name">RarityConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -638,7 +644,7 @@ return RarityConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="9">
+        <Item class="ModuleScript" referent="10">
           <Properties>
             <string name="Name">RewardConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -767,7 +773,7 @@ return RewardConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="10">
+        <Item class="ModuleScript" referent="11">
           <Properties>
             <string name="Name">TierConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -858,7 +864,7 @@ return TierConfig
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="11">
+        <Item class="ModuleScript" referent="12">
           <Properties>
             <string name="Name">UpgradeConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -995,7 +1001,7 @@ return UpgradeConfig
           </Properties>
         </Item>
       </Item>
-      <Item class="ModuleScript" referent="12">
+      <Item class="ModuleScript" referent="13">
         <Properties>
           <string name="Name">Format</string>
           <string name="Source"><![CDATA[--[[
@@ -1078,7 +1084,7 @@ return Format
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="13">
+      <Item class="ModuleScript" referent="14">
         <Properties>
           <string name="Name">Formulas</string>
           <string name="Source"><![CDATA[--[[
@@ -1278,7 +1284,7 @@ return Formulas
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="14">
+      <Item class="ModuleScript" referent="15">
         <Properties>
           <string name="Name">InfinitePackGen</string>
           <string name="Source"><![CDATA[--[[
@@ -1395,7 +1401,7 @@ return Gen
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="15">
+      <Item class="ModuleScript" referent="16">
         <Properties>
           <string name="Name">Remotes</string>
           <string name="Source"><![CDATA[--[[
@@ -1471,7 +1477,7 @@ return Remotes
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="16">
+      <Item class="ModuleScript" referent="17">
         <Properties>
           <string name="Name">RewardUtil</string>
           <string name="Source"><![CDATA[--[[
@@ -1574,11 +1580,11 @@ return RewardUtil
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="17">
+  <Item class="ServerScriptService" referent="18">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Script" referent="18">
+    <Item class="Script" referent="19">
       <Properties>
         <string name="Name">Main</string>
         <token name="RunContext">0</token>
@@ -1707,11 +1713,11 @@ print("[ShrinkIt] Server ready 🔬")
 ]]></string>
       </Properties>
     </Item>
-    <Item class="Folder" referent="19">
+    <Item class="Folder" referent="20">
       <Properties>
         <string name="Name">Services</string>
       </Properties>
-      <Item class="ModuleScript" referent="20">
+      <Item class="ModuleScript" referent="21">
         <Properties>
           <string name="Name">AreaService</string>
           <string name="Source"><![CDATA[--[[
@@ -1817,7 +1823,7 @@ return AreaService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="21">
+      <Item class="ModuleScript" referent="22">
         <Properties>
           <string name="Name">CarryService</string>
           <string name="Source"><![CDATA[--[[
@@ -2295,7 +2301,7 @@ return CarryService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="22">
+      <Item class="ModuleScript" referent="23">
         <Properties>
           <string name="Name">CosmeticService</string>
           <string name="Source"><![CDATA[--[[
@@ -2432,7 +2438,7 @@ return CosmeticService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="23">
+      <Item class="ModuleScript" referent="24">
         <Properties>
           <string name="Name">DataService</string>
           <string name="Source"><![CDATA[--[[
@@ -2774,7 +2780,7 @@ return DataService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="24">
+      <Item class="ModuleScript" referent="25">
         <Properties>
           <string name="Name">EconomyService</string>
           <string name="Source"><![CDATA[--[[
@@ -2987,7 +2993,7 @@ return EconomyService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="25">
+      <Item class="ModuleScript" referent="26">
         <Properties>
           <string name="Name">EventService</string>
           <string name="Source"><![CDATA[--[[
@@ -3135,7 +3141,7 @@ return EventService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="26">
+      <Item class="ModuleScript" referent="27">
         <Properties>
           <string name="Name">IndexService</string>
           <string name="Source"><![CDATA[--[[
@@ -3210,7 +3216,7 @@ return IndexService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="27">
+      <Item class="ModuleScript" referent="28">
         <Properties>
           <string name="Name">InfinitePackService</string>
           <string name="Source"><![CDATA[--[[
@@ -3332,7 +3338,7 @@ return InfinitePackService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="28">
+      <Item class="ModuleScript" referent="29">
         <Properties>
           <string name="Name">LeaderboardService</string>
           <string name="Source"><![CDATA[--[[
@@ -3500,7 +3506,7 @@ return LeaderboardService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="29">
+      <Item class="ModuleScript" referent="30">
         <Properties>
           <string name="Name">MapDecor</string>
           <string name="Source"><![CDATA[--[[
@@ -3756,6 +3762,9 @@ local WALL_STYLE = {
 local function wallRun(parent, a, b, height, style)
 	local delta = b - a
 	local len = delta.Magnitude
+	if len < 1 then
+		return -- nothing to build (e.g. base and corridor are the same width)
+	end
 	local dir = delta.Unit
 	local panel = 20
 	local count = math.max(1, math.floor(len / panel + 0.5))
@@ -4128,10 +4137,13 @@ local ZONE_TERRAIN = {
 
 function MapDecor.Terrain(baseW, baseD, _corridorEnd, plotFrontZ)
 	local terrain = workspace.Terrain
-	terrain.Decoration = true -- animated grass blades on Grass terrain
-	terrain.WaterColor = RGB(40, 150, 220)
-	terrain.WaterTransparency = 0.4
-	terrain.WaterWaveSize = 0.08
+	-- NOTE: Terrain.Decoration (animated grass blades) can NOT be set from a script; it is saved in
+	-- the place file instead (see default.project.json) or toggled in Studio: Terrain > Decoration.
+	pcall(function()
+		terrain.WaterColor = RGB(40, 150, 220)
+		terrain.WaterTransparency = 0.4
+		terrain.WaterWaveSize = 0.08
+	end)
 	pcall(function()
 		terrain:SetMaterialColor(Enum.Material.Grass, RGB(95, 190, 70))
 		terrain:SetMaterialColor(Enum.Material.Ground, RGB(150, 115, 80))
@@ -4191,7 +4203,7 @@ return MapDecor
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="30">
+      <Item class="ModuleScript" referent="31">
         <Properties>
           <string name="Name">MapService</string>
           <string name="Source"><![CDATA[--[[
@@ -4418,6 +4430,15 @@ local function buildPlot(parent, id, cframe)
 end
 
 -- ── build ─────────────────────────────────────────────────────────────
+-- Runs a decoration step; a failure is reported but never stops the map from being built.
+local function safe(label, fn, ...)
+	local ok, err = pcall(fn, ...)
+	if not ok then
+		warn("[MapService] " .. label .. " failed (map still builds): " .. tostring(err))
+	end
+	return ok
+end
+
 local function buildMap()
 	local map = Instance.new("Model")
 	map.Name = "ShrinkItMap"
@@ -4494,7 +4515,7 @@ local function buildMap()
 		buildPlot(plotsFolder, id, CFrame.new(x, 0, PLOT_FRONT_Z - PLOT_D / 2))
 	end
 
-	MapDecor.Base(base, BASE_W, BASE_D, PLOT_FRONT_Z)
+	safe("Base decor", MapDecor.Base, base, BASE_W, BASE_D, PLOT_FRONT_Z)
 
 	-- ── Zones (one long corridor) ─────────────────────────
 	local zones = Instance.new("Folder")
@@ -4510,8 +4531,8 @@ local function buildMap()
 		local depth = t.AreaDepth
 		local style = MapDecor.FloorStyle[tier]
 		floorPart({ Name = "Floor", Size = Vector3.new(CORRIDOR, 2, depth), CFrame = CFrame.new(0, -1, z + depth / 2), Color = style.Color, Material = style.Material, Parent = zone })
-		MapDecor.ZoneArch(zone, tier, t, z, CORRIDOR)
-		MapDecor.Zone(zone, tier, z, depth, CORRIDOR)
+		safe("Zone arch " .. tier, MapDecor.ZoneArch, zone, tier, t, z, CORRIDOR)
+		safe("Zone decor " .. tier, MapDecor.Zone, zone, tier, z, depth, CORRIDOR)
 
 		local points = Instance.new("Folder")
 		points.Name = "SpawnPoints"
@@ -4539,15 +4560,21 @@ local function buildMap()
 		end
 		z += depth
 	end
-	if terrainGround then
-		MapDecor.Terrain(BASE_W, BASE_D, z, PLOT_FRONT_Z)
+	if terrainGround and not safe("Terrain ground", MapDecor.Terrain, BASE_W, BASE_D, z, PLOT_FRONT_Z) then
+		-- terrain failed: make the floors visible & solid so nobody falls through the world
+		for _, d in ipairs(map:GetDescendants()) do
+			if d:IsA("BasePart") and d.Name == "Floor" and d.Transparency == 1 then
+				d.Transparency = 0
+				d.CanCollide = true
+			end
+		end
 	end
 
 	-- ── Walls ────────────────────────────────────────────
 	local walls = Instance.new("Folder")
 	walls.Name = "Walls"
 	walls.Parent = map
-	MapDecor.Walls(walls, {
+	safe("Walls", MapDecor.Walls, walls, {
 		BaseWidth = BASE_W,
 		BaseDepth = BASE_D,
 		Corridor = CORRIDOR,
@@ -4569,7 +4596,7 @@ local function buildMap()
 	chasers.Name = "Chasers"
 	chasers.Parent = map
 
-	MapDecor.Lighting()
+	safe("Lighting", MapDecor.Lighting)
 	map.Parent = workspace
 	return map
 end
@@ -4720,7 +4747,7 @@ return MapService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="31">
+      <Item class="ModuleScript" referent="32">
         <Properties>
           <string name="Name">ModelFactory</string>
           <string name="Source"><![CDATA[--[[
@@ -4973,7 +5000,7 @@ return ModelFactory
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="32">
+      <Item class="ModuleScript" referent="33">
         <Properties>
           <string name="Name">MonetizationService</string>
           <string name="Source"><![CDATA[--[[
@@ -5198,7 +5225,7 @@ return MonetizationService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="33">
+      <Item class="ModuleScript" referent="34">
         <Properties>
           <string name="Name">MuseumService</string>
           <string name="Source"><![CDATA[--[[
@@ -5648,7 +5675,7 @@ return MuseumService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="34">
+      <Item class="ModuleScript" referent="35">
         <Properties>
           <string name="Name">NetService</string>
           <string name="Source"><![CDATA[--[[
@@ -5744,7 +5771,7 @@ return NetService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="35">
+      <Item class="ModuleScript" referent="36">
         <Properties>
           <string name="Name">ObjectModels</string>
           <string name="Source"><![CDATA[--[[
@@ -6589,7 +6616,7 @@ return ObjectModels
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="36">
+      <Item class="ModuleScript" referent="37">
         <Properties>
           <string name="Name">RaidService</string>
           <string name="Source"><![CDATA[--[[
@@ -6850,7 +6877,7 @@ return RaidService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="37">
+      <Item class="ModuleScript" referent="38">
         <Properties>
           <string name="Name">RebirthService</string>
           <string name="Source"><![CDATA[--[[
@@ -6947,7 +6974,7 @@ return RebirthService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="38">
+      <Item class="ModuleScript" referent="39">
         <Properties>
           <string name="Name">RewardService</string>
           <string name="Source"><![CDATA[--[[
@@ -7258,7 +7285,7 @@ return RewardService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="39">
+      <Item class="ModuleScript" referent="40">
         <Properties>
           <string name="Name">SessionService</string>
           <string name="Source"><![CDATA[--[[
@@ -7325,7 +7352,7 @@ return SessionService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="40">
+      <Item class="ModuleScript" referent="41">
         <Properties>
           <string name="Name">ShrinkService</string>
           <string name="Source"><![CDATA[--[[
@@ -7734,7 +7761,7 @@ return ShrinkService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="41">
+      <Item class="ModuleScript" referent="42">
         <Properties>
           <string name="Name">SpawnService</string>
           <string name="Source"><![CDATA[--[[
@@ -8106,7 +8133,7 @@ return SpawnService
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="42">
+      <Item class="ModuleScript" referent="43">
         <Properties>
           <string name="Name">UpgradeService</string>
           <string name="Source"><![CDATA[--[[
@@ -8196,15 +8223,15 @@ return UpgradeService
       </Item>
     </Item>
   </Item>
-  <Item class="StarterPlayer" referent="43">
+  <Item class="StarterPlayer" referent="44">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="44">
+    <Item class="StarterPlayerScripts" referent="45">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="LocalScript" referent="45">
+      <Item class="LocalScript" referent="46">
         <Properties>
           <string name="Name">ClientMain</string>
           <string name="Source"><![CDATA[--[[
@@ -8230,11 +8257,11 @@ print("[ShrinkIt] Client ready 🔬")
 ]]></string>
         </Properties>
       </Item>
-      <Item class="Folder" referent="46">
+      <Item class="Folder" referent="47">
         <Properties>
           <string name="Name">ClientModules</string>
         </Properties>
-        <Item class="ModuleScript" referent="47">
+        <Item class="ModuleScript" referent="48">
           <Properties>
             <string name="Name">Effects</string>
             <string name="Source"><![CDATA[--[[
@@ -8732,7 +8759,7 @@ return Effects
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="48">
+        <Item class="ModuleScript" referent="49">
           <Properties>
             <string name="Name">HUD</string>
             <string name="Source"><![CDATA[--[[
@@ -9016,33 +9043,48 @@ local eventLabel, eventFrame
 local boostHolder
 local raidFrame, raidLabel
 
+-- Wide "pill" buttons: a big icon that pops out of the left edge + a bold label.
 local function buildLeftStack()
+	local BUTTON_W, BUTTON_H, GAP = 196, 62, 12
 	local stack = UIKit.Create("Frame", {
 		Name = "LeftStack",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 14, 0.46, 0),
-		Size = UDim2.fromOffset(92, #LEFT_BUTTONS * 98),
+		Position = UDim2.new(0, 26, 0.47, 0),
+		Size = UDim2.fromOffset(BUTTON_W, #LEFT_BUTTONS * (BUTTON_H + GAP)),
 		Parent = screen,
 	})
 	UIKit.AutoScale(stack)
-	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = stack })
+	UIKit.Create("UIListLayout", { Padding = UDim.new(0, GAP), SortOrder = Enum.SortOrder.LayoutOrder, Parent = stack })
 	for i, def in ipairs(LEFT_BUTTONS) do
 		local button = UIKit.Button({
 			Name = def.Menu,
 			Text = "",
 			Colors = def.Colors,
-			Size = UDim2.fromOffset(88, 88),
+			Size = UDim2.fromOffset(BUTTON_W, BUTTON_H),
 			LayoutOrder = i,
-			CornerRadius = 20,
+			CornerRadius = 18,
 			StrokeThickness = 4,
 			Parent = stack,
 			OnClick = function()
 				HUD.OpenMenu(def.Menu)
 			end,
 		})
-		UIKit.Icon({ Icon = { Emoji = def.Emoji }, Size = UDim2.new(0.7, 0, 0.62, 0), Position = UDim2.fromScale(0.15, 0.04), ZIndex = 3, Parent = button })
-		UIKit.Label({ Text = def.Label, Size = UDim2.new(1, -6, 0.3, 0), Position = UDim2.new(0, 3, 0.68, 0), ZIndex = 3, StrokeThickness = 2.5, Parent = button })
+		-- icon bubble overlapping the left edge
+		local bubble = UIKit.Create("Frame", {
+			Name = "IconBubble",
+			BackgroundColor3 = Color3.new(1, 1, 1),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0, 8, 0.5, -2),
+			Size = UDim2.fromOffset(BUTTON_H + 10, BUTTON_H + 10),
+			ZIndex = 4,
+			Parent = button,
+		})
+		UIKit.Corner(bubble, UDim.new(1, 0))
+		UIKit.Stroke(bubble, 4, UIKit.Outline, true)
+		UIKit.Gradient(bubble, { Color3.new(1, 1, 1), def.Colors[1]:Lerp(Color3.new(1, 1, 1), 0.45) })
+		UIKit.Icon({ Icon = { Emoji = def.Emoji }, Size = UDim2.new(0.74, 0, 0.74, 0), Position = UDim2.fromScale(0.13, 0.12), ZIndex = 5, Parent = bubble })
+		UIKit.Label({ Text = def.Label, TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, -(BUTTON_H / 2 + 26), 0.66, 0), Position = UDim2.new(0, BUTTON_H / 2 + 18, 0.1, 0), ZIndex = 4, StrokeThickness = 3.5, Parent = button })
 		badgeSetters[def.Menu] = UIKit.Badge(button)
 	end
 end
@@ -9347,11 +9389,11 @@ return HUD
 ]]></string>
           </Properties>
         </Item>
-        <Item class="Folder" referent="49">
+        <Item class="Folder" referent="50">
           <Properties>
             <string name="Name">Menus</string>
           </Properties>
-          <Item class="ModuleScript" referent="50">
+          <Item class="ModuleScript" referent="51">
             <Properties>
               <string name="Name">FuseMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -9462,7 +9504,7 @@ return FuseMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="51">
+          <Item class="ModuleScript" referent="52">
             <Properties>
               <string name="Name">GiftsMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -9591,7 +9633,7 @@ return GiftsMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="52">
+          <Item class="ModuleScript" referent="53">
             <Properties>
               <string name="Name">IndexMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -9779,7 +9821,7 @@ return IndexMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="53">
+          <Item class="ModuleScript" referent="54">
             <Properties>
               <string name="Name">InfinitePackMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -10029,7 +10071,7 @@ return InfinitePackMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="54">
+          <Item class="ModuleScript" referent="55">
             <Properties>
               <string name="Name">MuseumMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -10214,7 +10256,7 @@ return MuseumMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="55">
+          <Item class="ModuleScript" referent="56">
             <Properties>
               <string name="Name">RebirthMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -10320,7 +10362,7 @@ return RebirthMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="56">
+          <Item class="ModuleScript" referent="57">
             <Properties>
               <string name="Name">SellMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -10421,7 +10463,7 @@ return SellMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="57">
+          <Item class="ModuleScript" referent="58">
             <Properties>
               <string name="Name">ShopMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -10634,7 +10676,7 @@ return ShopMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="58">
+          <Item class="ModuleScript" referent="59">
             <Properties>
               <string name="Name">TrailsMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -10735,7 +10777,7 @@ return TrailsMenu
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="59">
+          <Item class="ModuleScript" referent="60">
             <Properties>
               <string name="Name">UpgradesMenu</string>
               <string name="Source"><![CDATA[--[[
@@ -10834,7 +10876,7 @@ return UpgradesMenu
             </Properties>
           </Item>
         </Item>
-        <Item class="ModuleScript" referent="60">
+        <Item class="ModuleScript" referent="61">
           <Properties>
             <string name="Name">Prices</string>
             <string name="Source"><![CDATA[--[[
@@ -10884,7 +10926,7 @@ return Prices
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="61">
+        <Item class="ModuleScript" referent="62">
           <Properties>
             <string name="Name">RayController</string>
             <string name="Source"><![CDATA[--[[
@@ -11207,7 +11249,7 @@ return RayController
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="62">
+        <Item class="ModuleScript" referent="63">
           <Properties>
             <string name="Name">State</string>
             <string name="Source"><![CDATA[--[[
@@ -11296,7 +11338,7 @@ return State
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="63">
+        <Item class="ModuleScript" referent="64">
           <Properties>
             <string name="Name">UIKit</string>
             <string name="Source"><![CDATA[--[[
@@ -11493,25 +11535,41 @@ function UIKit.Button(props)
 		ZIndex = props.ZIndex or 1,
 		Parent = props.Parent,
 	})
-	UIKit.Corner(button, props.CornerRadius or 14)
-	UIKit.Stroke(button, props.StrokeThickness or 3.5, UIKit.Outline, true)
+	local radius = props.CornerRadius or 14
+	UIKit.Corner(button, radius)
+	UIKit.Stroke(button, props.StrokeThickness or 4, UIKit.Outline, true)
 	UIKit.Gradient(button, colors, 90)
-	-- glossy top shine
-	local shine = UIKit.Create("Frame", {
-		BackgroundColor3 = Color3.new(1, 1, 1),
-		BackgroundTransparency = 0.75,
-		Size = UDim2.new(1, -10, 0.35, 0),
-		Position = UDim2.new(0, 5, 0, 4),
+	-- chunky 3D look: darker "lip" along the bottom edge
+	local lip = UIKit.Create("Frame", {
+		Name = "Lip",
+		BackgroundColor3 = (colors[2] or colors[1]):Lerp(Color3.new(0, 0, 0), 0.35),
+		BorderSizePixel = 0,
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, 0, 1, 0),
+		Size = UDim2.new(1, 0, 0.16, 2),
 		ZIndex = button.ZIndex,
 		Parent = button,
 	})
-	UIKit.Corner(shine, props.CornerRadius or 12)
+	UIKit.Corner(lip, radius)
+	-- glossy top shine (soft white band that fades downward)
+	local shine = UIKit.Create("Frame", {
+		Name = "Shine",
+		BackgroundColor3 = Color3.new(1, 1, 1),
+		BackgroundTransparency = 0.55,
+		BorderSizePixel = 0,
+		Size = UDim2.new(1, -12, 0.38, 0),
+		Position = UDim2.new(0, 6, 0, 4),
+		ZIndex = button.ZIndex,
+		Parent = button,
+	})
+	UIKit.Corner(shine, math.max(4, radius - 4))
+	UIKit.Create("UIGradient", { Transparency = NumberSequence.new(0.1, 1), Rotation = 90, Parent = shine })
 	local label = UIKit.Label({
 		Text = props.Text or "",
-		Size = UDim2.new(1, -12, 1, -8),
-		Position = UDim2.fromOffset(6, 4),
+		Size = UDim2.new(1, -14, 0.84, -6),
+		Position = UDim2.fromOffset(7, 3),
 		ZIndex = button.ZIndex + 1,
-		StrokeThickness = 2.5,
+		StrokeThickness = 3,
 		MaxTextSize = props.MaxTextSize,
 		Parent = button,
 	})
@@ -11531,6 +11589,10 @@ function UIKit.SetButtonColors(button, colors)
 	local g = button:FindFirstChildOfClass("UIGradient")
 	if g then
 		g.Color = ColorSequence.new(colors[1], colors[2] or colors[1])
+	end
+	local lip = button:FindFirstChild("Lip")
+	if lip then
+		lip.BackgroundColor3 = (colors[2] or colors[1]):Lerp(Color3.new(0, 0, 0), 0.35)
 	end
 end
 
@@ -11820,6 +11882,18 @@ return UIKit
           </Properties>
         </Item>
       </Item>
+    </Item>
+  </Item>
+  <Item class="Workspace" referent="65">
+    <Properties>
+      <string name="Name">Workspace</string>
+      <bool name="NeedsPivotMigration">false</bool>
+    </Properties>
+    <Item class="Terrain" referent="66">
+      <Properties>
+        <string name="Name">Terrain</string>
+        <bool name="Decoration">true</bool>
+      </Properties>
     </Item>
   </Item>
 </roblox>

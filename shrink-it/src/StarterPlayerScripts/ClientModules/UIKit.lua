@@ -192,25 +192,41 @@ function UIKit.Button(props)
 		ZIndex = props.ZIndex or 1,
 		Parent = props.Parent,
 	})
-	UIKit.Corner(button, props.CornerRadius or 14)
-	UIKit.Stroke(button, props.StrokeThickness or 3.5, UIKit.Outline, true)
+	local radius = props.CornerRadius or 14
+	UIKit.Corner(button, radius)
+	UIKit.Stroke(button, props.StrokeThickness or 4, UIKit.Outline, true)
 	UIKit.Gradient(button, colors, 90)
-	-- glossy top shine
-	local shine = UIKit.Create("Frame", {
-		BackgroundColor3 = Color3.new(1, 1, 1),
-		BackgroundTransparency = 0.75,
-		Size = UDim2.new(1, -10, 0.35, 0),
-		Position = UDim2.new(0, 5, 0, 4),
+	-- chunky 3D look: darker "lip" along the bottom edge
+	local lip = UIKit.Create("Frame", {
+		Name = "Lip",
+		BackgroundColor3 = (colors[2] or colors[1]):Lerp(Color3.new(0, 0, 0), 0.35),
+		BorderSizePixel = 0,
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, 0, 1, 0),
+		Size = UDim2.new(1, 0, 0.16, 2),
 		ZIndex = button.ZIndex,
 		Parent = button,
 	})
-	UIKit.Corner(shine, props.CornerRadius or 12)
+	UIKit.Corner(lip, radius)
+	-- glossy top shine (soft white band that fades downward)
+	local shine = UIKit.Create("Frame", {
+		Name = "Shine",
+		BackgroundColor3 = Color3.new(1, 1, 1),
+		BackgroundTransparency = 0.55,
+		BorderSizePixel = 0,
+		Size = UDim2.new(1, -12, 0.38, 0),
+		Position = UDim2.new(0, 6, 0, 4),
+		ZIndex = button.ZIndex,
+		Parent = button,
+	})
+	UIKit.Corner(shine, math.max(4, radius - 4))
+	UIKit.Create("UIGradient", { Transparency = NumberSequence.new(0.1, 1), Rotation = 90, Parent = shine })
 	local label = UIKit.Label({
 		Text = props.Text or "",
-		Size = UDim2.new(1, -12, 1, -8),
-		Position = UDim2.fromOffset(6, 4),
+		Size = UDim2.new(1, -14, 0.84, -6),
+		Position = UDim2.fromOffset(7, 3),
 		ZIndex = button.ZIndex + 1,
-		StrokeThickness = 2.5,
+		StrokeThickness = 3,
 		MaxTextSize = props.MaxTextSize,
 		Parent = button,
 	})
@@ -230,6 +246,10 @@ function UIKit.SetButtonColors(button, colors)
 	local g = button:FindFirstChildOfClass("UIGradient")
 	if g then
 		g.Color = ColorSequence.new(colors[1], colors[2] or colors[1])
+	end
+	local lip = button:FindFirstChild("Lip")
+	if lip then
+		lip.BackgroundColor3 = (colors[2] or colors[1]):Lerp(Color3.new(0, 0, 0), 0.35)
 	end
 end
 

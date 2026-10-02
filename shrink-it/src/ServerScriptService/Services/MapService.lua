@@ -222,6 +222,15 @@ local function buildPlot(parent, id, cframe)
 end
 
 -- ── build ─────────────────────────────────────────────────────────────
+-- Runs a decoration step; a failure is reported but never stops the map from being built.
+local function safe(label, fn, ...)
+	local ok, err = pcall(fn, ...)
+	if not ok then
+		warn("[MapService] " .. label .. " failed (map still builds): " .. tostring(err))
+	end
+	return ok
+end
+
 local function buildMap()
 	local map = Instance.new("Model")
 	map.Name = "ShrinkItMap"
@@ -298,7 +307,7 @@ local function buildMap()
 		buildPlot(plotsFolder, id, CFrame.new(x, 0, PLOT_FRONT_Z - PLOT_D / 2))
 	end
 
-	MapDecor.Base(base, BASE_W, BASE_D, PLOT_FRONT_Z)
+	safe("Base decor", MapDecor.Base, base, BASE_W, BASE_D, PLOT_FRONT_Z)
 
 	-- ── Zones (one long corridor) ─────────────────────────
 	local zones = Instance.new("Folder")
@@ -314,8 +323,8 @@ local function buildMap()
 		local depth = t.AreaDepth
 		local style = MapDecor.FloorStyle[tier]
 		floorPart({ Name = "Floor", Size = Vector3.new(CORRIDOR, 2, depth), CFrame = CFrame.new(0, -1, z + depth / 2), Color = style.Color, Material = style.Material, Parent = zone })
-		MapDecor.ZoneArch(zone, tier, t, z, CORRIDOR)
-		MapDecor.Zone(zone, tier, z, depth, CORRIDOR)
+		safe("Zone arch " .. tier, MapDecor.ZoneArch, zone, tier, t, z, CORRIDOR)
+		safe("Zone decor " .. tier, MapDecor.Zone, zone, tier, z, depth, CORRIDOR)
 
 		local points = Instance.new("Folder")
 		points.Name = "SpawnPoints"
@@ -343,15 +352,21 @@ local function buildMap()
 		end
 		z += depth
 	end
-	if terrainGround then
-		MapDecor.Terrain(BASE_W, BASE_D, z, PLOT_FRONT_Z)
+	if terrainGround and not safe("Terrain ground", MapDecor.Terrain, BASE_W, BASE_D, z, PLOT_FRONT_Z) then
+		-- terrain failed: make the floors visible & solid so nobody falls through the world
+		for _, d in ipairs(map:GetDescendants()) do
+			if d:IsA("BasePart") and d.Name == "Floor" and d.Transparency == 1 then
+				d.Transparency = 0
+				d.CanCollide = true
+			end
+		end
 	end
 
 	-- ── Walls ────────────────────────────────────────────
 	local walls = Instance.new("Folder")
 	walls.Name = "Walls"
 	walls.Parent = map
-	MapDecor.Walls(walls, {
+	safe("Walls", MapDecor.Walls, walls, {
 		BaseWidth = BASE_W,
 		BaseDepth = BASE_D,
 		Corridor = CORRIDOR,
@@ -373,7 +388,7 @@ local function buildMap()
 	chasers.Name = "Chasers"
 	chasers.Parent = map
 
-	MapDecor.Lighting()
+	safe("Lighting", MapDecor.Lighting)
 	map.Parent = workspace
 	return map
 end

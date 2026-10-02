@@ -279,33 +279,48 @@ local eventLabel, eventFrame
 local boostHolder
 local raidFrame, raidLabel
 
+-- Wide "pill" buttons: a big icon that pops out of the left edge + a bold label.
 local function buildLeftStack()
+	local BUTTON_W, BUTTON_H, GAP = 196, 62, 12
 	local stack = UIKit.Create("Frame", {
 		Name = "LeftStack",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 14, 0.46, 0),
-		Size = UDim2.fromOffset(92, #LEFT_BUTTONS * 98),
+		Position = UDim2.new(0, 26, 0.47, 0),
+		Size = UDim2.fromOffset(BUTTON_W, #LEFT_BUTTONS * (BUTTON_H + GAP)),
 		Parent = screen,
 	})
 	UIKit.AutoScale(stack)
-	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = stack })
+	UIKit.Create("UIListLayout", { Padding = UDim.new(0, GAP), SortOrder = Enum.SortOrder.LayoutOrder, Parent = stack })
 	for i, def in ipairs(LEFT_BUTTONS) do
 		local button = UIKit.Button({
 			Name = def.Menu,
 			Text = "",
 			Colors = def.Colors,
-			Size = UDim2.fromOffset(88, 88),
+			Size = UDim2.fromOffset(BUTTON_W, BUTTON_H),
 			LayoutOrder = i,
-			CornerRadius = 20,
+			CornerRadius = 18,
 			StrokeThickness = 4,
 			Parent = stack,
 			OnClick = function()
 				HUD.OpenMenu(def.Menu)
 			end,
 		})
-		UIKit.Icon({ Icon = { Emoji = def.Emoji }, Size = UDim2.new(0.7, 0, 0.62, 0), Position = UDim2.fromScale(0.15, 0.04), ZIndex = 3, Parent = button })
-		UIKit.Label({ Text = def.Label, Size = UDim2.new(1, -6, 0.3, 0), Position = UDim2.new(0, 3, 0.68, 0), ZIndex = 3, StrokeThickness = 2.5, Parent = button })
+		-- icon bubble overlapping the left edge
+		local bubble = UIKit.Create("Frame", {
+			Name = "IconBubble",
+			BackgroundColor3 = Color3.new(1, 1, 1),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0, 8, 0.5, -2),
+			Size = UDim2.fromOffset(BUTTON_H + 10, BUTTON_H + 10),
+			ZIndex = 4,
+			Parent = button,
+		})
+		UIKit.Corner(bubble, UDim.new(1, 0))
+		UIKit.Stroke(bubble, 4, UIKit.Outline, true)
+		UIKit.Gradient(bubble, { Color3.new(1, 1, 1), def.Colors[1]:Lerp(Color3.new(1, 1, 1), 0.45) })
+		UIKit.Icon({ Icon = { Emoji = def.Emoji }, Size = UDim2.new(0.74, 0, 0.74, 0), Position = UDim2.fromScale(0.13, 0.12), ZIndex = 5, Parent = bubble })
+		UIKit.Label({ Text = def.Label, TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, -(BUTTON_H / 2 + 26), 0.66, 0), Position = UDim2.new(0, BUTTON_H / 2 + 18, 0.1, 0), ZIndex = 4, StrokeThickness = 3.5, Parent = button })
 		badgeSetters[def.Menu] = UIKit.Badge(button)
 	end
 end

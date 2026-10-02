@@ -251,6 +251,9 @@ local WALL_STYLE = {
 local function wallRun(parent, a, b, height, style)
 	local delta = b - a
 	local len = delta.Magnitude
+	if len < 1 then
+		return -- nothing to build (e.g. base and corridor are the same width)
+	end
 	local dir = delta.Unit
 	local panel = 20
 	local count = math.max(1, math.floor(len / panel + 0.5))
@@ -623,10 +626,13 @@ local ZONE_TERRAIN = {
 
 function MapDecor.Terrain(baseW, baseD, _corridorEnd, plotFrontZ)
 	local terrain = workspace.Terrain
-	terrain.Decoration = true -- animated grass blades on Grass terrain
-	terrain.WaterColor = RGB(40, 150, 220)
-	terrain.WaterTransparency = 0.4
-	terrain.WaterWaveSize = 0.08
+	-- NOTE: Terrain.Decoration (animated grass blades) can NOT be set from a script; it is saved in
+	-- the place file instead (see default.project.json) or toggled in Studio: Terrain > Decoration.
+	pcall(function()
+		terrain.WaterColor = RGB(40, 150, 220)
+		terrain.WaterTransparency = 0.4
+		terrain.WaterWaveSize = 0.08
+	end)
 	pcall(function()
 		terrain:SetMaterialColor(Enum.Material.Grass, RGB(95, 190, 70))
 		terrain:SetMaterialColor(Enum.Material.Ground, RGB(150, 115, 80))
