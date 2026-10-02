@@ -15,6 +15,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local GameConfig = require(Shared.Config.GameConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local ObjectModels = require(Shared.ObjectModels)
 local RarityConfig = require(Shared.Config.RarityConfig)

@@ -156,8 +156,15 @@ local function restack(player, c)
 			entry.Model:Destroy()
 			entry.Model = nil
 		end
+		local okBuild, built = false, nil
 		if root then
-			local model = buildVisual(entry)
+			okBuild, built = pcall(buildVisual, entry)
+			if not okBuild then
+				warn("[CarryService] can't show carried " .. tostring(entry.Id or entry.Kind) .. ": " .. tostring(built))
+			end
+		end
+		if okBuild and built then
+			local model = built
 			model.Name = "Carried"
 			if i == #c.Items then
 				-- in your hands: bottom at waist height, just in front of your chest

@@ -314,7 +314,7 @@ return EventConfig
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v11 (hands, treadmill, carry passes)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v11.1 (fix invisible carried/placed items)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 12 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
@@ -4360,8 +4360,15 @@ local function restack(player, c)
 			entry.Model:Destroy()
 			entry.Model = nil
 		end
+		local okBuild, built = false, nil
 		if root then
-			local model = buildVisual(entry)
+			okBuild, built = pcall(buildVisual, entry)
+			if not okBuild then
+				warn("[CarryService] can't show carried " .. tostring(entry.Id or entry.Kind) .. ": " .. tostring(built))
+			end
+		end
+		if okBuild and built then
+			local model = built
 			model.Name = "Carried"
 			if i == #c.Items then
 				-- in your hands: bottom at waist height, just in front of your chest
@@ -8298,6 +8305,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local GameConfig = require(Shared.Config.GameConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local ObjectModels = require(Shared.ObjectModels)
 local RarityConfig = require(Shared.Config.RarityConfig)
@@ -9299,7 +9307,11 @@ local function refreshVisuals(player)
 		if rec.Key ~= key then
 			rec.Key = key
 			rec.Model:PivotTo(slotCFrame(plot, i, slot))
-			setDisplay(rec.Model, slot, data)
+			local ok, err = pcall(setDisplay, rec.Model, slot, data)
+			if not ok then
+				rec.Key = nil -- try again on the next refresh
+				warn("[MuseumService] can't show spot " .. i .. ": " .. tostring(err))
+			end
 		end
 	end
 	MuseumService.UpdateIncomeAttributes(player)

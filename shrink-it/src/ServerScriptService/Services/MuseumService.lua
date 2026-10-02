@@ -328,7 +328,11 @@ local function refreshVisuals(player)
 		if rec.Key ~= key then
 			rec.Key = key
 			rec.Model:PivotTo(slotCFrame(plot, i, slot))
-			setDisplay(rec.Model, slot, data)
+			local ok, err = pcall(setDisplay, rec.Model, slot, data)
+			if not ok then
+				rec.Key = nil -- try again on the next refresh
+				warn("[MuseumService] can't show spot " .. i .. ": " .. tostring(err))
+			end
 		end
 	end
 	MuseumService.UpdateIncomeAttributes(player)

@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v11 (hands, treadmill, carry passes)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v11.1 (fix invisible carried/placed items)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 12 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
