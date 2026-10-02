@@ -178,7 +178,7 @@ Shopkeepers are added when the server starts.
 | Rarities, variants (Golden x5, Diamond x10, Rainbow x25, Cosmic x100) with glow; luck-weighted rolls | `RarityConfig`, `SpawnService`, `ModelFactory` |
 | Event objects with server-wide announcement | `EventService`, `SpawnService` |
 | Pocket Museum: plots, pedestals, glass cases, "+$" floating text | `MuseumService`, `Effects` |
-| Upgrades: Ray Power, Treadmill, Carry Capacity, Charge Speed, Range, Luck, Museum Size | `UpgradeConfig`, `UpgradeService` |
+| Upgrades: Ray Power, Treadmill, Carry Capacity, Charge Speed, Range, Luck, Museum Size + **⚡ Buy All** (keeps buying the cheapest affordable upgrade) | `UpgradeConfig`, `UpgradeService` |
 | Rebirth (multiplier, Gems, Tokens) + permanent Token upgrades | `RebirthService` |
 | The Index with per-area completion rewards (Normal set + full variant set) | `IndexService`, `IndexMenu` |
 | Museum Raids (opt-in, max Ray Power, copies only, shield, revenge window + bonus) | `RaidService` |

@@ -30,7 +30,15 @@ local CARD_COLORS = {
 
 function UpgradesMenu.Build(ctx)
 	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Upgrades", Emoji = "⚡", Size = UDim2.fromOffset(920, 640), Colors = UIKit.Colors.Cyan })
-	local grid = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -18), Position = UDim2.fromOffset(0, 18), Parent = panel.Content })
+	-- BUY ALL: buys the cheapest affordable upgrade again and again until you run out of coins
+	local buyAll, buyAllLabel = UIKit.Button({ Name = "BuyAll", Text = "⚡ Buy All", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(240, 52), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), CornerRadius = 16, Parent = panel.Content, OnClick = function()
+		local result = State.Action("BuyAllUpgrades")
+		if result.ok then
+			UIKit.PlaySound("Reward", 0.4)
+		end
+		ctx.HUD.Result(result)
+	end })
+	local grid = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -76), Position = UDim2.fromOffset(0, 76), Parent = panel.Content })
 	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(420, 168), CellPadding = UDim2.fromOffset(14, 14), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = grid })
 	UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), Parent = grid })
 
@@ -70,6 +78,7 @@ function UpgradesMenu.Build(ctx)
 		if not data then
 			return
 		end
+		local anyAffordable = false
 		for id, c in pairs(cards) do
 			local lv = data.Upgrades[id] or 1
 			local cost = Formulas.UpgradeCost(id, lv)
@@ -80,12 +89,15 @@ function UpgradesMenu.Build(ctx)
 				c.Value.Text = now .. "  ➜  " .. c.U.Format(c.U.Value(lv + 1))
 				c.ButtonLabel.Text = Format.Coins(cost)
 				UIKit.SetButtonColors(c.Button, State.Coins >= cost and UIKit.Colors.Green or UIKit.Colors.Gray)
+				anyAffordable = anyAffordable or State.Coins >= cost
 			else
 				c.Value.Text = now
 				c.ButtonLabel.Text = "⭐ MAX"
 				UIKit.SetButtonColors(c.Button, UIKit.Colors.Yellow)
 			end
 		end
+		UIKit.SetButtonColors(buyAll, anyAffordable and UIKit.Colors.Green or UIKit.Colors.Gray)
+		buyAllLabel.Text = "⚡ Buy All"
 	end
 
 	menu.Tick = menu.Refresh
