@@ -8,6 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
+GameConfig.Version = "v7 (compact map)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 7 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data

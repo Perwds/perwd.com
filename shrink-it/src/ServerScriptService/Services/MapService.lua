@@ -395,6 +395,7 @@ local function buildMap()
 	chasers.Parent = map
 
 	safe("Lighting", MapDecor.Lighting)
+	map:SetAttribute("GeneratedMapVersion", GameConfig.MapVersion)
 	map.Parent = workspace
 	return map
 end
@@ -474,8 +475,25 @@ local function readMap(map)
 	MapService.ChaserFolder = ensureFolder("Chasers")
 end
 
+-- An older auto-generated map saved into the place would hide every map update, so replace it.
+-- (A map YOU built has no GeneratedMapVersion attribute and no old-style "Lobby"/"Areas" children,
+-- so it is always kept.)
+local function isOutdatedGeneratedMap(map)
+	local version = map:GetAttribute("GeneratedMapVersion")
+	if version then
+		return version < GameConfig.MapVersion
+	end
+	return map:FindFirstChild("Lobby") ~= nil or map:FindFirstChild("Areas") ~= nil
+end
+
 function MapService.Init(_registry)
-	local map = workspace:FindFirstChild("ShrinkItMap") or buildMap()
+	local existing = workspace:FindFirstChild("ShrinkItMap")
+	if existing and isOutdatedGeneratedMap(existing) then
+		warn("[MapService] Found an OUTDATED generated ShrinkItMap saved in Workspace - replacing it with map v" .. GameConfig.MapVersion .. ". (Delete Workspace > ShrinkItMap in Studio and save to stop seeing this.)")
+		existing:Destroy()
+		existing = nil
+	end
+	local map = existing or buildMap()
 	readMap(map)
 end
 

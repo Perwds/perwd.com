@@ -525,6 +525,8 @@ function HUD.Init()
 	})
 	buildLeftStack()
 	buildCurrencies()
+	-- build version, bottom-right (tells you which file you're running)
+	UIKit.Label({ Name = "Version", Text = "Shrink It! " .. require(Shared.Config.GameConfig).Version, TextColor3 = Color3.fromRGB(255, 255, 255), StrokeThickness = 1.5, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -10, 1, -6), Size = UDim2.fromOffset(260, 18), Parent = screen })
 	buildTopBits()
 	buildRayBits()
 

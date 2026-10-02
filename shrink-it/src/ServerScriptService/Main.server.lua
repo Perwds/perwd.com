@@ -119,4 +119,4 @@ game:BindToClose(function()
 	Registry.Data.ReleaseAll()
 end)
 
-print("[ShrinkIt] Server ready 🔬")
+print("[ShrinkIt] Server ready 🔬 " .. GameConfig.Version)
