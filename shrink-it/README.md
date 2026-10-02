@@ -29,6 +29,7 @@ Names in Studio must match the file names (without the extensions).
 | ↳ Config › RewardConfig | ModuleScript | `Config/RewardConfig.lua`: gifts, daily, index, likes, codes, Infinite Pack |
 | ↳ Config › EventConfig | ModuleScript | `Config/EventConfig.lua`: rotating events, event objects |
 | ↳ Config › ChaserConfig | ModuleScript | `Config/ChaserConfig.lua`: the 6 chasers (names, speeds, looks, lines) |
+| ↳ ObjectModels | ModuleScript | `ObjectModels.lua`: the 3D models for every object (world + menu previews) |
 | ↳ Format | ModuleScript | `Format.lua`: 14.3k / 1.2M / 4.5B, timers |
 | ↳ Formulas | ModuleScript | `Formulas.lua`: shared math (costs, stats, income) |
 | ↳ RewardUtil | ModuleScript | `RewardUtil.lua`: reward descriptions + odds |
@@ -36,7 +37,7 @@ Names in Studio must match the file names (without the extensions).
 | ↳ Remotes | ModuleScript | `Remotes.lua`: creates / finds all remotes |
 | **ServerScriptService › Main** | Script | `src/ServerScriptService/Main.server.lua` |
 | **ServerScriptService › Services** | Folder | `src/ServerScriptService/Services/` |
-| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, CosmeticService, ModelFactory, ObjectModels, MapDecor | ModuleScripts | one file each |
+| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, CosmeticService, ModelFactory, MapDecor | ModuleScripts | one file each |
 | **StarterPlayer › StarterPlayerScripts › ClientMain** | LocalScript | `src/StarterPlayerScripts/ClientMain.client.lua` |
 | **StarterPlayer › StarterPlayerScripts › ClientModules** | Folder | `src/StarterPlayerScripts/ClientModules/` |
 | ↳ State, UIKit, HUD, Effects, RayController, Prices | ModuleScripts | one file each |
@@ -88,7 +89,8 @@ so nothing needs uploading. See `ObjectModels` (all 31 objects), `MapService` (m
 - [ ] **Object models**: put Models in **ServerStorage › ShrinkableTemplates** (create the folder), each **named
       exactly like its ObjectConfig id** (e.g. `FerrisWheel`, `SodaCan`, `TheMoon`). Set a PrimaryPart. The game
       anchors them, removes scripts, places them on the ground, and scales them down for museum display.
-      Objects without a template use the built-in detailed models from `ObjectModels`.
+      Objects without a template use the built-in detailed models from `ObjectModels`. Any model you drop in (e.g. a free
+      Toolbox mesh) is automatically scaled to that object's size, so you don't need to resize it.
 - [ ] **Shrink Ray tool**: put a Tool named **`ShrinkRay`** in ServerStorage with a `Handle` part and an
       **Attachment named `Tip`** inside the Handle (where the beam starts). Otherwise a simple ray is generated.
 - [ ] **Chaser NPCs**: put Models (with a `Humanoid` + `HumanoidRootPart`) in **ServerStorage › Chasers** named
@@ -133,7 +135,7 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 | Hold-to-charge Shrink Ray, beam, squash + fly-to-pocket tween, pop sound, particles | `RayController`, `Effects`, `ShrinkService` |
 | Shrink ANY object at any Ray Power — more power = faster charge (hover shows the charge time) | `Formulas`, `RayController`, `ShrinkService` |
 | Compact map: a walled base with ONE gate leading into a short corridor of 6 themed zones (~960 studs) | `MapService`, `MapDecor`, `TierConfig` |
-| Carry loop: shrunk objects stack above your head; walk them onto YOUR plot to put them on display (red guide arrows, Drop button) | `CarryService`, `Effects`, `HUD` |
+| Mystery boxes: shrinking gives a rarity-colored BOX; carry it home, PLACE it on one of your pedestals (prompt), it opens after a timer (skip with Gems), then earns. Pick up / place objects yourself | `CarryService`, `MuseumService`, `GameConfig.Boxes` |
 | Fair base: 6 fenced plots in a semicircle around the gate, all exactly the same distance from it | `MapService` |
 | Stands in the base: 💰 SELL (sell all pocket items), ✨ FUSE (3 → next variant), 🌈 TRAILS, 🛒 SHOP (ProximityPrompts) | `MapDecor`, `SellMenu`, `FuseMenu`, `TrailsMenu`, `CosmeticService` |
 | Clean two-tone lawn stripes + short grass patches (default); `GameConfig.Ground = "Terrain"` for terrain grass | `MapDecor` |

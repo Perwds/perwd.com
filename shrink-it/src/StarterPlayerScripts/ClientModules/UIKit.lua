@@ -359,6 +359,56 @@ function UIKit.Card(props)
 	return card
 end
 
+-- ── 3D previews (real object models rendered into the UI) ─────────────
+local ObjectModels = require(Shared:WaitForChild("ObjectModels"))
+local RarityConfig = require(Shared.Config.RarityConfig)
+local ObjectConfig = require(Shared.Config.ObjectConfig)
+local previewTemplates = {}
+
+-- props: Id, Variant, Size, Position, AnchorPoint, ZIndex, LayoutOrder, Parent
+function UIKit.ModelPreview(props)
+	local vf = UIKit.Create("ViewportFrame", {
+		Name = "Preview",
+		BackgroundTransparency = 1,
+		Size = props.Size or UDim2.fromOffset(64, 64),
+		Position = props.Position or UDim2.new(),
+		AnchorPoint = props.AnchorPoint or Vector2.zero,
+		ZIndex = props.ZIndex or 1,
+		LayoutOrder = props.LayoutOrder or 0,
+		Ambient = Color3.fromRGB(190, 190, 200),
+		LightColor = Color3.fromRGB(255, 255, 255),
+		LightDirection = Vector3.new(-1, -1.4, -0.6),
+		Parent = props.Parent,
+	})
+	local template = previewTemplates[props.Id]
+	if template == nil then
+		local ok, built = pcall(ObjectModels.Build, props.Id)
+		template = ok and built or false
+		previewTemplates[props.Id] = template
+	end
+	if not template then
+		local def = ObjectConfig.Get(props.Id)
+		UIKit.Label({ Text = def and def.Emoji or "📦", StrokeThickness = 0, Size = UDim2.fromScale(1, 1), Parent = vf })
+		return vf
+	end
+	local model = template:Clone()
+	model.Parent = vf
+	local cf, size = model:GetBoundingBox()
+	local camera = Instance.new("Camera")
+	camera.FieldOfView = 35
+	camera.Parent = vf
+	vf.CurrentCamera = camera
+	local radius = size.Magnitude / 2
+	local distance = radius / math.tan(math.rad(camera.FieldOfView / 2)) * 1.02
+	camera.CFrame = CFrame.lookAt(cf.Position + Vector3.new(0.55, 0.42, -1).Unit * distance, cf.Position)
+	-- variants tint the render (golden, diamond, rainbow, cosmic)
+	local variant = RarityConfig.GetVariant(props.Variant)
+	if variant.Color then
+		vf.ImageColor3 = variant.Color:Lerp(Color3.new(1, 1, 1), 0.45)
+	end
+	return vf
+end
+
 -- ── Screen-size scaling ───────────────────────────────────────────────
 local scaled = {}
 local function screenScale()

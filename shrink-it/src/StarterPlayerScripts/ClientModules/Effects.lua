@@ -354,12 +354,77 @@ local function onCarryFX(kind, p)
 			-- knocked back toward the base (client owns its own character physics)
 			root.AssemblyLinearVelocity = Vector3.new(0, 45, -55)
 		end
+	elseif kind == "Placed" then
+		HUD.Splash("📦 PLACED!  ⏳ " .. Format.Clock(p.Seconds), Color3.fromRGB(255, 220, 90))
+		if root then
+			playSoundAt(root.Position, GameConfig.Sounds.Pop, 0.5)
+		end
 	elseif kind == "Deposit" then
 		HUD.Splash("DELIVERED! +" .. Format.Coins(p.Income) .. "/s", Color3.fromRGB(120, 255, 120))
 		if root then
 			burst(root.Position, Color3.fromRGB(255, 220, 60), 60, 1.6)
 			burst(root.Position, Color3.fromRGB(120, 255, 140), 40, 1.2)
 			playSoundAt(root.Position, GameConfig.Sounds.Reward, 0.7)
+		end
+	end
+end
+
+-- ── boxes on pedestals: countdown timers, unbox FX, owner-only prompts ──
+local function onBoxOpened(pedestal, owner, itemName, variantName, income)
+	local base = pedestal and pedestal.PrimaryPart
+	local variant = RarityConfig.GetVariant(variantName)
+	if base then
+		local pos = base.Position + Vector3.new(0, 4, 0)
+		burst(pos, variant.Color or Color3.fromRGB(255, 220, 80), 70, 1.6)
+		burst(pos, Color3.fromRGB(255, 255, 255), 30, 1)
+		playSoundAt(pos, GameConfig.Sounds.Pop, 0.9)
+	end
+	if owner == player then
+		HUD.Splash("🎉 " .. itemName .. "!  +" .. Format.Coins(income) .. "/s", variant.Color or Color3.fromRGB(120, 255, 140))
+		playSoundAt(base and base.Position or Vector3.zero, GameConfig.Sounds.Reward, 0.6)
+	end
+end
+
+local function pedestalLoop()
+	while true do
+		task.wait(0.25)
+		local now = State.Now()
+		for _, pedestal in ipairs(CollectionService:GetTagged("MuseumPedestal")) do
+			local base = pedestal.PrimaryPart
+			if base then
+				-- only the owner sees (and can use) the Place / Open now / Pick up prompt
+				local prompt = base:FindFirstChild("PedestalPrompt")
+				if prompt then
+					prompt.Enabled = pedestal:GetAttribute("OwnerUserId") == player.UserId
+				end
+				local timer = base:FindFirstChild("BoxTimer")
+				local readyAt = pedestal:GetAttribute("State") == "Box" and pedestal:GetAttribute("BoxReadyAt")
+				if readyAt and (base.Position - workspace.CurrentCamera.CFrame.Position).Magnitude < 160 then
+					if not timer then
+						timer = Instance.new("BillboardGui")
+						timer.Name = "BoxTimer"
+						timer.Size = UDim2.fromOffset(110, 36)
+						timer.StudsOffsetWorldSpace = Vector3.new(0, 7.6, 0)
+						timer.LightInfluence = 0
+						timer.MaxDistance = 160
+						timer.Parent = base
+						local label = Instance.new("TextLabel")
+						label.Name = "Label"
+						label.Size = UDim2.fromScale(1, 1)
+						label.BackgroundTransparency = 1
+						label.Font = Enum.Font.FredokaOne
+						label.TextScaled = true
+						label.TextColor3 = Color3.fromRGB(255, 230, 120)
+						label.Parent = timer
+						local stroke = Instance.new("UIStroke")
+						stroke.Thickness = 3
+						stroke.Parent = label
+					end
+					timer.Label.Text = "⏳ " .. Format.Clock(math.max(0, readyAt - now))
+				elseif timer then
+					timer:Destroy()
+				end
+			end
 		end
 	end
 end
@@ -434,6 +499,8 @@ end
 
 function Effects.Init()
 	task.spawn(guideArrows)
+	task.spawn(pedestalLoop)
+	Remotes.Event("BoxOpened").OnClientEvent:Connect(onBoxOpened)
 	Remotes.Event("CarryFX").OnClientEvent:Connect(onCarryFX)
 	Remotes.Event("ShrinkFX").OnClientEvent:Connect(playShrink)
 	Remotes.Event("ChargeFX").OnClientEvent:Connect(onChargeFX)

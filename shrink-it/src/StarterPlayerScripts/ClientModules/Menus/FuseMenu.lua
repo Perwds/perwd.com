@@ -77,12 +77,11 @@ function FuseMenu.Build(ctx)
 			UIKit.Label({ Text = "Shrink some objects first!", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 40), Parent = list })
 		end
 		for i, g in ipairs(order) do
-			local def = ObjectConfig.Get(g.Id)
 			local variant = RarityConfig.GetVariant(g.V)
 			local nv = nextVariant(g.V)
 			local ready = nv and g.Count >= need
 			local row = UIKit.Card({ Size = UDim2.new(1, -16, 0, 60), LayoutOrder = i, Colors = ready and { Color3.fromRGB(250, 240, 255), Color3.fromRGB(230, 210, 255) } or nil, Parent = list, CornerRadius = 12 })
-			UIKit.Label({ Text = def and def.Emoji or "📦", StrokeThickness = 0, Size = UDim2.fromOffset(44, 44), Position = UDim2.fromOffset(8, 8), Parent = row })
+			UIKit.ModelPreview({ Id = g.Id, Variant = g.V, Size = UDim2.fromOffset(52, 52), Position = UDim2.fromOffset(4, 4), Parent = row })
 			UIKit.Label({ Text = Formulas.ItemName({ Id = g.Id, V = g.V }) .. "  x" .. g.Count, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = variant.Color or Color3.fromRGB(60, 60, 80), StrokeThickness = variant.Color and 2 or 0, Size = UDim2.fromOffset(380, 30), Position = UDim2.fromOffset(60, 4), Parent = row })
 			local bar = UIKit.ProgressBar({ Size = UDim2.fromOffset(260, 18), Position = UDim2.fromOffset(60, 36), Colors = UIKit.Colors.Purple, Parent = row })
 			bar.Set(math.min(1, g.Count / need), math.min(g.Count, need) .. "/" .. need)

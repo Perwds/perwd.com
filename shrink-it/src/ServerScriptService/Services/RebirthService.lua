@@ -53,6 +53,7 @@ function RebirthService.DoRebirth(player, free)
 		end
 	end
 	data.Items = kept
+	data.Slots = {} -- pedestals are cleared; kept exclusives wait in the pocket
 	data.Gems += rewards.Gems
 	data.RebirthTokens += rewards.Tokens
 

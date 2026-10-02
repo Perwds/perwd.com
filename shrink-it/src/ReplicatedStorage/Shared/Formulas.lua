@@ -186,6 +186,19 @@ function Formulas.IndexIncomeBonus(data)
 	return bonus
 end
 
+-- ── Boxes ────────────────────────────────────────────────────────────
+function Formulas.BoxOpenSeconds(id, variant)
+	local cfg = GameConfig.Boxes
+	local def = ObjectConfig.Get(id)
+	local rarity = def and def.Rarity or "Common"
+	local seconds = (cfg.OpenSeconds[rarity] or 10) + cfg.SecondsPerTier * (def and def.Tier or 1)
+	return seconds + (cfg.VariantExtra[variant] or 0)
+end
+
+function Formulas.BoxSkipGems(secondsLeft)
+	return math.max(1, math.ceil(secondsLeft / GameConfig.Boxes.SecondsPerGem))
+end
+
 -- ── Misc ─────────────────────────────────────────────────────────────
 function Formulas.CoinsFromMinutes(incomePerSec, minutes, floor)
 	return math.max(floor or 0, math.floor((incomePerSec or 0) * 60 * minutes))

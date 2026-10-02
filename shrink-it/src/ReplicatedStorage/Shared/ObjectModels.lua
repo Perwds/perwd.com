@@ -1,6 +1,6 @@
 --[[
-	📍 LOCATION: ServerScriptService > Services > ObjectModels (ModuleScript)
-	(Helper module used by ModelFactory; not a service.)
+	📍 LOCATION: ReplicatedStorage > Shared > ObjectModels (ModuleScript)
+	(Shared: the server builds world objects with it, the client builds 3D previews for the menus.)
 
 	Detailed, textured models for EVERY object in ObjectConfig, built from parts with Roblox's
 	built-in materials (WoodPlanks, Brick, Marble, Metal, Glass, Fabric, Slate, Ice, Neon, ...),

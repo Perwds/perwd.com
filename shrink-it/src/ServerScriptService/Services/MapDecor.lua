@@ -310,8 +310,8 @@ function MapDecor.ZoneArch(zone, tier, t, z, width)
 	end
 	local beam = part(arch, Vector3.new(width - 4, 14, 3), CFrame.new(0, 36, z), RGB(40, 40, 60), Enum.Material.SmoothPlastic)
 	beam.CanCollide = false
-	sign(beam, Enum.NormalId.Front, string.format("ZONE %d · %s\n%s Watch out for %s!  ·  Full speed at Ray Power %d", tier, string.upper(t.Area), chaser.Emoji, chaser.Name, t.RayPowerRequired), color:Lerp(RGB(255, 255, 255), 0.35), 8)
-	sign(beam, Enum.NormalId.Back, tier == 1 and "🏠 SAFE ZONE ⬇  drop off your loot!" or "⬇ BACK TO BASE ⬇", RGB(120, 255, 140), 8)
+	sign(beam, Enum.NormalId.Front, chaser.Emoji .. " " .. string.upper(t.Area), color:Lerp(RGB(255, 255, 255), 0.35), 8)
+	sign(beam, Enum.NormalId.Back, tier == 1 and "🏠 SAFE" or "⬇ BASE", RGB(120, 255, 140), 8)
 	-- floor line
 	deco(arch, Vector3.new(width - 4, 0.25, 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(255, 60, 60) or color, Enum.Material.Neon)
 end
@@ -415,7 +415,7 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 			house(m, Vector3.zero, -1, RGB(255, 240, 210), RGB(120, 80, 60))
 		end)
 		local signPart = part(decor, Vector3.new(9, 2, 0.4), CFrame.new(-I + 1, 7, zEnd - 14) * CFrame.Angles(0, math.rad(90), 0), RGB(120, 80, 50), Enum.Material.Wood)
-		sign(signPart, Enum.NormalId.Back, "👴 GRANDPA'S HOUSE", RGB(255, 230, 160), 24)
+		sign(signPart, Enum.NormalId.Back, "👴", RGB(255, 230, 160), 24)
 		prop(decor, Vector3.new(B, 0, z0 + 30), 0.7, 0, function(m)
 			local shed = part(m, Vector3.new(10, 8, 8), CFrame.new(0, 4, 0), RGB(120, 160, 110), Enum.Material.WoodPlanks)
 			wedge(m, Vector3.new(10.4, 2.6, 8.4), shed.CFrame * CFrame.new(0, 5.3, 0) * CFrame.Angles(0, math.rad(90), 0), RGB(150, 70, 60))
@@ -533,10 +533,11 @@ end
 -- ── stands (SELL / FUSE / TRAILS / SHOP) ──────────────────────────────
 -- A market stall with a striped awning, a big floating label and a ProximityPrompt that
 -- opens a menu on the client (the prompt's "OpensMenu" attribute = menu name).
-function MapDecor.Stand(parent, name, label, colors, pos, menu, propFn)
+function MapDecor.Stand(parent, name, label, colors, worldPos, menu, propFn)
 	local m = Instance.new("Model")
 	m.Name = name
 	m.Parent = parent
+	local pos = Vector3.zero -- built at the origin, then scaled up and moved into place
 	local ring = deco(m, Vector3.new(0.3, 22, 22), CFrame.new(pos + Vector3.new(0, 0.12, 0)) * CFrame.Angles(0, 0, math.rad(90)), colors[1], Enum.Material.Neon, Enum.PartType.Cylinder)
 	ring.Transparency = 0.6
 	local counter = part(m, Vector3.new(12, 3.4, 4), CFrame.new(pos + Vector3.new(0, 1.7, 2)), RGB(170, 115, 70), Enum.Material.WoodPlanks)
@@ -558,9 +559,69 @@ function MapDecor.Stand(parent, name, label, colors, pos, menu, propFn)
 	if propFn then
 		propFn(m, pos + Vector3.new(0, 3.8, 2))
 	end
+	-- hanging lanterns on the front posts
+	for _, x in ipairs({ -5.8, 5.8 }) do
+		part(m, Vector3.new(0.12, 1.4, 0.12), CFrame.new(pos + Vector3.new(x, 8.3, 4.2)), RGB(40, 40, 45), Enum.Material.Metal)
+		local lantern = deco(m, Vector3.new(0.9, 1.1, 0.9), CFrame.new(pos + Vector3.new(x, 7.3, 4.2)), RGB(255, 210, 120), Enum.Material.Neon)
+		local light = Instance.new("PointLight")
+		light.Color = RGB(255, 210, 140)
+		light.Range = 12
+		light.Brightness = 1.2
+		light.Parent = lantern
+	end
+	-- sparkles drifting up from the glowing ring
+	local sparkle = Instance.new("ParticleEmitter")
+	sparkle.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+	sparkle.Color = ColorSequence.new(colors[2])
+	sparkle.LightEmission = 1
+	sparkle.Rate = 5
+	sparkle.Lifetime = NumberRange.new(1.5, 2.5)
+	sparkle.Speed = NumberRange.new(1, 3)
+	sparkle.SpreadAngle = Vector2.new(30, 30)
+	sparkle.Size = NumberSequence.new(0.5, 0)
+	sparkle.Parent = ring
+	-- shopkeeper behind the counter
+	pcall(function()
+		local desc = Instance.new("HumanoidDescription")
+		desc.HeadColor = RGB(234, 184, 146)
+		desc.LeftArmColor = RGB(234, 184, 146)
+		desc.RightArmColor = RGB(234, 184, 146)
+		desc.TorsoColor = colors[1]
+		desc.LeftLegColor = RGB(50, 50, 70)
+		desc.RightLegColor = RGB(50, 50, 70)
+		local npc = game:GetService("Players"):CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)
+		npc.Name = "Shopkeeper"
+		for _, d in ipairs(npc:GetDescendants()) do
+			if d:IsA("BasePart") then
+				d.Anchored = true
+				d.CanCollide = false
+				d.CanQuery = false
+			elseif d:IsA("LocalScript") or d:IsA("Script") then
+				d:Destroy()
+			end
+		end
+		local hum = npc:FindFirstChildOfClass("Humanoid")
+		if hum then
+			hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		end
+		local _, size = npc:GetBoundingBox()
+		npc:PivotTo(CFrame.new(pos + Vector3.new(0, size.Y / 2, -1)) * CFrame.Angles(0, math.pi, 0))
+		local head = npc:FindFirstChild("Head")
+		if head then -- a little cap in the stand's color
+			local cap = Instance.new("Part")
+			cap.Anchored = true
+			cap.CanCollide = false
+			cap.Size = Vector3.new(1.3, 0.35, 1.4)
+			cap.CFrame = head.CFrame * CFrame.new(0, 0.62, 0)
+			cap.Color = colors[1]
+			cap.Material = Enum.Material.Fabric
+			cap.Parent = npc
+		end
+		npc.Parent = m
+	end)
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.fromOffset(320, 70)
-	gui.StudsOffsetWorldSpace = Vector3.new(0, 14, 0)
+	gui.Size = UDim2.fromOffset(360, 84)
+	gui.StudsOffsetWorldSpace = Vector3.new(0, 15, 0)
 	gui.Adornee = counter
 	gui.MaxDistance = 260
 	gui.LightInfluence = 0
@@ -570,12 +631,16 @@ function MapDecor.Stand(parent, name, label, colors, pos, menu, propFn)
 	text.BackgroundTransparency = 1
 	text.Font = Enum.Font.FredokaOne
 	text.TextScaled = true
-	text.TextColor3 = colors[2]
+	text.TextColor3 = RGB(255, 255, 255) -- the gradient below adds the color
 	text.Text = label
 	text.Parent = gui
 	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 4
+	stroke.Thickness = 5
 	stroke.Parent = text
+	local grad = Instance.new("UIGradient")
+	grad.Color = ColorSequence.new(RGB(255, 255, 255), colors[2])
+	grad.Rotation = 90
+	grad.Parent = text
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Open"
 	prompt.ObjectText = label
@@ -585,6 +650,9 @@ function MapDecor.Stand(parent, name, label, colors, pos, menu, propFn)
 	prompt.KeyboardKeyCode = Enum.KeyCode.E
 	prompt:SetAttribute("OpensMenu", menu)
 	prompt.Parent = counter
+	m.WorldPivot = CFrame.new()
+	m:ScaleTo(1.25)
+	m:PivotTo(CFrame.new(worldPos))
 	return m
 end
 
@@ -672,26 +740,6 @@ function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 	spray.Lifetime = NumberRange.new(0.7, 1)
 	spray.Size = NumberSequence.new(0.45, 0)
 	spray.Parent = orb
-
-	-- floating how-to above the spawn
-	local anchor = deco(decor, Vector3.one, CFrame.new(0, 11, -30), RGB(255, 255, 255))
-	anchor.Transparency = 1
-	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.fromOffset(520, 84)
-	gui.MaxDistance = 120
-	gui.LightInfluence = 0
-	gui.Parent = anchor
-	local how = Instance.new("TextLabel")
-	how.Size = UDim2.fromScale(1, 1)
-	how.BackgroundTransparency = 1
-	how.Font = Enum.Font.FredokaOne
-	how.TextScaled = true
-	how.TextColor3 = RGB(255, 255, 255)
-	how.Text = "SHRINK IT! 🔬\nShrink stuff → carry it to YOUR pedestals → 💰 every second!"
-	how.Parent = gui
-	local st = Instance.new("UIStroke")
-	st.Thickness = 4
-	st.Parent = how
 
 	-- small lamps around the ring, bushes & flowers in the plaza, a row of trees along the back wall
 	for k = 0, 6 do

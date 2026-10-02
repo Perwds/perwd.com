@@ -206,7 +206,7 @@ function ShrinkService.Capture(player, model)
 	local item = { Id = claimed.Id, V = claimed.Variant }
 	do
 		local income = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player)
-		Svc.Net.Notify(player, "🎒 " .. Formulas.ItemName(item) .. " (+" .. Format.Coins(income) .. "/s) — bring it back to base!", "shrink")
+		Svc.Net.Notify(player, "📦 " .. Formulas.ItemName(item) .. " box (+" .. Format.Coins(income) .. "/s)", "shrink")
 		local def = ObjectConfig.Get(claimed.Id)
 		local variant = RarityConfig.GetVariant(claimed.Variant)
 		local rarity = RarityConfig.GetRarity(def.Rarity)

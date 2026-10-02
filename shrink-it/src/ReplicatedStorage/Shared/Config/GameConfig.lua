@@ -8,8 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v7 (compact map)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 7 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v8 (boxes)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 8 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -44,6 +44,16 @@ GameConfig.Ground = "Stylized"
 -- Fusing: this many identical objects (same object + same variant) fuse into ONE of the next variant
 -- (Normal → Golden → Diamond → Rainbow → Cosmic).
 GameConfig.Fuse = { Count = 3 }
+
+-- Mystery boxes: shrinking gives you a BOX. Carry it home, place it on one of your pedestals,
+-- and it opens after OpenSeconds[rarity] + SecondsPerTier * tier + VariantExtra[variant] seconds.
+-- "Open now" on the pedestal skips the wait for 1 Gem per SecondsPerGem seconds left.
+GameConfig.Boxes = {
+	OpenSeconds = { Common = 8, Uncommon = 15, Rare = 30, Epic = 60, Legendary = 120, Mythic = 240, Secret = 480 },
+	SecondsPerTier = 4,
+	VariantExtra = { Golden = 10, Diamond = 20, Rainbow = 40, Cosmic = 90 },
+	SecondsPerGem = 10,
+}
 GameConfig.CarryDisplaySize = 2.6 -- size of each object stacked above your head -- extra targets must be within this distance of the main target
 GameConfig.ShrinkFxTime = 0.9 -- seconds the tween plays before the server removes the object
 GameConfig.AutoShrinkExtraDelay = 0.75

@@ -102,7 +102,7 @@ function MuseumMenu.Build(ctx)
 			local rarity = RarityConfig.GetRarity(def and def.Rarity)
 			local onDisplay = displayed[item.U]
 			local row = UIKit.Card({ Size = UDim2.new(1, -16, 0, 54), LayoutOrder = i, Colors = onDisplay and { Color3.fromRGB(255, 252, 235), Color3.fromRGB(255, 240, 200) } or nil, Parent = list, CornerRadius = 12 })
-			UIKit.Label({ Text = def and def.Emoji or "📦", StrokeThickness = 0, Size = UDim2.fromOffset(40, 40), Position = UDim2.fromOffset(8, 7), Parent = row })
+			UIKit.ModelPreview({ Id = item.Id, Variant = item.V, Size = UDim2.fromOffset(48, 48), Position = UDim2.fromOffset(5, 3), Parent = row })
 			UIKit.Label({ Text = Formulas.ItemName(item) .. (item.S and " 📋" or ""), TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = variant.Color or rarity.Color, StrokeThickness = 2.5, Size = UDim2.fromOffset(330, 30), Position = UDim2.fromOffset(56, 4), Parent = row })
 			UIKit.Label({ Text = (def and def.Rarity or "?") .. "  ·  +" .. Format.Coins(Formulas.ItemBaseIncome(item) * mult) .. "/s", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(100, 100, 120), StrokeThickness = 0, Size = UDim2.fromOffset(330, 20), Position = UDim2.fromOffset(56, 32), Parent = row })
 			if onDisplay then

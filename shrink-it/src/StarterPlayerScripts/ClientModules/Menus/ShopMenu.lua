@@ -59,32 +59,48 @@ function ShopMenu.Build(ctx)
 	end
 
 	-- ── Passes ─────────────────────────────────────────────────────
-	grid(pages.Passes, UDim2.fromOffset(204, 214))
+	grid(pages.Passes, UDim2.fromOffset(204, 236))
+	local PALETTE = { UIKit.Colors.Blue, UIKit.Colors.Purple, UIKit.Colors.Pink, UIKit.Colors.Orange, UIKit.Colors.Green, UIKit.Colors.Cyan, UIKit.Colors.Red, UIKit.Colors.Yellow }
+	local POPULAR = { VIP = "🔥 POPULAR", DoubleCoins = "🔥 POPULAR", AutoShrink = "⭐ BEST" }
+
+	-- colorful shop card: gradient body, icon bubble, name, small description, price button
+	local function shopCard(parent, order, colors, emoji, image, name, description, ribbon, onClick)
+		local card = UIKit.Card({ LayoutOrder = order, Colors = { colors[1]:Lerp(Color3.new(1, 1, 1), 0.25), colors[2] }, Parent = parent, CornerRadius = 22, StrokeThickness = 4 })
+		local bubble = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), Size = UDim2.fromOffset(84, 84), Parent = card })
+		UIKit.Corner(bubble, UDim.new(1, 0))
+		UIKit.Stroke(bubble, 4, UIKit.Outline, true)
+		UIKit.Gradient(bubble, { Color3.new(1, 1, 1), colors[1]:Lerp(Color3.new(1, 1, 1), 0.5) })
+		UIKit.Icon({ Icon = { Emoji = emoji, Image = image }, Size = UDim2.new(0.72, 0, 0.72, 0), Position = UDim2.fromScale(0.14, 0.14), Parent = bubble })
+		UIKit.Label({ Text = name, StrokeThickness = 3, Size = UDim2.new(1, -14, 0, 30), Position = UDim2.fromOffset(7, 102), Parent = card })
+		local detail = UIKit.Label({ Text = description or "", TextColor3 = Color3.fromRGB(255, 255, 255), StrokeThickness = 2, Size = UDim2.new(1, -18, 0, 36), Position = UDim2.fromOffset(9, 134), Parent = card })
+		if ribbon then
+			local tag = UIKit.Card({ Size = UDim2.fromOffset(110, 28), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -30, 0, 8), Colors = UIKit.Colors.Red, Parent = card, CornerRadius = 10, StrokeThickness = 3 })
+			tag.Rotation = 12
+			tag.ZIndex = 5
+			UIKit.Label({ Text = ribbon, Size = UDim2.new(1, -8, 1, -6), Position = UDim2.fromOffset(4, 3), ZIndex = 6, StrokeThickness = 2, Parent = tag })
+		end
+		local button, label = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.new(1, -24, 0, 46), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -10), CornerRadius = 14, Parent = card, OnClick = onClick })
+		return card, button, label, detail
+	end
+
 	local passCards = {}
 	for i, key in ipairs(MonetizationConfig.PassOrder) do
 		local pass = MonetizationConfig.GamePasses[key]
-		local card = UIKit.Card({ LayoutOrder = i, Colors = UIKit.Colors.White, Parent = pages.Passes, CornerRadius = 18 })
-		UIKit.Icon({ Icon = { Emoji = pass.Emoji, Image = pass.Image }, Size = UDim2.fromOffset(64, 64), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 8), Parent = card })
-		UIKit.Label({ Text = pass.Name, TextColor3 = Color3.fromRGB(255, 190, 40), StrokeThickness = 2.5, Size = UDim2.new(1, -12, 0, 28), Position = UDim2.fromOffset(6, 74), Parent = card })
-		UIKit.Label({ Text = pass.Description, TextColor3 = Color3.fromRGB(70, 70, 90), StrokeThickness = 0, Size = UDim2.new(1, -16, 0, 50), Position = UDim2.fromOffset(8, 104), Parent = card })
-		local button, label = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.new(1, -24, 0, 42), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -8), Parent = card, OnClick = function()
+		local _, button, label = shopCard(pages.Passes, i, PALETTE[(i - 1) % #PALETTE + 1], pass.Emoji, pass.Image, pass.Name, pass.Description, POPULAR[key], function()
 			ctx.HUD.Result(State.Action("PromptPass", key))
-		end })
+		end)
 		passCards[key] = { Button = button, Label = label, Pass = pass }
 	end
 
 	-- ── Boosts (developer products) ─────────────────────────────────
-	grid(pages.Boosts, UDim2.fromOffset(204, 196))
+	grid(pages.Boosts, UDim2.fromOffset(204, 236))
+	local BEST = { CoinsLarge = "💰 BEST VALUE", GemsLarge = "💎 BEST VALUE", ServerLuck = "🌠 SERVER!" }
 	local productCards = {}
 	for i, key in ipairs(MonetizationConfig.ProductOrder) do
 		local product = MonetizationConfig.Products[key]
-		local card = UIKit.Card({ LayoutOrder = i, Colors = UIKit.Colors.White, Parent = pages.Boosts, CornerRadius = 18 })
-		UIKit.Icon({ Icon = { Emoji = product.Emoji, Image = product.Image }, Size = UDim2.fromOffset(64, 64), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 8), Parent = card })
-		UIKit.Label({ Text = product.Name, TextColor3 = Color3.fromRGB(70, 200, 90), StrokeThickness = 2.5, Size = UDim2.new(1, -12, 0, 28), Position = UDim2.fromOffset(6, 74), Parent = card })
-		local detail = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(70, 70, 90), StrokeThickness = 0, Size = UDim2.new(1, -16, 0, 30), Position = UDim2.fromOffset(8, 104), Parent = card })
-		local _, label = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.new(1, -24, 0, 42), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -8), Parent = card, OnClick = function()
+		local _, _, label, detail = shopCard(pages.Boosts, i, PALETTE[(i + 3) % #PALETTE + 1], product.Emoji, product.Image, product.Name, "", BEST[key], function()
 			ctx.HUD.Result(State.Action("PromptProduct", key))
-		end })
+		end)
 		productCards[key] = { Label = label, Detail = detail, Product = product }
 	end
 

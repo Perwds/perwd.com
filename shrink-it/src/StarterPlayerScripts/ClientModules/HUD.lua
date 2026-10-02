@@ -483,7 +483,7 @@ local function refreshTimers()
 	if carry and carry.Count > 0 then
 		carryFrame.Visible = true
 		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
-		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or "Bring it to YOUR pedestals ⬇"
+		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and "Press E on an empty pedestal to place a box" or "Bring your boxes to YOUR pedestals ⬇")
 		carryLabel.Text = string.format("🎒 %d/%d  ·  %s%s", carry.Count, carry.Capacity, goal, chaser)
 		UIKit.SetButtonColors(carryFrame, carry.Chaser and UIKit.Colors.Red or UIKit.Colors.Orange)
 		if dropButton then

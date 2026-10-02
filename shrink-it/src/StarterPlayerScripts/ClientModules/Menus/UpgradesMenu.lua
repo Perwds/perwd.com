@@ -1,14 +1,14 @@
 --[[
 	📍 LOCATION: StarterPlayer > StarterPlayerScripts > ClientModules > Menus > UpgradesMenu (ModuleScript)
 
-	Ray upgrades: Ray Power, Run Speed, Carry Capacity, Charge Speed, Range, Luck, Museum Size.
+	Upgrades as a 2-column grid of colorful cards: icon bubble, name, level bar, "now ➜ next" and a
+	big price button (gold "MAX" when maxed).
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local UpgradeConfig = require(Shared.Config.UpgradeConfig)
-local TierConfig = require(Shared.Config.TierConfig)
 local Formulas = require(Shared.Formulas)
 local Format = require(Shared.Format)
 
@@ -18,28 +18,49 @@ local State = require(Modules.State)
 
 local UpgradesMenu = {}
 
-function UpgradesMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Upgrades", Emoji = "⚡", Size = UDim2.fromOffset(900, 620), Colors = UIKit.Colors.Cyan })
-	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -18), Position = UDim2.fromOffset(0, 18), Parent = panel.Content })
-	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = list })
-	UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 8), Parent = list })
+local CARD_COLORS = {
+	RayPower = UIKit.Colors.Yellow,
+	Speed = UIKit.Colors.Green,
+	MultiShrink = UIKit.Colors.Orange,
+	ChargeSpeed = UIKit.Colors.Cyan,
+	Range = UIKit.Colors.Red,
+	Luck = UIKit.Colors.Purple,
+	MuseumSize = UIKit.Colors.Blue,
+}
 
-	local rows = {}
+function UpgradesMenu.Build(ctx)
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Upgrades", Emoji = "⚡", Size = UDim2.fromOffset(920, 640), Colors = UIKit.Colors.Cyan })
+	local grid = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -18), Position = UDim2.fromOffset(0, 18), Parent = panel.Content })
+	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(420, 168), CellPadding = UDim2.fromOffset(14, 14), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = grid })
+	UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), Parent = grid })
+
+	local cards = {}
 	for i, id in ipairs(UpgradeConfig.Order) do
 		local u = UpgradeConfig.Upgrades[id]
-		local row = UIKit.Card({ Size = UDim2.new(1, -20, 0, 74), LayoutOrder = i, Parent = list, CornerRadius = 16 })
-		UIKit.Label({ Text = u.Emoji, StrokeThickness = 0, Size = UDim2.fromOffset(54, 54), Position = UDim2.fromOffset(10, 10), Parent = row })
-		UIKit.Label({ Text = u.Name, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(60, 180, 230), StrokeThickness = 2.5, Size = UDim2.fromOffset(300, 32), Position = UDim2.fromOffset(74, 4), Parent = row })
-		local info = UIKit.Label({ Text = "", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(90, 90, 110), StrokeThickness = 0, Size = UDim2.fromOffset(470, 28), Position = UDim2.fromOffset(74, 38), Parent = row })
-		local button, label = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(200, 54), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Parent = row, OnClick = function()
+		local colors = CARD_COLORS[id] or UIKit.Colors.Blue
+		local card = UIKit.Card({ LayoutOrder = i, Colors = { colors[1]:Lerp(Color3.new(1, 1, 1), 0.55), colors[1]:Lerp(Color3.new(1, 1, 1), 0.2) }, Parent = grid, CornerRadius = 22, StrokeThickness = 4 })
+		-- icon bubble
+		local bubble = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(92, 92), Position = UDim2.fromOffset(14, 14), Parent = card })
+		UIKit.Corner(bubble, UDim.new(1, 0))
+		UIKit.Stroke(bubble, 4, UIKit.Outline, true)
+		UIKit.Gradient(bubble, colors)
+		UIKit.Label({ Text = u.Emoji, StrokeThickness = 0, Size = UDim2.new(0.7, 0, 0.7, 0), Position = UDim2.fromScale(0.15, 0.15), Parent = bubble })
+		local level = UIKit.Card({ Size = UDim2.fromOffset(70, 28), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(60, 108), Colors = UIKit.Colors.Dark, Parent = card, CornerRadius = 14, StrokeThickness = 3 })
+		local levelLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -8, 1, -6), Position = UDim2.fromOffset(4, 3), StrokeThickness = 2, Parent = level })
+		-- text
+		UIKit.Label({ Text = u.Name, TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 3.5, Size = UDim2.fromOffset(290, 34), Position = UDim2.fromOffset(120, 12), Parent = card })
+		local value = UIKit.Label({ Text = "", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 250, 200), StrokeThickness = 2.5, Size = UDim2.fromOffset(290, 26), Position = UDim2.fromOffset(120, 48), Parent = card })
+		local bar = UIKit.ProgressBar({ Size = UDim2.fromOffset(280, 18), Position = UDim2.fromOffset(122, 82), Colors = colors, Parent = card })
+		local button, buttonLabel = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(280, 50), Position = UDim2.fromOffset(122, 106), CornerRadius = 16, Parent = card, OnClick = function()
 			local result = State.Action("BuyUpgrade", id)
-			if not result.ok then
-				ctx.HUD.Result(result)
-			else
+			if result.ok then
 				UIKit.PlaySound("Reward", 0.3)
+				UIKit.Pop(card, 1.06)
+			else
+				ctx.HUD.Result(result)
 			end
 		end })
-		rows[id] = { Info = info, Button = button, Label = label, U = u }
+		cards[id] = { U = u, Value = value, Bar = bar, Level = levelLabel, Button = button, ButtonLabel = buttonLabel }
 	end
 
 	local menu = { Panel = panel }
@@ -49,22 +70,20 @@ function UpgradesMenu.Build(ctx)
 		if not data then
 			return
 		end
-		for id, row in pairs(rows) do
-			local level = data.Upgrades[id]
-			local cost = Formulas.UpgradeCost(id, level)
-			local now = row.U.Format(row.U.Value(level))
+		for id, c in pairs(cards) do
+			local lv = data.Upgrades[id] or 1
+			local cost = Formulas.UpgradeCost(id, lv)
+			local now = c.U.Format(c.U.Value(lv))
+			c.Level.Text = "Lv " .. lv
+			c.Bar.Set(lv / c.U.MaxLevel, lv .. " / " .. c.U.MaxLevel)
 			if cost then
-				row.Info.Text = string.format("Lv %d/%d  ·  %s ➜ %s", level, row.U.MaxLevel, now, row.U.Format(row.U.Value(level + 1)))
-				row.Label.Text = Format.Coins(cost)
-				UIKit.SetButtonColors(row.Button, State.Coins >= cost and UIKit.Colors.Green or UIKit.Colors.Gray)
+				c.Value.Text = now .. "  ➜  " .. c.U.Format(c.U.Value(lv + 1))
+				c.ButtonLabel.Text = Format.Coins(cost)
+				UIKit.SetButtonColors(c.Button, State.Coins >= cost and UIKit.Colors.Green or UIKit.Colors.Gray)
 			else
-				row.Info.Text = string.format("Lv %d/%d  ·  %s", level, row.U.MaxLevel, now)
-				row.Label.Text = "MAXED"
-				UIKit.SetButtonColors(row.Button, UIKit.Colors.Yellow)
-			end
-			if id == "RayPower" then
-				local tier = TierConfig.MaxTierForRayPower(level)
-				row.Info.Text ..= "  ·  full speed up to " .. TierConfig.Tiers[tier].Name
+				c.Value.Text = now
+				c.ButtonLabel.Text = "⭐ MAX"
+				UIKit.SetButtonColors(c.Button, UIKit.Colors.Yellow)
 			end
 		end
 	end
@@ -78,7 +97,7 @@ function UpgradesMenu.Build(ctx)
 		end
 		local n = 0
 		for _, id in ipairs(UpgradeConfig.Order) do
-			local cost = Formulas.UpgradeCost(id, data.Upgrades[id])
+			local cost = Formulas.UpgradeCost(id, data.Upgrades[id] or 1)
 			if cost and State.Coins >= cost then
 				n += 1
 			end

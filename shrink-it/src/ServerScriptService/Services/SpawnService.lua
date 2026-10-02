@@ -108,7 +108,6 @@ local function decorate(model, id, variant, info)
 	model:SetAttribute("SpawnUid", info.Uid)
 	model:SetAttribute("ReservedFor", info.ReservedFor)
 	ModelFactory.ApplyVariant(model, variant, true)
-	ModelFactory.AddLabel(model, id, variant)
 	CollectionService:AddTag(model, "Shrinkable")
 end
 

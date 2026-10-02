@@ -79,7 +79,14 @@ function IndexMenu.Build(ctx)
 			end
 			local hidden = def.Rarity == "Secret" and not anyOwned
 			local row = UIKit.Card({ Size = UDim2.new(1, -16, 0, 60), LayoutOrder = i, Parent = list, CornerRadius = 14 })
-			UIKit.Label({ Text = hidden and "❓" or (def.Emoji or "📦"), StrokeThickness = 0, Size = UDim2.fromOffset(46, 46), Position = UDim2.fromOffset(8, 7), Parent = row })
+			if hidden then
+				UIKit.Label({ Text = "❓", StrokeThickness = 0, Size = UDim2.fromOffset(46, 46), Position = UDim2.fromOffset(8, 7), Parent = row })
+			else
+				local preview = UIKit.ModelPreview({ Id = id, Size = UDim2.fromOffset(54, 54), Position = UDim2.fromOffset(4, 3), Parent = row })
+				if not anyOwned then
+					preview.ImageTransparency = 0.55 -- not collected yet
+				end
+			end
 			UIKit.Label({ Text = hidden and "???" or def.Name, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = rarity.Color, StrokeThickness = 2.5, Size = UDim2.fromOffset(250, 30), Position = UDim2.fromOffset(62, 4), Parent = row })
 			UIKit.Label({ Text = def.Rarity .. (def.Exclusive and " · Exclusive" or ""), TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.fromOffset(250, 22), Position = UDim2.fromOffset(62, 34), Parent = row })
 			for vi, v in ipairs(RarityConfig.VariantOrder) do

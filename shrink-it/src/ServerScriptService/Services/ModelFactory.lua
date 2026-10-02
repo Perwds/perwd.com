@@ -14,7 +14,7 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local ObjectConfig = require(Shared.Config.ObjectConfig)
-local ObjectModels = require(script.Parent.ObjectModels)
+local ObjectModels = require(Shared.ObjectModels)
 local RarityConfig = require(Shared.Config.RarityConfig)
 
 local ModelFactory = {}
@@ -96,6 +96,10 @@ function ModelFactory.Create(id)
 		if not model.PrimaryPart then
 			model.PrimaryPart = model:FindFirstChildWhichIsA("BasePart", true)
 		end
+		-- any model you drop in (e.g. a Toolbox mesh) is auto-scaled to the size in ObjectConfig
+		if def.Size then
+			ModelFactory.FitToSize(model, math.max(def.Size.X, def.Size.Y, def.Size.Z))
+		end
 	else
 		-- detailed built-in model (ObjectModels), scaled to the size in ObjectConfig
 		model = ObjectModels.Build(id)
@@ -117,6 +121,70 @@ function ModelFactory.Create(id)
 end
 
 -- Moves a model so its bounding-box bottom-center sits at `position`, with a Y rotation.
+-- Mystery box for a shrunk object: rarity-colored crate with gold edges, a ribbon and "?" faces.
+-- Bigger tiers give bigger boxes; Golden/Diamond/... boxes sparkle in their variant color.
+function ModelFactory.CreateBox(id, variantName)
+	local def = ObjectConfig.Get(id) or { Tier = 1, Rarity = "Common" }
+	local rarity = RarityConfig.GetRarity(def.Rarity)
+	local size = 2.3 + 0.22 * (def.Tier or 1)
+	local model = Instance.new("Model")
+	model.Name = "Box"
+	local function piece(name, sz, cf, color, material)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Anchored = true
+		p.Size = sz
+		p.CFrame = cf
+		p.Color = color
+		p.Material = material or Enum.Material.SmoothPlastic
+		p.TopSurface = Enum.SurfaceType.Smooth
+		p.BottomSurface = Enum.SurfaceType.Smooth
+		p.Parent = model
+		return p
+	end
+	local h = size / 2
+	local body = piece("Body", Vector3.new(size, size, size), CFrame.new(0, h, 0), rarity.Color, Enum.Material.SmoothPlastic)
+	local gold = Color3.fromRGB(240, 190, 60)
+	local t = 0.22
+	for _, x in ipairs({ -h, h }) do
+		for _, z in ipairs({ -h, h }) do
+			piece("Edge", Vector3.new(t, size + t, t), CFrame.new(x, h, z), gold, Enum.Material.Metal)
+		end
+	end
+	for _, y in ipairs({ 0, size }) do
+		for _, x in ipairs({ -h, h }) do
+			piece("Edge", Vector3.new(t, t, size + t), CFrame.new(x, y, 0), gold, Enum.Material.Metal)
+		end
+		for _, z in ipairs({ -h, h }) do
+			piece("Edge", Vector3.new(size + t, t, t), CFrame.new(0, y, z), gold, Enum.Material.Metal)
+		end
+	end
+	piece("Lid", Vector3.new(size + 0.12, size * 0.14, size + 0.12), CFrame.new(0, size * 0.82, 0), rarity.Color:Lerp(Color3.new(0, 0, 0), 0.25))
+	piece("RibbonX", Vector3.new(size + 0.06, size + 0.06, size * 0.16), CFrame.new(0, h, 0), Color3.new(1, 1, 1))
+	piece("RibbonZ", Vector3.new(size * 0.16, size + 0.06, size + 0.06), CFrame.new(0, h, 0), Color3.new(1, 1, 1))
+	piece("Bow", Vector3.new(size * 0.3, size * 0.3, size * 0.3), CFrame.new(0, size + size * 0.08, 0) * CFrame.Angles(0, math.rad(45), 0), Color3.new(1, 1, 1))
+	for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back, Enum.NormalId.Left, Enum.NormalId.Right }) do
+		local gui = Instance.new("SurfaceGui")
+		gui.Face = face
+		gui.LightInfluence = 0
+		gui.Parent = body
+		local q = Instance.new("TextLabel")
+		q.BackgroundTransparency = 1
+		q.Size = UDim2.fromScale(1, 1)
+		q.Font = Enum.Font.FredokaOne
+		q.TextScaled = true
+		q.Text = "?"
+		q.TextColor3 = Color3.new(1, 1, 1)
+		q.Parent = gui
+		local stroke = Instance.new("UIStroke")
+		stroke.Thickness = 6
+		stroke.Parent = q
+	end
+	model.PrimaryPart = body
+	ModelFactory.ApplyVariant(model, variantName, false)
+	return model
+end
+
 function ModelFactory.PlaceOnGround(model, position, yaw)
 	model:PivotTo(CFrame.new(position) * CFrame.Angles(0, yaw or 0, 0))
 	local cf, size = model:GetBoundingBox()

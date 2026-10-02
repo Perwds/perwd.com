@@ -40,7 +40,7 @@ MapService.Areas = {} -- [tier] = { Tier, Model, Floor, SpawnPoints = {Part}, St
 MapService.Plots = {} -- [id] = { Id, Model, Floor, Building, Pedestals (Folder), SpawnPad }
 MapService.Boards = {} -- [stat] = Part
 
-local CORRIDOR = 180 -- shrink-zone corridor width (x from -90 to 90); the base gate is this wide
+local CORRIDOR = 200 -- shrink-zone corridor width (x from -100 to 100); the base gate is this wide
 local BASE_W = 500 -- base width
 local BASE_D = 260 -- base depth (z from -260 to 0)
 local WALL_H = 40
@@ -201,7 +201,7 @@ local function buildPlot(parent, id, cframe)
 	end
 	building.PrimaryPart = body
 	local sign = b({ Name = "Sign", Size = Vector3.new(30, 2.2, 0.3), CFrame = local_(floor, 0, 22, zf - 3.4), Color = Color3.fromRGB(35, 35, 55), Material = Enum.Material.SmoothPlastic })
-	surfaceText(sign, Enum.NormalId.Back, "Empty Plot", Color3.fromRGB(255, 225, 120), 30)
+	surfaceText(sign, Enum.NormalId.Back, "", Color3.fromRGB(255, 225, 120), 30)
 
 	-- planters at the front corners, lamps by the temple
 	for _, s in ipairs({ -1, 1 }) do
@@ -275,20 +275,7 @@ local function buildMap()
 	part({ Name = "VIPRoof", Size = Vector3.new(34, 1.5, 28), CFrame = CFrame.new(vip + Vector3.new(0, 18.7, 0)), Color = gold, Material = Enum.Material.Marble, Parent = base })
 	local door = part({ Name = "VIPDoor", Size = Vector3.new(13, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(0, 9, 13)), Color = Color3.fromRGB(255, 230, 120), Material = Enum.Material.ForceField, Transparency = 0.3, Parent = base })
 	surfaceText(door, Enum.NormalId.Back, "👑 VIP", gold)
-	local fountain = part({ Name = "VIPFountain", Shape = Enum.PartType.Cylinder, Size = Vector3.new(2, 9, 9), CFrame = CFrame.new(vip + Vector3.new(0, 1, -3)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(120, 230, 255), Material = Enum.Material.Neon, Parent = base })
-	local fb = Instance.new("BillboardGui")
-	fb.Size = UDim2.fromOffset(200, 50)
-	fb.StudsOffset = Vector3.new(0, 5, 0)
-	fb.Parent = fountain
-	local fl = Instance.new("TextLabel")
-	fl.Size = UDim2.fromScale(1, 1)
-	fl.BackgroundTransparency = 1
-	fl.Font = Enum.Font.FredokaOne
-	fl.TextScaled = true
-	fl.TextColor3 = Color3.fromRGB(120, 230, 255)
-	fl.Text = "💎 VIP Gem Fountain"
-	fl.Parent = fb
-	Instance.new("UIStroke", fl).Thickness = 2
+	part({ Name = "VIPFountain", Shape = Enum.PartType.Cylinder, Size = Vector3.new(2, 9, 9), CFrame = CFrame.new(vip + Vector3.new(0, 1, -3)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(120, 230, 255), Material = Enum.Material.Neon, Parent = base })
 
 	-- Like sign on the back wall, leaderboards on the front wall either side of the gate (facing in)
 	part({ Name = "LikeSign", Size = Vector3.new(40, 22, 2), CFrame = CFrame.lookAt(Vector3.new(0, 30, -BASE_D + 1), Vector3.new(0, 30, 0)), Color = Color3.fromRGB(40, 40, 60), Parent = base })

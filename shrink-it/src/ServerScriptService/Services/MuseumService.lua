@@ -1,9 +1,18 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > MuseumService (ModuleScript)
 
-	Pocket Museum: each player owns a plot. Their best N items (N = pedestal count)
-	are displayed on pedestals inside glass cases and earn coins every second.
-	Extra items wait in the "pocket" (up to GameConfig.MaxItems).
+	Pocket Museum. Each player owns a plot full of pedestals. YOU decide what goes on them:
+
+	  • Shrinking something gives you a mystery BOX (carried above your head).
+	  • Walk up to an EMPTY pedestal on your plot → "Place": the box is set down and starts opening
+	    (time depends on rarity / tier / variant, see GameConfig.Boxes).
+	  • "Open now 💎" on an opening box skips the wait for Gems.
+	  • When it opens, the object appears on the pedestal and earns coins every second.
+	  • "Pick up" (hold) moves an object back to your pocket; "Place" on an empty pedestal while
+	    not carrying a box puts your best pocket object there.
+
+	data.Items  = every object you own (pocket + displayed)
+	data.Slots  = ["pedestal#"] = { U = uid } | { Box = { Id, V, ReadyAt } }
 ]]
 
 local CollectionService = game:GetService("CollectionService")
@@ -16,21 +25,55 @@ local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
 local Formulas = require(Shared.Formulas)
 local Format = require(Shared.Format)
+local Remotes = require(Shared.Remotes)
 local ModelFactory = require(ServerScriptService.Services.ModelFactory)
 
 local MuseumService = {}
 local Svc
 
 local plotOf = {} -- [player] = plot record from MapService.Plots
-local slots = {} -- [player] = { [i] = { Model = pedestalModel, Uid = number? } }
+local slots = {} -- [player] = { [i] = { Model = pedestalModel, Key = string? } }
 local refreshQueued = {}
 
 local COLS = 8
 local SPACING_X = 7.6
 local SPACING_Z = 7
 
+local MARBLE = Color3.fromRGB(246, 243, 236)
+local GOLD = Color3.fromRGB(240, 190, 60)
+
 function MuseumService.Init(registry)
 	Svc = registry
+end
+
+-- ── helpers ─────────────────────────────────────────────────────────
+local function findItem(data, uid)
+	for i, item in ipairs(data.Items) do
+		if item.U == uid then
+			return item, i
+		end
+	end
+	return nil
+end
+
+-- set of uids currently on a pedestal
+local function slottedSet(data)
+	local set = {}
+	for _, slot in pairs(data.Slots) do
+		if slot.U then
+			set[slot.U] = true
+		end
+	end
+	return set
+end
+
+-- clears any pedestal holding `uid` (used when that object is sold / fused away)
+local function unslot(data, uid)
+	for key, slot in pairs(data.Slots) do
+		if slot.U == uid then
+			data.Slots[key] = nil
+		end
+	end
 end
 
 local function pedestalCFrame(plot, i)
@@ -42,8 +85,8 @@ local function pedestalCFrame(plot, i)
 	return floor.CFrame * CFrame.new(x, floor.Size.Y / 2, z)
 end
 
-local MARBLE = Color3.fromRGB(246, 243, 236)
-local GOLD = Color3.fromRGB(240, 190, 60)
+-- ── pedestals ────────────────────────────────────────────────────────
+local onPrompt -- forward declaration
 
 local function makePedestal(player, plot, i)
 	local model = Instance.new("Model")
@@ -67,14 +110,12 @@ local function makePedestal(player, plot, i)
 		p.Parent = model
 		return p
 	end
-	-- "Base" spans the full pedestal height (displays are placed on its top) and is the PrimaryPart
+	-- "Base" spans the full pedestal height (displays sit on its top) and is the PrimaryPart
 	local base = piece("Base", Vector3.new(3.6, 2.4, 3.6), Vector3.new(0, 1.2, 0), MARBLE, Enum.Material.Marble)
 	piece("Plinth", Vector3.new(4.6, 0.5, 4.6), Vector3.new(0, 0.25, 0), Color3.fromRGB(70, 65, 80), Enum.Material.Marble)
 	piece("Top", Vector3.new(4.4, 0.3, 4.4), Vector3.new(0, 2.3, 0), MARBLE, Enum.Material.Marble)
 	piece("Trim", Vector3.new(4.5, 0.12, 4.5), Vector3.new(0, 2.5, 0), GOLD, Enum.Material.Metal, { CanCollide = false })
-	piece("Plaque", Vector3.new(1.8, 0.5, 0.06), Vector3.new(0, 1.3, 1.82), GOLD, Enum.Material.Metal, { CanCollide = false })
-	-- glass case with gold corner posts and top frame
-	piece("Glass", Vector3.new(3.9, 3.9, 3.9), Vector3.new(0, 4.55, 0), Color3.fromRGB(205, 240, 255), Enum.Material.Glass, { CanCollide = false, Transparency = 0.82, Reflectance = 0.15 })
+	piece("Glass", Vector3.new(3.9, 3.9, 3.9), Vector3.new(0, 4.55, 0), Color3.fromRGB(205, 240, 255), Enum.Material.Glass, { CanCollide = false, Transparency = 0.85, Reflectance = 0.15 })
 	for _, x in ipairs({ -1.95, 1.95 }) do
 		for _, z in ipairs({ -1.95, 1.95 }) do
 			piece("Post", Vector3.new(0.18, 4, 0.18), Vector3.new(x, 4.55, z), GOLD, Enum.Material.Metal, { CanCollide = false })
@@ -86,38 +127,98 @@ local function makePedestal(player, plot, i)
 	model:SetAttribute("PedestalSlot", i)
 	model:SetAttribute("OwnerUserId", player.UserId)
 	model:SetAttribute("Income", 0)
+	model:SetAttribute("State", "Empty")
 	CollectionService:AddTag(model, "MuseumPedestal")
+
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "PedestalPrompt"
+	prompt.ActionText = "Place"
+	prompt.ObjectText = ""
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 9
+	prompt.RequiresLineOfSight = false
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
+	prompt.Parent = base
+	prompt.Triggered:Connect(function(who)
+		if who == player then
+			onPrompt(player, i)
+		end
+	end)
+
 	model.Parent = plot.Pedestals
 	return model
 end
 
-local function setDisplay(pedestal, item)
+local function setPrompt(pedestal, action, hold)
+	local prompt = pedestal.PrimaryPart and pedestal.PrimaryPart:FindFirstChild("PedestalPrompt")
+	if prompt then
+		prompt.ActionText = action
+		prompt.HoldDuration = hold or 0
+	end
+end
+
+-- Shows what's on a pedestal: nothing, an opening box, or the object.
+local function setDisplay(pedestal, slot, data)
 	local old = pedestal:FindFirstChild("Display")
 	if old then
 		old:Destroy()
 	end
-	if not item then
-		pedestal:SetAttribute("ItemName", nil)
-		pedestal:SetAttribute("Variant", nil)
-		pedestal:SetAttribute("ItemUid", nil)
-		pedestal:SetAttribute("Income", 0)
+	pedestal:SetAttribute("ItemName", nil)
+	pedestal:SetAttribute("Variant", nil)
+	pedestal:SetAttribute("ItemUid", nil)
+	pedestal:SetAttribute("ItemId", nil)
+	pedestal:SetAttribute("BoxReadyAt", nil)
+	pedestal:SetAttribute("Income", 0)
+	local base = pedestal.PrimaryPart
+	local top = base.Position + Vector3.new(0, base.Size.Y / 2 + 0.3, 0)
+
+	if slot and slot.Box then
+		local box = ModelFactory.CreateBox(slot.Box.Id, slot.Box.V)
+		box.Name = "Display"
+		ModelFactory.SetCollision(box, false)
+		ModelFactory.PlaceOnGround(box, top, math.rad(-15))
+		box.Parent = pedestal
+		pedestal:SetAttribute("State", "Box")
+		pedestal:SetAttribute("BoxReadyAt", slot.Box.ReadyAt)
+		setPrompt(pedestal, "Open now 💎", 0)
 		return
 	end
-	local display = ModelFactory.Create(item.Id)
-	display.Name = "Display"
-	ModelFactory.FitToSize(display, GameConfig.DisplayMaxSize)
-	ModelFactory.SetCollision(display, false)
-	local base = pedestal.PrimaryPart
-	ModelFactory.PlaceOnGround(display, base.Position + Vector3.new(0, base.Size.Y / 2 + 0.3, 0), math.rad(-20))
-	ModelFactory.ApplyVariant(display, item.V, false)
-	display.Parent = pedestal
-	pedestal:SetAttribute("ItemName", Formulas.ItemName(item))
-	pedestal:SetAttribute("Variant", item.V)
-	pedestal:SetAttribute("ItemUid", item.U)
-	pedestal:SetAttribute("ItemId", item.Id)
+
+	local item = slot and slot.U and findItem(data, slot.U)
+	if item then
+		local display = ModelFactory.Create(item.Id)
+		display.Name = "Display"
+		ModelFactory.FitToSize(display, GameConfig.DisplayMaxSize)
+		ModelFactory.SetCollision(display, false)
+		ModelFactory.PlaceOnGround(display, top, math.rad(-20))
+		ModelFactory.ApplyVariant(display, item.V, false)
+		display.Parent = pedestal
+		pedestal:SetAttribute("State", "Item")
+		pedestal:SetAttribute("ItemName", Formulas.ItemName(item))
+		pedestal:SetAttribute("Variant", item.V)
+		pedestal:SetAttribute("ItemUid", item.U)
+		pedestal:SetAttribute("ItemId", item.Id)
+		setPrompt(pedestal, "Pick up", 0.6)
+		return
+	end
+
+	pedestal:SetAttribute("State", "Empty")
+	setPrompt(pedestal, "Place", 0)
 end
 
--- Recomputes which items are displayed + base income. Cheap; call after any item change.
+local function slotKey(slot)
+	if not slot then
+		return "E"
+	elseif slot.Box then
+		return "B|" .. slot.Box.Id .. "|" .. slot.Box.V .. "|" .. slot.Box.ReadyAt
+	elseif slot.U then
+		return "I|" .. slot.U
+	end
+	return "E"
+end
+
+-- ── income / state ───────────────────────────────────────────────────
+-- Recomputes which objects are on display + base income. Cheap; call after any change.
 function MuseumService.Recompute(player)
 	local data = Svc.Data.Get(player)
 	local s = Svc.Session.Get(player)
@@ -125,12 +226,25 @@ function MuseumService.Recompute(player)
 		return
 	end
 	local stats = Formulas.RayStats(data, s.Passes)
-	local sorted = Formulas.SortItems(data.Items)
-	local displayed = {}
-	local base = 0
-	for i = 1, math.min(stats.Pedestals, #sorted) do
-		displayed[i] = sorted[i]
-		base += Formulas.ItemBaseIncome(sorted[i])
+	-- drop slots that point at objects you no longer own, or pedestals you no longer have
+	for key, slot in pairs(data.Slots) do
+		local index = tonumber(key)
+		if not index or index > stats.Pedestals or (slot.U and not findItem(data, slot.U)) then
+			if slot.Box and index then
+				-- pedestal gone but the box isn't lost: it opens straight into your pocket
+				MuseumService.AddItem(player, slot.Box.Id, slot.Box.V, nil, true)
+			end
+			data.Slots[key] = nil
+		end
+	end
+	local displayed, base = {}, 0
+	for i = 1, stats.Pedestals do
+		local slot = data.Slots[tostring(i)]
+		local item = slot and slot.U and findItem(data, slot.U)
+		if item then
+			table.insert(displayed, item)
+			base += Formulas.ItemBaseIncome(item)
+		end
 	end
 	s.Displayed = displayed
 	s.PedestalCount = stats.Pedestals
@@ -141,17 +255,18 @@ function MuseumService.Recompute(player)
 end
 
 function MuseumService.UpdateIncomeAttributes(player)
-	local s = Svc.Session.Get(player)
+	local data = Svc.Data.Get(player)
 	local mySlots = slots[player]
-	if not s or not mySlots or not s.Displayed then
+	if not data or not mySlots then
 		return
 	end
 	local mult = Svc.Economy.GetIncomeMultiplier(player)
-	for i, slot in pairs(mySlots) do
-		local item = s.Displayed[i]
+	for i, slotRec in pairs(mySlots) do
+		local slot = data.Slots[tostring(i)]
+		local item = slot and slot.U and findItem(data, slot.U)
 		local income = item and Formulas.ItemBaseIncome(item) * mult or 0
-		if slot.Model:GetAttribute("Income") ~= income then
-			slot.Model:SetAttribute("Income", income)
+		if slotRec.Model:GetAttribute("Income") ~= income then
+			slotRec.Model:SetAttribute("Income", income)
 		end
 	end
 end
@@ -159,31 +274,30 @@ end
 local function refreshVisuals(player)
 	local plot = plotOf[player]
 	local s = Svc.Session.Get(player)
-	if not plot or not s or not s.Displayed then
+	local data = Svc.Data.Get(player)
+	if not plot or not s or not data then
 		return
 	end
 	local mySlots = slots[player]
 	local count = s.PedestalCount or 0
-	-- create / remove pedestals
 	for i = 1, count do
 		if not mySlots[i] then
-			mySlots[i] = { Model = makePedestal(player, plot, i), Uid = nil }
+			mySlots[i] = { Model = makePedestal(player, plot, i), Key = nil }
 		end
 	end
-	for i, slot in pairs(mySlots) do
+	for i, rec in pairs(mySlots) do
 		if i > count then
-			slot.Model:Destroy()
+			rec.Model:Destroy()
 			mySlots[i] = nil
 		end
 	end
-	-- update displays only where the item changed
 	for i = 1, count do
-		local item = s.Displayed[i]
-		local slot = mySlots[i]
-		local uid = item and item.U or nil
-		if slot.Uid ~= uid then
-			slot.Uid = uid
-			setDisplay(slot.Model, item)
+		local slot = data.Slots[tostring(i)]
+		local key = slotKey(slot)
+		local rec = mySlots[i]
+		if rec.Key ~= key then
+			rec.Key = key
+			setDisplay(rec.Model, slot, data)
 		end
 	end
 	MuseumService.UpdateIncomeAttributes(player)
@@ -194,7 +308,7 @@ function MuseumService.QueueRefresh(player)
 		return
 	end
 	refreshQueued[player] = true
-	task.delay(0.3, function()
+	task.delay(0.2, function()
 		refreshQueued[player] = nil
 		if player.Parent then
 			refreshVisuals(player)
@@ -202,8 +316,9 @@ function MuseumService.QueueRefresh(player)
 	end)
 end
 
--- Adds an item to the player's collection. flags = { Stolen = bool }
-function MuseumService.AddItem(player, id, variant, flags)
+-- Adds an object to the player's POCKET (rewards, raid copies, opened boxes...).
+-- flags = { Stolen = bool }. skipRecompute is used internally.
+function MuseumService.AddItem(player, id, variant, flags, skipRecompute)
 	local data = Svc.Data.Get(player)
 	if not data or not ObjectConfig.Get(id) then
 		return nil
@@ -217,12 +332,13 @@ function MuseumService.AddItem(player, id, variant, flags)
 	table.insert(data.Items, item)
 	Svc.Index.Mark(player, id, variant)
 
-	-- pocket overflow → auto-sell the lowest earner (never exclusives, never the new item)
+	-- pocket overflow → auto-sell the lowest earner (never displayed, exclusive, or the new one)
+	local slotted = slottedSet(data)
 	while #data.Items > GameConfig.MaxItems do
 		local worstIndex, worstIncome = nil, math.huge
 		for i, it in ipairs(data.Items) do
 			local def = ObjectConfig.Get(it.Id)
-			if it ~= item and not (def and def.Exclusive) then
+			if it ~= item and not slotted[it.U] and not (def and def.Exclusive) then
 				local inc = Formulas.ItemBaseIncome(it)
 				if inc < worstIncome then
 					worstIndex, worstIncome = i, inc
@@ -232,16 +348,116 @@ function MuseumService.AddItem(player, id, variant, flags)
 		if not worstIndex then
 			break
 		end
-		local sold = table.remove(data.Items, worstIndex)
-		local coins = worstIncome * Svc.Economy.GetIncomeMultiplier(player) * GameConfig.SellSeconds
-		Svc.Economy.AddCoins(player, coins)
-		Svc.Net.Notify(player, "Pocket full! Auto-sold " .. Formulas.ItemName(sold) .. " for " .. Format.Coins(coins), "info")
+		table.remove(data.Items, worstIndex)
+		Svc.Economy.AddCoins(player, worstIncome * Svc.Economy.GetIncomeMultiplier(player) * GameConfig.SellSeconds)
 	end
 
-	MuseumService.Recompute(player)
+	if not skipRecompute then
+		MuseumService.Recompute(player)
+	end
 	return item
 end
 
+-- ── pedestal actions ─────────────────────────────────────────────────
+local function pedestalModel(player, i)
+	local rec = slots[player] and slots[player][i]
+	return rec and rec.Model
+end
+
+local function bestPocketItem(data)
+	local slotted = slottedSet(data)
+	local best, bestIncome = nil, -1
+	for _, item in ipairs(data.Items) do
+		if not slotted[item.U] then
+			local inc = Formulas.ItemBaseIncome(item)
+			if inc > bestIncome then
+				best, bestIncome = item, inc
+			end
+		end
+	end
+	return best
+end
+
+function onPrompt(player, i)
+	local data = Svc.Data.Get(player)
+	local s = Svc.Session.Get(player)
+	if not data or not s or not Svc.Session.Throttle(player, "pedestal", 0.25) then
+		return
+	end
+	if i > (s.PedestalCount or 0) then
+		return
+	end
+	local key = tostring(i)
+	local slot = data.Slots[key]
+
+	if not slot then
+		-- EMPTY: place a carried box, otherwise your best pocket object
+		local box = Svc.Carry.TakeBox(player)
+		if box then
+			local seconds = Formulas.BoxOpenSeconds(box.Id, box.V)
+			data.Slots[key] = { Box = { Id = box.Id, V = box.V, ReadyAt = os.time() + seconds } }
+			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = seconds })
+		else
+			local item = bestPocketItem(data)
+			if not item then
+				Svc.Net.Notify(player, "🎒 Shrink something and bring the box here!", "info")
+				return
+			end
+			data.Slots[key] = { U = item.U }
+		end
+		MuseumService.Recompute(player)
+	elseif slot.Box then
+		-- OPENING: skip the wait with Gems
+		local left = slot.Box.ReadyAt - os.time()
+		if left <= 0 then
+			return
+		end
+		local cost = Formulas.BoxSkipGems(left)
+		if not Svc.Economy.Spend(player, "Gems", cost) then
+			Svc.Net.Notify(player, "Need 💎" .. cost .. " to open it now (" .. Format.Clock(left) .. " left)", "error")
+			return
+		end
+		slot.Box.ReadyAt = os.time()
+		MuseumService.OpenReadyBoxes(player)
+	elseif slot.U then
+		-- OBJECT: pick it up (back to your pocket)
+		data.Slots[key] = nil
+		MuseumService.Recompute(player)
+	end
+end
+
+-- Opens every box whose timer has run out (called every second and right after a skip).
+function MuseumService.OpenReadyBoxes(player)
+	local data = Svc.Data.Get(player)
+	if not data then
+		return
+	end
+	local now = os.time()
+	local opened = false
+	for key, slot in pairs(data.Slots) do
+		if slot.Box and slot.Box.ReadyAt <= now then
+			local item = MuseumService.AddItem(player, slot.Box.Id, slot.Box.V, nil, true)
+			if item then
+				data.Slots[key] = { U = item.U }
+				opened = true
+				local pedestal = pedestalModel(player, tonumber(key))
+				local income = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player)
+				Remotes.Event("BoxOpened"):FireAllClients(pedestal, player, Formulas.ItemName(item), item.V, income)
+				local def = ObjectConfig.Get(item.Id)
+				local variant = RarityConfig.GetVariant(item.V)
+				local rarity = RarityConfig.GetRarity(def.Rarity)
+				if variant.Order >= 4 or rarity.Order >= 6 then
+					Svc.Net.Announce("🎉 " .. player.DisplayName .. " unboxed a " .. Formulas.ItemName(item) .. "!", variant.Color or rarity.Color)
+				end
+			end
+		end
+	end
+	if opened then
+		MuseumService.Recompute(player)
+	end
+end
+
+-- ── queries ──────────────────────────────────────────────────────────
 function MuseumService.GetDisplayed(player)
 	local s = Svc.Session.Get(player)
 	return s and s.Displayed or {}
@@ -260,9 +476,11 @@ function MuseumService.GetPlotOwner(plotId)
 	return nil
 end
 
+-- Object on pedestal #slotIndex (used by raids), or nil.
 function MuseumService.GetSlotItem(player, slotIndex)
-	local s = Svc.Session.Get(player)
-	return s and s.Displayed and s.Displayed[slotIndex] or nil
+	local data = Svc.Data.Get(player)
+	local slot = data and data.Slots[tostring(slotIndex)]
+	return slot and slot.U and findItem(data, slot.U) or nil
 end
 
 function MuseumService.TeleportHome(player)
@@ -283,7 +501,8 @@ local function setSign(plot, text)
 	end
 end
 
-function MuseumService.OnPlayerLoaded(player)
+-- ── lifecycle ────────────────────────────────────────────────────────
+function MuseumService.OnPlayerLoaded(player, data)
 	local s = Svc.Session.Get(player)
 	for _, plot in pairs(Svc.Map.Plots) do
 		local taken = false
@@ -299,6 +518,17 @@ function MuseumService.OnPlayerLoaded(player)
 		end
 	end
 	slots[player] = {}
+
+	-- one-time migration from the old "auto display" museum: put the best objects on pedestals
+	if not data.SlotsMigrated then
+		data.SlotsMigrated = true
+		local stats = Formulas.RayStats(data, s.Passes)
+		local sorted = Formulas.SortItems(data.Items)
+		for i = 1, math.min(stats.Pedestals, #sorted) do
+			data.Slots[tostring(i)] = { U = sorted[i].U }
+		end
+	end
+
 	local plot = plotOf[player]
 	if plot then
 		s.Plot = plot.Id
@@ -306,7 +536,7 @@ function MuseumService.OnPlayerLoaded(player)
 		if plot.Building then
 			plot.Building:SetAttribute("OwnerUserId", player.UserId)
 		end
-		setSign(plot, player.DisplayName .. "'s Museum")
+		setSign(plot, player.DisplayName)
 		player.CharacterAdded:Connect(function()
 			task.wait(0.2)
 			MuseumService.TeleportHome(player)
@@ -315,8 +545,9 @@ function MuseumService.OnPlayerLoaded(player)
 			MuseumService.TeleportHome(player)
 		end
 	else
-		warn("[Museum] No free plot for " .. player.Name .. " (increase GameConfig.PlotCount / build more plots, and set Players.MaxPlayers <= plots)")
+		warn("[Museum] No free plot for " .. player.Name .. " (set Max Players <= GameConfig.PlotCount)")
 	end
+	MuseumService.OpenReadyBoxes(player) -- boxes keep opening while you're offline
 	MuseumService.Recompute(player)
 end
 
@@ -328,7 +559,7 @@ function MuseumService.OnPlayerRemoving(player)
 		if plot.Building then
 			plot.Building:SetAttribute("OwnerUserId", 0)
 		end
-		setSign(plot, "Empty Plot")
+		setSign(plot, "")
 	end
 	plotOf[player] = nil
 	slots[player] = nil
@@ -336,28 +567,40 @@ function MuseumService.OnPlayerRemoving(player)
 end
 
 function MuseumService.Start()
+	-- open boxes whose timers ran out
+	task.spawn(function()
+		while true do
+			task.wait(1)
+			for player in pairs(slots) do
+				if player.Parent then
+					MuseumService.OpenReadyBoxes(player)
+				end
+			end
+		end
+	end)
+
 	Svc.Net.Handle("SellItem", function(player, uid)
 		local data = Svc.Data.Get(player)
 		if type(uid) ~= "number" then
 			return { ok = false }
 		end
-		for i, item in ipairs(data.Items) do
-			if item.U == uid then
-				local def = ObjectConfig.Get(item.Id)
-				if def and def.Exclusive then
-					return { ok = false, msg = "Exclusive objects can't be sold!" }
-				end
-				table.remove(data.Items, i)
-				local coins = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player) * GameConfig.SellSeconds
-				Svc.Economy.AddCoins(player, coins)
-				MuseumService.Recompute(player)
-				return { ok = true, msg = "Sold for " .. Format.Coins(coins) }
-			end
+		local item, index = findItem(data, uid)
+		if not item then
+			return { ok = false, msg = "Item not found" }
 		end
-		return { ok = false, msg = "Item not found" }
+		local def = ObjectConfig.Get(item.Id)
+		if def and def.Exclusive then
+			return { ok = false, msg = "Exclusive objects can't be sold!" }
+		end
+		table.remove(data.Items, index)
+		unslot(data, uid)
+		local coins = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player) * GameConfig.SellSeconds
+		Svc.Economy.AddCoins(player, coins)
+		MuseumService.Recompute(player)
+		return { ok = true, msg = "Sold for " .. Format.Coins(coins) }
 	end)
 
-	-- FUSE: GameConfig.Fuse.Count identical objects (same id + variant) → 1 of the next variant
+	-- FUSE: GameConfig.Fuse.Count identical objects (same id + variant) → 1 of the next variant (into your pocket)
 	Svc.Net.Handle("FuseItems", function(player, id, variant)
 		local data = Svc.Data.Get(player)
 		if type(id) ~= "string" or type(variant) ~= "string" or not RarityConfig.Variants[variant] then
@@ -373,35 +616,48 @@ function MuseumService.Start()
 			return { ok = false, msg = "Cosmic is already the best variant!" }
 		end
 		local need = GameConfig.Fuse.Count
-		local matches = {}
-		for i, item in ipairs(data.Items) do
+		local slotted = slottedSet(data)
+		local pocket, shown = {}, {}
+		for _, item in ipairs(data.Items) do
 			if item.Id == id and item.V == variant then
-				table.insert(matches, i)
+				table.insert(slotted[item.U] and shown or pocket, item.U)
 			end
 		end
-		if #matches < need then
-			return { ok = false, msg = string.format("Need %d to fuse (you have %d)", need, #matches) }
+		if #pocket + #shown < need then
+			return { ok = false, msg = string.format("Need %d to fuse (you have %d)", need, #pocket + #shown) }
 		end
-		for k = need, 1, -1 do -- remove from the back so indices stay valid
-			table.remove(data.Items, matches[k])
+		-- use pocket copies first, then displayed ones
+		local remove = {}
+		for _, uid in ipairs(pocket) do
+			if #remove < need then
+				table.insert(remove, uid)
+			end
+		end
+		for _, uid in ipairs(shown) do
+			if #remove < need then
+				table.insert(remove, uid)
+			end
+		end
+		for _, uid in ipairs(remove) do
+			local _, index = findItem(data, uid)
+			if index then
+				table.remove(data.Items, index)
+			end
+			unslot(data, uid)
 		end
 		local item = MuseumService.AddItem(player, id, nextVariant)
-		return { ok = true, msg = "✨ Fused into " .. Formulas.ItemName(item) .. "!" }
+		return { ok = true, msg = "✨ Fused into " .. Formulas.ItemName(item) .. "! (in your pocket)" }
 	end)
 
-	-- SELL ALL: sells every pocket item that is NOT on display (exclusives are kept)
+	-- SELL ALL: sells every pocket object that is NOT on a pedestal (exclusives are kept)
 	Svc.Net.Handle("SellPocket", function(player)
 		local data = Svc.Data.Get(player)
-		local s = Svc.Session.Get(player)
-		local displayed = {}
-		for _, item in ipairs(s.Displayed or {}) do
-			displayed[item.U] = true
-		end
+		local slotted = slottedSet(data)
 		local kept, total, count = {}, 0, 0
 		local mult = Svc.Economy.GetIncomeMultiplier(player)
 		for _, item in ipairs(data.Items) do
 			local def = ObjectConfig.Get(item.Id)
-			if displayed[item.U] or (def and def.Exclusive) then
+			if slotted[item.U] or (def and def.Exclusive) then
 				table.insert(kept, item)
 			else
 				total += Formulas.ItemBaseIncome(item) * mult * GameConfig.SellSeconds
@@ -430,14 +686,21 @@ function MuseumService.Start()
 
 	Svc.Data.AddSyncProvider(function(player, payload)
 		local s = Svc.Session.Get(player)
+		local data = Svc.Data.Get(player)
 		payload.PlotId = s and s.Plot or nil
 		local uids = {}
-		if s and s.Displayed then
-			for _, item in ipairs(s.Displayed) do
-				table.insert(uids, item.U)
+		local boxes = 0
+		if data then
+			for _, slot in pairs(data.Slots) do
+				if slot.U then
+					table.insert(uids, slot.U)
+				elseif slot.Box then
+					boxes += 1
+				end
 			end
 		end
 		payload.DisplayedUids = uids
+		payload.OpeningBoxes = boxes
 	end)
 end
 

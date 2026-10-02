@@ -2,10 +2,10 @@
 	📍 LOCATION: ServerScriptService > Services > CarryService (ModuleScript)
 
 	The core loop:
-	  1. Shrink an object → it's stacked above your head (you're CARRYING it).
+	  1. Shrink an object → you get a mystery BOX stacked above your head (you're CARRYING it).
 	  2. The zone's chaser (Grandpa Joe, the Angry Neighbor, Officer Doug, ...) comes running after you.
-	  3. Run back into the SAFE ZONE (the chaser gives up there), then walk onto YOUR plot →
-	     everything you carry goes onto your pedestals and starts earning coins every second.
+	  3. Run back into the SAFE ZONE (the chaser gives up there), then PLACE each box on one of
+	     your pedestals (prompt on the pedestal). It opens after a while and starts earning.
 	  4. Get caught (or die) → you drop everything you were carrying.
 
 	Carry capacity = the "Carry Capacity" upgrade (x3 with the Multi-Shrink gamepass).
@@ -64,10 +64,9 @@ local function attachVisual(player, item, index)
 	if not head then
 		return
 	end
-	local model = ModelFactory.Create(item.Id)
+	local model = ModelFactory.CreateBox(item.Id, item.V)
 	model.Name = "Carried"
 	ModelFactory.FitToSize(model, GameConfig.CarryDisplaySize)
-	ModelFactory.ApplyVariant(model, item.V, false)
 	local step = GameConfig.CarryDisplaySize + 0.4
 	model:PivotTo(head.CFrame * CFrame.new(0, 1.4 + step / 2 + (index - 1) * step, 0))
 	model.Parent = character
@@ -254,7 +253,6 @@ local function buildChaser(tier)
 	hum.MaxHealth = 1e9
 	hum.Health = 1e9
 	hum.BreakJointsOnDeath = false
-	billboard(model, "NameTag", cfg.Emoji .. " " .. cfg.Name, Color3.fromRGB(255, 120, 120), 3.5)
 	return model, hum, cfg
 end
 
@@ -309,6 +307,19 @@ local function spawnChaser(player, c, tier, fromPos)
 	Svc.Net.Notify(player, cfg.Emoji .. " " .. cfg.Name .. " is chasing you! RUN BACK TO BASE! 🏃", "error")
 end
 
+-- re-stacks the carried boxes above the head after one is taken off the top
+local function restack(player, c)
+	for _, item in ipairs(c.Items) do
+		if item.Model then
+			item.Model:Destroy()
+			item.Model = nil
+		end
+	end
+	for i, item in ipairs(c.Items) do
+		attachVisual(player, item, i)
+	end
+end
+
 -- ── public API ──────────────────────────────────────────────────────
 -- Called right after a successful shrink. fromPos = where the object was.
 function CarryService.Add(player, id, variant, fromPos)
@@ -326,6 +337,25 @@ function CarryService.Add(player, id, variant, fromPos)
 	Svc.Data.MarkDirty(player)
 end
 
+-- Takes the top box off your stack (used when you place it on a pedestal). Returns { Id, V } or nil.
+function CarryService.TakeBox(player)
+	local c = carrying[player]
+	if not c or #c.Items == 0 then
+		return nil
+	end
+	local item = table.remove(c.Items)
+	if item.Model then
+		item.Model:Destroy()
+	end
+	restack(player, c)
+	if #c.Items == 0 then
+		despawnChaser(c, nil)
+	end
+	Svc.Data.MarkDirty(player)
+	return { Id = item.Id, V = item.V }
+end
+
+-- (old flow) put everything straight into the museum pocket
 function CarryService.Deposit(player)
 	local c = carrying[player]
 	if not c or #c.Items == 0 then
@@ -413,7 +443,7 @@ local function spawnSleepers()
 			-- lying on its back, head toward the corridor center
 			model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
 			model.Parent = Svc.Map.ChaserFolder
-			say(model, "💤 Zzz...", nil)
+			say(model, "💤", nil)
 		end
 	end
 end
@@ -430,7 +460,11 @@ function CarryService.Start()
 
 	Svc.Data.AddSyncProvider(function(player, payload)
 		local c = carrying[player]
+		local plot = Svc.Museum.GetPlot(player)
+		local character = player.Character
+		local root = character and character:FindFirstChild("HumanoidRootPart")
 		payload.Carry = {
+			AtPlot = (root and plot and plot.Floor and Svc.Map.IsInPart(plot.Floor, root.Position)) or false,
 			Count = c and #c.Items or 0,
 			Capacity = CarryService.Capacity(player),
 			Chaser = c and c.Chaser and (c.Chaser.Cfg.Emoji .. " " .. c.Chaser.Cfg.Name) or nil,
@@ -445,10 +479,16 @@ function CarryService.Start()
 				local root = character and character:FindFirstChild("HumanoidRootPart")
 				local hum = character and character:FindFirstChildOfClass("Humanoid")
 				local alive = root and hum and hum.Health > 0
-				local plot = Svc.Museum.GetPlot(player)
-				if #c.Items > 0 and alive and plot and plot.Floor and Svc.Map.IsInPart(plot.Floor, root.Position) then
-					CarryService.Deposit(player) -- delivered onto your own pedestals
-				elseif c.Chaser then
+				-- tell the client when you step onto / off your plot (banner hint: "Press E to place")
+				if #c.Items > 0 and root then
+					local plot = Svc.Museum.GetPlot(player)
+					local atPlot = plot ~= nil and plot.Floor ~= nil and Svc.Map.IsInPart(plot.Floor, root.Position)
+					if atPlot ~= c.AtPlot then
+						c.AtPlot = atPlot
+						Svc.Data.MarkDirty(player)
+					end
+				end
+				if c.Chaser then
 					local ch = c.Chaser
 					if not ch.Model.Parent or not alive or #c.Items == 0 then
 						despawnChaser(c, nil)

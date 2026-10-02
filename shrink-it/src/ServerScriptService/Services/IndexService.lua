@@ -27,7 +27,6 @@ function IndexService.Mark(player, id, variant)
 	if not data.Index[key] then
 		data.Index[key] = true
 		data.IndexUnseen += 1
-		Svc.Net.Notify(player, "📖 NEW Index entry: " .. Formulas.ItemName({ Id = id, V = variant }), "new")
 		Svc.Data.MarkDirty(player)
 	end
 end
