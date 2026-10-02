@@ -1,18 +1,18 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > MapService (ModuleScript)
 
-	Layout (bird's-eye). Base and corridor are the SAME width, so every plot has an equally
-	long, straight run to the zones (fair for everyone):
+	Layout (bird's-eye). The 6 plots stand in a SEMICIRCLE around the base's single gate, so every
+	plot is exactly the same distance from the shrink zones (fair for everyone):
 
-	  ┌───────────────────────────────────┐  ← end wall
-	  │ ZONE 6 Summit … ZONE 1 Grandpa's  │  one long corridor, each zone longer than the last
-	  ├────────────── SAFE LINE ──────────┤  ← z = 0 (chasers stop here)
-	  │  SELL   FUSE   spawn  TRAILS  SHOP │  plaza with stands (ProximityPrompts open menus)
-	  │ [P1] [P2] [P3] [P4] [P5] [P6]      │  6 fenced plots in one row, far back
-	  └───────────────────────────────────┘
+	            ┌────────┐  ZONE 6 … ZONE 1 (short corridor, ~960 studs total)
+	  ┌─────────┴─ GATE ─┴─────────┐  ← z = 0 (safe line)
+	  │   [P1]    stands     [P6]   │
+	  │ [P2]      ⛲ spawn     [P5] │  plaza with SELL / FUSE / TRAILS / SHOP stands
+	  │      [P3]  VIP   [P4]       │
+	  └─────────────────────────────┘
 
-	Ground is Roblox Terrain (real grass blades) when GameConfig.Ground == "Terrain";
-	the Floor parts then only mark the zone bounds (invisible, non-colliding).
+	Ground: GameConfig.Ground == "Stylized" (default) = lawn stripes + short grass patches;
+	"Terrain" = Roblox terrain (Floor parts then only mark the zone bounds, invisible).
 
 	If Workspace has no "ShrinkItMap", this builds it all (with themed scenery from MapDecor).
 	Build your own map later using the SAME names and this service will just read it:
@@ -40,15 +40,15 @@ MapService.Areas = {} -- [tier] = { Tier, Model, Floor, SpawnPoints = {Part}, St
 MapService.Plots = {} -- [id] = { Id, Model, Floor, Building, Pedestals (Folder), SpawnPad }
 MapService.Boards = {} -- [stat] = Part
 
-local CORRIDOR = 464 -- corridor width = base width (x from -232 to 232; multiple of 4 for terrain)
-local BASE_W = CORRIDOR
-local BASE_D = 184 -- base depth (z from -184 to 0)
-local WALL_H = 46
+local CORRIDOR = 180 -- shrink-zone corridor width (x from -90 to 90); the base gate is this wide
+local BASE_W = 500 -- base width
+local BASE_D = 260 -- base depth (z from -260 to 0)
+local WALL_H = 40
 local PLOT_W, PLOT_D = 70, 95
-local PLOT_SPACING = 72
-local PLOT_FRONT_Z = -70 -- plots sit far back; the plaza with the stands is in front of them
+local PLOT_RADIUS = 190 -- plot centers sit on this circle around the gate (0, 0, 0)
+local PLOT_ARC = { 195, 345 } -- degrees (x = cos, z = sin): a semicircle behind the gate
 MapService.CorridorWidth = CORRIDOR
-MapService.DecorBand = 30 -- outer strip of each zone reserved for scenery
+MapService.DecorBand = 20 -- outer strip of each zone reserved for scenery
 
 local function part(props)
 	local p = Instance.new("Part")
@@ -113,7 +113,7 @@ local function buildPlot(parent, id, cframe)
 	plot:SetAttribute("PlotId", id)
 	plot:SetAttribute("OwnerUserId", 0)
 	plot.Parent = parent
-	local floor = part({ Name = "Floor", Size = Vector3.new(PLOT_W, 1, PLOT_D), CFrame = cframe * CFrame.new(0, -0.45, 0), Color = Color3.fromRGB(235, 228, 215), Material = Enum.Material.Marble, Parent = plot })
+	local floor = part({ Name = "Floor", Size = Vector3.new(PLOT_W, 1, PLOT_D), CFrame = cframe * CFrame.new(0, -0.38, 0), Color = Color3.fromRGB(235, 228, 215), Material = Enum.Material.Marble, Parent = plot })
 	local hw, hd = PLOT_W / 2, PLOT_D / 2
 	local zb = -hd -- back edge (temple is built relative to this)
 
@@ -249,13 +249,13 @@ local function buildMap()
 	local base = Instance.new("Model")
 	base.Name = "Base"
 	base.Parent = map
-	floorPart({ Name = "Floor", Size = Vector3.new(BASE_W, 2, BASE_D), CFrame = CFrame.new(0, -1, -BASE_D / 2), Color = Color3.fromRGB(105, 205, 80), Material = Enum.Material.SmoothPlastic, Parent = base })
+	floorPart({ Name = "Floor", Size = Vector3.new(BASE_W, 2, BASE_D), CFrame = CFrame.new(0, -1, -BASE_D / 2), Color = Color3.fromRGB(100, 190, 75), Material = Enum.Material.SmoothPlastic, Parent = base })
 	part({ Name = "SafeZone", Size = Vector3.new(BASE_W, 200, BASE_D), CFrame = CFrame.new(0, 99, -BASE_D / 2), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "SpawnLocation"
 	spawn.Anchored = true
-	spawn.Size = Vector3.new(14, 1, 14)
-	spawn.CFrame = CFrame.new(0, 0.5, -36)
+	spawn.Size = Vector3.new(12, 1, 12)
+	spawn.CFrame = CFrame.new(0, 0.5, -30)
 	spawn.Duration = 0
 	spawn.Neutral = true
 	spawn.Color = Color3.fromRGB(90, 200, 255)
@@ -263,21 +263,22 @@ local function buildMap()
 	spawn.Transparency = 0.3
 	spawn.Parent = base
 
-	-- VIP corner (right side of the plaza), door faces the plaza
-	local vip = Vector3.new(BASE_W / 2 - 24, 0, -38)
+	-- small VIP lounge in the middle of the semicircle, door facing the gate
+	local vip = Vector3.new(0, 0, -118)
 	local gold = Color3.fromRGB(255, 205, 60)
-	part({ Name = "VIPRoom", Size = Vector3.new(44, 24, 52), CFrame = CFrame.new(vip + Vector3.new(0, 12, 0)), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
-	part({ Name = "VIPWall", Size = Vector3.new(44, 24, 2), CFrame = CFrame.new(vip + Vector3.new(0, 12, -26)), Color = gold, Material = Enum.Material.Marble, Parent = base })
-	part({ Name = "VIPWall", Size = Vector3.new(44, 24, 2), CFrame = CFrame.new(vip + Vector3.new(0, 12, 26)), Color = gold, Material = Enum.Material.Marble, Parent = base })
-	part({ Name = "VIPWall", Size = Vector3.new(2, 24, 15), CFrame = CFrame.new(vip + Vector3.new(-22, 12, -18.5)), Color = gold, Material = Enum.Material.Marble, Parent = base })
-	part({ Name = "VIPWall", Size = Vector3.new(2, 24, 15), CFrame = CFrame.new(vip + Vector3.new(-22, 12, 18.5)), Color = gold, Material = Enum.Material.Marble, Parent = base })
-	part({ Name = "VIPRoof", Size = Vector3.new(46, 2, 54), CFrame = CFrame.new(vip + Vector3.new(0, 25, 0)), Color = gold, Material = Enum.Material.Marble, Parent = base })
-	local door = part({ Name = "VIPDoor", Size = Vector3.new(2, 24, 22), CFrame = CFrame.new(vip + Vector3.new(-22, 12, 0)), Color = Color3.fromRGB(255, 230, 120), Material = Enum.Material.ForceField, Transparency = 0.3, Parent = base })
-	surfaceText(door, Enum.NormalId.Left, "👑 VIP ONLY", gold)
-	local fountain = part({ Name = "VIPFountain", Shape = Enum.PartType.Cylinder, Size = Vector3.new(3, 12, 12), CFrame = CFrame.new(vip + Vector3.new(6, 1.5, 0)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(120, 230, 255), Material = Enum.Material.Neon, Parent = base })
+	part({ Name = "VIPRoom", Size = Vector3.new(32, 18, 26), CFrame = CFrame.new(vip + Vector3.new(0, 9, 0)), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(32, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(0, 9, -13)), Color = gold, Material = Enum.Material.Marble, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(1.5, 18, 26), CFrame = CFrame.new(vip + Vector3.new(-16, 9, 0)), Color = gold, Material = Enum.Material.Marble, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(1.5, 18, 26), CFrame = CFrame.new(vip + Vector3.new(16, 9, 0)), Color = gold, Material = Enum.Material.Marble, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(9.5, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(-11.25, 9, 13)), Color = gold, Material = Enum.Material.Marble, Parent = base })
+	part({ Name = "VIPWall", Size = Vector3.new(9.5, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(11.25, 9, 13)), Color = gold, Material = Enum.Material.Marble, Parent = base })
+	part({ Name = "VIPRoof", Size = Vector3.new(34, 1.5, 28), CFrame = CFrame.new(vip + Vector3.new(0, 18.7, 0)), Color = gold, Material = Enum.Material.Marble, Parent = base })
+	local door = part({ Name = "VIPDoor", Size = Vector3.new(13, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(0, 9, 13)), Color = Color3.fromRGB(255, 230, 120), Material = Enum.Material.ForceField, Transparency = 0.3, Parent = base })
+	surfaceText(door, Enum.NormalId.Back, "👑 VIP", gold)
+	local fountain = part({ Name = "VIPFountain", Shape = Enum.PartType.Cylinder, Size = Vector3.new(2, 9, 9), CFrame = CFrame.new(vip + Vector3.new(0, 1, -3)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(120, 230, 255), Material = Enum.Material.Neon, Parent = base })
 	local fb = Instance.new("BillboardGui")
-	fb.Size = UDim2.fromOffset(220, 60)
-	fb.StudsOffset = Vector3.new(0, 6, 0)
+	fb.Size = UDim2.fromOffset(200, 50)
+	fb.StudsOffset = Vector3.new(0, 5, 0)
 	fb.Parent = fountain
 	local fl = Instance.new("TextLabel")
 	fl.Size = UDim2.fromScale(1, 1)
@@ -289,27 +290,32 @@ local function buildMap()
 	fl.Parent = fb
 	Instance.new("UIStroke", fl).Thickness = 2
 
-	-- Like sign on the back wall (center), leaderboards on the side walls
-	part({ Name = "LikeSign", Size = Vector3.new(44, 24, 2), CFrame = CFrame.lookAt(Vector3.new(0, 40, -BASE_D + 1), Vector3.new(0, 40, 0)), Color = Color3.fromRGB(40, 40, 60), Parent = base })
-	local stats = { { "MuseumValue", -1, -100 }, { "TotalShrinks", -1, -150 }, { "Rebirths", 1, -100 }, { "RaidsWon", 1, -150 } }
+	-- Like sign on the back wall, leaderboards on the front wall either side of the gate (facing in)
+	part({ Name = "LikeSign", Size = Vector3.new(40, 22, 2), CFrame = CFrame.lookAt(Vector3.new(0, 30, -BASE_D + 1), Vector3.new(0, 30, 0)), Color = Color3.fromRGB(40, 40, 60), Parent = base })
+	local stats = { { "MuseumValue", -205 }, { "TotalShrinks", -140 }, { "Rebirths", 140 }, { "RaidsWon", 205 } }
 	for _, st in ipairs(stats) do
-		local x = st[2] * (BASE_W / 2 - 1.5)
-		part({ Name = "Board_" .. st[1], Size = Vector3.new(34, 26, 2), CFrame = CFrame.lookAt(Vector3.new(x, 24, st[3]), Vector3.new(0, 24, st[3])), Color = Color3.fromRGB(30, 30, 45), Parent = base })
+		part({ Name = "Board_" .. st[1], Size = Vector3.new(30, 22, 2), CFrame = CFrame.lookAt(Vector3.new(st[2], 20, -1.5), Vector3.new(st[2], 20, -100)), Color = Color3.fromRGB(30, 30, 45), Parent = base })
 	end
 
-	-- plots: one row along the back, all the same distance from the safe line
+	-- plots: a semicircle around the gate, every plot facing it from the same distance
 	local plotsFolder = Instance.new("Folder")
 	plotsFolder.Name = "Plots"
 	plotsFolder.Parent = map
 	local count = GameConfig.PlotCount
+	local plotCFrames = {}
 	for id = 1, count do
-		local x = (id - (count + 1) / 2) * PLOT_SPACING
-		buildPlot(plotsFolder, id, CFrame.new(x, 0, PLOT_FRONT_Z - PLOT_D / 2))
+		local t = count == 1 and 0.5 or (id - 1) / (count - 1)
+		local angle = math.rad(PLOT_ARC[1] + (PLOT_ARC[2] - PLOT_ARC[1]) * t)
+		local pos = Vector3.new(math.cos(angle) * PLOT_RADIUS, 0, math.sin(angle) * PLOT_RADIUS)
+		-- local +Z (the plot's front) points at the gate
+		local cf = CFrame.lookAt(pos, pos + pos.Unit)
+		plotCFrames[id] = cf
+		buildPlot(plotsFolder, id, cf)
 	end
 
-	safe("Base decor", MapDecor.Base, base, BASE_W, BASE_D, PLOT_FRONT_Z)
+	safe("Base decor", MapDecor.Base, base, BASE_W, BASE_D, PLOT_RADIUS, plotCFrames)
 
-	-- ── Zones (one long corridor) ─────────────────────────
+	-- ── Zones (a short corridor through the gate) ─────────────────────────
 	local zones = Instance.new("Folder")
 	zones.Name = "Zones"
 	zones.Parent = map
@@ -352,7 +358,7 @@ local function buildMap()
 		end
 		z += depth
 	end
-	if terrainGround and not safe("Terrain ground", MapDecor.Terrain, BASE_W, BASE_D, z, PLOT_FRONT_Z) then
+	if terrainGround and not safe("Terrain ground", MapDecor.Terrain, BASE_W, BASE_D, CORRIDOR, z) then
 		-- terrain failed: make the floors visible & solid so nobody falls through the world
 		for _, d in ipairs(map:GetDescendants()) do
 			if d:IsA("BasePart") and d.Name == "Floor" and d.Transparency == 1 then

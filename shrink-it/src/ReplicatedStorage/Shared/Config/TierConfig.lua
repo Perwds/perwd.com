@@ -17,8 +17,8 @@ TierConfig.Tiers = {
 		RayPowerRequired = 1,
 		Color = Color3.fromRGB(126, 214, 104),
 		RespawnTime = 12,
-		AreaDepth = 320, -- studs along the corridor (corridor width is fixed, see MapService)
-		SpawnPoints = 40,
+		AreaDepth = 110, -- studs along the corridor (corridor width is fixed, see MapService)
+		SpawnPoints = 14,
 	},
 	{
 		Name = "Small",
@@ -26,8 +26,8 @@ TierConfig.Tiers = {
 		RayPowerRequired = 5,
 		Color = Color3.fromRGB(92, 196, 230),
 		RespawnTime = 20,
-		AreaDepth = 420,
-		SpawnPoints = 40,
+		AreaDepth = 130,
+		SpawnPoints = 14,
 	},
 	{
 		Name = "Medium",
@@ -35,8 +35,8 @@ TierConfig.Tiers = {
 		RayPowerRequired = 10,
 		Color = Color3.fromRGB(255, 196, 70),
 		RespawnTime = 35,
-		AreaDepth = 520,
-		SpawnPoints = 34,
+		AreaDepth = 150,
+		SpawnPoints = 12,
 	},
 	{
 		Name = "Large",
@@ -44,8 +44,8 @@ TierConfig.Tiers = {
 		RayPowerRequired = 16,
 		Color = Color3.fromRGB(255, 130, 70),
 		RespawnTime = 55,
-		AreaDepth = 620,
-		SpawnPoints = 28,
+		AreaDepth = 170,
+		SpawnPoints = 10,
 	},
 	{
 		Name = "Huge",
@@ -53,8 +53,8 @@ TierConfig.Tiers = {
 		RayPowerRequired = 23,
 		Color = Color3.fromRGB(190, 110, 255),
 		RespawnTime = 80,
-		AreaDepth = 720,
-		SpawnPoints = 22,
+		AreaDepth = 190,
+		SpawnPoints = 8,
 	},
 	{
 		Name = "Colossal",
@@ -62,8 +62,8 @@ TierConfig.Tiers = {
 		RayPowerRequired = 30,
 		Color = Color3.fromRGB(255, 80, 120),
 		RespawnTime = 120,
-		AreaDepth = 820,
-		SpawnPoints = 16,
+		AreaDepth = 210,
+		SpawnPoints = 6,
 	},
 }
 

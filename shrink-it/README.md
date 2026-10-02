@@ -132,11 +132,11 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 |---|---|
 | Hold-to-charge Shrink Ray, beam, squash + fly-to-pocket tween, pop sound, particles | `RayController`, `Effects`, `ShrinkService` |
 | Shrink ANY object at any Ray Power — more power = faster charge (hover shows the charge time) | `Formulas`, `RayController`, `ShrinkService` |
-| One long walled corridor: base (safe zone) → 6 themed zones, each longer than the last; no gates or fees | `MapService`, `MapDecor`, `TierConfig` |
+| Compact map: a walled base with ONE gate leading into a short corridor of 6 themed zones (~960 studs) | `MapService`, `MapDecor`, `TierConfig` |
 | Carry loop: shrunk objects stack above your head; walk them onto YOUR plot to put them on display (red guide arrows, Drop button) | `CarryService`, `Effects`, `HUD` |
-| Fair base: 6 fenced plots in one row at the back, all the same distance from the safe line | `MapService` |
+| Fair base: 6 fenced plots in a semicircle around the gate, all exactly the same distance from it | `MapService` |
 | Stands in the base: 💰 SELL (sell all pocket items), ✨ FUSE (3 → next variant), 🌈 TRAILS, 🛒 SHOP (ProximityPrompts) | `MapDecor`, `SellMenu`, `FuseMenu`, `TrailsMenu`, `CosmeticService` |
-| Terrain ground with real grass blades (sand, snow, pavement, sea per zone); set `GameConfig.Ground = "Stylized"` for flat floors | `MapDecor.Terrain` |
+| Clean two-tone lawn stripes + short grass patches (default); `GameConfig.Ground = "Terrain"` for terrain grass | `MapDecor` |
 | Sleeping zone owners (💤) in every zone | `CarryService` |
 | Chasers: each zone's owner chases you when you grab something; get caught = drop everything | `CarryService`, `ChaserConfig` |
 | Rarities, variants (Golden x5, Diamond x10, Rainbow x25, Cosmic x100) with glow; luck-weighted rolls | `RarityConfig`, `SpawnService`, `ModelFactory` |

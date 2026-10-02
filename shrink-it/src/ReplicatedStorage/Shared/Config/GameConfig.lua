@@ -35,9 +35,9 @@ GameConfig.ChargeTolerance = 0.8 -- server accepts a shot after chargeTime * thi
 GameConfig.RangeTolerance = 8 -- extra studs the server allows over the client's range
 GameConfig.MultiShrinkRadius = 30
 
--- Ground look: "Terrain" = Roblox terrain with real swaying grass blades (sand/snow/pavement/water per zone),
--- "Stylized" = flat colored floors.
-GameConfig.Ground = "Terrain"
+-- Ground look: "Stylized" = clean two-tone lawn stripes + short grass patches (default),
+-- "Terrain" = Roblox terrain with long swaying grass blades.
+GameConfig.Ground = "Stylized"
 
 -- Fusing: this many identical objects (same object + same variant) fuse into ONE of the next variant
 -- (Normal → Golden → Diamond → Rainbow → Cosmic).
