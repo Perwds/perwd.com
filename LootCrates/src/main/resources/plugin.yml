@@ -1,0 +1,50 @@
+name: LootCrates
+version: '1.0.0'
+main: com.lootcrates.LootCrates
+api-version: '1.21'
+authors: [YourName]
+description: A feature-rich lootbox plugin with tiers, keys, animations, and daily rewards
+
+commands:
+  lootcrate:
+    description: Main lootcrate command
+    aliases: [lc, crate, crates]
+    usage: /lootcrate <subcommand>
+  
+  lcadmin:
+    description: Admin commands for LootCrates
+    aliases: [lca]
+    usage: /lcadmin <subcommand>
+    permission: lootcrates.admin
+
+permissions:
+  lootcrates.use:
+    description: Allows using lootcrates
+    default: true
+  lootcrates.daily:
+    description: Allows claiming daily rewards
+    default: true
+  lootcrates.history:
+    description: Allows viewing lootbox history
+    default: true
+  lootcrates.admin:
+    description: Admin permissions for LootCrates
+    default: op
+  lootcrates.admin.give:
+    description: Allows giving lootcrates to players
+    default: op
+  lootcrates.admin.givekey:
+    description: Allows giving keys to players
+    default: op
+  lootcrates.admin.reload:
+    description: Allows reloading the config
+    default: op
+  lootcrates.admin.edit:
+    description: Allows editing crate rewards via GUI
+    default: op
+  lootcrates.admin.place:
+    description: Allows placing crate blocks with holograms
+    default: op
+  lootcrates.admin.break:
+    description: Allows breaking crate blocks
+    default: op

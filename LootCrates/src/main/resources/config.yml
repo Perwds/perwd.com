@@ -1,0 +1,195 @@
+# LootCrates Configuration
+
+# General Settings
+settings:
+  # Prefix for all messages
+  prefix: "&6&lLootCrates &8» &r"
+  # Enable opening animation
+  animation-enabled: true
+  # Animation duration in ticks (20 ticks = 1 second)
+  animation-duration: 60
+  # Broadcast legendary wins to all players
+  broadcast-legendary: true
+  # Weight threshold to be considered rare (broadcast if reward weight <= this value)
+  broadcast-rarity-threshold: 5
+
+  # ═══════════════════════════════════════════════════════════════════
+  # NEW ANIMATION SETTINGS
+  # ═══════════════════════════════════════════════════════════════════
+  
+  # Animation speed multiplier (0.5 = half speed, 2.0 = double speed)
+  # Lower values = slower, more dramatic animations
+  # Higher values = faster animations
+  animation-speed: 1.0
+  
+  # Sound volume for all crate sounds (0.0 - 1.0)
+  sound-volume: 1.0
+  
+  # Delay before auto-closing the reward GUI (in ticks, 20 = 1 second)
+  # Set to -1 to disable auto-close (player must close manually)
+  auto-close-delay: 60
+  
+  # Enable particle effects during animations
+  particles-enabled: true
+  
+  # Default weight when quick-adding rewards via shift-click
+  default-reward-weight: 10
+
+# Daily Reward Settings
+daily-reward:
+  enabled: true
+  # Cooldown in hours
+  cooldown-hours: 24
+  # What crate tier to give for daily reward
+  reward-tier: COMMON
+
+# Lootbox Tiers Configuration
+tiers:
+  COMMON:
+    display-name: "&fCommon Crate"
+    # Item used as the physical crate
+    crate-material: CHEST
+    # Key material
+    key-material: TRIPWIRE_HOOK
+    key-name: "&fCommon Key"
+    # Particle effect when opening
+    particle: HAPPY_VILLAGER
+    # Sound when opening
+    open-sound: BLOCK_CHEST_OPEN
+    win-sound: ENTITY_PLAYER_LEVELUP
+    # Rewards with weight (higher = more common)
+    rewards:
+      - material: IRON_INGOT
+        amount: 5-10
+        weight: 40
+        display-name: "&7Iron Ingots"
+      - material: GOLD_INGOT
+        amount: 3-7
+        weight: 30
+        display-name: "&6Gold Ingots"
+      - material: DIAMOND
+        amount: 1-2
+        weight: 20
+        display-name: "&bDiamonds"
+      - material: EMERALD
+        amount: 2-5
+        weight: 10
+        display-name: "&aEmeralds"
+
+  RARE:
+    display-name: "&9Rare Crate"
+    crate-material: CHEST
+    key-material: TRIPWIRE_HOOK
+    key-name: "&9Rare Key"
+    particle: ENCHANT
+    open-sound: BLOCK_CHEST_OPEN
+    win-sound: ENTITY_PLAYER_LEVELUP
+    rewards:
+      - material: DIAMOND
+        amount: 3-7
+        weight: 35
+        display-name: "&bDiamonds"
+      - material: EMERALD_BLOCK
+        amount: 1-3
+        weight: 25
+        display-name: "&aEmerald Blocks"
+      - material: GOLDEN_APPLE
+        amount: 2-5
+        weight: 25
+        display-name: "&6Golden Apples"
+      - material: ENCHANTED_GOLDEN_APPLE
+        amount: 1
+        weight: 15
+        display-name: "&dEnchanted Golden Apple"
+
+  EPIC:
+    display-name: "&5Epic Crate"
+    crate-material: ENDER_CHEST
+    key-material: TRIPWIRE_HOOK
+    key-name: "&5Epic Key"
+    particle: DRAGON_BREATH
+    open-sound: BLOCK_ENDER_CHEST_OPEN
+    win-sound: UI_TOAST_CHALLENGE_COMPLETE
+    rewards:
+      - material: DIAMOND_BLOCK
+        amount: 2-5
+        weight: 30
+        display-name: "&bDiamond Blocks"
+      - material: NETHERITE_INGOT
+        amount: 1-2
+        weight: 25
+        display-name: "&4Netherite Ingots"
+      - material: ELYTRA
+        amount: 1
+        weight: 15
+        display-name: "&dElytra"
+      - material: TOTEM_OF_UNDYING
+        amount: 1-2
+        weight: 20
+        display-name: "&6Totem of Undying"
+      - material: ENCHANTED_GOLDEN_APPLE
+        amount: 3-5
+        weight: 10
+        display-name: "&dEnchanted Golden Apples"
+
+  LEGENDARY:
+    display-name: "&6&lLegendary Crate"
+    crate-material: ENDER_CHEST
+    key-material: TRIPWIRE_HOOK
+    key-name: "&6&lLegendary Key"
+    particle: TOTEM_OF_UNDYING
+    open-sound: BLOCK_ENDER_CHEST_OPEN
+    win-sound: UI_TOAST_CHALLENGE_COMPLETE
+    rewards:
+      - material: NETHERITE_BLOCK
+        amount: 1-3
+        weight: 25
+        display-name: "&4Netherite Blocks"
+      - material: NETHERITE_SWORD
+        amount: 1
+        weight: 20
+        display-name: "&4Netherite Sword"
+        enchantments:
+          SHARPNESS: 5
+          UNBREAKING: 3
+          MENDING: 1
+      - material: NETHERITE_CHESTPLATE
+        amount: 1
+        weight: 15
+        display-name: "&4Netherite Chestplate"
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+          MENDING: 1
+      - material: ELYTRA
+        amount: 1
+        weight: 20
+        display-name: "&dElytra"
+        enchantments:
+          UNBREAKING: 3
+          MENDING: 1
+      - material: BEACON
+        amount: 1
+        weight: 10
+        display-name: "&bBeacon"
+      - material: DRAGON_EGG
+        amount: 1
+        weight: 10
+        display-name: "&5Dragon Egg"
+
+# Messages
+messages:
+  no-permission: "&cYou don't have permission to do that!"
+  no-key: "&cYou need a %key% &cto open this crate!"
+  crate-received: "&aYou received a %crate%&a!"
+  key-received: "&aYou received %amount%x %key%&a!"
+  reward-won: "&aYou won: %reward%&a!"
+  legendary-broadcast: "&6&l%player% &ejust won &r%reward% &efrom a &6&lLegendary Crate&e!"
+  daily-claimed: "&aYou claimed your daily reward!"
+  daily-cooldown: "&cYou can claim your daily reward in &e%time%&c!"
+  history-header: "&6&lYour Lootbox History:"
+  history-entry: "&7%date% - %tier% - %reward%"
+  history-empty: "&7You haven't opened any lootboxes yet!"
+  player-not-found: "&cPlayer not found!"
+  invalid-tier: "&cInvalid tier! Available: COMMON, RARE, EPIC, LEGENDARY"
+  reload-success: "&aConfig reloaded successfully!"
