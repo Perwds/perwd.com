@@ -53,8 +53,9 @@ function MuseumMenu.Build(ctx)
 	end })
 
 	-- teleport row (Teleport gamepass)
-	local tpRow = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 44), Position = UDim2.fromOffset(0, 114), Parent = content })
-	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = tpRow })
+	local tpRow = UIKit.Scroll({ Horizontal = true, Size = UDim2.new(1, 0, 0, 52), Position = UDim2.fromOffset(0, 112), Parent = content })
+	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, Parent = tpRow })
+	UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 4), PaddingTop = UDim.new(0, 2), Parent = tpRow })
 	local tpButtons = {}
 	for tier, t in ipairs(TierConfig.Tiers) do
 		tpButtons[tier] = UIKit.Button({ Text = "🌀 " .. t.Area, Colors = { t.Color:Lerp(Color3.new(1, 1, 1), 0.3), t.Color }, Size = UDim2.fromOffset(138, 40), LayoutOrder = tier, Parent = tpRow, OnClick = function()
@@ -70,9 +71,9 @@ function MuseumMenu.Build(ctx)
 		end })
 	end
 
-	local raidInfo = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(230, 80, 80), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 26), Position = UDim2.fromOffset(0, 162), Parent = content })
+	local raidInfo = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(230, 80, 80), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 26), Position = UDim2.fromOffset(0, 166), Parent = content })
 
-	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -196), Position = UDim2.fromOffset(0, 194), Parent = content })
+	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -198), Position = UDim2.fromOffset(0, 196), Parent = content })
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = list })
 
 	local menu = { Panel = panel }

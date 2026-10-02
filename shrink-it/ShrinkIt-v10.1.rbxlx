@@ -311,7 +311,7 @@ return EventConfig
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v10 (crates)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v10.1 (crates)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 10 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
@@ -12478,10 +12478,12 @@ function IndexMenu.Build(ctx)
 	local content = panel.Content
 	local selectedTier = 1
 
-	local tabs = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 48), Position = UDim2.fromOffset(0, 18), Parent = content })
-	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = tabs })
+	-- 10 zones: the tab row scrolls sideways
+	local tabs = UIKit.Scroll({ Horizontal = true, Size = UDim2.new(1, 0, 0, 60), Position = UDim2.fromOffset(0, 14), Parent = content })
+	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, Parent = tabs })
+	UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingTop = UDim.new(0, 3), Parent = tabs })
 
-	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -200), Position = UDim2.fromOffset(0, 76), Parent = content })
+	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -204), Position = UDim2.fromOffset(0, 80), Parent = content })
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = list })
 	UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, 4), Parent = list })
 
@@ -12950,8 +12952,9 @@ function MuseumMenu.Build(ctx)
 	end })
 
 	-- teleport row (Teleport gamepass)
-	local tpRow = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 44), Position = UDim2.fromOffset(0, 114), Parent = content })
-	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = tpRow })
+	local tpRow = UIKit.Scroll({ Horizontal = true, Size = UDim2.new(1, 0, 0, 52), Position = UDim2.fromOffset(0, 112), Parent = content })
+	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, Parent = tpRow })
+	UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 4), PaddingTop = UDim.new(0, 2), Parent = tpRow })
 	local tpButtons = {}
 	for tier, t in ipairs(TierConfig.Tiers) do
 		tpButtons[tier] = UIKit.Button({ Text = "🌀 " .. t.Area, Colors = { t.Color:Lerp(Color3.new(1, 1, 1), 0.3), t.Color }, Size = UDim2.fromOffset(138, 40), LayoutOrder = tier, Parent = tpRow, OnClick = function()
@@ -12967,9 +12970,9 @@ function MuseumMenu.Build(ctx)
 		end })
 	end
 
-	local raidInfo = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(230, 80, 80), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 26), Position = UDim2.fromOffset(0, 162), Parent = content })
+	local raidInfo = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(230, 80, 80), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 26), Position = UDim2.fromOffset(0, 166), Parent = content })
 
-	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -196), Position = UDim2.fromOffset(0, 194), Parent = content })
+	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -198), Position = UDim2.fromOffset(0, 196), Parent = content })
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = list })
 
 	local menu = { Panel = panel }
@@ -13856,7 +13859,7 @@ local UpgradesMenu = {}
 
 local CARD_COLORS = {
 	RayPower = UIKit.Colors.Yellow,
-	Speed = UIKit.Colors.Green,
+	Treadmill = UIKit.Colors.Green,
 	MultiShrink = UIKit.Colors.Orange,
 	ChargeSpeed = UIKit.Colors.Cyan,
 	Range = UIKit.Colors.Red,

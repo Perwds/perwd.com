@@ -26,10 +26,12 @@ function IndexMenu.Build(ctx)
 	local content = panel.Content
 	local selectedTier = 1
 
-	local tabs = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 48), Position = UDim2.fromOffset(0, 18), Parent = content })
-	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = tabs })
+	-- 10 zones: the tab row scrolls sideways
+	local tabs = UIKit.Scroll({ Horizontal = true, Size = UDim2.new(1, 0, 0, 60), Position = UDim2.fromOffset(0, 14), Parent = content })
+	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, Parent = tabs })
+	UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingTop = UDim.new(0, 3), Parent = tabs })
 
-	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -200), Position = UDim2.fromOffset(0, 76), Parent = content })
+	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -204), Position = UDim2.fromOffset(0, 80), Parent = content })
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = list })
 	UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, 4), Parent = list })
 

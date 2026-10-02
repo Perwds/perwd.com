@@ -20,7 +20,7 @@ local UpgradesMenu = {}
 
 local CARD_COLORS = {
 	RayPower = UIKit.Colors.Yellow,
-	Speed = UIKit.Colors.Green,
+	Treadmill = UIKit.Colors.Green,
 	MultiShrink = UIKit.Colors.Orange,
 	ChargeSpeed = UIKit.Colors.Cyan,
 	Range = UIKit.Colors.Red,
