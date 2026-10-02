@@ -144,6 +144,13 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 
 ---
 
+
+### 🗺️ The map is saved in the place file
+`map/ShrinkItMap.model.json` is the whole generated map, pre-built so you can SEE and EDIT it in Studio without pressing
+Play. Edit it freely in Studio and save. If you change `MapService`/`MapDecor` code, re-bake it with
+`bash tools/mapbake/bake.sh` (needs the `luau` CLI) or just delete Workspace › ShrinkItMap and the game regenerates it.
+Shopkeepers are added when the server starts.
+
 ## 🎮 Feature overview
 
 | Feature | Where |

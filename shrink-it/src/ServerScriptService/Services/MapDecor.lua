@@ -770,45 +770,11 @@ function MapDecor.Stand(parent, name, label, colors, worldPos, menu, propFn)
 	sparkle.SpreadAngle = Vector2.new(30, 30)
 	sparkle.Size = NumberSequence.new(0.5, 0)
 	sparkle.Parent = ring
-	-- shopkeeper behind the counter
-	pcall(function()
-		local desc = Instance.new("HumanoidDescription")
-		desc.HeadColor = RGB(234, 184, 146)
-		desc.LeftArmColor = RGB(234, 184, 146)
-		desc.RightArmColor = RGB(234, 184, 146)
-		desc.TorsoColor = colors[1]
-		desc.LeftLegColor = RGB(50, 50, 70)
-		desc.RightLegColor = RGB(50, 50, 70)
-		local npc = game:GetService("Players"):CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)
-		npc.Name = "Shopkeeper"
-		for _, d in ipairs(npc:GetDescendants()) do
-			if d:IsA("BasePart") then
-				d.Anchored = true
-				d.CanCollide = false
-				d.CanQuery = false
-			elseif d:IsA("LocalScript") or d:IsA("Script") then
-				d:Destroy()
-			end
-		end
-		local hum = npc:FindFirstChildOfClass("Humanoid")
-		if hum then
-			hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
-		end
-		local _, size = npc:GetBoundingBox()
-		npc:PivotTo(CFrame.new(pos + Vector3.new(0, size.Y / 2, -1)) * CFrame.Angles(0, math.pi, 0))
-		local head = npc:FindFirstChild("Head")
-		if head then -- a little cap in the stand's color
-			local cap = Instance.new("Part")
-			cap.Anchored = true
-			cap.CanCollide = false
-			cap.Size = Vector3.new(1.3, 0.35, 1.4)
-			cap.CFrame = head.CFrame * CFrame.new(0, 0.62, 0)
-			cap.Color = colors[1]
-			cap.Material = Enum.Material.Fabric
-			cap.Parent = npc
-		end
-		npc.Parent = m
-	end)
+	-- shopkeeper behind the counter (added by MapDecor.AddShopkeepers, so it also works on a saved map)
+	local spot = deco(m, Vector3.new(1, 1, 1), CFrame.new(pos + Vector3.new(0, 0.5, -1)) * CFrame.Angles(0, math.pi, 0), colors[1])
+	spot.Name = "KeeperSpot"
+	spot.Transparency = 1
+	m:SetAttribute("KeeperColor", colors[1])
 	floatingTitle(counter, label, { colors[2]:Lerp(RGB(255, 255, 255), 0.25), colors[1] }, 15)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Open"
@@ -896,6 +862,55 @@ function MapDecor.FuseMachine(parent, worldPos)
 	m.WorldPivot = CFrame.new()
 	m:PivotTo(CFrame.new(worldPos))
 	return m
+end
+
+-- Puts a shopkeeper NPC behind every stand that has a "KeeperSpot" (and no keeper yet).
+-- Runs when the server starts, because Roblox characters can only be created in a live game.
+function MapDecor.AddShopkeepers(root)
+	for _, stand in ipairs(root:GetDescendants()) do
+		local spot = stand:IsA("Model") and stand:FindFirstChild("KeeperSpot")
+		if spot and not stand:FindFirstChild("Shopkeeper") then
+			pcall(function()
+				local shirt = stand:GetAttribute("KeeperColor") or RGB(200, 60, 60)
+				local desc = Instance.new("HumanoidDescription")
+				desc.HeadColor = RGB(234, 184, 146)
+				desc.LeftArmColor = RGB(234, 184, 146)
+				desc.RightArmColor = RGB(234, 184, 146)
+				desc.TorsoColor = shirt
+				desc.LeftLegColor = RGB(50, 50, 70)
+				desc.RightLegColor = RGB(50, 50, 70)
+				local npc = game:GetService("Players"):CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)
+				npc.Name = "Shopkeeper"
+				for _, d in ipairs(npc:GetDescendants()) do
+					if d:IsA("BasePart") then
+						d.Anchored = true
+						d.CanCollide = false
+						d.CanQuery = false
+					elseif d:IsA("LocalScript") or d:IsA("Script") then
+						d:Destroy()
+					end
+				end
+				local hum = npc:FindFirstChildOfClass("Humanoid")
+				if hum then
+					hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+				end
+				local _, size = npc:GetBoundingBox()
+				npc:PivotTo(spot.CFrame * CFrame.new(0, size.Y / 2 - spot.Size.Y / 2, 0))
+				local head = npc:FindFirstChild("Head")
+				if head then -- a little cap in the stand's color
+					local cap = Instance.new("Part")
+					cap.Anchored = true
+					cap.CanCollide = false
+					cap.Size = Vector3.new(1.3, 0.35, 1.4)
+					cap.CFrame = head.CFrame * CFrame.new(0, 0.62, 0)
+					cap.Color = shirt
+					cap.Material = Enum.Material.Fabric
+					cap.Parent = npc
+				end
+				npc.Parent = stand
+			end)
+		end
+	end
 end
 
 local function coinStack(m, top)

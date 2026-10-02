@@ -493,7 +493,19 @@ function MapService.Init(_registry)
 		existing:Destroy()
 		existing = nil
 	end
+	-- The map is normally already saved in the place (so you can see it in Studio while editing);
+	-- it's only generated here if it's missing.
 	local map = existing or buildMap()
+	safe("Shopkeepers", MapDecor.AddShopkeepers, map)
+	-- a map saved in the place file doesn't keep PrimaryPart links: restore them
+	for _, d in ipairs(map:GetDescendants()) do
+		if d:IsA("Model") and d.Name == "MuseumBuilding" and not d.PrimaryPart then
+			d.PrimaryPart = d:FindFirstChild("Body")
+		end
+	end
+	if existing then
+		safe("Lighting", MapDecor.Lighting)
+	end
 	readMap(map)
 end
 

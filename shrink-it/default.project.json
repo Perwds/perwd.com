@@ -36,6 +36,9 @@
         "$properties": {
           "Decoration": true
         }
+      },
+      "ShrinkItMap": {
+        "$path": "map/ShrinkItMap.model.json"
       }
     },
     "Lighting": {
