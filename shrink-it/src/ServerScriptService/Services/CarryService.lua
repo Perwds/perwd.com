@@ -4,8 +4,8 @@
 	The core loop:
 	  1. Shrink an object → it's stacked above your head (you're CARRYING it).
 	  2. The zone's chaser (Grandpa Joe, the Angry Neighbor, Officer Doug, ...) comes running after you.
-	  3. Run back into the SAFE ZONE (your base) → everything you carry goes into your museum
-	     and starts earning coins every second.
+	  3. Run back into the SAFE ZONE (the chaser gives up there), then walk onto YOUR plot →
+	     everything you carry goes onto your pedestals and starts earning coins every second.
 	  4. Get caught (or die) → you drop everything you were carrying.
 
 	Carry capacity = the "Carry Capacity" upgrade (x3 with the Multi-Shrink gamepass).
@@ -394,7 +394,40 @@ function CarryService.OnPlayerRemoving(player)
 	carrying[player] = nil
 end
 
+-- A sleeping copy of each zone's owner (💤) so you can see who you're about to rob.
+local function spawnSleepers()
+	for tier, area in pairs(Svc.Map.Areas) do
+		local ok, model = pcall(buildChaser, tier)
+		if ok and model then
+			local f = area.Floor
+			local side = (tier % 2 == 0) and 1 or -1
+			local pos = Vector3.new(side * (f.Size.X / 2 - 40), 0, f.Position.Z)
+			local _, size = model:GetBoundingBox()
+			model.Name = model.Name .. " (asleep)"
+			for _, d in ipairs(model:GetDescendants()) do
+				if d:IsA("BasePart") then
+					d.Anchored = true
+					d.CanCollide = false
+				end
+			end
+			-- lying on its back, head toward the corridor center
+			model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
+			model.Parent = Svc.Map.ChaserFolder
+			say(model, "💤 Zzz...", nil)
+		end
+	end
+end
+
 function CarryService.Start()
+	task.spawn(spawnSleepers)
+	Svc.Net.Handle("DropCarry", function(player)
+		if not CarryService.IsCarrying(player) then
+			return { ok = false }
+		end
+		CarryService.DropAll(player, "dropped")
+		return { ok = true, msg = "🗑️ Dropped what you were carrying." }
+	end)
+
 	Svc.Data.AddSyncProvider(function(player, payload)
 		local c = carrying[player]
 		payload.Carry = {
@@ -411,12 +444,16 @@ function CarryService.Start()
 				local character = player.Character
 				local root = character and character:FindFirstChild("HumanoidRootPart")
 				local hum = character and character:FindFirstChildOfClass("Humanoid")
-				if #c.Items > 0 and root and hum and hum.Health > 0 and Svc.Map.IsInBase(root.Position) then
-					CarryService.Deposit(player)
+				local alive = root and hum and hum.Health > 0
+				local plot = Svc.Museum.GetPlot(player)
+				if #c.Items > 0 and alive and plot and plot.Floor and Svc.Map.IsInPart(plot.Floor, root.Position) then
+					CarryService.Deposit(player) -- delivered onto your own pedestals
 				elseif c.Chaser then
 					local ch = c.Chaser
-					if not ch.Model.Parent or not root or #c.Items == 0 then
+					if not ch.Model.Parent or not alive or #c.Items == 0 then
 						despawnChaser(c, nil)
+					elseif Svc.Map.IsInBase(root.Position) then
+						despawnChaser(c, "Hmph! Safe zone... I'll get you next time!")
 					elseif os.clock() < ch.StartAt then
 						ch.Humanoid:MoveTo(ch.Root.Position)
 					else

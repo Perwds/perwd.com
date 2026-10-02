@@ -324,10 +324,10 @@ B.Tree = function(m)
 	beam(m, V(0, 6, 0), V(2.5, 9, 0.5), 0.7, trunk, M.Wood)
 	beam(m, V(0, 7, 0), V(-2.2, 9.5, -0.8), 0.7, trunk, M.Wood)
 	local g = C(70, 165, 65)
-	add(m, "Ball", V(8, 8, 8), V(0, 12, 0), g, M.Grass)
-	add(m, "Ball", V(6, 6, 6), V(2.8, 10.5, 1), g:Lerp(C(255, 255, 255), 0.08), M.Grass)
-	add(m, "Ball", V(6, 6, 6), V(-2.6, 10.8, -1.2), g:Lerp(C(0, 0, 0), 0.08), M.Grass)
-	add(m, "Ball", V(5.5, 5.5, 5.5), V(0.5, 15, -0.5), g:Lerp(C(255, 255, 255), 0.12), M.Grass)
+	add(m, "Ball", V(8, 8, 8), V(0, 12, 0), g, M.SmoothPlastic)
+	add(m, "Ball", V(6, 6, 6), V(2.8, 10.5, 1), g:Lerp(C(255, 255, 255), 0.08), M.SmoothPlastic)
+	add(m, "Ball", V(6, 6, 6), V(-2.6, 10.8, -1.2), g:Lerp(C(0, 0, 0), 0.08), M.SmoothPlastic)
+	add(m, "Ball", V(5.5, 5.5, 5.5), V(0.5, 15, -0.5), g:Lerp(C(255, 255, 255), 0.12), M.SmoothPlastic)
 	for i = 1, 5 do
 		local a = i / 5 * math.pi * 2
 		add(m, "Ball", V(0.6, 0.6, 0.6), V(math.cos(a) * 3.6, 11 + (i % 2), math.sin(a) * 3.6), C(230, 50, 50))
@@ -349,7 +349,7 @@ B.FoodTruck = function(m)
 	neon(m, "Block", V(0.3, 1.4, 7), V(0, 9.8, 2.0), C(255, 80, 160))
 	-- giant burger on the roof
 	add(m, "Cyl", V(4, 1, 4), V(0, 9.6, 6.2), C(210, 150, 80))
-	add(m, "Cyl", V(4.3, 0.5, 4.3), V(0, 10.3, 6.2), C(90, 180, 60), M.Grass)
+	add(m, "Cyl", V(4.3, 0.5, 4.3), V(0, 10.3, 6.2), C(90, 180, 60), M.SmoothPlastic)
 	add(m, "Cyl", V(4.1, 0.7, 4.1), V(0, 10.85, 6.2), C(110, 60, 40))
 	add(m, "Ball", V(4.2, 3, 4.2), V(0, 11.6, 6.2), C(220, 160, 90))
 	for _, s in ipairs({ -1, 1 }) do
@@ -658,7 +658,7 @@ B.Mountain = function(m)
 	end
 	for i = 1, 6 do
 		local a = i / 6 * math.pi * 2 + 0.3
-		add(m, "Cyl", V(1.2, 4, 1.2), V(math.cos(a) * 21, 2, math.sin(a) * 21), C(35, 110, 60), M.Grass)
+		add(m, "Cyl", V(1.2, 4, 1.2), V(math.cos(a) * 21, 2, math.sin(a) * 21), C(35, 110, 60), M.SmoothPlastic)
 	end
 end
 

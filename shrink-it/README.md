@@ -2,7 +2,8 @@
 
 Zap objects with your **Shrink Ray**, then **carry them back to your base** while the zone's owner chases you:
 Grandpa Joe in his backyard, the Angry Neighbor, Officer Doug, Captain Barnacle, a Security Bot and the Yeti.
-Make it into the safe zone and your loot goes on display in your **Pocket Museum**, earning coins every second.
+Reach the safe zone (the chaser gives up there), then **walk your loot onto your own plot** so it goes on your
+pedestals in your **Pocket Museum**, earning coins every second. Red arrows on the ground show the way.
 Upgrade your ray and your run speed, push further down the corridor (all the way to the Moon), rebirth,
 complete the Index, and raid other museums in the endgame.
 
@@ -35,11 +36,11 @@ Names in Studio must match the file names (without the extensions).
 | ↳ Remotes | ModuleScript | `Remotes.lua`: creates / finds all remotes |
 | **ServerScriptService › Main** | Script | `src/ServerScriptService/Main.server.lua` |
 | **ServerScriptService › Services** | Folder | `src/ServerScriptService/Services/` |
-| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, ModelFactory, ObjectModels, MapDecor | ModuleScripts | one file each |
+| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, CosmeticService, ModelFactory, ObjectModels, MapDecor | ModuleScripts | one file each |
 | **StarterPlayer › StarterPlayerScripts › ClientMain** | LocalScript | `src/StarterPlayerScripts/ClientMain.client.lua` |
 | **StarterPlayer › StarterPlayerScripts › ClientModules** | Folder | `src/StarterPlayerScripts/ClientModules/` |
 | ↳ State, UIKit, HUD, Effects, RayController, Prices | ModuleScripts | one file each |
-| ↳ Menus › GiftsMenu, InfinitePackMenu, ShopMenu, IndexMenu, RebirthMenu, MuseumMenu, UpgradesMenu | ModuleScripts | one file each |
+| ↳ Menus › GiftsMenu, InfinitePackMenu, ShopMenu, IndexMenu, RebirthMenu, MuseumMenu, UpgradesMenu, SellMenu, FuseMenu, TrailsMenu | ModuleScripts | one file each |
 | **StarterGui** | (nothing) | The UI is built in code (`ScreenGui` with `ResetOnSpawn = false`), so StarterGui stays empty. |
 
 ### Install option A: Rojo (recommended)
@@ -58,8 +59,8 @@ then paste in each file's contents. Every file starts with a `📍 LOCATION:` co
 - [ ] **Publish the place** (File → Publish to Roblox). DataStores only work in published places.
 - [ ] **Game Settings → Security → Enable Studio Access to API Services**, so saving works while testing in Studio.
       Without it, Studio uses temporary data and prints a warning. That's fine for quick tests.
-- [ ] **Max Players = 8** — this is an 8-player game (one museum plot each). In Studio: **Game Settings → Places →
-      ⋯ next to your place → Edit → Server Size / Max Players = 8**. (The server also kicks a 9th player as a safety net,
+- [ ] **Max Players = 6**: this is a 6-player game (6 plots in one fair row). In Studio: **Game Settings → Places →
+      ⋯ next to your place → Edit → Server Size / Max Players = 6**. (The server also kicks a 7th player as a safety net,
       see `GameConfig.MaxPlayers`.)
       (To allow more players, raise `GameConfig.PlotCount` and build or allow more plots.)
 - [ ] **Create the 15 Gamepasses** (Creator Dashboard → your experience → Monetization → Passes) and paste their
@@ -132,7 +133,11 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 | Hold-to-charge Shrink Ray, beam, squash + fly-to-pocket tween, pop sound, particles | `RayController`, `Effects`, `ShrinkService` |
 | Shrink ANY object at any Ray Power — more power = faster charge (hover shows the charge time) | `Formulas`, `RayController`, `ShrinkService` |
 | One long walled corridor: base (safe zone) → 6 themed zones, each longer than the last; no gates or fees | `MapService`, `MapDecor`, `TierConfig` |
-| Carry loop: shrunk objects stack above your head; run them back to base to put them on display | `CarryService` |
+| Carry loop: shrunk objects stack above your head; walk them onto YOUR plot to put them on display (red guide arrows, Drop button) | `CarryService`, `Effects`, `HUD` |
+| Fair base: 6 fenced plots in one row at the back, all the same distance from the safe line | `MapService` |
+| Stands in the base: 💰 SELL (sell all pocket items), ✨ FUSE (3 → next variant), 🌈 TRAILS, 🛒 SHOP (ProximityPrompts) | `MapDecor`, `SellMenu`, `FuseMenu`, `TrailsMenu`, `CosmeticService` |
+| Terrain ground with real grass blades (sand, snow, pavement, sea per zone); set `GameConfig.Ground = "Stylized"` for flat floors | `MapDecor.Terrain` |
+| Sleeping zone owners (💤) in every zone | `CarryService` |
 | Chasers: each zone's owner chases you when you grab something; get caught = drop everything | `CarryService`, `ChaserConfig` |
 | Rarities, variants (Golden x5, Diamond x10, Rainbow x25, Cosmic x100) with glow; luck-weighted rolls | `RarityConfig`, `SpawnService`, `ModelFactory` |
 | Event objects with server-wide announcement | `EventService`, `SpawnService` |

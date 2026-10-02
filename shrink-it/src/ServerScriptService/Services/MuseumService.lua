@@ -25,7 +25,7 @@ local plotOf = {} -- [player] = plot record from MapService.Plots
 local slots = {} -- [player] = { [i] = { Model = pedestalModel, Uid = number? } }
 local refreshQueued = {}
 
-local COLS = 11
+local COLS = 8
 local SPACING_X = 7.6
 local SPACING_Z = 7
 
@@ -355,6 +355,66 @@ function MuseumService.Start()
 			end
 		end
 		return { ok = false, msg = "Item not found" }
+	end)
+
+	-- FUSE: GameConfig.Fuse.Count identical objects (same id + variant) → 1 of the next variant
+	Svc.Net.Handle("FuseItems", function(player, id, variant)
+		local data = Svc.Data.Get(player)
+		if type(id) ~= "string" or type(variant) ~= "string" or not RarityConfig.Variants[variant] then
+			return { ok = false }
+		end
+		local nextVariant
+		for i, v in ipairs(RarityConfig.VariantOrder) do
+			if v == variant then
+				nextVariant = RarityConfig.VariantOrder[i + 1]
+			end
+		end
+		if not nextVariant then
+			return { ok = false, msg = "Cosmic is already the best variant!" }
+		end
+		local need = GameConfig.Fuse.Count
+		local matches = {}
+		for i, item in ipairs(data.Items) do
+			if item.Id == id and item.V == variant then
+				table.insert(matches, i)
+			end
+		end
+		if #matches < need then
+			return { ok = false, msg = string.format("Need %d to fuse (you have %d)", need, #matches) }
+		end
+		for k = need, 1, -1 do -- remove from the back so indices stay valid
+			table.remove(data.Items, matches[k])
+		end
+		local item = MuseumService.AddItem(player, id, nextVariant)
+		return { ok = true, msg = "✨ Fused into " .. Formulas.ItemName(item) .. "!" }
+	end)
+
+	-- SELL ALL: sells every pocket item that is NOT on display (exclusives are kept)
+	Svc.Net.Handle("SellPocket", function(player)
+		local data = Svc.Data.Get(player)
+		local s = Svc.Session.Get(player)
+		local displayed = {}
+		for _, item in ipairs(s.Displayed or {}) do
+			displayed[item.U] = true
+		end
+		local kept, total, count = {}, 0, 0
+		local mult = Svc.Economy.GetIncomeMultiplier(player)
+		for _, item in ipairs(data.Items) do
+			local def = ObjectConfig.Get(item.Id)
+			if displayed[item.U] or (def and def.Exclusive) then
+				table.insert(kept, item)
+			else
+				total += Formulas.ItemBaseIncome(item) * mult * GameConfig.SellSeconds
+				count += 1
+			end
+		end
+		if count == 0 then
+			return { ok = false, msg = "Nothing to sell — everything is on display!" }
+		end
+		data.Items = kept
+		Svc.Economy.AddCoins(player, total)
+		MuseumService.Recompute(player)
+		return { ok = true, msg = string.format("💰 Sold %d object%s for %s", count, count == 1 and "" or "s", Format.Coins(total)) }
 	end)
 
 	Svc.Net.Handle("TeleportMuseum", function(player)

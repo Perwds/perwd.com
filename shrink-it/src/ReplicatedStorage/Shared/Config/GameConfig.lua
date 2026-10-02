@@ -20,8 +20,8 @@ GameConfig.MaxReceiptHistory = 200 -- purchase ids remembered per player for ide
 GameConfig.MaxItems = 400 -- pocket cap; lowest-earning item is auto-sold when exceeded
 GameConfig.SellSeconds = 120 -- selling an item gives this many seconds of its income
 GameConfig.DisplayMaxSize = 2.9 -- studs; displayed objects are scaled to fit this
-GameConfig.PlotCount = 8
-GameConfig.MaxPlayers = 8 -- one museum plot per player. ALSO set Max Players = 8 in Game Settings (see README)
+GameConfig.PlotCount = 6
+GameConfig.MaxPlayers = 6 -- one museum plot per player, all in one fair row. ALSO set Max Players = 6 in Game Settings (see README)
 
 -- ── Shrink Ray ───────────────────────────────────────────────────────
 GameConfig.ShrinkCooldown = 0.25 -- min seconds between shots
@@ -34,12 +34,20 @@ GameConfig.MaxChargeMult = 45
 GameConfig.ChargeTolerance = 0.8 -- server accepts a shot after chargeTime * this (latency allowance)
 GameConfig.RangeTolerance = 8 -- extra studs the server allows over the client's range
 GameConfig.MultiShrinkRadius = 30
+
+-- Ground look: "Terrain" = Roblox terrain with real swaying grass blades (sand/snow/pavement/water per zone),
+-- "Stylized" = flat colored floors.
+GameConfig.Ground = "Terrain"
+
+-- Fusing: this many identical objects (same object + same variant) fuse into ONE of the next variant
+-- (Normal → Golden → Diamond → Rainbow → Cosmic).
+GameConfig.Fuse = { Count = 3 }
 GameConfig.CarryDisplaySize = 2.6 -- size of each object stacked above your head -- extra targets must be within this distance of the main target
 GameConfig.ShrinkFxTime = 0.9 -- seconds the tween plays before the server removes the object
 GameConfig.AutoShrinkExtraDelay = 0.75
 
 -- ── Movement ────────────────────────────────────────────────────────
-GameConfig.BaseWalkSpeed = 16
+GameConfig.BaseWalkSpeed = 24
 GameConfig.SpeedBootsBonus = 8 -- added on top of the Run Speed upgrade
 
 -- ── VIP ─────────────────────────────────────────────────────────────

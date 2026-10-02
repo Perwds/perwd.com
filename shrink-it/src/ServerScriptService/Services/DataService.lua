@@ -45,6 +45,8 @@ local TEMPLATE = {
 	Raid = { ShieldUntil = 0, LastRaid = 0, LastToggle = 0, Revenge = {} }, -- Revenge[userIdString] = expiry
 	RaySkins = { Default = true },
 	EquippedSkin = "Default",
+	Trails = {}, -- [trailKey] = true
+	EquippedTrail = "",
 	RedeemedCodes = {},
 	VipFountainAt = 0,
 	Receipts = {}, -- [purchaseId] = os.time()

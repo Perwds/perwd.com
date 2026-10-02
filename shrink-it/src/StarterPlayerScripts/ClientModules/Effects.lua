@@ -364,7 +364,76 @@ local function onCarryFX(kind, p)
 	end
 end
 
+-- ── guide arrows: red chevrons on the ground pointing to YOUR plot while carrying ──
+local ARROW_COUNT, ARROW_STEP = 12, 7
+local arrowParts = {}
+local function guideArrows()
+	local folder = Instance.new("Folder")
+	folder.Name = "GuideArrows"
+	folder.Parent = workspace.CurrentCamera
+	for i = 1, ARROW_COUNT do
+		arrowParts[i] = {}
+		for s = 1, 2 do
+			local p = Instance.new("Part")
+			p.Anchored = true
+			p.CanCollide = false
+			p.CanQuery = false
+			p.CanTouch = false
+			p.CastShadow = false
+			p.Material = Enum.Material.Neon
+			p.Color = Color3.fromRGB(255, 50, 50)
+			p.Size = Vector3.new(0.7, 0.35, 3)
+			p.Transparency = 1
+			p.Parent = folder
+			arrowParts[i][s] = p
+		end
+	end
+	while true do
+		task.wait(0.05)
+		local data = State.Data
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		local carrying = data and data.Carry and data.Carry.Count > 0
+		local target
+		if carrying and root and data.PlotId then
+			local map = workspace:FindFirstChild("ShrinkItMap")
+			local plot = map and map:FindFirstChild("Plots") and map.Plots:FindFirstChild("Plot_" .. data.PlotId)
+			local pad = plot and (plot:FindFirstChild("Floor") or plot:FindFirstChild("SpawnPad"))
+			target = pad and pad.Position
+		end
+		local show = 0
+		if target then
+			local from = Vector3.new(root.Position.X, 0, root.Position.Z)
+			local to = Vector3.new(target.X, 0, target.Z)
+			local total = (to - from).Magnitude
+			if total > 8 then
+				local dir = (to - from).Unit
+				local groundY = root.Position.Y - 2.7
+				local pulse = (os.clock() * 2) % 1
+				for i = 1, ARROW_COUNT do
+					local dist = 4 + (i - 1 + pulse) * ARROW_STEP
+					if dist < total - 2 then
+						show = i
+						local tip = from + dir * dist
+						local base = CFrame.lookAt(Vector3.new(tip.X, groundY, tip.Z), Vector3.new(tip.X, groundY, tip.Z) + dir)
+						for s, sign in ipairs({ -1, 1 }) do
+							local part = arrowParts[i][s]
+							part.CFrame = base * CFrame.Angles(0, sign * math.rad(38), 0) * CFrame.new(0, 0, 1.3)
+							part.Transparency = 0.15 + (i / ARROW_COUNT) * 0.5
+						end
+					end
+				end
+			end
+		end
+		for i = show + 1, ARROW_COUNT do
+			for s = 1, 2 do
+				arrowParts[i][s].Transparency = 1
+			end
+		end
+	end
+end
+
 function Effects.Init()
+	task.spawn(guideArrows)
 	Remotes.Event("CarryFX").OnClientEvent:Connect(onCarryFX)
 	Remotes.Event("ShrinkFX").OnClientEvent:Connect(playShrink)
 	Remotes.Event("ChargeFX").OnClientEvent:Connect(onChargeFX)

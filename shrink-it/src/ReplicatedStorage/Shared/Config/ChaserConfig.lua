@@ -4,7 +4,7 @@
 	When you shrink something, the zone's owner comes running after you!
 	Make it back to the SAFE ZONE (your base) to keep your loot. Get caught and you drop it all.
 
-	Speed is in studs/sec (players start at 16; buy "Run Speed" upgrades to outrun later chasers).
+	Speed is in studs/sec (players start at 24; buy "Run Speed" upgrades to outrun later chasers).
 	Colors / HeadProps build a simple look on a standard R15 body. To use your own NPC instead,
 	put a Model with a Humanoid + HumanoidRootPart in ServerStorage > Chasers named "Tier1".."Tier6".
 ]]
@@ -22,7 +22,7 @@ ChaserConfig.Chasers = {
 	[1] = {
 		Name = "Grandpa Joe",
 		Emoji = "👴",
-		Speed = 12,
+		Speed = 19,
 		Shout = "HEY! THAT'S MY STUFF, YOU WHIPPERSNAPPER!",
 		CaughtLine = "Hah! Back to my yard!",
 		Skin = RGB(234, 184, 146),
@@ -43,7 +43,7 @@ ChaserConfig.Chasers = {
 	[2] = {
 		Name = "Angry Neighbor",
 		Emoji = "😠",
-		Speed = 14,
+		Speed = 22,
 		Shout = "GET OFF MY LAWN!",
 		CaughtLine = "And STAY out!",
 		Skin = RGB(200, 140, 100),
@@ -62,7 +62,7 @@ ChaserConfig.Chasers = {
 	[3] = {
 		Name = "Officer Doug",
 		Emoji = "👮",
-		Speed = 17,
+		Speed = 26,
 		Shout = "STOP RIGHT THERE!",
 		CaughtLine = "You're under arrest... for shrinking!",
 		Skin = RGB(160, 110, 80),
@@ -82,7 +82,7 @@ ChaserConfig.Chasers = {
 	[4] = {
 		Name = "Captain Barnacle",
 		Emoji = "🏴‍☠️",
-		Speed = 19,
+		Speed = 30,
 		Shout = "ARRR! THIEF ON DECK!",
 		CaughtLine = "Walk the plank, landlubber!",
 		Skin = RGB(210, 160, 120),
@@ -103,7 +103,7 @@ ChaserConfig.Chasers = {
 	[5] = {
 		Name = "Security Bot",
 		Emoji = "🤖",
-		Speed = 21,
+		Speed = 34,
 		Shout = "INTRUDER DETECTED. INITIATING PURSUIT.",
 		CaughtLine = "TARGET NEUTRALIZED. BEEP BOOP.",
 		Skin = RGB(170, 175, 190),
@@ -118,7 +118,7 @@ ChaserConfig.Chasers = {
 	[6] = {
 		Name = "The Yeti",
 		Emoji = "🦍",
-		Speed = 24,
+		Speed = 38,
 		Shout = "ROOOOAAAARRR!!!",
 		CaughtLine = "*happy yeti noises*",
 		Skin = RGB(235, 240, 250),

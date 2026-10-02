@@ -10,6 +10,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Format = require(Shared.Format)
@@ -27,7 +28,7 @@ local screen
 local menus = {} -- [name] = menu
 local menuOrder = {}
 local badgeSetters = {}
-local carryFrame, carryLabel, splashLabel
+local carryFrame, carryLabel, splashLabel, dropButton
 local splashToken = 0
 
 -- ── helpers ───────────────────────────────────────────────────────────
@@ -113,6 +114,14 @@ function HUD.Announce(text, color)
 end
 
 -- ── menus ─────────────────────────────────────────────────────────────
+-- Opens a menu (never toggles it closed). Used by the stands.
+function HUD.ShowMenu(name)
+	local m = menus[name]
+	if m and not m.Panel.IsOpen() then
+		HUD.OpenMenu(name)
+	end
+end
+
 function HUD.OpenMenu(name)
 	for n, m in pairs(menus) do
 		if n ~= name and m.Panel.IsOpen() then
@@ -459,10 +468,17 @@ local function refreshTimers()
 	if carry and carry.Count > 0 then
 		carryFrame.Visible = true
 		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
-		carryLabel.Text = string.format("🎒 %d/%d  ·  RUN BACK TO BASE! ⬇%s", carry.Count, carry.Capacity, chaser)
+		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or "Bring it to YOUR pedestals ⬇"
+		carryLabel.Text = string.format("🎒 %d/%d  ·  %s%s", carry.Count, carry.Capacity, goal, chaser)
 		UIKit.SetButtonColors(carryFrame, carry.Chaser and UIKit.Colors.Red or UIKit.Colors.Orange)
+		if dropButton then
+			dropButton.Visible = true
+		end
 	else
 		carryFrame.Visible = false
+		if dropButton then
+			dropButton.Visible = false
+		end
 	end
 	-- raid banner
 	if data and data.ActiveRaid then
@@ -500,7 +516,11 @@ function HUD.Init()
 	-- menus
 	local ctx = { Screen = screen, HUD = HUD }
 	local menuFolder = Modules:WaitForChild("Menus")
-	for _, def in ipairs(LEFT_BUTTONS) do
+	local menuDefs = table.clone(LEFT_BUTTONS)
+	for _, extra in ipairs({ "Sell", "Fuse", "Trails" }) do -- opened from the stands in the base
+		table.insert(menuDefs, { Menu = extra })
+	end
+	for _, def in ipairs(menuDefs) do
 		local module = menuFolder:FindFirstChild(def.Menu .. "Menu")
 		if module then
 			local ok, menu = pcall(function()
@@ -514,6 +534,30 @@ function HUD.Init()
 			end
 		end
 	end
+
+	-- stands in the base (ProximityPrompts with an "OpensMenu" attribute)
+	ProximityPromptService.PromptTriggered:Connect(function(prompt)
+		local menuName = prompt:GetAttribute("OpensMenu")
+		if menuName then
+			HUD.ShowMenu(menuName)
+		end
+	end)
+
+	-- Drop button (only while carrying)
+	dropButton = UIKit.Button({
+		Name = "Drop",
+		Text = "🗑️ Drop",
+		Colors = UIKit.Colors.Red,
+		Size = UDim2.fromOffset(220, 66),
+		AnchorPoint = Vector2.new(0.5, 1),
+		Position = UDim2.new(0.5, 0, 1, -24),
+		Parent = screen,
+		OnClick = function()
+			HUD.Result(State.Action("DropCarry"))
+		end,
+	})
+	dropButton.Visible = false
+	UIKit.AutoScale(dropButton)
 
 	-- remotes
 	Remotes.Event("Notify").OnClientEvent:Connect(HUD.Notify)

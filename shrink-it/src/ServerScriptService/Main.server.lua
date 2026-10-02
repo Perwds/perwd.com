@@ -32,6 +32,7 @@ local ORDER = {
 	"Upgrade",
 	"Rebirth",
 	"Reward",
+	"Cosmetic",
 	"InfinitePack",
 	"Raid",
 	"Leaderboard",

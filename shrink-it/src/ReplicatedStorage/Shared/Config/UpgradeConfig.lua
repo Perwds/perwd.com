@@ -32,10 +32,10 @@ UpgradeConfig.Upgrades = {
 		BaseCost = 150,
 		CostGrowth = 2.05,
 		Value = function(level)
-			return 16 + (level - 1)
+			return 24 + 1.2 * (level - 1)
 		end,
 		Format = function(v)
-			return v .. " speed"
+			return string.format("%.1f speed", v)
 		end,
 	},
 	ChargeSpeed = {

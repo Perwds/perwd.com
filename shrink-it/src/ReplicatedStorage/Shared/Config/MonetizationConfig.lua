@@ -32,7 +32,7 @@ MonetizationConfig.GamePasses = {
 	Teleport = { Id = 0, Name = "Teleport", Emoji = "🌀", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Teleport to the start of any zone." }, -- 🔧 REPLACE Id
 	OfflineEarnings = { Id = 0, Name = "Offline Earnings", Emoji = "😴", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "Earn 50% income while offline (8h max)." }, -- 🔧 REPLACE Id
 	SpeedBoots = { Id = 0, Name = "Speed Boots", Emoji = "👟", Image = "rbxassetid://0", PriceLabel = "R$ 79", Description = "+8 run speed. Outrun every chaser!" }, -- 🔧 REPLACE Id
-	RainbowRay = { Id = 0, Name = "Rainbow Ray Beam", Emoji = "🌈", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "Cosmetic rainbow beam skin." }, -- 🔧 REPLACE Id
+	RainbowRay = { Id = 0, Name = "Rainbow Ray Beam", Emoji = "🌈", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "Rainbow ray beam + rainbow trail (cosmetic)." }, -- 🔧 REPLACE Id
 	RaidShield = { Id = 0, Name = "Raid Shield", Emoji = "🛡️", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "3x longer raid protection, 2x revenge rewards." }, -- 🔧 REPLACE Id
 }
 
@@ -72,6 +72,20 @@ MonetizationConfig.RaySkins = {
 	Sunset = { Name = "Sunset", Colors = { Color3.fromRGB(255, 200, 60), Color3.fromRGB(255, 70, 50) } },
 	Galaxy = { Name = "Galaxy", Colors = { Color3.fromRGB(150, 90, 255), Color3.fromRGB(20, 10, 80) } },
 	Rainbow = { Name = "Rainbow", Colors = { Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 0, 255) }, Rainbow = true, Pass = "RainbowRay" },
+}
+
+-- ── Trails (cosmetic, bought at the TRAILS stand) ─────────────────────
+-- Currency = "Coins" | "Gems"; Pass = a gamepass key that unlocks it instead.
+MonetizationConfig.TrailOrder = { "Sparkle", "Bubblegum", "Fire", "Toxic", "Ocean", "Galaxy", "Gold", "Rainbow" }
+MonetizationConfig.Trails = {
+	Sparkle = { Name = "Sparkle", Colors = { Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 220, 255) }, Currency = "Coins", Cost = 5_000 },
+	Bubblegum = { Name = "Bubblegum", Colors = { Color3.fromRGB(255, 160, 220), Color3.fromRGB(255, 80, 170) }, Currency = "Coins", Cost = 50_000 },
+	Fire = { Name = "Fire", Colors = { Color3.fromRGB(255, 230, 80), Color3.fromRGB(255, 60, 20) }, Currency = "Coins", Cost = 750_000 },
+	Toxic = { Name = "Toxic", Colors = { Color3.fromRGB(200, 255, 80), Color3.fromRGB(40, 200, 60) }, Currency = "Coins", Cost = 25_000_000 },
+	Ocean = { Name = "Ocean", Colors = { Color3.fromRGB(120, 240, 255), Color3.fromRGB(20, 90, 220) }, Currency = "Gems", Cost = 250 },
+	Galaxy = { Name = "Galaxy", Colors = { Color3.fromRGB(200, 120, 255), Color3.fromRGB(30, 10, 90) }, Currency = "Gems", Cost = 750 },
+	Gold = { Name = "Pure Gold", Colors = { Color3.fromRGB(255, 240, 150), Color3.fromRGB(230, 160, 20) }, Currency = "Gems", Cost = 2_000 },
+	Rainbow = { Name = "Rainbow", Rainbow = true, Pass = "RainbowRay" },
 }
 
 -- ── Gem shop (spend Gems in-game) ─────────────────────────────────────
