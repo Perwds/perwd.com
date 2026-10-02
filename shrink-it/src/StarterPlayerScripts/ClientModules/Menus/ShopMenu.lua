@@ -1,13 +1,16 @@
 --[[
 	📍 LOCATION: StarterPlayer > StarterPlayerScripts > ClientModules > Menus > ShopMenu (ModuleScript)
 
-	Shop tabs: Gamepasses · Boosts (Developer Products) · Gems & Skins · Codes
+	Shop tabs: Royal Crate (Robux-only objects, odds shown) · Gamepasses · Boosts (Developer Products) · Gems & Skins · Codes
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local MonetizationConfig = require(Shared.Config.MonetizationConfig)
+local ObjectConfig = require(Shared.Config.ObjectConfig)
+local RarityConfig = require(Shared.Config.RarityConfig)
+local Format = require(Shared.Format)
 local RewardUtil = require(Shared.RewardUtil)
 
 local Modules = script.Parent.Parent
@@ -26,8 +29,9 @@ function ShopMenu.Build(ctx)
 
 	local pages = {}
 	local tabButtons = {}
-	local current = "Passes"
+	local current = "Crates"
 	local TABS = {
+		{ Key = "Crates", Text = "👑 Crates", Colors = UIKit.Colors.Orange },
 		{ Key = "Passes", Text = "⭐ Passes", Colors = UIKit.Colors.Yellow },
 		{ Key = "Boosts", Text = "🧪 Boosts", Colors = UIKit.Colors.Green },
 		{ Key = "Gems", Text = "💎 Gems & Skins", Colors = UIKit.Colors.Blue },
@@ -45,7 +49,7 @@ function ShopMenu.Build(ctx)
 	end
 
 	for i, t in ipairs(TABS) do
-		tabButtons[t.Key] = UIKit.Button({ Text = t.Text, Colors = t.Colors, Size = UDim2.fromOffset(200, 48), LayoutOrder = i, Parent = tabsBar, OnClick = function()
+		tabButtons[t.Key] = UIKit.Button({ Text = t.Text, Colors = t.Colors, Size = UDim2.fromOffset(172, 48), LayoutOrder = i, Parent = tabsBar, OnClick = function()
 			showTab(t.Key)
 		end })
 		local page = UIKit.Scroll({ Name = t.Key, Size = UDim2.new(1, 0, 1, -82), Position = UDim2.fromOffset(0, 80), Parent = content })
@@ -56,6 +60,33 @@ function ShopMenu.Build(ctx)
 
 	local function grid(page, cell)
 		UIKit.Create("UIGridLayout", { CellSize = cell, CellPadding = UDim2.fromOffset(12, 12), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = page })
+	end
+
+	-- ── Royal Crate (Robux-only exclusives, odds shown) ─────────────
+	local crate = MonetizationConfig.RoyalCrate
+	local cratePage = pages.Crates
+	local crateCard = UIKit.Card({ Size = UDim2.new(1, -16, 0, 420), Colors = { Color3.fromRGB(255, 215, 90), Color3.fromRGB(235, 130, 20) }, Parent = cratePage, CornerRadius = 18, StrokeThickness = 5 })
+	UIKit.Label({ Text = "👑 " .. crate.Name, Size = UDim2.new(1, -20, 0, 48), Position = UDim2.fromOffset(10, 8), StrokeThickness = 4, Parent = crateCard })
+	UIKit.Label({ Text = "5 EXCLUSIVE objects that never spawn on the map!", Size = UDim2.new(1, -20, 0, 28), Position = UDim2.fromOffset(10, 54), StrokeThickness = 2.5, Parent = crateCard })
+	local crateRow = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, -20, 0, 220), Position = UDim2.fromOffset(10, 92), Parent = crateCard })
+	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 10), HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = crateRow })
+	for i, entry in ipairs(crate.Items) do
+		local def = ObjectConfig.Get(entry.Id)
+		local rarity = RarityConfig.GetRarity(def.Rarity)
+		local tile = UIKit.Card({ Size = UDim2.fromOffset(160, 210), LayoutOrder = i, Colors = { rarity.Color:Lerp(Color3.new(1, 1, 1), 0.35), rarity.Color }, Parent = crateRow, CornerRadius = 12, StrokeThickness = 4 })
+		UIKit.ModelPreview({ Id = entry.Id, Size = UDim2.new(1, -16, 0, 120), Position = UDim2.fromOffset(8, 6), Parent = tile })
+		UIKit.Label({ Text = def.Name, Size = UDim2.new(1, -10, 0, 28), Position = UDim2.fromOffset(5, 126), StrokeThickness = 2.5, Parent = tile })
+		UIKit.Label({ Text = entry.Chance .. "%", TextColor3 = Color3.fromRGB(255, 255, 140), Size = UDim2.new(1, -10, 0, 26), Position = UDim2.fromOffset(5, 152), StrokeThickness = 2.5, Parent = tile })
+		UIKit.Label({ Text = "+" .. Format.Coins(def.BaseIncome * rarity.IncomeMult) .. "/s", TextColor3 = Color3.fromRGB(150, 255, 150), Size = UDim2.new(1, -10, 0, 22), Position = UDim2.fromOffset(5, 180), StrokeThickness = 2, Parent = tile })
+	end
+	local crateNote = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 0, 26), Position = UDim2.fromOffset(10, 318), StrokeThickness = 2, Parent = crateCard })
+	local crateButtons = {}
+	for k, count in ipairs({ 1, 3 }) do
+		local key = count == 3 and "RoyalCrate3" or "RoyalCrate"
+		local button, label = UIKit.Button({ Text = "", Colors = { Color3.fromRGB(235, 110, 255), Color3.fromRGB(165, 30, 230) }, Size = UDim2.fromOffset(250, 58), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(k == 1 and 0.32 or 0.68, 0, 1, -12), CornerRadius = 10, Parent = crateCard, OnClick = function()
+			ctx.HUD.Result(State.Action("BuyRoyalCrate", count))
+		end })
+		crateButtons[key] = { Button = button, Label = label, Count = count }
 	end
 
 	-- ── Passes ─────────────────────────────────────────────────────
@@ -195,6 +226,13 @@ function ShopMenu.Build(ctx)
 			elseif c.Product.Handler == "SpawnGolden" then
 				c.Detail.Text = "Spawns next to you!"
 			end
+		end
+		local restricted = data.PaidRandomRestricted ~= false
+		crateNote.Text = restricted and "Crates aren't available in your region." or "Odds are shown above. Each crate gives ONE object (random size)."
+		for key, c in pairs(crateButtons) do
+			local product = MonetizationConfig.Products[key]
+			c.Label.Text = "Open " .. c.Count .. "  ·  " .. Prices.Get(Enum.InfoType.Product, product.Id, product.PriceLabel)
+			UIKit.SetButtonColors(c.Button, restricted and UIKit.Colors.Gray or { Color3.fromRGB(235, 110, 255), Color3.fromRGB(165, 30, 230) })
 		end
 		for key, c in pairs(skinButtons) do
 			local owned = data.RaySkins[key] or (c.Skin.Pass and State.HasPass(c.Skin.Pass))

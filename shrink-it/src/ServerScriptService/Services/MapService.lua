@@ -31,7 +31,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local TierConfig = require(Shared.Config.TierConfig)
-local ObjectConfig = require(Shared.Config.ObjectConfig)
 local GameConfig = require(Shared.Config.GameConfig)
 local MapDecor = require(script.Parent.MapDecor)
 
@@ -86,16 +85,6 @@ local function surfaceText(target, face, text, color, ppS)
 	return gui, label
 end
 
-local function maxObjectSize(tier)
-	local m = 4
-	for _, id in ipairs(ObjectConfig.IdsForTier(tier, false)) do
-		local def = ObjectConfig.Get(id)
-		if def.Size then
-			m = math.max(m, def.Size.X, def.Size.Z)
-		end
-	end
-	return m
-end
 
 -- ── plots ─────────────────────────────────────────────────────────────
 -- Plot local space: +Z = front (faces the plaza / zones), temple at the back (-Z).
@@ -222,6 +211,20 @@ local function buildPlot(parent, id, cframe)
 		light.Parent = bulb
 	end
 
+	-- 🏃 treadmill just outside the entrance: stand on it (AFK is fine) to train speed (SpeedService)
+	local treadmill = Instance.new("Model")
+	treadmill.Name = "Treadmill"
+	treadmill.Parent = plot
+	local tcf = local_(floor, hw - 8, 0, hd + 9)
+	part({ Name = "Frame", Size = Vector3.new(7, 1, 12), CFrame = tcf * CFrame.new(0, 0.5, 0), Color = Color3.fromRGB(50, 52, 64), Material = Enum.Material.Plastic, Parent = treadmill })
+	part({ Name = "Belt", Size = Vector3.new(5.4, 0.3, 11), CFrame = tcf * CFrame.new(0, 1.15, 0), Color = Color3.fromRGB(30, 30, 36), Material = Enum.Material.Fabric, Parent = treadmill })
+	for _, sx in ipairs({ -1, 1 }) do
+		part({ Name = "Rail", Size = Vector3.new(0.4, 0.4, 5), CFrame = tcf * CFrame.new(sx * 3.1, 4.2, -3.5), Color = Color3.fromRGB(200, 200, 210), Material = Enum.Material.Metal, Parent = treadmill })
+		part({ Name = "Post", Size = Vector3.new(0.4, 3.4, 0.4), CFrame = tcf * CFrame.new(sx * 3.1, 2.6, -5.8), Color = Color3.fromRGB(200, 200, 210), Material = Enum.Material.Metal, Parent = treadmill })
+	end
+	local console = part({ Name = "Console", Size = Vector3.new(6.6, 1.6, 0.6), CFrame = tcf * CFrame.new(0, 4.6, -5.9) * CFrame.Angles(math.rad(-25), 0, 0), Color = Color3.fromRGB(40, 140, 255), Material = Enum.Material.Neon, CanQuery = false, Parent = treadmill })
+	surfaceText(console, Enum.NormalId.Back, "🏃 SPEED", Color3.new(1, 1, 1), 20)
+
 	local pedestals = Instance.new("Folder")
 	pedestals.Name = "Pedestals"
 	pedestals.Parent = plot
@@ -270,8 +273,8 @@ local function buildMap()
 	spawn.Transparency = 0.3
 	spawn.Parent = base
 
-	-- small VIP lounge in the middle of the semicircle, door facing the gate
-	local vip = Vector3.new(0, 0, -118)
+	-- small VIP lounge tucked in the back-right corner (keeps the middle of the base open)
+	local vip = Vector3.new(212, 0, -228)
 	local gold = Color3.fromRGB(255, 205, 60)
 	part({ Name = "VIPRoom", Size = Vector3.new(32, 18, 26), CFrame = CFrame.new(vip + Vector3.new(0, 9, 0)), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
 	part({ Name = "VIPWall", Size = Vector3.new(32, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(0, 9, -13)), Color = gold, Material = Enum.Material.Marble, Parent = base })
@@ -329,7 +332,7 @@ local function buildMap()
 		local points = Instance.new("Folder")
 		points.Name = "SpawnPoints"
 		points.Parent = zone
-		local size = maxObjectSize(tier)
+		local size = 7 + 0.5 * tier -- mystery boxes (see SpawnService) + some room
 		local halfX = math.max(8, CORRIDOR / 2 - MapService.DecorBand - size / 2)
 		local spacing = size + 12
 		local placed = {}

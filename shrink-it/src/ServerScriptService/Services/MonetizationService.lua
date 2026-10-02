@@ -20,6 +20,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local MonetizationConfig = require(Shared.Config.MonetizationConfig)
+local Formulas = require(Shared.Formulas)
 
 local MonetizationService = {}
 local Svc
@@ -37,7 +38,7 @@ local function applyPassEffects(player)
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	local stats = Svc.Shrink.GetStats(player)
-	if humanoid then
+	if humanoid and not (Svc.PvP.IsStunned and Svc.PvP.IsStunned(player)) then
 		humanoid.WalkSpeed = stats and stats.WalkSpeed or GameConfig.BaseWalkSpeed
 	end
 end
@@ -96,6 +97,12 @@ local productHandlers = {
 	SpawnGolden = function(player)
 		Svc.Spawn.SpawnNear(player, "Golden")
 	end,
+	RoyalCrate = function(player, _data, key)
+		local product = MonetizationConfig.Products[key]
+		for _ = 1, product.Count or 1 do
+			MonetizationService.OpenRoyalCrate(player)
+		end
+	end,
 	Trail = function(player, _data, key)
 		Svc.Cosmetic.GrantTrail(player, MonetizationConfig.Products[key].Trail)
 	end,
@@ -103,6 +110,29 @@ local productHandlers = {
 		Svc.InfinitePack.OnPurchased(player, key)
 	end,
 }
+
+-- Rolls one Royal Crate object (odds in MonetizationConfig.RoyalCrate) straight into the pocket.
+function MonetizationService.OpenRoyalCrate(player)
+	local crate = MonetizationConfig.RoyalCrate
+	local total = 0
+	for _, entry in ipairs(crate.Items) do
+		total += entry.Chance
+	end
+	local roll = math.random() * total
+	local pick = crate.Items[#crate.Items]
+	for _, entry in ipairs(crate.Items) do
+		roll -= entry.Chance
+		if roll <= 0 then
+			pick = entry
+			break
+		end
+	end
+	local item = Svc.Museum.AddItem(player, pick.Id, "Normal", { Z = Svc.Spawn.RollSize(player) })
+	if item then
+		Svc.Net.Popup(player, "Crate", { Id = item.Id, Name = Formulas.ItemName(item) })
+		Svc.Net.Announce("👑 " .. player.DisplayName .. " opened a Royal Crate and got a " .. Formulas.ItemName(item) .. "!", Color3.fromRGB(255, 210, 60))
+	end
+end
 
 local function grantProduct(player, data, key)
 	local product = MonetizationConfig.Products[key]
@@ -211,6 +241,15 @@ function MonetizationService.Start()
 			return { ok = false, msg = "Unknown product" }
 		end
 		return MonetizationService.PromptProduct(player, key)
+	end)
+
+	-- Royal Crate (paid random item): blocked where Roblox policy restricts paid random items
+	Svc.Net.Handle("BuyRoyalCrate", function(player, count)
+		local s = Svc.Session.Get(player)
+		if not s or s.PaidRandomRestricted ~= false then
+			return { ok = false, msg = "Crates aren't available in your region." }
+		end
+		return MonetizationService.PromptProduct(player, count == 3 and "RoyalCrate3" or "RoyalCrate")
 	end)
 
 	Svc.Data.AddSyncProvider(function(player, payload)

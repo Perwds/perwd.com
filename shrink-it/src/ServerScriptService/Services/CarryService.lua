@@ -1,14 +1,21 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > CarryService (ModuleScript)
 
-	The core loop:
-	  1. Shrink an object → you get a mystery BOX stacked above your head (you're CARRYING it).
-	  2. The zone's chaser (Grandpa Joe, the Angry Neighbor, Officer Doug, ...) comes running after you.
-	  3. Run back into the SAFE ZONE (the chaser gives up there), then PLACE each box on one of
-	     your pedestals (prompt on the pedestal). It opens after a while and starts earning.
-	  4. Get caught (or die) → you drop everything you were carrying.
+	Everything you carry above your head:
+	  • BOXES you shrank in the zones ({ Kind = "Box", Box = { R, T, V } }).
+	  • OBJECTS you picked up from a pedestal ({ Kind = "Item", U = uid }). These are shown at their
+	    REAL size (GameConfig.HoldBaseSize x the object's size), on pedestals they all look the same size.
 
-	Carry capacity = the "Carry Capacity" upgrade (x3 with the Multi-Shrink gamepass).
+	The chase:
+	  1. Shrink a box → that zone's chaser comes running after you.
+	  2. Reach the SAFE ZONE (your base) and the chaser gives up.
+	  3. Get caught → your boxes fall on the ground and the chaser walks back home, smug.
+	     Grab a dropped box back before it disappears (ChaserConfig.DropLifetime) and the chaser gets
+	     ENRAGED: faster with every grab (ChaserConfig.RageSpeed per level, up to MaxRage).
+	Objects you hold are never lost to chasers (they go back to your pocket), but other players can
+	steal them with a bat (PvPService) when you carry them outside the safe zone.
+
+	Capacity = the "Carry Capacity" upgrade (x3 with the Multi-Shrink gamepass).
 	Chasers are server-controlled NPCs (network owner = server), so clients can't cheat them.
 ]]
 
@@ -21,14 +28,14 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local ChaserConfig = require(Shared.Config.ChaserConfig)
 local Formulas = require(Shared.Formulas)
-local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
 local ModelFactory = require(ServerScriptService.Services.ModelFactory)
 
 local CarryService = {}
 local Svc
 
-local carrying = {} -- [player] = { Items = { { Id, V, Model } }, Chaser = record? }
+local carrying = {} -- [player] = { Items = { entry }, Chaser = record?, Rage = { [tier] = { Level, CoolAt } } }
+local returning = {} -- chasers walking back home after catching someone
 
 function CarryService.Init(registry)
 	Svc = registry
@@ -37,7 +44,7 @@ end
 local function getState(player)
 	local c = carrying[player]
 	if not c then
-		c = { Items = {}, Chaser = nil }
+		c = { Items = {}, Chaser = nil, Rage = {} }
 		carrying[player] = c
 	end
 	return c
@@ -46,6 +53,17 @@ end
 function CarryService.Count(player)
 	local c = carrying[player]
 	return c and #c.Items or 0
+end
+
+function CarryService.CountBoxes(player)
+	local c = carrying[player]
+	local n = 0
+	for _, e in ipairs(c and c.Items or {}) do
+		if e.Kind == "Box" then
+			n += 1
+		end
+	end
+	return n
 end
 
 function CarryService.Capacity(player)
@@ -57,39 +75,75 @@ function CarryService.IsCarrying(player)
 	return CarryService.Count(player) > 0
 end
 
--- ── visuals: carried objects stacked above the head ─────────────────
-local function attachVisual(player, item, index)
-	local character = player.Character
-	local head = character and character:FindFirstChild("Head")
-	if not head then
-		return
-	end
-	local model = ModelFactory.CreateBox(item.Id, item.V)
-	model.Name = "Carried"
-	ModelFactory.FitToSize(model, GameConfig.CarryDisplaySize)
-	local step = GameConfig.CarryDisplaySize + 0.4
-	model:PivotTo(head.CFrame * CFrame.new(0, 1.4 + step / 2 + (index - 1) * step, 0))
-	model.Parent = character
-	for _, d in ipairs(model:GetDescendants()) do
-		if d:IsA("BasePart") then
-			d.CanCollide = false
-			d.CanQuery = false
-			d.CanTouch = false
-			d.Massless = true
-			local weld = Instance.new("WeldConstraint")
-			weld.Part0 = head
-			weld.Part1 = d
-			weld.Parent = d
-			d.Anchored = false
+function CarryService.IsHolding(player, uid)
+	local c = carrying[player]
+	for _, e in ipairs(c and c.Items or {}) do
+		if e.Kind == "Item" and e.U == uid then
+			return true
 		end
 	end
-	item.Model = model
+	return false
+end
+
+-- ── visuals: carried things stacked above the head ──────────────────
+local function entryHeight(entry)
+	if entry.Kind == "Item" then
+		return GameConfig.HoldBaseSize * (entry.Z or 1)
+	end
+	return GameConfig.CarryDisplaySize
+end
+
+local function buildVisual(entry)
+	if entry.Kind == "Item" then
+		local model = ModelFactory.Create(entry.Id)
+		ModelFactory.FitToSize(model, entryHeight(entry))
+		ModelFactory.ApplyVariant(model, entry.V, false)
+		return model
+	end
+	local model = ModelFactory.CreateBox(entry.Box)
+	ModelFactory.FitToSize(model, GameConfig.CarryDisplaySize)
+	return model
+end
+
+local function restack(player, c)
+	local character = player.Character
+	local head = character and character:FindFirstChild("Head")
+	local y = 1.2
+	for _, entry in ipairs(c.Items) do
+		if entry.Model then
+			entry.Model:Destroy()
+			entry.Model = nil
+		end
+		if head then
+			local model = buildVisual(entry)
+			model.Name = "Carried"
+			local _, size = model:GetBoundingBox()
+			model:PivotTo(head.CFrame * CFrame.new(0, y + size.Y / 2, 0))
+			y += size.Y + 0.3
+			for _, d in ipairs(model:GetDescendants()) do
+				if d:IsA("BasePart") then
+					d.CanCollide = false
+					d.CanQuery = false
+					d.CanTouch = false
+					d.Massless = true
+					local weld = Instance.new("WeldConstraint")
+					weld.Part0 = head
+					weld.Part1 = d
+					weld.Parent = d
+					d.Anchored = false
+				end
+			end
+			model.Parent = character
+			entry.Model = model
+		end
+	end
 end
 
 local function clearVisuals(c)
-	for _, item in ipairs(c.Items) do
-		if item.Model then
-			item.Model:Destroy()
+	for _, entry in ipairs(c.Items) do
+		if entry.Model then
+			entry.Model:Destroy()
+			entry.Model = nil
 		end
 	end
 end
@@ -256,6 +310,37 @@ local function buildChaser(tier)
 	return model, hum, cfg
 end
 
+
+local function rageLevel(c, tier)
+	local r = c.Rage[tier]
+	if not r then
+		return 0
+	end
+	-- cool down one level every RageCooldown seconds
+	while r.Level > 0 and os.clock() >= r.CoolAt do
+		r.Level -= 1
+		r.CoolAt += ChaserConfig.RageCooldown
+	end
+	return r.Level
+end
+
+local function addRage(c, tier)
+	local level = math.min(ChaserConfig.MaxRage, rageLevel(c, tier) + 1)
+	c.Rage[tier] = { Level = level, CoolAt = os.clock() + ChaserConfig.RageCooldown }
+	return level
+end
+
+local function despawnModel(model, line, delaySeconds)
+	if line then
+		say(model, line, 2)
+	end
+	task.delay(delaySeconds or (line and 2 or 0), function()
+		if model then
+			model:Destroy()
+		end
+	end)
+end
+
 local function despawnChaser(c, line)
 	local ch = c.Chaser
 	if not ch then
@@ -266,22 +351,33 @@ local function despawnChaser(c, line)
 		return
 	end
 	ch.Humanoid:MoveTo(ch.Root.Position)
-	if line then
-		say(ch.Model, line, 2)
-	end
-	task.delay(line and 2 or 0, function()
-		if ch.Model then
-			ch.Model:Destroy()
-		end
-	end)
+	despawnModel(ch.Model, line)
 end
 
-local function spawnChaser(player, c, tier, fromPos)
+-- After catching you the chaser walks back to where it came from, then vanishes.
+local function sendHome(c, line)
+	local ch = c.Chaser
+	if not ch then
+		return
+	end
+	c.Chaser = nil
+	if not ch.Model.Parent then
+		return
+	end
+	say(ch.Model, line, 2.5)
+	ch.Humanoid.WalkSpeed = ch.Cfg.Speed * 0.6
+	ch.ReturnUntil = os.clock() + 12
+	table.insert(returning, ch)
+end
+
+local function spawnChaser(player, c, tier, fromPos, rage)
 	local ok, model, hum, cfg = pcall(buildChaser, tier)
 	if not ok then
 		warn("[CarryService] chaser failed: " .. tostring(model))
 		return
 	end
+	rage = rage or rageLevel(c, tier)
+	hum.WalkSpeed = cfg.Speed + rage * ChaserConfig.RageSpeed
 	local root = model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart
 	local target = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	local spawnPos = Svc.Map.ClampToZone(tier, fromPos + Vector3.new(0, 0, ChaserConfig.SpawnBehind))
@@ -293,112 +389,229 @@ local function spawnChaser(player, c, tier, fromPos)
 	pcall(function()
 		root:SetNetworkOwner(nil)
 	end)
-	-- run animation (Roblox default R15 run)
 	pcall(function()
 		local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
 		local anim = Instance.new("Animation")
 		anim.AnimationId = ChaserConfig.RunAnimation
 		local track = animator:LoadAnimation(anim)
 		track.Looped = true
-		track:Play()
+		track:Play(0.1, 1, 1 + rage * 0.15)
 	end)
-	say(model, "❗ " .. cfg.Shout, 3)
-	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, StartAt = os.clock() + ChaserConfig.HeadStart }
-	Svc.Net.Notify(player, cfg.Emoji .. " " .. cfg.Name .. " is chasing you! RUN BACK TO BASE! 🏃", "error")
+	if rage > 0 then
+		say(model, string.rep("😡", rage) .. " GIVE THAT BACK!!", 3)
+		billboard(model, "Rage", string.rep("💢", rage), Color3.fromRGB(255, 60, 60), 7.5)
+		local fire = Instance.new("Fire")
+		fire.Size = 2 + rage
+		fire.Heat = 0
+		fire.Color = Color3.fromRGB(255, 60, 40)
+		fire.Parent = root
+	else
+		say(model, "❗ " .. cfg.Shout, 3)
+	end
+	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, Home = spawnPos, Rage = rage, StartAt = os.clock() + (rage > 0 and 0.2 or ChaserConfig.HeadStart) }
+	Remotes.Event("ChaserFX"):FireClient(player, "Chase", { Name = cfg.Name, Emoji = cfg.Emoji, Rage = rage })
+	Svc.Net.Notify(player, cfg.Emoji .. " " .. cfg.Name .. (rage > 0 and (" is ENRAGED (x" .. rage .. ")!") or " is chasing you!") .. " RUN HOME! 🏃", "error")
 end
 
--- re-stacks the carried boxes above the head after one is taken off the top
-local function restack(player, c)
-	for _, item in ipairs(c.Items) do
-		if item.Model then
-			item.Model:Destroy()
-			item.Model = nil
-		end
+local function chaseIfNeeded(player, c, tier, fromPos, forceRage)
+	if not tier then
+		return
 	end
-	for i, item in ipairs(c.Items) do
-		attachVisual(player, item, i)
+	if forceRage and c.Chaser and c.Chaser.Tier == tier then
+		despawnChaser(c, nil) -- respawn it angrier
 	end
-end
-
--- ── public API ──────────────────────────────────────────────────────
--- Called right after a successful shrink. fromPos = where the object was.
-function CarryService.Add(player, id, variant, fromPos)
-	local c = getState(player)
-	local item = { Id = id, V = variant }
-	table.insert(c.Items, item)
-	attachVisual(player, item, #c.Items)
-	local tier = Svc.Map.GetAreaAt(fromPos)
-	if tier and (not c.Chaser or c.Chaser.Tier < tier) then
+	if not c.Chaser or c.Chaser.Tier < tier then
 		if c.Chaser then
 			despawnChaser(c, nil)
 		end
 		spawnChaser(player, c, tier, fromPos)
 	end
+end
+
+-- ── dropped boxes (after being caught / dying / dropping) ────────────
+local function dropBoxOnGround(box, position, droppedBy)
+	local model = ModelFactory.CreateBox(box)
+	ModelFactory.FitToSize(model, GameConfig.CarryDisplaySize * 1.3)
+	ModelFactory.PlaceOnGround(model, position, math.random() * math.pi * 2)
+	ModelFactory.SetCollision(model, false)
+	model.Name = "DroppedBox"
+	model:SetAttribute("Dropped", true)
+	local zoneTier = box.T
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = "Grab"
+	prompt.ObjectText = Formulas.BoxName(box)
+	prompt.HoldDuration = 0.25
+	prompt.MaxActivationDistance = 10
+	prompt.RequiresLineOfSight = false
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
+	prompt.Parent = model.PrimaryPart
+	local taken = false
+	prompt.Triggered:Connect(function(player)
+		if taken or not Svc.Data.Get(player) then
+			return
+		end
+		if CarryService.Count(player) >= CarryService.Capacity(player) then
+			Svc.Net.Notify(player, "🎒 Your hands are full!", "error")
+			return
+		end
+		taken = true
+		model:Destroy()
+		local c = getState(player)
+		table.insert(c.Items, { Kind = "Box", Box = box })
+		restack(player, c)
+		Svc.Net.Sound("Grab", player)
+		-- the chaser of that zone gets angrier every time you snatch a box back
+		local where = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		local tier = where and Svc.Map.GetAreaAt(where.Position) or nil
+		if tier and zoneTier then
+			addRage(c, zoneTier)
+			chaseIfNeeded(player, c, zoneTier, where.Position, true)
+		end
+		Svc.Data.MarkDirty(player)
+	end)
+	model.Parent = Svc.Map.LiveObjects
+	local _ = droppedBy
+	task.delay(ChaserConfig.DropLifetime, function()
+		if not taken and model.Parent then
+			taken = true
+			model:Destroy()
+		end
+	end)
+	return model
+end
+
+-- ── public API ──────────────────────────────────────────────────────
+-- A shrunk box goes on top of your stack. box = { R, T, V }; fromPos = where it was.
+function CarryService.Add(player, box, fromPos)
+	local c = getState(player)
+	table.insert(c.Items, { Kind = "Box", Box = box })
+	restack(player, c)
+	chaseIfNeeded(player, c, Svc.Map.GetAreaAt(fromPos) or box.T, fromPos)
 	Svc.Data.MarkDirty(player)
 end
 
--- Takes the top box off your stack (used when you place it on a pedestal). Returns { Id, V } or nil.
-function CarryService.TakeBox(player)
+-- Holds an owned object above your head at its real size. item = the data.Items entry.
+function CarryService.Hold(player, item)
+	local c = getState(player)
+	if #c.Items >= CarryService.Capacity(player) then
+		return false
+	end
+	table.insert(c.Items, { Kind = "Item", U = item.U, Id = item.Id, V = item.V, Z = item.Z })
+	restack(player, c)
+	Svc.Data.MarkDirty(player)
+	return true
+end
+
+-- Removes and returns the top entry ({ Kind = "Box", Box } | { Kind = "Item", U, ... }) or nil.
+function CarryService.TakeTop(player)
 	local c = carrying[player]
 	if not c or #c.Items == 0 then
 		return nil
 	end
-	local item = table.remove(c.Items)
-	if item.Model then
-		item.Model:Destroy()
+	local entry = table.remove(c.Items)
+	if entry.Model then
+		entry.Model:Destroy()
+		entry.Model = nil
 	end
 	restack(player, c)
-	if #c.Items == 0 then
+	if CarryService.CountBoxes(player) == 0 then
 		despawnChaser(c, nil)
 	end
 	Svc.Data.MarkDirty(player)
-	return { Id = item.Id, V = item.V }
+	return entry
 end
 
--- (old flow) put everything straight into the museum pocket
-function CarryService.Deposit(player)
+-- Stops holding `uid` (it was sold / fused / stolen).
+function CarryService.ForgetItem(player, uid)
 	local c = carrying[player]
-	if not c or #c.Items == 0 then
+	if not c then
 		return
 	end
-	local mult = Svc.Economy.GetIncomeMultiplier(player)
-	local income = 0
-	local count = #c.Items
-	for _, item in ipairs(c.Items) do
-		Svc.Museum.AddItem(player, item.Id, item.V)
-		income += Formulas.ItemBaseIncome(item) * mult
+	for i = #c.Items, 1, -1 do
+		local e = c.Items[i]
+		if e.Kind == "Item" and e.U == uid then
+			if e.Model then
+				e.Model:Destroy()
+			end
+			table.remove(c.Items, i)
+		end
 	end
-	clearVisuals(c)
-	c.Items = {}
-	despawnChaser(c, "Darn! They got away...")
-	Remotes.Event("CarryFX"):FireClient(player, "Deposit", { Count = count, Income = income })
-	Svc.Net.Notify(player, string.format("🏛️ Delivered %d object%s! +%s/s", count, count == 1 and "" or "s", Format.Coins(income)), "success")
-	Svc.Data.MarkDirty(player)
+	restack(player, c)
 end
 
--- reason: "caught" | "died" | "left" | "rebirth"
+-- reason: "caught" | "died" | "dropped" | "left" | "rebirth"
 function CarryService.DropAll(player, reason)
 	local c = carrying[player]
 	if not c then
 		return
 	end
-	local count = #c.Items
-	local ch = c.Chaser
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local where = root and root.Position
+	local boxes = {}
+	for _, e in ipairs(c.Items) do
+		if e.Kind == "Box" then
+			table.insert(boxes, e.Box)
+		end
+	end
 	clearVisuals(c)
-	c.Items = {}
+	c.Items = {} -- held objects simply go back to your pocket (they're still yours)
+	local onGround = where and (reason == "caught" or reason == "died" or reason == "dropped") and not Svc.Map.IsInBase(where)
+	if onGround then
+		for i, box in ipairs(boxes) do
+			local a = i / math.max(1, #boxes) * math.pi * 2
+			dropBoxOnGround(box, Vector3.new(where.X + math.cos(a) * 4, where.Y - 3, where.Z + math.sin(a) * 4), player)
+		end
+	end
+	local ch = c.Chaser
 	if reason == "caught" and ch then
-		despawnChaser(c, ch.Cfg.Emoji .. " " .. ch.Cfg.CaughtLine)
-		Remotes.Event("CarryFX"):FireClient(player, "Caught", { By = ch.Cfg.Name, Emoji = ch.Cfg.Emoji, Count = count })
-		Svc.Net.Notify(player, ch.Cfg.Emoji .. " " .. ch.Cfg.Name .. " caught you! You dropped " .. count .. " object" .. (count == 1 and "" or "s") .. ".", "error")
+		sendHome(c, ch.Cfg.Emoji .. " " .. ch.Cfg.CaughtLine)
+		Remotes.Event("CarryFX"):FireClient(player, "Caught", { By = ch.Cfg.Name, Emoji = ch.Cfg.Emoji, Count = #boxes })
+		Svc.Net.Sound("Caught", player)
+		Svc.Net.Notify(player, ch.Cfg.Emoji .. " " .. ch.Cfg.Name .. " got you! Your boxes are on the ground — grab them back quick! (it'll make them MAD 😡)", "error")
 	else
 		despawnChaser(c, nil)
-		if reason == "died" and count > 0 then
+		if reason == "died" and #boxes > 0 then
 			Svc.Net.Notify(player, "💀 You dropped what you were carrying!", "error")
 		end
 	end
 	if player.Parent then
 		Svc.Data.MarkDirty(player)
 	end
+end
+
+-- PvP: takes the top thing `victim` carries. Returns the entry (Box or Item) or nil.
+function CarryService.StealTop(victim)
+	local c = carrying[victim]
+	if not c or #c.Items == 0 then
+		return nil
+	end
+	local entry = table.remove(c.Items)
+	if entry.Model then
+		entry.Model:Destroy()
+		entry.Model = nil
+	end
+	restack(victim, c)
+	if CarryService.CountBoxes(victim) == 0 then
+		despawnChaser(c, nil)
+	end
+	Svc.Data.MarkDirty(victim)
+	return entry
+end
+
+-- Gives a stolen box to `thief` (or drops it at their feet when their hands are full).
+function CarryService.GiveBox(player, box)
+	local c = getState(player)
+	if #c.Items >= CarryService.Capacity(player) then
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if root then
+			dropBoxOnGround(box, root.Position - Vector3.new(0, 3, 0) + root.CFrame.LookVector * 4, player)
+		end
+		return false
+	end
+	table.insert(c.Items, { Kind = "Box", Box = box })
+	restack(player, c)
+	Svc.Data.MarkDirty(player)
+	return true
 end
 
 function CarryService.OnPlayerLoaded(player)
@@ -411,7 +624,12 @@ function CarryService.OnPlayerLoaded(player)
 		end
 	end
 	player.CharacterAdded:Connect(function(character)
-		CarryService.DropAll(player, "died")
+		local c = carrying[player]
+		if c then
+			clearVisuals(c)
+			c.Items = {}
+			despawnChaser(c, nil)
+		end
 		hook(character)
 	end)
 	if player.Character then
@@ -448,6 +666,7 @@ local function spawnSleepers()
 	end
 end
 
+
 function CarryService.Start()
 	task.spawn(spawnSleepers)
 	Svc.Net.Handle("DropCarry", function(player)
@@ -463,11 +682,15 @@ function CarryService.Start()
 		local plot = Svc.Museum.GetPlot(player)
 		local character = player.Character
 		local root = character and character:FindFirstChild("HumanoidRootPart")
+		local top = c and c.Items[#c.Items]
 		payload.Carry = {
 			AtPlot = (root and plot and plot.Floor and Svc.Map.IsInPart(plot.Floor, root.Position)) or false,
 			Count = c and #c.Items or 0,
+			Boxes = CarryService.CountBoxes(player),
 			Capacity = CarryService.Capacity(player),
+			TopKind = top and top.Kind or nil,
 			Chaser = c and c.Chaser and (c.Chaser.Cfg.Emoji .. " " .. c.Chaser.Cfg.Name) or nil,
+			Rage = c and c.Chaser and c.Chaser.Rage or 0,
 		}
 	end)
 
@@ -479,7 +702,6 @@ function CarryService.Start()
 				local root = character and character:FindFirstChild("HumanoidRootPart")
 				local hum = character and character:FindFirstChildOfClass("Humanoid")
 				local alive = root and hum and hum.Health > 0
-				-- tell the client when you step onto / off your plot (banner hint: "Press E to place")
 				if #c.Items > 0 and root then
 					local plot = Svc.Museum.GetPlot(player)
 					local atPlot = plot ~= nil and plot.Floor ~= nil and Svc.Map.IsInPart(plot.Floor, root.Position)
@@ -490,19 +712,36 @@ function CarryService.Start()
 				end
 				if c.Chaser then
 					local ch = c.Chaser
-					if not ch.Model.Parent or not alive or #c.Items == 0 then
+					if not ch.Model.Parent or not alive or CarryService.CountBoxes(player) == 0 then
 						despawnChaser(c, nil)
 					elseif Svc.Map.IsInBase(root.Position) then
-						despawnChaser(c, "Hmph! Safe zone... I'll get you next time!")
+						sendHome(c, "Hmph! Safe zone... I'll get you next time!")
 					elseif os.clock() < ch.StartAt then
 						ch.Humanoid:MoveTo(ch.Root.Position)
 					else
-						ch.Humanoid:MoveTo(root.Position)
+						-- aim a little ahead of where you're running
+						local lead = root.AssemblyLinearVelocity * Vector3.new(1, 0, 1) * 0.25
+						ch.Humanoid:MoveTo(root.Position + lead)
+						if ChaserConfig.ChaseJump and ch.Root.AssemblyLinearVelocity.Magnitude < 2 then
+							ch.Humanoid.Jump = true
+						end
 						local reach = ChaserConfig.CatchDistance * math.max(1, ch.Cfg.Scale)
 						if (ch.Root.Position - root.Position).Magnitude <= reach then
 							CarryService.DropAll(player, "caught")
 						end
 					end
+				end
+			end
+			-- chasers walking home after a catch
+			for i = #returning, 1, -1 do
+				local ch = returning[i]
+				if not ch.Model.Parent then
+					table.remove(returning, i)
+				elseif os.clock() >= ch.ReturnUntil or (ch.Root.Position - ch.Home).Magnitude < 6 then
+					table.remove(returning, i)
+					despawnModel(ch.Model, nil, 0)
+				else
+					ch.Humanoid:MoveTo(ch.Home)
 				end
 			end
 		end

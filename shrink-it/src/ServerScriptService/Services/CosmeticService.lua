@@ -176,6 +176,22 @@ function CosmeticService.Start()
 		return Svc.Monetization.PromptProduct(player, cfg.Product)
 	end)
 
+	-- ⚙️ Settings menu (volumes 0..1, toggles true/false)
+	local SETTINGS = { Sfx = "number", Ambient = "number", Music = "number", ShowTrails = "boolean", LowGraphics = "boolean" }
+	Svc.Net.Handle("SetSetting", function(player, key, value)
+		local data = Svc.Data.Get(player)
+		local kind = type(key) == "string" and SETTINGS[key]
+		if not data or not kind or type(value) ~= kind then
+			return { ok = false }
+		end
+		if kind == "number" then
+			value = math.clamp(value, 0, 1)
+		end
+		data.Settings[key] = value
+		Svc.Data.MarkDirty(player)
+		return { ok = true }
+	end)
+
 	Svc.Net.Handle("EquipTrail", function(player, key)
 		local data = Svc.Data.Get(player)
 		if key == "" or key == nil then

@@ -50,44 +50,11 @@ local function deco(parent, size, cframe, color, material, shape)
 	return p
 end
 
-local function wedge(parent, size, cframe, color, material)
-	local w = Instance.new("WedgePart")
-	w.Anchored = true
-	w.CanQuery = false
-	w.Size = size
-	w.CFrame = cframe
-	w.Color = color
-	w.Material = material or Enum.Material.SmoothPlastic
-	w.Parent = parent
-	return w
-end
-
 local function folder(parent, name)
 	local f = Instance.new("Folder")
 	f.Name = name
 	f.Parent = parent
 	return f
-end
-
-local function sign(target, face, text, color, ppS)
-	local gui = Instance.new("SurfaceGui")
-	gui.Face = face
-	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-	gui.PixelsPerStud = ppS or 12
-	gui.LightInfluence = 0
-	gui.Parent = target
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.FredokaOne
-	label.TextScaled = true
-	label.TextColor3 = color or Color3.new(1, 1, 1)
-	label.Text = text
-	label.Parent = gui
-	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 5
-	stroke.Parent = label
-	return label
 end
 
 -- vertical cylinder helper (Roblox cylinders run along X)
@@ -141,68 +108,10 @@ local function sunflower(parent, pos)
 	deco(parent, Vector3.new(0.5, 1.2, 1.2), CFrame.new(pos + Vector3.new(0, 7.2, 0)) * CFrame.Angles(0, math.rad(90), 0), RGB(110, 70, 30), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
 end
 
-local function gardenBed(parent, pos, length)
-	part(parent, Vector3.new(6, 1, length), CFrame.new(pos + Vector3.new(0, 0.5, 0)), RGB(120, 80, 50), Enum.Material.Ground)
-	for z = -length / 2 + 2, length / 2 - 2, 2.5 do
-		deco(parent, Vector3.new(1, 1.6, 1), CFrame.new(pos + Vector3.new(-1.5, 1.6, z)), RGB(80, 180, 70), Enum.Material.SmoothPlastic)
-		deco(parent, Vector3.new(1, 1.2, 1), CFrame.new(pos + Vector3.new(1.5, 1.4, z + 1)), RGB(255, 120, 60), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
-	end
-end
-
-local function fence(parent, fromPos, toPos, color)
-	color = color or RGB(250, 250, 250)
-	local delta = toPos - fromPos
-	local len = delta.Magnitude
-	local cf = CFrame.lookAt(fromPos + delta / 2, toPos)
-	part(parent, Vector3.new(0.4, 0.5, len), cf * CFrame.new(0, 2.4, 0), color)
-	part(parent, Vector3.new(0.4, 0.5, len), cf * CFrame.new(0, 1.1, 0), color)
-	for i = 0, math.floor(len / 3) do
-		part(parent, Vector3.new(0.6, 3.4, 0.9), CFrame.new(fromPos + delta.Unit * i * 3 + Vector3.new(0, 1.7, 0)), color)
-	end
-end
-
-local function house(parent, pos, facingSign, color, roofColor)
-	-- facingSign: +1 = front faces +X, -1 = faces -X
-	local body = Vector3.new(16, 11, 18)
-	local base = CFrame.new(pos + Vector3.new(0, body.Y / 2, 0)) * CFrame.Angles(0, facingSign > 0 and math.rad(-90) or math.rad(90), 0)
-	part(parent, body, base, color, Enum.Material.SmoothPlastic)
-	roofColor = roofColor or RGB(190, 60, 55)
-	-- a WedgePart is tallest at its back (+Z): front half unrotated, back half flipped
-	wedge(parent, Vector3.new(body.X + 1, 6, body.Z / 2 + 1), base * CFrame.new(0, body.Y / 2 + 3, -body.Z / 4), roofColor)
-	wedge(parent, Vector3.new(body.X + 1, 6, body.Z / 2 + 1), base * CFrame.new(0, body.Y / 2 + 3, body.Z / 4) * CFrame.Angles(0, math.pi, 0), roofColor)
-	part(parent, Vector3.new(3.5, 6, 0.4), base * CFrame.new(0, -body.Y / 2 + 3, -body.Z / 2 - 0.1), RGB(110, 70, 40), Enum.Material.Wood)
-	for _, x in ipairs({ -5, 5 }) do
-		local w = part(parent, Vector3.new(3, 3, 0.4), base * CFrame.new(x, 1, -body.Z / 2 - 0.1), RGB(170, 220, 255), Enum.Material.Glass)
-		w.Transparency = 0.2
-		part(parent, Vector3.new(3.8, 0.4, 0.6), base * CFrame.new(x, -0.7, -body.Z / 2 - 0.2), RGB(255, 255, 255))
-	end
-	part(parent, Vector3.new(2, 5, 2), base * CFrame.new(4, body.Y / 2 + 4, 3), RGB(140, 90, 80), Enum.Material.Brick)
-	return base
-end
-
 local function mailbox(parent, pos, color)
 	part(parent, Vector3.new(3.4, 0.4, 0.4), upright(pos, 3.4), RGB(90, 70, 50), Enum.Material.Wood, Enum.PartType.Cylinder)
 	part(parent, Vector3.new(1, 1, 1.8), CFrame.new(pos + Vector3.new(0, 3.8, 0)), color or RGB(40, 80, 200))
 	deco(parent, Vector3.new(0.1, 0.8, 0.3), CFrame.new(pos + Vector3.new(0.55, 4.2, 0.4)), RGB(230, 40, 40))
-end
-
-local function tower(parent, pos, w, h, d, color, windowColor, material)
-	local body = part(parent, Vector3.new(w, h, d), CFrame.new(pos + Vector3.new(0, h / 2, 0)), color, material or Enum.Material.SmoothPlastic)
-	for i = 1, math.floor(h / 9) do
-		local band = deco(parent, Vector3.new(w + 0.3, 2.2, d + 0.3), body.CFrame * CFrame.new(0, i * 9 - h / 2 - 2, 0), windowColor, Enum.Material.Neon)
-		band.Transparency = 0.25
-	end
-	part(parent, Vector3.new(w * 0.6, 3, d * 0.6), body.CFrame * CFrame.new(0, h / 2 + 1.5, 0), color:Lerp(RGB(0, 0, 0), 0.3), Enum.Material.Metal)
-	return body
-end
-
-local function road(parent, z0, depth, width, color, dashes)
-	part(parent, Vector3.new(width, 0.2, depth), CFrame.new(0, 0.1, z0 + depth / 2), color or RGB(55, 55, 65), Enum.Material.Asphalt)
-	if dashes ~= false then
-		for z = z0 + 6, z0 + depth - 10, 14 do
-			deco(parent, Vector3.new(1, 0.22, 7), CFrame.new(0, 0.12, z + 3.5), RGB(255, 210, 60), Enum.Material.SmoothPlastic)
-		end
-	end
 end
 
 local function rock(parent, pos, size, color, snow)
@@ -231,23 +140,32 @@ end
 
 -- ── floor & wall styles ──────────────────────────────────────────────
 MapDecor.FloorStyle = {
-	[1] = { Material = Enum.Material.Plastic, Color = RGB(105, 215, 50) },
-	[2] = { Material = Enum.Material.Plastic, Color = RGB(96, 200, 48) },
-	[3] = { Material = Enum.Material.Concrete, Color = RGB(170, 170, 180) },
-	[4] = { Material = Enum.Material.Sand, Color = RGB(238, 216, 160) },
-	[5] = { Material = Enum.Material.Pavement, Color = RGB(110, 105, 140) },
-	[6] = { Material = Enum.Material.Snow, Color = RGB(235, 242, 252) },
+	[1] = { Material = Enum.Material.Plastic, Color = RGB(105, 215, 50) }, -- Backyard
+	[2] = { Material = Enum.Material.Plastic, Color = RGB(120, 222, 70) }, -- Neighborhood
+	[3] = { Material = Enum.Material.Plastic, Color = RGB(165, 168, 178) }, -- Downtown
+	[4] = { Material = Enum.Material.Plastic, Color = RGB(236, 214, 160) }, -- Harbor
+	[5] = { Material = Enum.Material.Plastic, Color = RGB(245, 205, 110) }, -- Desert
+	[6] = { Material = Enum.Material.Plastic, Color = RGB(60, 160, 60) }, -- Jungle
+	[7] = { Material = Enum.Material.Plastic, Color = RGB(120, 125, 160) }, -- Skyline
+	[8] = { Material = Enum.Material.Plastic, Color = RGB(70, 45, 45) }, -- Volcano
+	[9] = { Material = Enum.Material.Plastic, Color = RGB(236, 244, 252) }, -- Summit
+	[10] = { Material = Enum.Material.Plastic, Color = RGB(55, 40, 95) }, -- Outer Space
 }
 
+-- brown "dirt" walls with a grass top (the Steal-an-Egg look), themed per zone
+local DIRT = { A = RGB(204, 146, 96), B = RGB(186, 128, 80), Cap = RGB(105, 215, 50), Material = Enum.Material.Plastic }
 local WALL_STYLE = {
-	-- brown "dirt" walls with a grass top (the Steal-an-Egg look)
-	Base = { A = RGB(204, 146, 96), B = RGB(186, 128, 80), Cap = RGB(105, 215, 50), Material = Enum.Material.Plastic },
-	[1] = { A = RGB(204, 146, 96), B = RGB(186, 128, 80), Cap = RGB(105, 215, 50), Material = Enum.Material.Plastic },
-	[2] = { A = RGB(196, 136, 88), B = RGB(176, 118, 72), Cap = RGB(96, 200, 48), Material = Enum.Material.Plastic },
-	[3] = { A = RGB(150, 150, 162), B = RGB(128, 128, 140), Cap = RGB(80, 80, 92), Material = Enum.Material.Concrete },
-	[4] = { A = RGB(160, 112, 65), B = RGB(135, 92, 52), Cap = RGB(60, 150, 220), Material = Enum.Material.WoodPlanks },
-	[5] = { A = RGB(62, 72, 112), B = RGB(46, 54, 90), Cap = RGB(200, 90, 255), Material = Enum.Material.Glass },
-	[6] = { A = RGB(205, 222, 242), B = RGB(182, 202, 228), Cap = RGB(250, 252, 255), Material = Enum.Material.Ice },
+	Base = DIRT,
+	[1] = DIRT,
+	[2] = DIRT,
+	[3] = { A = RGB(150, 150, 162), B = RGB(130, 130, 142), Cap = RGB(90, 90, 100), Material = Enum.Material.Plastic },
+	[4] = { A = RGB(165, 115, 70), B = RGB(145, 100, 60), Cap = RGB(60, 150, 220), Material = Enum.Material.Plastic },
+	[5] = { A = RGB(225, 180, 110), B = RGB(205, 160, 95), Cap = RGB(240, 210, 130), Material = Enum.Material.Plastic },
+	[6] = { A = RGB(150, 105, 65), B = RGB(130, 90, 55), Cap = RGB(50, 150, 50), Material = Enum.Material.Plastic },
+	[7] = { A = RGB(80, 90, 130), B = RGB(66, 74, 112), Cap = RGB(200, 90, 255), Material = Enum.Material.Plastic },
+	[8] = { A = RGB(60, 40, 38), B = RGB(48, 32, 30), Cap = RGB(255, 90, 30), Material = Enum.Material.Plastic },
+	[9] = { A = RGB(205, 222, 242), B = RGB(182, 202, 228), Cap = RGB(250, 252, 255), Material = Enum.Material.Plastic },
+	[10] = { A = RGB(40, 30, 75), B = RGB(30, 22, 60), Cap = RGB(140, 100, 255), Material = Enum.Material.Plastic },
 }
 
 -- One straight wall from a to b (XZ), built from alternating checker panels + a cap.
@@ -301,20 +219,10 @@ function MapDecor.Walls(parent, opts)
 	end
 end
 
--- Arch + sign at the start of each zone.
+-- Floor line at the start of each zone (no big signs: the zones speak for themselves).
 function MapDecor.ZoneArch(zone, tier, t, z, width)
-	local ChaserConfig = require(game:GetService("ReplicatedStorage").Shared.Config.ChaserConfig)
-	local chaser = ChaserConfig.Get(tier)
 	local arch = folder(zone, "Arch")
 	local color = t.Color
-	for _, side in ipairs({ -1, 1 }) do
-		part(arch, Vector3.new(8, 40, 8), CFrame.new(side * (width / 2 - 6), 20, z), color, Enum.Material.SmoothPlastic)
-		deco(arch, Vector3.new(9, 2, 9), CFrame.new(side * (width / 2 - 6), 41, z), RGB(255, 255, 255), Enum.Material.Neon)
-	end
-	local beam = part(arch, Vector3.new(width - 4, 14, 3), CFrame.new(0, 36, z), RGB(40, 40, 60), Enum.Material.SmoothPlastic)
-	beam.CanCollide = false
-	sign(beam, Enum.NormalId.Front, chaser.Emoji .. " " .. string.upper(t.Area), color:Lerp(RGB(255, 255, 255), 0.35), 8)
-	sign(beam, Enum.NormalId.Back, tier == 1 and "🏠 SAFE" or "⬇ BASE", RGB(120, 255, 140), 8)
 	-- floor line
 	deco(arch, Vector3.new(width - 4, 0.25, tier == 1 and 1 or 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(230, 40, 40) or color, Enum.Material.Neon)
 	if tier == 1 then
@@ -405,149 +313,97 @@ local function bush(parent, pos, scale, color)
 	part(parent, Vector3.new(2, 2, 2) * s, CFrame.new(pos + Vector3.new(2.6 * s, 1 * s, 2.4 * s)), color:Lerp(RGB(255, 255, 255), 0.06), Enum.Material.Plastic)
 end
 
+-- A few SMALL props along the walls only, so the middle of every zone stays wide open.
+local ZONE_PROPS = {
+	[1] = { "bush", "flowers", "bush", "sunflower" },
+	[2] = { "bush", "mailbox", "flowers", "bush" },
+	[3] = { "cone", "lamp", "cone", "bush" },
+	[4] = { "crate", "barrel", "crate", "rock" },
+	[5] = { "cactus", "rock", "cactus", "bones" },
+	[6] = { "bush", "palm", "bush", "flowers" },
+	[7] = { "lamp", "cone", "crate", "lamp" },
+	[8] = { "rock", "lava", "rock", "lava" },
+	[9] = { "pine", "snowrock", "pine", "snowrock" },
+	[10] = { "crystal", "moonrock", "crystal", "moonrock" },
+}
+
+local function smallProp(decor, kind, pos)
+	if kind == "bush" then
+		bush(decor, pos, 0.6)
+	elseif kind == "flowers" then
+		flowers(decor, pos, 1.4)
+	elseif kind == "sunflower" then
+		sunflower(decor, pos)
+	elseif kind == "mailbox" then
+		mailbox(decor, pos)
+	elseif kind == "cone" then
+		cone(decor, pos)
+	elseif kind == "lamp" then
+		prop(decor, pos, 0.6, 0, function(m)
+			lamp(m, Vector3.zero)
+		end)
+	elseif kind == "crate" then
+		prop(decor, pos, 0.6, math.random(0, 90), function(m)
+			crate(m, Vector3.zero)
+		end)
+	elseif kind == "barrel" then
+		prop(decor, pos, 0.7, 0, function(m)
+			barrel(m, Vector3.zero)
+		end)
+	elseif kind == "rock" then
+		rock(decor, pos + Vector3.new(0, 1, 0), Vector3.new(3, 2.2, 2.6), RGB(120, 110, 105))
+	elseif kind == "snowrock" then
+		rock(decor, pos + Vector3.new(0, 1, 0), Vector3.new(3, 2.2, 2.6), RGB(140, 145, 160), true)
+	elseif kind == "moonrock" then
+		rock(decor, pos + Vector3.new(0, 1, 0), Vector3.new(3, 2, 3), RGB(150, 140, 175))
+	elseif kind == "pine" then
+		pine(decor, pos, 0.45)
+	elseif kind == "palm" then
+		prop(decor, pos, 0.5, math.random(0, 359), function(m)
+			part(m, Vector3.new(10, 1, 1), upright(Vector3.zero, 10), RGB(140, 100, 60), Enum.Material.Wood, Enum.PartType.Cylinder)
+			for i = 0, 4 do
+				local a = i / 5 * math.pi * 2
+				part(m, Vector3.new(6, 0.3, 1.6), CFrame.new(math.cos(a) * 2.6, 9.6, math.sin(a) * 2.6) * CFrame.Angles(0, -a, math.rad(-18)), RGB(60, 170, 60), Enum.Material.Plastic)
+			end
+		end)
+	elseif kind == "cactus" then
+		part(decor, Vector3.new(1.4, 4.5, 1.4), CFrame.new(pos + Vector3.new(0, 2.25, 0)), RGB(70, 160, 70), Enum.Material.Plastic)
+		part(decor, Vector3.new(1, 2, 1), CFrame.new(pos + Vector3.new(1.1, 2.8, 0)), RGB(70, 160, 70), Enum.Material.Plastic)
+		part(decor, Vector3.new(1, 1.6, 1), CFrame.new(pos + Vector3.new(-1.1, 2.2, 0)), RGB(70, 160, 70), Enum.Material.Plastic)
+	elseif kind == "bones" then
+		deco(decor, Vector3.new(2.4, 0.4, 0.4), CFrame.new(pos + Vector3.new(0, 0.2, 0)) * CFrame.Angles(0, math.rad(30), 0), RGB(245, 240, 225))
+		deco(decor, Vector3.new(0.8, 0.8, 0.8), CFrame.new(pos + Vector3.new(1.3, 0.4, 0.7)), RGB(245, 240, 225), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+	elseif kind == "lava" then
+		local pool = deco(decor, Vector3.new(0.2, 5, 5), CFrame.new(pos + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(255, 100, 20), Enum.Material.Neon, Enum.PartType.Cylinder)
+		local light = Instance.new("PointLight")
+		light.Color = RGB(255, 120, 40)
+		light.Range = 14
+		light.Parent = pool
+	elseif kind == "crystal" then
+		local c = deco(decor, Vector3.new(1.2, 3.4, 1.2), CFrame.new(pos + Vector3.new(0, 1.7, 0)) * CFrame.Angles(0, math.rad(45), math.rad(10)), RGB(150, 110, 255), Enum.Material.Neon)
+		c.CanCollide = true
+	end
+end
+
 function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 	local decor = folder(zoneModel, "Decor")
-	local zEnd = z0 + depth
-	local e = width / 2 -- 90
-	local B = e - 10 -- center of the scenery strip
-	local I = e - 20 -- inner edge of the scenery strip (spawns stay inside this)
-	local function sides(fn)
-		fn(-1)
-		fn(1)
-	end
-	local function inside()
-		return Vector3.new(math.random(-I + 4, I - 4), 0, math.random(z0 + 6, zEnd - 6))
-	end
-
-	if tier == 1 then -- Grandpa's Backyard
-		sides(function(s)
-			fence(decor, Vector3.new(s * I, 0, z0 + 6), Vector3.new(s * I, 0, zEnd - 6))
-		end)
-		local i = 0
-		for z = z0 + 14, zEnd - 12, 16 do
+	local kinds = ZONE_PROPS[tier] or ZONE_PROPS[1]
+	local edge = width / 2 - 6 -- props hug the walls
+	local i = 0
+	for z = z0 + 18, z0 + depth - 10, 34 do
+		for _, s in ipairs({ -1, 1 }) do
 			i += 1
-			sides(function(s)
-				local k = (i + (s > 0 and 1 or 0)) % 4
-				if k == 0 then
-					tree(decor, Vector3.new(s * B, 0, z), 0.7)
-				elseif k == 1 then
-					gardenBed(decor, Vector3.new(s * B, 0, z), 9)
-				elseif k == 2 then
-					for j = 0, 2 do
-						sunflower(decor, Vector3.new(s * (B - 4 + j * 4), 0, z + j * 1.5))
-					end
-				else
-					bush(decor, Vector3.new(s * B, 0, z), 0.9)
-				end
-			end)
-		end
-		-- house() with facing -1 fronts -X; yaw 180 turns it to face the yard (+X)
-		prop(decor, Vector3.new(-B, 0, zEnd - 14), 0.55, 180, function(m)
-			house(m, Vector3.zero, -1, RGB(255, 240, 210), RGB(120, 80, 60))
-		end)
-		local signPart = part(decor, Vector3.new(9, 2, 0.4), CFrame.new(-I + 1, 7, zEnd - 14) * CFrame.Angles(0, math.rad(90), 0), RGB(120, 80, 50), Enum.Material.Wood)
-		sign(signPart, Enum.NormalId.Back, "👴", RGB(255, 230, 160), 24)
-		prop(decor, Vector3.new(B, 0, z0 + 30), 0.7, 0, function(m)
-			local shed = part(m, Vector3.new(10, 8, 8), CFrame.new(0, 4, 0), RGB(120, 160, 110), Enum.Material.WoodPlanks)
-			wedge(m, Vector3.new(10.4, 2.6, 8.4), shed.CFrame * CFrame.new(0, 5.3, 0) * CFrame.Angles(0, math.rad(90), 0), RGB(150, 70, 60))
-			part(m, Vector3.new(3, 5, 0.3), CFrame.new(-0.0, 2.5, -4.1), RGB(90, 60, 40), Enum.Material.Wood)
-		end)
-		mailbox(decor, Vector3.new(-(I - 3), 0, zEnd - 26))
-		for _ = 1, 10 do
-			flowers(decor, inside(), 1.6)
-		end
-	elseif tier == 2 then -- Neighborhood
-		road(decor, z0, depth, 22)
-		sides(function(s)
-			part(decor, Vector3.new(5, 0.5, depth), CFrame.new(s * 13.5, 0.25, z0 + depth / 2), RGB(205, 205, 210), Enum.Material.Concrete)
-		end)
-		local colors = { RGB(255, 245, 220), RGB(190, 225, 255), RGB(255, 210, 220), RGB(210, 255, 210), RGB(255, 235, 170), RGB(230, 210, 255) }
-		local roofs = { RGB(190, 60, 55), RGB(70, 80, 110), RGB(120, 80, 60), RGB(60, 120, 80) }
-		local i = 0
-		for z = z0 + 16, zEnd - 12, 22 do
-			sides(function(s)
-				i += 1
-				prop(decor, Vector3.new(s * B, 0, z), 0.55, s > 0 and 0 or 180, function(m) -- front faces the road
-					house(m, Vector3.zero, -1, colors[(i % #colors) + 1], roofs[(i % #roofs) + 1])
-				end)
-				mailbox(decor, Vector3.new(s * (I + 1), 0, z - 5), colors[((i + 2) % #colors) + 1]:Lerp(RGB(0, 0, 0), 0.4))
-				bush(decor, Vector3.new(s * (I + 2), 0, z + 6), 0.7)
-			end)
-			sides(function(s)
-				lamp(decor, Vector3.new(s * 16, 0, z + 11))
-			end)
-		end
-	elseif tier == 3 then -- Downtown
-		road(decor, z0, depth, 30)
-		sides(function(s)
-			part(decor, Vector3.new(7, 0.5, depth), CFrame.new(s * 18.5, 0.25, z0 + depth / 2), RGB(195, 195, 200), Enum.Material.Concrete)
-		end)
-		for x = -12, 12, 5 do
-			deco(decor, Vector3.new(2.5, 0.24, 8), CFrame.new(x, 0.14, z0 + depth / 2), RGB(250, 250, 250))
-		end
-		local palette = { RGB(200, 120, 100), RGB(150, 160, 190), RGB(220, 200, 160), RGB(120, 130, 150), RGB(180, 150, 200), RGB(110, 170, 160) }
-		for z = z0 + 10, zEnd - 9, 19 do
-			sides(function(s)
-				tower(decor, Vector3.new(s * B, 0, z), 15, math.random(22, 48), 16, palette[math.random(1, #palette)], RGB(255, 230, 150))
-			end)
-		end
-		for z = z0 + 12, zEnd - 10, 26 do
-			sides(function(s)
-				lamp(decor, Vector3.new(s * 21, 0, z), RGB(255, 245, 210))
-			end)
-		end
-		for _ = 1, 6 do
-			cone(decor, Vector3.new(math.random(-12, 12), 0, math.random(z0 + 8, zEnd - 8)))
-		end
-	elseif tier == 4 then -- Harbor
-		if not MapDecor.UsingTerrain then
-			local sea = deco(decor, Vector3.new(16, 0.6, depth), CFrame.new(e - 8, 0.1, z0 + depth / 2), RGB(40, 140, 220), Enum.Material.Glass)
-			sea.Transparency = 0.15
-		end
-		for z = z0 + 20, zEnd - 20, 40 do
-			part(decor, Vector3.new(20, 0.8, 6), CFrame.new(e - 12, 0.6, z), RGB(150, 105, 60), Enum.Material.WoodPlanks)
-			barrel(decor, Vector3.new(e - 20, 0.9, z + 1))
-		end
-		for z = z0 + 18, zEnd - 18, 34 do
-			tower(decor, Vector3.new(-B, 0, z), 15, 12, 22, RGB(150, 70, 60), RGB(255, 220, 140), Enum.Material.Brick)
-			crate(decor, Vector3.new(-(I + 1), 0, z + 14))
-			crate(decor, Vector3.new(-(I + 1), 5, z + 14))
-			barrel(decor, Vector3.new(-(I - 1), 0, z - 13))
-		end
-		prop(decor, Vector3.new(B - 4, 0, zEnd - 16), 0.6, 0, function(m)
-			part(m, Vector3.new(36, 12, 12), upright(Vector3.zero, 36), RGB(245, 245, 245), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
-			for _, y in ipairs({ 6, 18, 30 }) do
-				part(m, Vector3.new(5, 12.4, 12.4), CFrame.new(0, y, 0) * CFrame.Angles(0, 0, math.rad(90)), RGB(220, 50, 50), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+			local kind = kinds[(i % #kinds) + 1]
+			local ok, err = pcall(smallProp, decor, kind, Vector3.new(s * (edge - math.random(0, 6)), 0, z + math.random(-6, 6)))
+			if not ok then
+				warn("[MapDecor] prop " .. kind .. " failed: " .. tostring(err))
 			end
-			local light = deco(m, Vector3.one * 7, CFrame.new(0, 40, 0), RGB(255, 240, 150), Enum.Material.Neon, Enum.PartType.Ball)
-			local pl = Instance.new("PointLight")
-			pl.Range = 40
-			pl.Brightness = 2
-			pl.Parent = light
-		end)
-	elseif tier == 5 then -- Skyline
-		local neon = { RGB(255, 80, 200), RGB(80, 220, 255), RGB(180, 120, 255), RGB(255, 200, 80) }
-		for z = z0 + 14, zEnd - 12, 26 do
-			sides(function(s)
-				local body = tower(decor, Vector3.new(s * B, 0, z), 15, math.random(55, 110), 18, RGB(70, 90, 130), neon[math.random(1, #neon)], Enum.Material.Glass)
-				body.Reflectance = 0.15
-			end)
 		end
-		sides(function(s)
-			deco(decor, Vector3.new(0.8, 0.2, depth), CFrame.new(s * I, 0.12, z0 + depth / 2), RGB(200, 90, 255), Enum.Material.Neon)
-		end)
-	elseif tier == 6 then -- Summit
-		for z = z0 + 20, zEnd - 20, 36 do
-			sides(function(s)
-				rock(decor, Vector3.new(s * (e - 8), 10, z), Vector3.new(16, 26, 22), RGB(110, 105, 105), true)
-				pine(decor, Vector3.new(s * (I + 1), 0, z + 18), 0.75)
-			end)
-		end
-		for _ = 1, 8 do
-			pine(decor, inside(), 0.55)
-		end
-		for _ = 1, 14 do
-			deco(decor, Vector3.new(math.random(2, 5), 0.5, math.random(2, 5)), CFrame.new(inside() + Vector3.new(0, 0.25, 0)), RGB(250, 252, 255), Enum.Material.Snow)
+	end
+	if tier == 10 then -- a starry sky feeling: little glowing dots on the walls
+		for _ = 1, 30 do
+			local s = math.random() < 0.5 and -1 or 1
+			deco(decor, Vector3.one * 0.6, CFrame.new(s * (width / 2 - 0.5), math.random(6, 36), math.random(z0 + 4, z0 + depth - 4)), RGB(255, 255, 255), Enum.Material.Neon, Enum.PartType.Ball)
 		end
 	end
 end
@@ -842,30 +698,12 @@ function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 		deco(decor, Vector3.new(8, 0.15, (Vector3.new(gate.X, 0, gate.Z) - toward).Magnitude + 2), CFrame.lookAt((Vector3.new(gate.X, 0.12, gate.Z) + toward + Vector3.new(0, 0.12, 0)) / 2 + Vector3.new(0, 0.06, 0), toward + Vector3.new(0, 0.18, 0)), RGB(205, 198, 185), Enum.Material.Cobblestone)
 	end
 
-	-- small fountain between the spawn and the VIP lounge
-	local center = Vector3.new(0, 0, -68)
-	part(decor, Vector3.new(1.6, 18, 18), CFrame.new(center + Vector3.new(0, 0.8, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(225, 225, 235), Enum.Material.Marble, Enum.PartType.Cylinder)
-	local water = deco(decor, Vector3.new(0.3, 15.6, 15.6), CFrame.new(center + Vector3.new(0, 1.65, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(80, 190, 255), Enum.Material.Glass, Enum.PartType.Cylinder)
-	water.Transparency = 0.2
-	part(decor, Vector3.new(5, 2, 2), CFrame.new(center + Vector3.new(0, 4, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(235, 235, 245), Enum.Material.Marble, Enum.PartType.Cylinder)
-	local orb = deco(decor, Vector3.one * 3, CFrame.new(center + Vector3.new(0, 7.8, 0)), RGB(120, 230, 255), Enum.Material.Neon, Enum.PartType.Ball)
-	local spray = Instance.new("ParticleEmitter")
-	spray.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-	spray.Color = ColorSequence.new(RGB(160, 230, 255))
-	spray.Rate = 18
-	spray.Speed = NumberRange.new(6, 9)
-	spray.SpreadAngle = Vector2.new(25, 25)
-	spray.Acceleration = Vector3.new(0, -25, 0)
-	spray.Lifetime = NumberRange.new(0.7, 1)
-	spray.Size = NumberSequence.new(0.45, 0)
-	spray.Parent = orb
-
 	-- small lamps around the ring, bushes & flowers in the plaza, a row of trees along the back wall
 	for k = 0, 6 do
 		local a = math.rad(195 + k * 25)
 		lamp(decor, Vector3.new(math.cos(a) * (ringR - 8), 0, math.sin(a) * (ringR - 8)))
 	end
-	for _, p in ipairs({ Vector3.new(-30, 0, -14), Vector3.new(30, 0, -14), Vector3.new(-70, 0, -100), Vector3.new(70, 0, -100) }) do
+	for _, p in ipairs({ Vector3.new(-205, 0, -20), Vector3.new(205, 0, -20) }) do
 		bush(decor, p, 0.9)
 	end
 	flowers(decor, Vector3.new(-22, 0, -48), 3)

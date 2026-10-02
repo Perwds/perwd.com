@@ -49,13 +49,45 @@ function Formulas.ItemBaseIncome(item)
 	end
 	local rarity = RarityConfig.GetRarity(def.Rarity)
 	local variant = RarityConfig.GetVariant(item.V)
-	return def.BaseIncome * rarity.IncomeMult * variant.Mult
+	return def.BaseIncome * rarity.IncomeMult * variant.Mult * (item.Z or 1)
+end
+
+-- Size entry ({ Name, Mult, ... } from GameConfig.Sizes) closest to a size multiplier.
+function Formulas.SizeInfo(z)
+	z = z or 1
+	local best, bestDiff = GameConfig.Sizes[3], math.huge
+	for _, entry in ipairs(GameConfig.Sizes) do
+		local d = math.abs(entry.Mult - z)
+		if d < bestDiff then
+			best, bestDiff = entry, d
+		end
+	end
+	return best
 end
 
 function Formulas.ItemName(item)
 	local def = ObjectConfig.Get(item.Id)
 	local variant = RarityConfig.GetVariant(item.V)
-	return variant.Prefix .. (def and def.Name or item.Id)
+	local size = Formulas.SizeInfo(item.Z)
+	local sizePrefix = size.Name ~= "Normal" and (size.Name .. " ") or ""
+	return sizePrefix .. variant.Prefix .. (def and def.Name or item.Id)
+end
+
+-- Weight in kg (just for show: bigger objects weigh a LOT more).
+function Formulas.ItemWeight(item)
+	local def = ObjectConfig.Get(item.Id)
+	local size = def and def.Size or Vector3.new(3, 3, 3)
+	local base = def and def.WeightKg or (size.X * size.Y * size.Z * 0.5)
+	local z = item.Z or 1
+	return base * z * z * z
+end
+
+function Formulas.FormatWeight(kg)
+	if kg >= 1000 then
+		local t = kg / 1000
+		return (t >= 100 and string.format("%d", math.floor(t)) or string.format("%.1f", t)) .. " t"
+	end
+	return (kg >= 10 and string.format("%d", math.floor(kg)) or string.format("%.1f", kg)) .. " kg"
 end
 
 -- Items sorted best-first (stable on uid). Returns a new array.
@@ -92,6 +124,26 @@ function Formulas.TrailSpeed(data, passes)
 	return 1
 end
 
+-- ── Speed training ───────────────────────────────────────────────────
+-- Extra walk speed from training points (x2 with the 2x Speed pass).
+function Formulas.SpeedBonus(data, passes)
+	local cfg = GameConfig.Training
+	local bonus = math.min(cfg.MaxBonus, cfg.PointsFactor * math.sqrt(math.max(0, data.SpeedPoints or 0)))
+	if passes and passes.DoubleSpeed then
+		bonus *= 2
+	end
+	return bonus
+end
+
+-- Speed points per second while standing on your treadmill.
+function Formulas.TrainingRate(data, passes)
+	local rate = Formulas.UpgradeValue("Treadmill", data.Upgrades.Treadmill or 1)
+	if passes and passes.DoubleSpeed then
+		rate *= 2
+	end
+	return rate
+end
+
 -- ── Ray stats ────────────────────────────────────────────────────────
 -- passes: set of owned gamepass keys
 function Formulas.RayStats(data, passes)
@@ -118,7 +170,7 @@ function Formulas.RayStats(data, passes)
 	if passes.ExtraPedestals then
 		pedestals += 20
 	end
-	local walk = Formulas.UpgradeValue("Speed", up.Speed or 1)
+	local walk = GameConfig.BaseWalkSpeed + Formulas.SpeedBonus(data, passes)
 	if passes.SpeedBoots then
 		walk += GameConfig.SpeedBootsBonus
 	end
@@ -210,12 +262,26 @@ function Formulas.IndexIncomeBonus(data)
 end
 
 -- ── Boxes ────────────────────────────────────────────────────────────
-function Formulas.BoxOpenSeconds(id, variant)
+-- box = { R = box rarity, T = zone tier, V = variant or nil }  (old saves: { Id, V })
+function Formulas.BoxRarity(box)
+	if box.R then
+		return box.R, box.T or 1
+	end
+	local def = ObjectConfig.Get(box.Id)
+	return def and def.Rarity or "Common", def and def.Tier or 1
+end
+
+function Formulas.BoxOpenSeconds(box)
 	local cfg = GameConfig.Boxes
-	local def = ObjectConfig.Get(id)
-	local rarity = def and def.Rarity or "Common"
-	local seconds = (cfg.OpenSeconds[rarity] or 10) + cfg.SecondsPerTier * (def and def.Tier or 1)
-	return seconds + (cfg.VariantExtra[variant] or 0)
+	local rarity, tier = Formulas.BoxRarity(box)
+	local seconds = (cfg.OpenSeconds[rarity] or 10) + cfg.SecondsPerTier * tier
+	return seconds + (cfg.VariantExtra[box.V or "Normal"] or 0)
+end
+
+function Formulas.BoxName(box)
+	local rarity = Formulas.BoxRarity(box)
+	local variant = RarityConfig.GetVariant(box.V)
+	return variant.Prefix .. rarity .. " Box"
 end
 
 function Formulas.BoxSkipGems(secondsLeft)

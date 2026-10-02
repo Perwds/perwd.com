@@ -33,6 +33,9 @@ local ORDER = {
 	"Rebirth",
 	"Reward",
 	"Cosmetic",
+	"Speed",
+	"PvP",
+	"Chat",
 	"InfinitePack",
 	"Raid",
 	"Leaderboard",
@@ -71,7 +74,7 @@ for _, name in ipairs(ORDER) do
 end
 
 local function onPlayerAdded(player)
-	-- 8-player game (one plot each). Roblox's Max Players setting should already stop a 9th player;
+	-- one plot per player. Roblox's Max Players setting should already stop a 9th player;
 	-- this is a safety net in case it was left at the default.
 	if #Players:GetPlayers() > GameConfig.MaxPlayers then
 		player:Kick("This server is full (" .. GameConfig.MaxPlayers .. " players max). Please join another server!")

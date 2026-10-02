@@ -21,14 +21,14 @@ Names in Studio must match the file names (without the extensions).
 |---|---|---|
 | **ReplicatedStorage › Shared** | Folder | `src/ReplicatedStorage/Shared/` |
 | ↳ Config › GameConfig | ModuleScript | `Config/GameConfig.lua`: global tuning, raid, sounds |
-| ↳ Config › TierConfig | ModuleScript | `Config/TierConfig.lua`: 6 size tiers, areas, gate costs |
+| ↳ Config › TierConfig | ModuleScript | `Config/TierConfig.lua`: the 10 zones (name, color, depth, spawn count) |
 | ↳ Config › ObjectConfig | ModuleScript | `Config/ObjectConfig.lua`: every object + custom-object lookup |
 | ↳ Config › RarityConfig | ModuleScript | `Config/RarityConfig.lua`: rarities + variants |
 | ↳ Config › UpgradeConfig | ModuleScript | `Config/UpgradeConfig.lua`: upgrades, rebirth, token upgrades |
 | ↳ Config › MonetizationConfig | ModuleScript | `Config/MonetizationConfig.lua`: 🔧 pass/product IDs, skins, gem shop |
 | ↳ Config › RewardConfig | ModuleScript | `Config/RewardConfig.lua`: gifts, daily, index, likes, codes, Infinite Pack |
 | ↳ Config › EventConfig | ModuleScript | `Config/EventConfig.lua`: rotating events, event objects |
-| ↳ Config › ChaserConfig | ModuleScript | `Config/ChaserConfig.lua`: the 6 chasers (names, speeds, looks, lines) |
+| ↳ Config › ChaserConfig | ModuleScript | `Config/ChaserConfig.lua`: the 10 chasers (names, speeds, looks, lines) + rage settings |
 | ↳ ObjectModels | ModuleScript | `ObjectModels.lua`: the 3D models for every object (world + menu previews) |
 | ↳ Format | ModuleScript | `Format.lua`: 14.3k / 1.2M / 4.5B, timers |
 | ↳ Formulas | ModuleScript | `Formulas.lua`: shared math (costs, stats, income) |
@@ -37,11 +37,11 @@ Names in Studio must match the file names (without the extensions).
 | ↳ Remotes | ModuleScript | `Remotes.lua`: creates / finds all remotes |
 | **ServerScriptService › Main** | Script | `src/ServerScriptService/Main.server.lua` |
 | **ServerScriptService › Services** | Folder | `src/ServerScriptService/Services/` |
-| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, CosmeticService, ModelFactory, MapDecor | ModuleScripts | one file each |
+| ↳ SessionService, DataService, NetService, MapService, MonetizationService, EventService, EconomyService, MuseumService, IndexService, AreaService, SpawnService, ShrinkService, UpgradeService, RebirthService, RewardService, InfinitePackService, RaidService, LeaderboardService, CarryService, CosmeticService, SpeedService, PvPService, ChatService, ModelFactory, MapDecor | ModuleScripts | one file each |
 | **StarterPlayer › StarterPlayerScripts › ClientMain** | LocalScript | `src/StarterPlayerScripts/ClientMain.client.lua` |
 | **StarterPlayer › StarterPlayerScripts › ClientModules** | Folder | `src/StarterPlayerScripts/ClientModules/` |
-| ↳ State, UIKit, HUD, Effects, RayController, Prices | ModuleScripts | one file each |
-| ↳ Menus › GiftsMenu, InfinitePackMenu, ShopMenu, IndexMenu, RebirthMenu, MuseumMenu, UpgradesMenu, SellMenu, FuseMenu, TrailsMenu | ModuleScripts | one file each |
+| ↳ State, UIKit, HUD, Effects, RayController, Prices, Audio | ModuleScripts | one file each |
+| ↳ Menus › GiftsMenu, InfinitePackMenu, ShopMenu, IndexMenu, RebirthMenu, MuseumMenu, UpgradesMenu, SellMenu, FuseMenu, TrailsMenu, SettingsMenu | ModuleScripts | one file each |
 | **StarterGui** | (nothing) | The UI is built in code (`ScreenGui` with `ResetOnSpawn = false`), so StarterGui stays empty. |
 
 ### Install option A: Rojo (recommended)
@@ -91,6 +91,11 @@ so nothing needs uploading. See `ObjectModels` (all 31 objects), `MapService` (m
       and saves it as **ReplicatedStorage › ShrinkableTemplates › `<ObjectId>`**. They're used in the world, on the
       pedestals AND in the menu previews, auto-scaled. Look them over: delete or replace any you don't like (keep the
       name), tweak `SEARCH` in the script and run it again for the missing ones. Then **Publish/Save**.
+- [ ] **Royal Crate**: create 2 Developer Products (1 crate, 3 crates) and paste their ids into
+      `MonetizationConfig.Products.RoyalCrate` / `RoyalCrate3`. Also the **2x Speed** gamepass id (`GamePasses.DoubleSpeed`).
+      (In Studio the crate shows as unavailable: Studio can't check PolicyService. It works in a live game.)
+- [ ] **Ambient sounds** (optional): Toolbox → Audio → creator "Roblox", search "birds", "city", "ocean", "wind"…,
+      copy the ids into `GameConfig.Ambient` (one per zone, `Base` = safe zone).
 - [ ] **Trail Robux products**: create 8 Developer Products (Green … Eternal Trail) and paste their ids into
       `MonetizationConfig.Products.TrailGreen … TrailEternal` (purple buttons in the Trail Shop).
 
@@ -143,24 +148,34 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 |---|---|
 | Hold-to-charge Shrink Ray, beam, squash + fly-to-pocket tween, pop sound, particles | `RayController`, `Effects`, `ShrinkService` |
 | Shrink ANY object at any Ray Power — more power = faster charge (hover shows the charge time) | `Formulas`, `RayController`, `ShrinkService` |
-| Compact map: a walled base with ONE gate leading into a short corridor of 6 themed zones (~960 studs) | `MapService`, `MapDecor`, `TierConfig` |
-| Mystery boxes: shrinking gives a rarity-colored BOX; carry it home, PLACE it on one of your pedestals (prompt), it opens after a timer (skip with Gems), then earns. Pick up / place objects yourself | `CarryService`, `MuseumService`, `GameConfig.Boxes` |
+| Map: a walled base with ONE gate into a corridor of **10 themed zones** (Backyard → Outer Space), only small props along the walls so the middle is wide open | `MapService`, `MapDecor`, `TierConfig` |
+| **Mystery boxes everywhere**: zones are full of rarity-colored boxes. Everyone sees the same boxes; when you take one it disappears only for you (up to `GameConfig.Boxes.MaxClaims` players can take each). Rare boxes are announced with their zone | `SpawnService`, `Effects` |
+| Place a box on your pedestal → it opens after a timer (skip with Gems) into a **random** object of that zone (rarer box = rarer objects) with a random **size & weight** (Tiny 0.6x … Colossal 5x income) | `MuseumService`, `SpawnService.RollContents`, `GameConfig.Sizes` |
+| Pick up an object from a pedestal → you **hold it above your head at its real size**; place it on another pedestal. ⭐ Equip Best (right side) fills your pedestals | `CarryService`, `MuseumService`, `HUD` |
+| Hover over anyone's pedestal object to see its income, weight, size and owner | `Effects` |
 | Fair base: 6 fenced plots in a semicircle around the gate, all exactly the same distance from it | `MapService` |
 | Base: SELL stall, a big blue **Fuse Machine** (3 slots → pipes → result), TRAILS & SHOP stalls (ProximityPrompts) | `MapDecor`, `SellMenu`, `FuseMenu`, `TrailsMenu`, `CosmeticService` |
 | **Trail Shop**: 10 trails that make you run faster (x1.05 … x1.6), bought with Coins or Robux; sideways card row | `TrailsMenu`, `CosmeticService`, `MonetizationConfig.Trails` |
 | Studded LEGO-style map (bright green studs, brown dirt walls, X-fences, painted SAFE ZONE line); `GameConfig.Studs = false` turns studs off | `MapDecor.Studify`, `MapService` |
+| **Chasers** (10, much faster: 28 → 66 speed): each zone's owner chases you. Caught → your boxes fall on the ground and the chaser walks home; grab them back before they vanish and the chaser gets **ENRAGED** (faster every time) | `CarryService`, `ChaserConfig` |
+| **Speed training**: stand on the treadmill outside your plot (AFK works, anti-idle included) to earn speed; upgrade the Treadmill to train faster; **2x Speed** gamepass | `SpeedService`, `UpgradeConfig.Treadmill`, `GameConfig.Training` |
+| **Bat & Trap** for everyone: whack a player carrying something outside the safe zone to steal it; traps freeze whoever steps in them | `PvPService`, `GameConfig.PvP` |
+| **Chat tabs**: 🌍 Global (all servers, filtered), 📍 Here (nearby), 👥 Friends | `ChatService` |
+| **Royal Crate** (Robux): 5 exclusive objects that never spawn, odds shown in the Shop, blocked where paid random items are restricted | `MonetizationService`, `ShopMenu`, `MonetizationConfig.RoyalCrate` |
+| ⚙️ Settings (top bar): sound / ambience / music volume, other players' trails, low graphics, auto shrink | `SettingsMenu`, `Audio`, `Effects` |
+| Sound effects (built-in Roblox sounds) + ambient loops per zone (paste ids in `GameConfig.Ambient`) | `Audio`, `GameConfig.Sounds` |
+| Rebirth keeps ALL your objects, pedestals and speed | `RebirthService` |
 | Sleeping zone owners (💤) in every zone | `CarryService` |
-| Chasers: each zone's owner chases you when you grab something; get caught = drop everything | `CarryService`, `ChaserConfig` |
 | Rarities, variants (Golden x5, Diamond x10, Rainbow x25, Cosmic x100) with glow; luck-weighted rolls | `RarityConfig`, `SpawnService`, `ModelFactory` |
 | Event objects with server-wide announcement | `EventService`, `SpawnService` |
 | Pocket Museum: plots, pedestals, glass cases, "+$" floating text | `MuseumService`, `Effects` |
-| Upgrades: Ray Power, Run Speed, Carry Capacity, Charge Speed, Range, Luck, Museum Size | `UpgradeConfig`, `UpgradeService` |
+| Upgrades: Ray Power, Treadmill, Carry Capacity, Charge Speed, Range, Luck, Museum Size | `UpgradeConfig`, `UpgradeService` |
 | Rebirth (multiplier, Gems, Tokens) + permanent Token upgrades | `RebirthService` |
 | The Index with per-area completion rewards (Normal set + full variant set) | `IndexService`, `IndexMenu` |
 | Museum Raids (opt-in, max Ray Power, copies only, shield, revenge window + bonus) | `RaidService` |
 | Free playtime gifts (12, session-based, Huge chance on the last ones) | `RewardService`, `GiftsMenu` |
 | Infinite Pack (endless, FREE/R$ pattern, refresh timer, preview row, odds display) | `InfinitePackGen`, `InfinitePackService`, `InfinitePackMenu` |
-| 15 Gamepasses, 11 Developer Products + 3 pack tiers, idempotent `ProcessReceipt` | `MonetizationService` |
+| 16 Gamepasses, 11 Developer Products + Royal Crate + 8 trail products + 3 pack tiers, idempotent `ProcessReceipt` | `MonetizationService` |
 | Like-goal sign → codes, global leaderboards, rotating 30-minute events, daily streak | `RewardService`, `LeaderboardService`, `EventService` |
 | Session-locked saving with autosave, save on leave, and BindToClose | `DataService` |
 

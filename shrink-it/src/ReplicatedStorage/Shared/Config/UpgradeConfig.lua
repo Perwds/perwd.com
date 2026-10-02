@@ -7,7 +7,7 @@
 
 local UpgradeConfig = {}
 
-UpgradeConfig.Order = { "RayPower", "Speed", "MultiShrink", "ChargeSpeed", "Range", "Luck", "MuseumSize" }
+UpgradeConfig.Order = { "RayPower", "Treadmill", "MultiShrink", "ChargeSpeed", "Range", "Luck", "MuseumSize" }
 
 UpgradeConfig.Upgrades = {
 	RayPower = {
@@ -24,18 +24,18 @@ UpgradeConfig.Upgrades = {
 			return "Lv " .. v
 		end,
 	},
-	Speed = {
-		Name = "Run Speed",
-		Description = "Run faster so the chasers can't catch you.",
-		Emoji = "👟",
-		MaxLevel = 20,
+	Treadmill = {
+		Name = "Treadmill",
+		Description = "Stand on the treadmill in your plot (AFK works!) to train speed. Upgrade = faster training.",
+		Emoji = "🏃",
+		MaxLevel = 30,
 		BaseCost = 150,
 		CostGrowth = 2.05,
-		Value = function(level)
-			return 24 + 1.2 * (level - 1)
+		Value = function(level) -- speed points per second while on the treadmill
+			return math.floor(level ^ 1.7 * 10 + 0.5) / 10
 		end,
 		Format = function(v)
-			return string.format("%.1f speed", v)
+			return v .. " pts/s"
 		end,
 	},
 	ChargeSpeed = {

@@ -1,7 +1,7 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > UpgradeService (ModuleScript)
 
-	Coin upgrades (Ray Power, Charge Speed, Range, Luck, Multi-Shrink, Museum Size)
+	Coin upgrades (Ray Power, Treadmill, Charge Speed, Range, Luck, Carry Capacity, Museum Size)
 	and Rebirth-Token upgrades. Costs come from UpgradeConfig via Formulas.
 ]]
 
@@ -50,9 +50,7 @@ function UpgradeService.Start()
 		if id == "MuseumSize" or id == "MultiShrink" then
 			Svc.Museum.Recompute(player)
 		end
-		if id == "Speed" then
-			Svc.Monetization.ApplyMovement(player)
-		end
+
 		Svc.Economy.UpdateIncome(player)
 		Svc.Data.MarkDirty(player)
 		return { ok = true }

@@ -8,8 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v9 (studs)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 9 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v10 (crates)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 10 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -47,22 +47,82 @@ GameConfig.Studs = true
 -- (Normal → Golden → Diamond → Rainbow → Cosmic).
 GameConfig.Fuse = { Count = 3 }
 
--- Mystery boxes: shrinking gives you a BOX. Carry it home, place it on one of your pedestals,
--- and it opens after OpenSeconds[rarity] + SecondsPerTier * tier + VariantExtra[variant] seconds.
+-- ── Mystery boxes ───────────────────────────────────────────────────
+-- The zones are full of mystery BOXES (crates). A box has a rarity (its color) but you don't know
+-- what's inside. Shrink it, carry it home, place it on one of your pedestals and it opens after
+--   OpenSeconds[box rarity] + SecondsPerTier * zone + VariantExtra[variant]   seconds.
+-- When it opens, a RANDOM object of that zone is rolled: better boxes (RarityBoost) make rarer
+-- objects more likely, your Luck makes Golden/Diamond/... variants and bigger sizes more likely.
 -- "Open now" on the pedestal skips the wait for 1 Gem per SecondsPerGem seconds left.
 GameConfig.Boxes = {
 	OpenSeconds = { Common = 8, Uncommon = 15, Rare = 30, Epic = 60, Legendary = 120, Mythic = 240, Secret = 480 },
 	SecondsPerTier = 4,
 	VariantExtra = { Golden = 10, Diamond = 20, Rainbow = 40, Cosmic = 90 },
 	SecondsPerGem = 10,
+	-- object-rarity weights are multiplied by RarityBoost[box] ^ (objectRarityOrder - 1)
+	RarityBoost = { Common = 1, Uncommon = 1.5, Rare = 2.2, Epic = 3.2, Legendary = 4.5, Mythic = 6.5, Secret = 9 },
+	AnnounceFrom = "Legendary", -- boxes this rare (or rarer) are announced to the whole server when they spawn
+	-- Everyone sees the SAME boxes. When someone shrinks one it disappears only for THEM;
+	-- up to MaxClaims different players can take the same box before it's gone for everybody.
+	MaxClaims = 4,
+	Lifetime = 240, -- seconds a box stays before it's replaced by a new one
 }
+
+-- ── Sizes & weight ─────────────────────────────────────────────────
+-- Every opened object gets a random SIZE. Bigger = earns more (Mult) and weighs more.
+-- On a pedestal everything is shown at the same size; when you HOLD it above your head
+-- (pick it up from a pedestal) it's shown at its real size.
+-- Luck makes the sizes marked Lucky = true more likely.
+GameConfig.Sizes = {
+	{ Name = "Tiny", Mult = 0.6, Weight = 18 },
+	{ Name = "Small", Mult = 0.8, Weight = 26 },
+	{ Name = "Normal", Mult = 1, Weight = 36 },
+	{ Name = "Big", Mult = 1.4, Weight = 12, Lucky = true },
+	{ Name = "Huge", Mult = 2, Weight = 5, Lucky = true },
+	{ Name = "Giant", Mult = 3, Weight = 1.5, Lucky = true },
+	{ Name = "Colossal", Mult = 5, Weight = 0.3, Lucky = true },
+}
+GameConfig.HoldBaseSize = 3 -- studs: a Normal object held above your head is this big (x its size Mult)
+
 GameConfig.CarryDisplaySize = 2.6 -- size of each object stacked above your head -- extra targets must be within this distance of the main target
 GameConfig.ShrinkFxTime = 0.9 -- seconds the tween plays before the server removes the object
 GameConfig.AutoShrinkExtraDelay = 0.75
 
--- ── Movement ────────────────────────────────────────────────────────
+-- ── Movement & speed training ───────────────────────────────────────
 GameConfig.BaseWalkSpeed = 24
-GameConfig.SpeedBootsBonus = 8 -- added on top of the Run Speed upgrade
+GameConfig.SpeedBootsBonus = 8 -- gamepass, added on top
+-- Speed is TRAINED, not bought: stand on the treadmill in your plot (AFK is fine) to earn Speed
+-- points. Points per second = the Treadmill upgrade. Walk speed = Base + bonus, where
+--   bonus = min(MaxBonus, PointsFactor * sqrt(points))   (x2 with the "2x Speed" gamepass).
+GameConfig.Training = {
+	PointsFactor = 0.35,
+	MaxBonus = 120,
+	Tick = 1, -- seconds between point awards
+	OfflineFraction = 0, -- set e.g. 0.25 to keep training a bit while offline
+}
+
+-- ── PvP: bat & trap ────────────────────────────────────────────────
+-- Everyone gets a Bat and a Trap. Hitting a player who is CARRYING something outside the safe
+-- zone steals the top thing they carry (box or held object). They must meet the requirement:
+GameConfig.PvP = {
+	MinRebirthsToBeStolenFrom = 0, -- victim needs at least this many rebirths (0 = everyone)
+	MinRebirthsToSteal = 0, -- attacker needs at least this many rebirths
+	BatRange = 8,
+	BatCooldown = 1.2,
+	BatKnockback = 45,
+	StunSeconds = 1.2,
+	TrapStunSeconds = 2.5,
+	TrapCooldown = 20,
+	TrapLifetime = 60,
+	MaxTraps = 2,
+	ProtectAfterSteal = 5, -- seconds a robbed player can't be robbed again
+}
+
+-- ── Chat ──────────────────────────────────────────────────────────
+GameConfig.Chat = {
+	HereRadius = 90, -- "Here" channel: only players this close hear you
+	GlobalCrossServer = true, -- "Global" also reaches every other server (filtered, via MessagingService)
+}
 
 -- ── VIP ─────────────────────────────────────────────────────────────
 GameConfig.VIP = {
@@ -103,13 +163,32 @@ GameConfig.Raid = {
 GameConfig.LeaderboardRefresh = 120
 GameConfig.LeaderboardSize = 10
 
--- ── Sounds (🔧 REPLACE with your own asset ids if you like) ───────────
+-- ── Sounds ───────────────────────────────────────────────────────────
+-- Sound effects use Roblox's BUILT-IN sounds (work right away). 🔧 REPLACE with your own ids if you like.
 GameConfig.Sounds = {
-	Pop = "rbxasset://sounds/electronicpingshort.wav", -- 🔧 REPLACE: satisfying "pop"
-	Charge = "rbxasset://sounds/swoosh.wav", -- 🔧 REPLACE: charging hum
-	Click = "rbxasset://sounds/button.wav", -- 🔧 REPLACE: UI click
-	Reward = "rbxasset://sounds/victory.wav", -- 🔧 REPLACE: reward jingle
-	TooBig = "rbxasset://sounds/uuhhh.mp3", -- 🔧 REPLACE: error buzz
+	Pop = "rbxasset://sounds/electronicpingshort.wav",
+	Charge = "rbxasset://sounds/swoosh.wav",
+	Click = "rbxasset://sounds/button.wav",
+	Reward = "rbxasset://sounds/victory.wav",
+	TooBig = "rbxasset://sounds/uuhhh.mp3",
+	Hit = "rbxasset://sounds/swordslash.wav",
+	Whack = "rbxasset://sounds/collide.wav",
+	Trap = "rbxasset://sounds/snap.wav",
+	Swing = "rbxasset://sounds/swordlunge.wav",
+	Caught = "rbxasset://sounds/uuhhh.mp3",
+	Grab = "rbxasset://sounds/clickfast.wav",
+	Open = "rbxasset://sounds/electronicpingshort.wav",
+	Footstep = "rbxasset://sounds/action_footsteps_plastic.mp3",
+	Alarm = "rbxasset://sounds/electronicpingshort.wav",
+}
+-- Ambient (environment) loops per area. Roblox's own ambience sounds are in the Creator Store
+-- (Toolbox → Audio, creator "Roblox": search "birds", "wind", "city", "ocean", ...). 🔧 Paste ids here.
+-- Empty = no loop for that area. "Base" plays in the safe zone.
+GameConfig.Ambient = {
+	Base = "",
+	[1] = "", [2] = "", [3] = "", [4] = "", [5] = "",
+	[6] = "", [7] = "", [8] = "", [9] = "", [10] = "",
+	Volume = 0.35,
 }
 
 return GameConfig

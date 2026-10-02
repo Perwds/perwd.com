@@ -18,6 +18,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local ObjectModels = require(Shared.ObjectModels)
 local RarityConfig = require(Shared.Config.RarityConfig)
+local Formulas = require(Shared.Formulas)
 
 local ModelFactory = {}
 
@@ -126,10 +127,18 @@ end
 -- Moves a model so its bounding-box bottom-center sits at `position`, with a Y rotation.
 -- Mystery box for a shrunk object: rarity-colored crate with gold edges, a ribbon and "?" faces.
 -- Bigger tiers give bigger boxes; Golden/Diamond/... boxes sparkle in their variant color.
-function ModelFactory.CreateBox(id, variantName)
-	local def = ObjectConfig.Get(id) or { Tier = 1, Rarity = "Common" }
-	local rarity = RarityConfig.GetRarity(def.Rarity)
-	local size = 2.3 + 0.22 * (def.Tier or 1)
+-- box = { R = box rarity, T = zone tier, V = variant? } (or an old-style object id + variant)
+function ModelFactory.CreateBox(box, legacyVariant)
+	local rarityName, tier, variantName
+	if type(box) == "table" then
+		rarityName, tier = Formulas.BoxRarity(box)
+		variantName = box.V
+	else
+		local def = ObjectConfig.Get(box) or { Tier = 1, Rarity = "Common" }
+		rarityName, tier, variantName = def.Rarity, def.Tier, legacyVariant
+	end
+	local rarity = RarityConfig.GetRarity(rarityName)
+	local size = 2.3 + 0.18 * (tier or 1)
 	local model = Instance.new("Model")
 	model.Name = "Box"
 	local function piece(name, sz, cf, color, material)
@@ -184,6 +193,7 @@ function ModelFactory.CreateBox(id, variantName)
 		stroke.Parent = q
 	end
 	model.PrimaryPart = body
+	model:SetAttribute("BoxRarity", rarityName)
 	ModelFactory.ApplyVariant(model, variantName, false)
 	return model
 end

@@ -14,7 +14,7 @@ local MonetizationConfig = {}
 MonetizationConfig.PassOrder = {
 	"DoubleCoins", "DoubleLuck", "VIP", "AutoShrink", "InstantCharge", "MultiShrink3",
 	"ExtraPedestals", "GoldenRay", "CosmicHunter", "LongRange", "Teleport", "OfflineEarnings",
-	"SpeedBoots", "RainbowRay", "RaidShield",
+	"DoubleSpeed", "SpeedBoots", "RainbowRay", "RaidShield",
 }
 
 -- ── GAMEPASSES (one-time) ─────────────────────────────────────────────
@@ -31,6 +31,7 @@ MonetizationConfig.GamePasses = {
 	LongRange = { Id = 0, Name = "Long Range Ray", Emoji = "🔭", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "+50% ray range." }, -- 🔧 REPLACE Id
 	Teleport = { Id = 0, Name = "Teleport", Emoji = "🌀", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "Teleport to the start of any zone." }, -- 🔧 REPLACE Id
 	OfflineEarnings = { Id = 0, Name = "Offline Earnings", Emoji = "😴", Image = "rbxassetid://0", PriceLabel = "R$ 199", Description = "Earn 50% income while offline (8h max)." }, -- 🔧 REPLACE Id
+	DoubleSpeed = { Id = 0, Name = "2x Speed", Emoji = "⚡", Image = "rbxassetid://0", PriceLabel = "R$ 249", Description = "Double your trained speed AND train twice as fast." }, -- 🔧 REPLACE Id
 	SpeedBoots = { Id = 0, Name = "Speed Boots", Emoji = "👟", Image = "rbxassetid://0", PriceLabel = "R$ 79", Description = "+8 run speed. Outrun every chaser!" }, -- 🔧 REPLACE Id
 	RainbowRay = { Id = 0, Name = "Rainbow Ray Beam", Emoji = "🌈", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "Rainbow ray beam + rainbow trail (cosmetic)." }, -- 🔧 REPLACE Id
 	RaidShield = { Id = 0, Name = "Raid Shield", Emoji = "🛡️", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "3x longer raid protection, 2x revenge rewards." }, -- 🔧 REPLACE Id
@@ -43,6 +44,7 @@ MonetizationConfig.ProductOrder = {
 	"CoinsSmall", "CoinsMedium", "CoinsLarge", "GemsSmall", "GemsMedium", "GemsLarge",
 	"LuckPotion", "IncomePotion", "ServerLuck", "InstantRebirth", "SpawnGolden",
 }
+-- (RoyalCrate is shown on its own "Crates" tab in the Shop, with its odds)
 
 MonetizationConfig.Products = {
 	CoinsSmall = { Id = 0, Name = "Pile of Coins", Emoji = "💵", Image = "rbxassetid://0", PriceLabel = "R$ 49", Grant = { Type = "CoinsMinutes", Minutes = 30, Floor = 2_500 } }, -- 🔧 REPLACE Id
@@ -56,6 +58,10 @@ MonetizationConfig.Products = {
 	ServerLuck = { Id = 0, Name = "Server Luck Boost (30m)", Emoji = "🌠", Image = "rbxassetid://0", PriceLabel = "R$ 149", Grant = { Type = "ServerLuck", Minutes = 30 } }, -- 🔧 REPLACE Id
 	InstantRebirth = { Id = 0, Name = "Instant Rebirth", Emoji = "♻️", Image = "rbxassetid://0", PriceLabel = "R$ 99", Handler = "InstantRebirth" }, -- 🔧 REPLACE Id
 	SpawnGolden = { Id = 0, Name = "Spawn a Golden Object", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "SpawnGolden" }, -- 🔧 REPLACE Id
+
+	-- Royal Crate: one random exclusive from MonetizationConfig.RoyalCrate (odds shown in the Shop)
+	RoyalCrate = { Id = 0, Name = "Royal Crate", Emoji = "👑", PriceLabel = "R$ 99", Handler = "RoyalCrate", Hidden = true }, -- 🔧 REPLACE Id
+	RoyalCrate3 = { Id = 0, Name = "3x Royal Crate", Emoji = "👑", PriceLabel = "R$ 249", Handler = "RoyalCrate", Count = 3, Hidden = true }, -- 🔧 REPLACE Id
 
 	-- Trails bought with Robux (Trail Shop purple buttons). Hidden from the Shop list.
 	TrailGreen = { Id = 0, Name = "Green Trail", Emoji = "🟩", PriceLabel = "R$ 19", Handler = "Trail", Trail = "Green", Hidden = true }, -- 🔧 REPLACE Id
@@ -71,6 +77,20 @@ MonetizationConfig.Products = {
 	PackTier1 = { Id = 0, Name = "Infinite Pack Tile", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 25", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
 	PackTier2 = { Id = 0, Name = "Infinite Pack Tile+", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 59", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
 	PackTier3 = { Id = 0, Name = "Infinite Pack Tile++", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 99", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
+}
+
+-- ── Royal Crate (Robux only) ──────────────────────────────────────────
+-- 5 exclusive objects that NEVER spawn on the map. Chance = percent (must add up to 100; shown in the Shop).
+-- Players where Roblox restricts paid random items (PolicyService) can't buy it.
+MonetizationConfig.RoyalCrate = {
+	Name = "Royal Crate",
+	Items = {
+		{ Id = "KingDuck", Chance = 40 },
+		{ Id = "GoldenToilet", Chance = 30 },
+		{ Id = "NeonUnicorn", Chance = 18 },
+		{ Id = "DragonEgg", Chance = 9 },
+		{ Id = "GalaxyOrb", Chance = 3 },
+	},
 }
 
 -- ── Ray skins (cosmetic beam colors) ──────────────────────────────────

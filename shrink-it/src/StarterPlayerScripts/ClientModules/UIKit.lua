@@ -90,6 +90,7 @@ function UIKit.PlaySound(name, volume)
 	if not sound then
 		sound = Instance.new("Sound")
 		sound.SoundId = id
+		sound.SoundGroup = SoundService:FindFirstChild("SFX")
 		sound.Parent = SoundService
 		soundCache[name] = sound
 	end

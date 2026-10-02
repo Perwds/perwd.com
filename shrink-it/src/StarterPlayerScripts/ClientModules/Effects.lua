@@ -9,6 +9,10 @@
 	  • local gate & VIP-door passability (server still enforces positions)
 	  • raid visuals (museum building shrinks during a raid)
 	  • VIP chat tag
+	  • hides mystery boxes YOU already took (others can still see & take them)
+	  • hover info on anyone's pedestal objects (income + weight + owner)
+	  • PvP hit / steal / trap effects, chaser alarms, Global chat lines from other servers
+	  • settings: low graphics, hide other players' trails, anti-AFK while training on the treadmill
 ]]
 
 local CollectionService = game:GetService("CollectionService")
@@ -29,6 +33,7 @@ local Remotes = require(Shared.Remotes)
 local Modules = script.Parent
 local State = require(Modules.State)
 local HUD = require(Modules.HUD)
+local Audio = require(Modules.Audio)
 
 local Effects = {}
 
@@ -49,6 +54,7 @@ local function playSoundAt(position, soundId, volume)
 	s.Volume = volume or 0.6
 	s.RollOffMaxDistance = 250
 	s.PlaybackSpeed = 0.9 + math.random() * 0.3
+	s.SoundGroup = game:GetService("SoundService"):FindFirstChild("SFX")
 	s.Parent = att
 	s:Play()
 	task.delay(3, function()
@@ -130,6 +136,7 @@ local function playShrink(model, shooter, variantName, isCopy)
 		return
 	end
 	local subject = model
+	model:SetAttribute("LocalShrinking", true)
 	if isCopy then
 		subject = model:Clone()
 		subject.Parent = workspace
@@ -497,7 +504,230 @@ local function guideArrows()
 	end
 end
 
+-- ── boxes you already took are hidden for you only ───────────────────
+local function hideIfTaken(model)
+	if model:GetAttribute("LocalShrinking") then
+		return
+	end
+	if string.find(model:GetAttribute("Taken") or "", "," .. player.UserId .. ",", 1, true) then
+		model:Destroy() -- local only: other players still see it
+	end
+end
+
+local function watchBoxes()
+	local function hook(model)
+		if model:IsA("Model") then
+			hideIfTaken(model)
+			model:GetAttributeChangedSignal("Taken"):Connect(function()
+				task.delay(GameConfig.ShrinkFxTime + 0.3, function()
+					if model.Parent then
+						model:SetAttribute("LocalShrinking", nil)
+						hideIfTaken(model)
+					end
+				end)
+			end)
+		end
+	end
+	for _, m in ipairs(CollectionService:GetTagged("Shrinkable")) do
+		hook(m)
+	end
+	CollectionService:GetInstanceAddedSignal("Shrinkable"):Connect(hook)
+end
+
+-- ── hover info: point at anyone's pedestal object ────────────────────
+local function hoverInfo()
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "HoverInfo"
+	gui.ResetOnSpawn = false
+	gui.DisplayOrder = 20
+	gui.Parent = player:WaitForChild("PlayerGui")
+	local frame = Instance.new("Frame")
+	frame.Size = UDim2.fromOffset(250, 92)
+	frame.BackgroundColor3 = Color3.fromRGB(38, 40, 58)
+	frame.BackgroundTransparency = 0.1
+	frame.Visible = false
+	frame.Parent = gui
+	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 3
+	stroke.Color = Color3.fromRGB(20, 20, 30)
+	stroke.Parent = frame
+	local lines = {}
+	for i = 1, 4 do
+		local l = Instance.new("TextLabel")
+		l.BackgroundTransparency = 1
+		l.Size = UDim2.new(1, -16, 0, i == 1 and 26 or 20)
+		l.Position = UDim2.fromOffset(8, i == 1 and 4 or (10 + (i - 1) * 20))
+		l.Font = Enum.Font.FredokaOne
+		l.TextScaled = true
+		l.TextXAlignment = Enum.TextXAlignment.Left
+		l.TextColor3 = Color3.new(1, 1, 1)
+		l.Parent = frame
+		local st = Instance.new("UIStroke")
+		st.Thickness = 1.5
+		st.Parent = l
+		lines[i] = l
+	end
+	local mouse = player:GetMouse()
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	RunService.RenderStepped:Connect(function()
+		params.FilterDescendantsInstances = { player.Character }
+		local ray = mouse.UnitRay
+		local hit = workspace:Raycast(ray.Origin, ray.Direction * 400, params)
+		local node = hit and hit.Instance
+		local pedestal
+		while node and node ~= workspace do
+			if node:GetAttribute("PedestalSlot") then
+				pedestal = node
+				break
+			end
+			node = node.Parent
+		end
+		if pedestal and pedestal:GetAttribute("State") == "Item" then
+			local variant = RarityConfig.GetVariant(pedestal:GetAttribute("Variant"))
+			lines[1].Text = pedestal:GetAttribute("ItemName") or "?"
+			lines[1].TextColor3 = variant.Color or Color3.new(1, 1, 1)
+			lines[2].Text = "💰 +" .. Format.Coins(pedestal:GetAttribute("Income") or 0) .. "/s"
+			lines[2].TextColor3 = Color3.fromRGB(120, 255, 120)
+			lines[3].Text = "⚖️ " .. (pedestal:GetAttribute("Weight") or "?") .. "  ·  📏 " .. (pedestal:GetAttribute("SizeName") or "Normal")
+			local owner = pedestal:GetAttribute("OwnerUserId") == player.UserId and "You" or (pedestal:GetAttribute("OwnerName") or "?")
+			lines[4].Text = "👤 " .. owner
+			lines[4].TextColor3 = Color3.fromRGB(190, 200, 230)
+			frame.Position = UDim2.fromOffset(mouse.X + 18, mouse.Y + 10)
+			frame.Visible = true
+		else
+			frame.Visible = false
+		end
+	end)
+end
+
+-- ── PvP / chaser effects ─────────────────────────────────────────────
+local function popText(position, text, color)
+	local att = Instance.new("Attachment")
+	att.WorldPosition = position + Vector3.new(0, 3, 0)
+	att.Parent = workspace.Terrain
+	local gui = Instance.new("BillboardGui")
+	gui.Size = UDim2.fromOffset(220, 50)
+	gui.AlwaysOnTop = true
+	gui.Adornee = att
+	gui.Parent = att
+	local l = Instance.new("TextLabel")
+	l.Size = UDim2.fromScale(1, 1)
+	l.BackgroundTransparency = 1
+	l.Font = Enum.Font.FredokaOne
+	l.TextScaled = true
+	l.TextColor3 = color
+	l.Text = text
+	l.Parent = gui
+	local st = Instance.new("UIStroke")
+	st.Thickness = 3
+	st.Parent = l
+	TweenService:Create(gui, TweenInfo.new(1.2), { StudsOffsetWorldSpace = Vector3.new(0, 4, 0) }):Play()
+	TweenService:Create(l, TweenInfo.new(1.2), { TextTransparency = 1 }):Play()
+	task.delay(1.3, function()
+		att:Destroy()
+	end)
+end
+
+local function onPvPFX(kind, p)
+	if kind == "Hit" then
+		burst(p.Position, Color3.fromRGB(255, 220, 80), 18, 1)
+		popText(p.Position, "💥 BONK!", Color3.fromRGB(255, 220, 80))
+	elseif kind == "Steal" then
+		local root = p.Victim and p.Victim.Character and p.Victim.Character:FindFirstChild("HumanoidRootPart")
+		if root then
+			popText(root.Position, "💰 STOLEN!", Color3.fromRGB(255, 90, 90))
+		end
+	elseif kind == "Trap" then
+		burst(p.Position, Color3.fromRGB(200, 200, 210), 20, 0.8)
+		popText(p.Position, "🪤 SNAP!", Color3.fromRGB(230, 230, 240))
+	end
+end
+
+local function onChaserFX(kind, p)
+	if kind == "Chase" then
+		Audio.Play("Alarm", 0.6)
+		if (p.Rage or 0) > 0 then
+			HUD.Splash(string.rep("😡", p.Rage) .. " " .. p.Name .. " is ENRAGED!", Color3.fromRGB(255, 70, 70))
+		end
+	end
+end
+
+-- ── chat: Global tab is the default + lines from other servers ───────
+local function setupChat()
+	task.spawn(function()
+		local channels = TextChatService:WaitForChild("TextChannels", 20)
+		local global = channels and channels:WaitForChild("Global", 20)
+		if not global then
+			return
+		end
+		pcall(function()
+			TextChatService.ChatInputBarConfiguration.TargetTextChannel = global
+		end)
+		Remotes.Event("GlobalChat").OnClientEvent:Connect(function(name, text)
+			pcall(function()
+				global:DisplaySystemMessage("<font color='#7FD4FF'>[🌍 " .. name .. "]</font> " .. text)
+			end)
+		end)
+	end)
+end
+
+-- ── settings: graphics / trails / anti-AFK ───────────────────────────
+local function settingsLoop()
+	local VirtualUser = game:GetService("VirtualUser")
+	player.Idled:Connect(function()
+		-- keep AFK speed-training players in the game (Roblox kicks after 20 idle minutes)
+		if player:GetAttribute("Training") then
+			pcall(function()
+				VirtualUser:CaptureController()
+				VirtualUser:ClickButton2(Vector2.new())
+			end)
+		end
+	end)
+	while true do
+		task.wait(1.5)
+		local settings = State.Data and State.Data.Settings
+		if settings then
+			Audio.ApplySettings(settings)
+			for _, other in ipairs(Players:GetPlayers()) do
+				local root = other ~= player and other.Character and other.Character:FindFirstChild("HumanoidRootPart")
+				local trail = root and root:FindFirstChild("ShrinkTrail")
+				if trail then
+					trail.Enabled = settings.ShowTrails ~= false
+				end
+			end
+			local low = settings.LowGraphics == true
+			if low ~= Effects.LowGraphics then
+				Effects.LowGraphics = low
+				local lighting = game:GetService("Lighting")
+				lighting.GlobalShadows = not low
+				for _, e in ipairs(lighting:GetChildren()) do
+					if e:IsA("BloomEffect") or e:IsA("SunRaysEffect") or e:IsA("DepthOfFieldEffect") then
+						e.Enabled = not low
+					end
+				end
+			end
+			if low then
+				local map = workspace:FindFirstChild("ShrinkItMap")
+				for _, d in ipairs(map and map:GetDescendants() or {}) do
+					if d:IsA("ParticleEmitter") or d:IsA("Sparkles") or d:IsA("Fire") then
+						d.Enabled = false
+					end
+				end
+			end
+		end
+	end
+end
+
 function Effects.Init()
+	Audio.Init()
+	task.spawn(watchBoxes)
+	task.spawn(hoverInfo)
+	task.spawn(settingsLoop)
+	setupChat()
+	Remotes.Event("PvPFX").OnClientEvent:Connect(onPvPFX)
+	Remotes.Event("ChaserFX").OnClientEvent:Connect(onChaserFX)
 	task.spawn(guideArrows)
 	task.spawn(pedestalLoop)
 	Remotes.Event("BoxOpened").OnClientEvent:Connect(onBoxOpened)

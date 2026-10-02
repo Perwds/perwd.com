@@ -43,6 +43,12 @@
       "$properties": {
         "Technology": "Future"
       }
+    },
+    "TextChatService": {
+      "$className": "TextChatService",
+      "$properties": {
+        "CreateDefaultTextChannels": false
+      }
     }
   }
 }

@@ -24,6 +24,10 @@ local EVENTS = {
 	"RaidSync", -- raid start / zap / end
 	"CarryFX", -- caught by a chaser / placed a box
 	"BoxOpened", -- a box on a pedestal popped open
+	"PlaySound", -- play a GameConfig.Sounds sound (optionally at a position)
+	"PvPFX", -- bat hits / traps / steals
+	"GlobalChat", -- cross-server "Global" chat lines
+	"ChaserFX", -- chaser shouts / rage changes
 	-- client → server
 	"ChargeStart",
 	"ChargeCancel",

@@ -14,10 +14,7 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
-local ObjectConfig = require(Shared.Config.ObjectConfig)
-local RarityConfig = require(Shared.Config.RarityConfig)
 local Formulas = require(Shared.Formulas)
-local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
 
 local ShrinkService = {}
@@ -163,9 +160,9 @@ end
 
 -- Validates a normal shrink target. Returns info or nil, reason.
 function ShrinkService.CheckObject(player, model, stats, root)
-	local info = Svc.Spawn.GetInfo(model)
+	local info = Svc.Spawn.GetInfo(model, player)
 	if not info then
-		return nil, "gone"
+		return nil, "gone" -- gone, or you already took this one
 	end
 	if info.ReservedFor and info.ReservedFor ~= player.UserId then
 		return nil, "reserved"
@@ -181,39 +178,28 @@ function ShrinkService.CheckObject(player, model, stats, root)
 	return info
 end
 
--- Shrinks a validated object for `player`.
+-- Shrinks a validated box for `player`. Everyone else still sees it (and can take it too).
 function ShrinkService.Capture(player, model)
-	local claimed = Svc.Spawn.Claim(model)
-	if not claimed then
+	local box = Svc.Spawn.Claim(model, player)
+	if not box then
 		return false
 	end
 	local data = Svc.Data.Get(player)
 	local fromPos = model:GetPivot().Position
-	Remotes.Event("ShrinkFX"):FireAllClients(model, player, claimed.Variant, false)
-	Svc.Spawn.Remove(model, claimed, GameConfig.ShrinkFxTime)
-	-- you now CARRY it; it only goes into the museum once you run it back to base
+	-- the shrink animation (and hiding the box) only happens for the player who took it
+	Remotes.Event("ShrinkFX"):FireClient(player, model, player, box.V or "Normal", false)
+	-- you now CARRY the box; it only opens once it's placed on one of your pedestals
 	local session = Svc.Session.Get(player)
 	session.PendingCarry = (session.PendingCarry or 0) + 1
 	task.delay(GameConfig.ShrinkFxTime * 0.85, function()
 		session.PendingCarry -= 1
 		if player.Parent then
-			Svc.Carry.Add(player, claimed.Id, claimed.Variant, fromPos)
+			Svc.Carry.Add(player, box, fromPos)
 		end
 	end)
 	data.TotalShrinks += 1
 	Svc.Data.MarkDirty(player)
-
-	local item = { Id = claimed.Id, V = claimed.Variant }
-	do
-		local income = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player)
-		Svc.Net.Notify(player, "📦 " .. Formulas.ItemName(item) .. " box (+" .. Format.Coins(income) .. "/s)", "shrink")
-		local def = ObjectConfig.Get(claimed.Id)
-		local variant = RarityConfig.GetVariant(claimed.Variant)
-		local rarity = RarityConfig.GetRarity(def.Rarity)
-		if variant.Order >= 4 or rarity.Order >= 6 then
-			Svc.Net.Announce("🔬 " .. player.DisplayName .. " shrank a " .. Formulas.ItemName(item) .. "!", variant.Color or rarity.Color)
-		end
-	end
+	Svc.Net.Notify(player, "📦 " .. Formulas.BoxName(box) .. "! Run it home!", "shrink")
 	return true
 end
 
@@ -348,9 +334,9 @@ local function autoShrinkLoop()
 								end
 							end
 						end
-					end)
+					end, player)
 					local locked = s.AutoTarget
-					if locked and locked.Model.Parent and Svc.Spawn.GetInfo(locked.Model) then
+					if locked and locked.Model.Parent and Svc.Spawn.GetInfo(locked.Model, player) then
 						-- keep charging the locked target until its (power-scaled) charge time has passed
 						if now >= locked.ReadyAt then
 							s.AutoTarget = nil

@@ -1,21 +1,24 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > SpawnService (ModuleScript)
 
-	Spawns shrinkable objects at every area spawn point and respawns them after a cooldown.
-	• Object choice: weighted by rarity SpawnWeight within the area's tier.
-	• Variant roll: weighted RNG. Non-Normal weights are multiplied by the BEST luck of the
-	  players currently standing in that area (luck, 2x Luck, Golden Ray, Cosmic Hunter, potions,
-	  VIP), plus server-wide modifiers (Server Luck Boost, Golden Hour). Meteor Shower forces Cosmic.
-	• Hand-placed models tagged "Shrinkable" are registered too (static: they hide & return).
+	Fills every zone with MYSTERY BOXES and respawns them.
+	• Box rarity (its color): weighted by RarityConfig SpawnWeight. Rare boxes (GameConfig.Boxes.AnnounceFrom
+	  and up) are announced to the whole server with the zone they're in.
+	• Everyone sees the SAME boxes. When you shrink one it vanishes for YOU only (the "Taken" attribute
+	  lists who took it and each client hides it locally); up to GameConfig.Boxes.MaxClaims players can
+	  take the same box before it's gone for everyone and respawns.
+	• What's inside is rolled when the box OPENS on a pedestal (SpawnService.RollContents):
+	  a random object of that zone (rarer objects likelier in rarer boxes), a variant (your Luck)
+	  and a size (your Luck).
 ]]
 
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local GameConfig = require(Shared.Config.GameConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
 local TierConfig = require(Shared.Config.TierConfig)
@@ -28,7 +31,6 @@ local Svc
 
 local active = {} -- [model] = info
 local points = {} -- { Part, Tier, Model, RespawnAt }
-local hiddenFolder
 local uidCounter = 0
 
 function SpawnService.Init(registry)
@@ -53,41 +55,49 @@ local function weightedPick(entries) -- { {Key, Weight} }
 	return entries[#entries][1]
 end
 
-local function pickObject(tier)
+-- world size of a box in zone `tier` (studs)
+local function worldBoxSize(tier)
+	return 4.5 + 0.45 * tier
+end
+
+local function pickBoxRarity(tier)
 	local entries = {}
+	-- only rarities that actually have objects in this zone (or rarer, so the box is still worth it)
+	local best = 1
 	for _, id in ipairs(ObjectConfig.IdsForTier(tier, false)) do
-		local def = ObjectConfig.Get(id)
-		table.insert(entries, { id, RarityConfig.GetRarity(def.Rarity).SpawnWeight })
+		best = math.max(best, RarityConfig.GetRarity(ObjectConfig.Get(id).Rarity).Order)
+	end
+	for _, name in ipairs(RarityConfig.RarityOrder) do
+		local r = RarityConfig.Rarities[name]
+		if r.Order <= best + 1 then
+			table.insert(entries, { name, r.SpawnWeight })
+		end
 	end
 	return weightedPick(entries)
 end
 
--- Best variant multipliers among players in this area, times event modifiers.
-local function areaVariantMults(tier)
-	local best = { Golden = 1, Diamond = 1, Rainbow = 1, Cosmic = 1 }
-	for _, player in ipairs(Players:GetPlayers()) do
-		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		if root and Svc.Data.Get(player) and Svc.Map.GetAreaAt(root.Position) == tier then
-			local m = Svc.Economy.GetVariantMults(player)
-			for k, v in pairs(m) do
-				best[k] = math.max(best[k], v)
-			end
+-- ── what's inside (rolled when the box opens) ─────────────────────────
+local function variantMults(player)
+	local mults = { Golden = 1, Diamond = 1, Rainbow = 1, Cosmic = 1 }
+	if player then
+		for k, v in pairs(Svc.Economy.GetVariantMults(player)) do
+			mults[k] = v
 		end
 	end
 	local ev = Svc.Event.VariantMults()
 	local serverLuck = Svc.Event.GetServerLuckMult()
-	for k in pairs(best) do
-		best[k] *= ev[k] * serverLuck
+	for k in pairs(mults) do
+		mults[k] *= (ev[k] or 1) * serverLuck
 	end
-	return best
+	return mults
 end
 
-function SpawnService.RollVariant(tier)
+function SpawnService.RollVariant(player)
 	local forced = Svc.Event.ForcedVariant()
 	if forced then
 		return forced
 	end
-	local mults = areaVariantMults(tier)
+	local mults = variantMults(player)
 	local entries = {}
 	for _, name in ipairs(RarityConfig.VariantOrder) do
 		local v = RarityConfig.Variants[name]
@@ -96,46 +106,80 @@ function SpawnService.RollVariant(tier)
 	return weightedPick(entries)
 end
 
-local function decorate(model, id, variant, info)
-	uidCounter += 1
-	info.Uid = uidCounter
-	local def = ObjectConfig.Get(id)
-	model:SetAttribute("ObjectId", id)
-	model:SetAttribute("Tier", def.Tier)
-	model:SetAttribute("Rarity", def.Rarity)
-	model:SetAttribute("BaseIncome", def.BaseIncome)
-	model:SetAttribute("Variant", variant)
-	model:SetAttribute("SpawnUid", info.Uid)
-	model:SetAttribute("ReservedFor", info.ReservedFor)
-	ModelFactory.ApplyVariant(model, variant, true)
-	CollectionService:AddTag(model, "Shrinkable")
+function SpawnService.RollSize(player)
+	local luck = math.sqrt(variantMults(player).Golden)
+	local entries = {}
+	for _, entry in ipairs(GameConfig.Sizes) do
+		table.insert(entries, { entry.Mult, entry.Weight * (entry.Lucky and luck or 1) })
+	end
+	return weightedPick(entries)
 end
 
--- Spawns an object of `tier` with its bottom at `position`. opts: { Id, Variant, Point, Expires, ReservedFor, ReservedUntil }
+-- box = { R, T, V } → id, variant, size
+function SpawnService.RollContents(player, box)
+	if box.Id then -- old save: the object was decided when it was shrunk
+		return box.Id, box.V or "Normal", 1
+	end
+	local boxRarity = RarityConfig.GetRarity(box.R)
+	local boost = GameConfig.Boxes.RarityBoost[box.R] or 1
+	local entries = {}
+	for _, id in ipairs(ObjectConfig.IdsForTier(box.T or 1, false)) do
+		local r = RarityConfig.GetRarity(ObjectConfig.Get(id).Rarity)
+		-- never more than 2 steps rarer than the box itself
+		if r.Order <= boxRarity.Order + 2 then
+			table.insert(entries, { id, r.SpawnWeight * boost ^ (r.Order - 1) })
+		end
+	end
+	local id = weightedPick(entries) or ObjectConfig.IdsForTier(1, false)[1]
+	return id, box.V or SpawnService.RollVariant(player), SpawnService.RollSize(player)
+end
+
+-- ── world boxes ───────────────────────────────────────────────────────
+local function announceIfRare(box, tier)
+	local r = RarityConfig.GetRarity(box.R)
+	local from = RarityConfig.GetRarity(GameConfig.Boxes.AnnounceFrom)
+	local variant = RarityConfig.GetVariant(box.V)
+	if r.Order >= from.Order or variant.Order >= 3 then
+		local area = TierConfig.Tiers[tier] and TierConfig.Tiers[tier].Area or ("Zone " .. tier)
+		Svc.Net.Announce(string.format("📦 A %s spawned in %s!", Formulas.BoxName(box), area), variant.Color or r.Color)
+		Svc.Net.Sound("Alarm")
+	end
+end
+
+-- Spawns a box of `tier` with its bottom at `position`. opts: { R, V, Point, Expires, ReservedFor, ReservedUntil, Quiet }
 function SpawnService.SpawnAt(tier, position, opts)
 	opts = opts or {}
-	local id = opts.Id or pickObject(tier)
-	if not id then
-		return nil
-	end
-	local def = ObjectConfig.Get(id)
-	local variant = opts.Variant or SpawnService.RollVariant(tier)
-	local model = ModelFactory.Create(id)
-	ModelFactory.PlaceOnGround(model, position + Vector3.new(0, def.FloatHeight or 0, 0), math.random() * math.pi * 2)
+	local box = { R = opts.R or pickBoxRarity(tier), T = tier, V = opts.V }
+	local model = ModelFactory.CreateBox(box)
+	ModelFactory.FitToSize(model, worldBoxSize(tier))
+	ModelFactory.PlaceOnGround(model, position, math.random() * math.pi * 2)
+	uidCounter += 1
 	local info = {
-		Id = id,
-		Tier = def.Tier,
-		Variant = variant,
+		Box = box,
+		Tier = tier,
+		Variant = box.V or "Normal",
 		Point = opts.Point,
-		Expires = opts.Expires,
+		Expires = opts.Expires or (os.clock() + GameConfig.Boxes.Lifetime + math.random() * 60),
 		ReservedFor = opts.ReservedFor,
 		ReservedUntil = opts.ReservedUntil,
-		Static = false,
+		Claims = {},
+		ClaimCount = 0,
+		Uid = uidCounter,
 	}
-	decorate(model, id, variant, info)
+	model.Name = "MysteryBox"
+	model:SetAttribute("Tier", tier)
+	model:SetAttribute("BoxRarity", box.R)
+	model:SetAttribute("Variant", info.Variant)
+	model:SetAttribute("SpawnUid", info.Uid)
+	model:SetAttribute("ReservedFor", info.ReservedFor)
+	model:SetAttribute("Taken", ",")
+	CollectionService:AddTag(model, "Shrinkable")
 	ModelFactory.SetCollision(model, false) -- never block players running home
 	model.Parent = Svc.Map.LiveObjects
 	active[model] = info
+	if not opts.Quiet then
+		announceIfRare(box, tier)
+	end
 	return model, info
 end
 
@@ -144,194 +188,117 @@ local function spawnPoint(pt)
 	pt.Model = SpawnService.SpawnAt(pt.Tier, ground, { Point = pt })
 end
 
-function SpawnService.GetInfo(model)
+-- info for a live box; with `player`, nil if that player already took it
+function SpawnService.GetInfo(model, player)
 	local info = active[model]
-	if info and not info.Claimed then
-		return info
+	if not info or info.Gone then
+		return nil
 	end
-	return nil
+	if player and info.Claims[player.UserId] then
+		return nil
+	end
+	return info
 end
 
-function SpawnService.ForEachActive(fn)
+function SpawnService.ForEachActive(fn, player)
 	for model, info in pairs(active) do
-		if not info.Claimed and model.Parent then
+		if not info.Gone and model.Parent and not (player and info.Claims[player.UserId]) then
 			fn(model, info)
 		end
 	end
 end
 
--- Marks an object as taken. Returns info (or nil if someone else got it first).
-function SpawnService.Claim(model)
-	local info = active[model]
-	if not info or info.Claimed then
-		return nil
-	end
-	info.Claimed = true
+local function retire(model, info, delaySeconds)
+	info.Gone = true
 	active[model] = nil
 	local respawn = TierConfig.Tiers[info.Tier] and TierConfig.Tiers[info.Tier].RespawnTime or 30
 	respawn *= Svc.Event.RespawnMult(info.Tier)
-	if info.Point then
+	if info.Point and info.Point.Model == model then
 		info.Point.Model = nil
 		info.Point.RespawnAt = os.clock() + respawn
 	end
-	if info.Static then
-		task.delay(respawn + 1, function()
-			if model and info.HomeParent then
-				local variant = SpawnService.RollVariant(info.Tier)
-				local newInfo = { Id = info.Id, Tier = info.Tier, Variant = variant, Static = true, HomeParent = info.HomeParent }
-				decorate(model, info.Id, variant, newInfo)
-				model.Parent = info.HomeParent
-				active[model] = newInfo
-			end
-		end)
-	end
-	return info
-end
-
--- Removes the model after the client tween finished.
-function SpawnService.Remove(model, info, delaySeconds)
 	task.delay(delaySeconds or 0, function()
-		if not model then
-			return
-		end
-		if info and info.Static then
-			CollectionService:RemoveTag(model, "Shrinkable")
-			model.Parent = hiddenFolder
-		else
+		if model then
 			model:Destroy()
 		end
 	end)
 end
 
-local function objectFootprint(id)
-	local def = ObjectConfig.Get(id)
-	local size = def and def.Size or Vector3.new(10, 10, 10)
-	return math.max(size.X, size.Z)
-end
-
--- Bonus object that is not tied to a spawn point (Giant Rush, events).
-function SpawnService.SpawnExtra(tier, variant, lifetime, id)
-	id = id or pickObject(tier)
-	if not id then
+-- `player` takes the box. Returns a copy of the box ({ R, T, V }) or nil if they can't.
+function SpawnService.Claim(model, player)
+	local info = SpawnService.GetInfo(model, player)
+	if not info then
 		return nil
 	end
-	local pos = Svc.Map.RandomPointInArea(tier, objectFootprint(id) / 2 + 6)
+	info.Claims[player.UserId] = true
+	info.ClaimCount += 1
+	model:SetAttribute("Taken", (model:GetAttribute("Taken") or ",") .. player.UserId .. ",")
+	if info.ClaimCount >= GameConfig.Boxes.MaxClaims then
+		retire(model, info, GameConfig.ShrinkFxTime + 0.2)
+	end
+	return { R = info.Box.R, T = info.Box.T, V = info.Box.V }, info
+end
+
+-- Bonus box that is not tied to a spawn point (Giant Rush, events).
+function SpawnService.SpawnExtra(tier, variant, lifetime)
+	local pos = Svc.Map.RandomPointInArea(tier, worldBoxSize(tier) / 2 + 6)
 	if not pos then
 		return nil
 	end
-	return SpawnService.SpawnAt(tier, pos, { Id = id, Variant = variant, Expires = os.clock() + (lifetime or 120) })
+	return SpawnService.SpawnAt(tier, pos, { V = variant, Expires = os.clock() + (lifetime or 120) })
 end
 
 function SpawnService.SpawnEventObject()
-	-- prefer areas that players are standing in
 	local occupied = {}
-	local maxUnlocked = 1
 	for _, player in ipairs(Players:GetPlayers()) do
-		local data = Svc.Data.Get(player)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		if data then
-			maxUnlocked = math.max(maxUnlocked, TierConfig.MaxTierForRayPower(data.Upgrades.RayPower))
-		end
-		if root then
-			local t = Svc.Map.GetAreaAt(root.Position)
-			if t then
-				table.insert(occupied, t)
-			end
+		local t = root and Svc.Map.GetAreaAt(root.Position)
+		if t then
+			table.insert(occupied, t)
 		end
 	end
-	local tier = #occupied > 0 and occupied[math.random(1, #occupied)] or math.random(1, maxUnlocked)
+	local tier = #occupied > 0 and occupied[math.random(1, #occupied)] or math.random(1, math.min(3, #TierConfig.Tiers))
 	local entries = {}
 	for name, w in pairs(RarityConfig.EventVariantWeights) do
 		table.insert(entries, { name, w })
 	end
-	local variant = weightedPick(entries)
-	local model, info = SpawnService.SpawnExtra(tier, variant, EventConfig.EventObjects.Lifetime)
-	if model then
-		local name = RarityConfig.GetVariant(variant).Prefix .. ObjectConfig.Get(info.Id).Name
-		local area = TierConfig.Tiers[tier].Area
-		local article = string.match(name, "^[AEIOUaeiou]") and "An" or "A"
-		Svc.Net.Announce(string.format("✨ %s %s appeared in %s!", article, name, area), RarityConfig.GetVariant(variant).Color)
-	end
+	SpawnService.SpawnExtra(tier, weightedPick(entries), EventConfig.EventObjects.Lifetime)
 end
 
--- Developer Product: spawn a Golden object right next to the buyer (reserved for them for 60s).
+-- Developer Product: a Golden box right next to the buyer (reserved for them for 60s).
 function SpawnService.SpawnNear(player, variant)
-	local data = Svc.Data.Get(player)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	local tier = data and TierConfig.MaxTierForRayPower(data.Upgrades.RayPower) or 1
-	local id = pickObject(tier)
-	local footprint = objectFootprint(id)
-	local origin = root and (root.Position + root.CFrame.LookVector * (footprint / 2 + 8)) or Svc.Map.LobbySpawn.Position
+	local tier = (root and Svc.Map.GetAreaAt(root.Position)) or 1
+	local origin = root and (root.Position + root.CFrame.LookVector * 8) or Svc.Map.LobbySpawn.Position
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Exclude
 	params.FilterDescendantsInstances = { player.Character, Svc.Map.LiveObjects }
 	local hit = workspace:Raycast(origin + Vector3.new(0, 20, 0), Vector3.new(0, -200, 0), params)
 	local ground = hit and hit.Position or Vector3.new(origin.X, 0, origin.Z)
 	SpawnService.SpawnAt(tier, ground, {
-		Id = id,
-		Variant = variant,
+		V = variant,
 		Expires = os.clock() + 300,
 		ReservedFor = player.UserId,
 		ReservedUntil = os.clock() + 60,
+		Quiet = true,
 	})
-	Svc.Net.Notify(player, "🌟 A " .. Formulas.ItemName({ Id = id, V = variant }) .. " appeared next to you! (Reserved for 60s)", "success")
-end
-
-local function registerStatics()
-	local folder = ReplicatedStorage:FindFirstChild("CustomObjects")
-	if not folder then
-		folder = Instance.new("Folder")
-		folder.Name = "CustomObjects"
-		folder.Parent = ReplicatedStorage
-	end
-	for _, model in ipairs(CollectionService:GetTagged("Shrinkable")) do
-		if model:IsA("Model") and model:IsDescendantOf(workspace) and not model:IsDescendantOf(Svc.Map.LiveObjects) then
-			local id = model:GetAttribute("ObjectId") or model.Name
-			if not ObjectConfig.Objects[id] and not folder:FindFirstChild(id) then
-				local entry = Instance.new("Configuration")
-				entry.Name = id
-				entry:SetAttribute("DisplayName", model:GetAttribute("DisplayName") or model.Name)
-				entry:SetAttribute("Tier", model:GetAttribute("Tier") or 1)
-				entry:SetAttribute("Rarity", model:GetAttribute("Rarity") or "Common")
-				entry:SetAttribute("BaseIncome", model:GetAttribute("BaseIncome") or 1)
-				entry.Parent = folder
-			end
-			local templates = ModelFactory.TemplatesFolder()
-			if not templates:FindFirstChild(id) then
-				local tpl = model:Clone()
-				tpl.Name = id
-				CollectionService:RemoveTag(tpl, "Shrinkable")
-				tpl.Parent = templates
-			end
-			if not model.PrimaryPart then
-				model.PrimaryPart = model:FindFirstChildWhichIsA("BasePart", true)
-			end
-			for _, d in ipairs(model:GetDescendants()) do
-				if d:IsA("BasePart") then
-					d.Anchored = true
-				end
-			end
-			local def = ObjectConfig.Get(id)
-			local info = { Id = id, Tier = def.Tier, Static = true, HomeParent = model.Parent }
-			info.Variant = SpawnService.RollVariant(def.Tier)
-			decorate(model, id, info.Variant, info)
-			active[model] = info
-		end
-	end
+	Svc.Net.Notify(player, "🌟 A " .. variant .. " box appeared next to you! (Reserved for 60s)", "success")
 end
 
 function SpawnService.Start()
-	hiddenFolder = Instance.new("Folder")
-	hiddenFolder.Name = "ShrunkStatics"
-	hiddenFolder.Parent = ServerStorage
-
-	registerStatics()
-
 	for tier, area in pairs(Svc.Map.Areas) do
 		for _, part in ipairs(area.SpawnPoints) do
 			local pt = { Part = part, Tier = tier, Model = nil, RespawnAt = 0 }
 			table.insert(points, pt)
-			spawnPoint(pt)
+		end
+	end
+	for _, pt in ipairs(points) do
+		local ok, err = pcall(function()
+			local ground = pt.Part.Position - Vector3.new(0, pt.Part.Size.Y / 2, 0)
+			pt.Model = SpawnService.SpawnAt(pt.Tier, ground, { Point = pt, Quiet = true })
+		end)
+		if not ok then
+			warn("[SpawnService] first spawn failed: " .. tostring(err))
 		end
 	end
 
@@ -349,9 +316,8 @@ function SpawnService.Start()
 				end
 			end
 			for model, info in pairs(active) do
-				if info.Expires and now >= info.Expires and not info.Claimed then
-					active[model] = nil
-					model:Destroy()
+				if info.Expires and now >= info.Expires then
+					retire(model, info, 0)
 				elseif info.ReservedUntil and now >= info.ReservedUntil then
 					info.ReservedFor = nil
 					info.ReservedUntil = nil

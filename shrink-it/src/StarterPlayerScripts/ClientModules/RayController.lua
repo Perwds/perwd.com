@@ -16,9 +16,7 @@ local SoundService = game:GetService("SoundService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
-local ObjectConfig = require(Shared.Config.ObjectConfig)
 local Formulas = require(Shared.Formulas)
-local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
 
 local Modules = script.Parent
@@ -38,11 +36,19 @@ local nextShotAt = 0
 local selection
 local chargeSound
 
+-- boxes are shared: once YOU took one it's gone for you (others may still see it)
+local function takenByMe(model)
+	return string.find(model:GetAttribute("Taken") or "", "," .. player.UserId .. ",", 1, true) ~= nil
+end
+
 local function findTarget(instance)
 	local node = instance
 	while node and node ~= workspace do
 		if node:IsA("Model") then
 			if CollectionService:HasTag(node, "Shrinkable") then
+				if takenByMe(node) then
+					return nil, nil
+				end
 				return node, "object"
 			end
 			if node:GetAttribute("RaidBuilding") then
@@ -115,18 +121,12 @@ local function describe(target, kind)
 		local name = target:GetAttribute("ItemName")
 		return name and ("📋 Copy " .. name) or nil, Color3.fromRGB(255, 200, 80)
 	end
-	local id = target:GetAttribute("ObjectId")
-	local def = ObjectConfig.Get(id)
-	if not def then
-		return nil
-	end
-	local variant = RarityConfig.GetVariant(target:GetAttribute("Variant"))
-	local rarity = RarityConfig.GetRarity(def.Rarity)
-	local tier = target:GetAttribute("Tier") or def.Tier
-	local income = Formulas.ItemBaseIncome({ Id = id, V = target:GetAttribute("Variant") or "Normal" })
-	income *= (data.Multipliers and data.Multipliers.Income or 1)
-	local charge = Formulas.ObjectChargeTime(stats, tier)
-	local text = string.format("%s%s · %s · +%s/s · ⏱ %.1fs", variant.Prefix, def.Name, def.Rarity, Format.Coins(income), charge)
+	local variantName = target:GetAttribute("Variant")
+	local box = { R = target:GetAttribute("BoxRarity") or "Common", T = target:GetAttribute("Tier") or 1, V = variantName ~= "Normal" and variantName or nil }
+	local variant = RarityConfig.GetVariant(variantName)
+	local rarity = RarityConfig.GetRarity(box.R)
+	local charge = Formulas.ObjectChargeTime(stats, box.T)
+	local text = string.format("📦 %s · ⏱ %.1fs", Formulas.BoxName(box), charge)
 	if surfaceDistance(target) > stats.Range then
 		text ..= "  (too far)"
 	end
@@ -155,7 +155,7 @@ local function stopCharge(fire)
 			local origin = c.Target:GetPivot().Position
 			local candidates = {}
 			for _, model in ipairs(CollectionService:GetTagged("Shrinkable")) do
-				if model ~= c.Target and model:IsA("Model") and model:IsDescendantOf(workspace) then
+				if model ~= c.Target and model:IsA("Model") and model:IsDescendantOf(workspace) and not takenByMe(model) then
 					local tier = model:GetAttribute("Tier") or 99
 					local d = (model:GetPivot().Position - origin).Magnitude
 					if tier <= (c.Target:GetAttribute("Tier") or 1) and d <= GameConfig.MultiShrinkRadius and surfaceDistance(model) <= stats.Range then

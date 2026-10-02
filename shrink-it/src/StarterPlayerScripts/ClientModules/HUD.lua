@@ -29,6 +29,7 @@ local menus = {} -- [name] = menu
 local menuOrder = {}
 local badgeSetters = {}
 local carryFrame, carryLabel, splashLabel, dropButton
+local speedLabel
 local splashToken = 0
 
 -- ── helpers ───────────────────────────────────────────────────────────
@@ -167,6 +168,8 @@ local function onPopup(kind, p)
 		popup("Welcome Back!", "😴", { "+" .. Format.Coins(p.Amount), "Earned while offline for " .. Format.Time(p.Seconds) }, UIKit.Colors.Blue)
 	elseif kind == "Rebirth" then
 		popup("REBIRTH " .. p.Rebirths .. "!", "♻️", { "x" .. string.format("%.1f", p.Multiplier) .. " income forever!", "+" .. p.Gems .. " Gems  •  +" .. p.Tokens .. " Rebirth Tokens" }, UIKit.Colors.Green)
+	elseif kind == "Crate" then
+		popup("Royal Crate!", "👑", { "You got a " .. p.Name .. "!", "It's in your pocket — press ⭐ Equip Best!" }, UIKit.Colors.Yellow)
 	end
 end
 
@@ -483,7 +486,11 @@ local function refreshTimers()
 	if carry and carry.Count > 0 then
 		carryFrame.Visible = true
 		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
-		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and "Press E on an empty pedestal to place a box" or "Bring your boxes to YOUR pedestals ⬇")
+		local what = carry.TopKind == "Item" and "it" or "your box"
+		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and ("Press E on an empty pedestal to place " .. what) or "Bring it to YOUR pedestals ⬇")
+		if (carry.Rage or 0) > 0 then
+			goal = string.rep("😡", carry.Rage) .. " " .. goal
+		end
 		carryLabel.Text = string.format("🎒 %d/%d  ·  %s%s", carry.Count, carry.Capacity, goal, chaser)
 		UIKit.SetButtonColors(carryFrame, carry.Chaser and UIKit.Colors.Red or UIKit.Colors.Orange)
 		if dropButton then
@@ -494,6 +501,12 @@ local function refreshTimers()
 		if dropButton then
 			dropButton.Visible = false
 		end
+	end
+	-- speed (trained on the treadmill)
+	local speed = data and data.Speed
+	if speed and speedLabel then
+		speedLabel.Text = string.format("🏃 %.1f speed", speed.Walk) .. (speed.Training and string.format("  (+%s pts/s)", Format.Abbrev(speed.Rate)) or "")
+		speedLabel.TextColor3 = speed.Training and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(150, 220, 255)
 	end
 	-- raid banner
 	if data and data.ActiveRaid then
@@ -534,7 +547,7 @@ function HUD.Init()
 	local ctx = { Screen = screen, HUD = HUD }
 	local menuFolder = Modules:WaitForChild("Menus")
 	local menuDefs = table.clone(LEFT_BUTTONS)
-	for _, extra in ipairs({ "Sell", "Fuse", "Trails" }) do -- opened from the stands in the base
+	for _, extra in ipairs({ "Sell", "Fuse", "Trails", "Settings" }) do -- opened from the stands / top bar
 		table.insert(menuDefs, { Menu = extra })
 	end
 	for _, def in ipairs(menuDefs) do
@@ -559,6 +572,41 @@ function HUD.Init()
 			HUD.ShowMenu(menuName)
 		end
 	end)
+
+	-- ⚙️ Settings button (top bar, next to Roblox's buttons)
+	local settingsButton = UIKit.Button({
+		Name = "SettingsButton",
+		Text = "⚙️",
+		Colors = UIKit.Colors.Dark,
+		Size = UDim2.fromOffset(52, 52),
+		AnchorPoint = Vector2.new(0, 0),
+		Position = UDim2.new(0, 168, 0, 6),
+		CornerRadius = 26,
+		Parent = screen,
+		OnClick = function()
+			HUD.OpenMenu("Settings")
+		end,
+	})
+	UIKit.AutoScale(settingsButton)
+
+	-- right side: Equip Best / Home
+	local right = UIKit.Create("Frame", {
+		Name = "RightStack",
+		BackgroundTransparency = 1,
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(1, -18, 0.5, 30),
+		Size = UDim2.fromOffset(190, 3 * 70),
+		Parent = screen,
+	})
+	UIKit.AutoScale(right)
+	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 10), HorizontalAlignment = Enum.HorizontalAlignment.Right, SortOrder = Enum.SortOrder.LayoutOrder, Parent = right })
+	UIKit.Button({ Name = "EquipBest", Text = "⭐ Equip Best", Colors = UIKit.Colors.Yellow, Size = UDim2.fromOffset(190, 60), LayoutOrder = 1, CornerRadius = 18, Parent = right, OnClick = function()
+		HUD.Result(State.Action("EquipBest"))
+	end })
+	UIKit.Button({ Name = "Home", Text = "🏠 My Plot", Colors = UIKit.Colors.Blue, Size = UDim2.fromOffset(190, 60), LayoutOrder = 2, CornerRadius = 18, Parent = right, OnClick = function()
+		HUD.Result(State.Action("TeleportMuseum"))
+	end })
+	speedLabel = UIKit.Label({ Name = "Speed", Text = "", TextXAlignment = Enum.TextXAlignment.Right, StrokeThickness = 3, Size = UDim2.fromOffset(190, 40), LayoutOrder = 3, Parent = right })
 
 	-- Drop button (only while carrying)
 	dropButton = UIKit.Button({

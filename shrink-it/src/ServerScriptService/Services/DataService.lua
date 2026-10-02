@@ -31,10 +31,11 @@ local TEMPLATE = {
 	TotalShrinks = 0,
 	RaidsWon = 0,
 	NextUid = 1,
-	Upgrades = { RayPower = 1, Speed = 1, ChargeSpeed = 1, Range = 1, Luck = 1, MultiShrink = 1, MuseumSize = 1 },
+	Upgrades = { RayPower = 1, Treadmill = 1, ChargeSpeed = 1, Range = 1, Luck = 1, MultiShrink = 1, MuseumSize = 1 },
+	SpeedPoints = 0, -- trained on the treadmill; walk speed = Base + bonus(points)
 	TokenUpgrades = { Income = 0, Luck = 0, Charge = 0 },
-	Items = {}, -- { { U = uid, Id = "SodaCan", V = "Golden", S = true? (stolen copy) } }
-	Slots = {}, -- ["pedestal#"] = { U = uid } (object on display) | { Box = { Id, V, ReadyAt } } (opening)
+	Items = {}, -- { { U = uid, Id = "SodaCan", V = "Golden", Z = size mult?, S = true? (stolen) } }
+	Slots = {}, -- ["pedestal#"] = { U = uid } (object on display) | { Box = { R, T, V, ReadyAt } } (opening)
 	SlotsMigrated = false,
 	Index = {}, -- ["SodaCan:Golden"] = true
 	IndexClaimed = {}, -- ["3:Normal"] = true
@@ -43,7 +44,7 @@ local TEMPLATE = {
 	Potions = { Luck = 0, Income = 0 }, -- os.time() expiry
 	Daily = { LastDay = 0, Streak = 0 },
 	InfinitePack = { Season = 0, Claimed = 0, Credits = {} },
-	Settings = { RaidEnabled = false, AutoShrink = false },
+	Settings = { RaidEnabled = false, AutoShrink = false, Music = 0.5, Sfx = 0.8, Ambient = 0.5, ShowTrails = true, LowGraphics = false, HideOthersBoxes = false },
 	Raid = { ShieldUntil = 0, LastRaid = 0, LastToggle = 0, Revenge = {} }, -- Revenge[userIdString] = expiry
 	RaySkins = { Default = true },
 	EquippedSkin = "Default",

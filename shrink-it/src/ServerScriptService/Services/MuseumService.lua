@@ -3,16 +3,19 @@
 
 	Pocket Museum. Each player owns a plot full of pedestals. YOU decide what goes on them:
 
-	  • Shrinking something gives you a mystery BOX (carried above your head).
+	  • Shrinking a mystery BOX in a zone puts it above your head.
 	  • Walk up to an EMPTY pedestal on your plot → "Place": the box is set down and starts opening
-	    (time depends on rarity / tier / variant, see GameConfig.Boxes).
+	    (time depends on box rarity / zone / variant, see GameConfig.Boxes).
 	  • "Open now 💎" on an opening box skips the wait for Gems.
-	  • When it opens, the object appears on the pedestal and earns coins every second.
-	  • "Pick up" (hold) moves an object back to your pocket; "Place" on an empty pedestal while
-	    not carrying a box puts your best pocket object there.
+	  • When it opens, a RANDOM object is rolled (SpawnService.RollContents: object, variant, SIZE),
+	    appears on the pedestal and earns coins every second.
+	  • "Pick up" (hold E) lifts the object above your head at its REAL size (bigger = bigger!).
+	    Carry it to another pedestal and "Place" it, or keep it safe (others can steal what you
+	    carry outside the safe zone). "Place" with empty hands puts your best pocket object there.
+	  • "Equip Best" (right side of the screen) fills your pedestals with your best objects.
 
-	data.Items  = every object you own (pocket + displayed)
-	data.Slots  = ["pedestal#"] = { U = uid } | { Box = { Id, V, ReadyAt } }
+	data.Items  = every object you own: { U = uid, Id, V = variant, Z = size multiplier, S = stolen? }
+	data.Slots  = ["pedestal#"] = { U = uid } | { Box = { R, T, V, ReadyAt } }  (old saves: Box = { Id, V, ReadyAt })
 ]]
 
 local CollectionService = game:GetService("CollectionService")
@@ -126,6 +129,7 @@ local function makePedestal(player, plot, i)
 	model.PrimaryPart = base
 	model:SetAttribute("PedestalSlot", i)
 	model:SetAttribute("OwnerUserId", player.UserId)
+	model:SetAttribute("OwnerName", player.DisplayName)
 	model:SetAttribute("Income", 0)
 	model:SetAttribute("State", "Empty")
 	CollectionService:AddTag(model, "MuseumPedestal")
@@ -168,12 +172,14 @@ local function setDisplay(pedestal, slot, data)
 	pedestal:SetAttribute("ItemUid", nil)
 	pedestal:SetAttribute("ItemId", nil)
 	pedestal:SetAttribute("BoxReadyAt", nil)
+	pedestal:SetAttribute("Weight", nil)
+	pedestal:SetAttribute("SizeName", nil)
 	pedestal:SetAttribute("Income", 0)
 	local base = pedestal.PrimaryPart
 	local top = base.Position + Vector3.new(0, base.Size.Y / 2 + 0.3, 0)
 
 	if slot and slot.Box then
-		local box = ModelFactory.CreateBox(slot.Box.Id, slot.Box.V)
+		local box = ModelFactory.CreateBox(slot.Box)
 		box.Name = "Display"
 		ModelFactory.SetCollision(box, false)
 		ModelFactory.PlaceOnGround(box, top, math.rad(-15))
@@ -198,7 +204,9 @@ local function setDisplay(pedestal, slot, data)
 		pedestal:SetAttribute("Variant", item.V)
 		pedestal:SetAttribute("ItemUid", item.U)
 		pedestal:SetAttribute("ItemId", item.Id)
-		setPrompt(pedestal, "Pick up", 0.6)
+		pedestal:SetAttribute("Weight", Formulas.FormatWeight(Formulas.ItemWeight(item)))
+		pedestal:SetAttribute("SizeName", Formulas.SizeInfo(item.Z).Name)
+		setPrompt(pedestal, "Pick up", 0.5)
 		return
 	end
 
@@ -210,7 +218,7 @@ local function slotKey(slot)
 	if not slot then
 		return "E"
 	elseif slot.Box then
-		return "B|" .. slot.Box.Id .. "|" .. slot.Box.V .. "|" .. slot.Box.ReadyAt
+		return "B|" .. tostring(slot.Box.R or slot.Box.Id) .. "|" .. tostring(slot.Box.V) .. "|" .. slot.Box.ReadyAt
 	elseif slot.U then
 		return "I|" .. slot.U
 	end
@@ -232,7 +240,8 @@ function MuseumService.Recompute(player)
 		if not index or index > stats.Pedestals or (slot.U and not findItem(data, slot.U)) then
 			if slot.Box and index then
 				-- pedestal gone but the box isn't lost: it opens straight into your pocket
-				MuseumService.AddItem(player, slot.Box.Id, slot.Box.V, nil, true)
+				local id, variant, size = Svc.Spawn.RollContents(player, slot.Box)
+				MuseumService.AddItem(player, id, variant, { Z = size }, true)
 			end
 			data.Slots[key] = nil
 		end
@@ -317,7 +326,7 @@ function MuseumService.QueueRefresh(player)
 end
 
 -- Adds an object to the player's POCKET (rewards, raid copies, opened boxes...).
--- flags = { Stolen = bool }. skipRecompute is used internally.
+-- flags = { Stolen = bool, Z = size multiplier }. skipRecompute is used internally.
 function MuseumService.AddItem(player, id, variant, flags, skipRecompute)
 	local data = Svc.Data.Get(player)
 	if not data or not ObjectConfig.Get(id) then
@@ -329,6 +338,9 @@ function MuseumService.AddItem(player, id, variant, flags, skipRecompute)
 	if flags and flags.Stolen then
 		item.S = true
 	end
+	if flags and flags.Z and flags.Z ~= 1 then
+		item.Z = flags.Z
+	end
 	table.insert(data.Items, item)
 	Svc.Index.Mark(player, id, variant)
 
@@ -338,7 +350,7 @@ function MuseumService.AddItem(player, id, variant, flags, skipRecompute)
 		local worstIndex, worstIncome = nil, math.huge
 		for i, it in ipairs(data.Items) do
 			local def = ObjectConfig.Get(it.Id)
-			if it ~= item and not slotted[it.U] and not (def and def.Exclusive) then
+			if it ~= item and not slotted[it.U] and not (def and def.Exclusive) and not Svc.Carry.IsHolding(player, it.U) then
 				local inc = Formulas.ItemBaseIncome(it)
 				if inc < worstIncome then
 					worstIndex, worstIncome = i, inc
@@ -364,11 +376,11 @@ local function pedestalModel(player, i)
 	return rec and rec.Model
 end
 
-local function bestPocketItem(data)
+local function bestPocketItem(player, data)
 	local slotted = slottedSet(data)
 	local best, bestIncome = nil, -1
 	for _, item in ipairs(data.Items) do
-		if not slotted[item.U] then
+		if not slotted[item.U] and not Svc.Carry.IsHolding(player, item.U) then
 			local inc = Formulas.ItemBaseIncome(item)
 			if inc > bestIncome then
 				best, bestIncome = item, inc
@@ -391,16 +403,20 @@ function onPrompt(player, i)
 	local slot = data.Slots[key]
 
 	if not slot then
-		-- EMPTY: place a carried box, otherwise your best pocket object
-		local box = Svc.Carry.TakeBox(player)
-		if box then
-			local seconds = Formulas.BoxOpenSeconds(box.Id, box.V)
-			data.Slots[key] = { Box = { Id = box.Id, V = box.V, ReadyAt = os.time() + seconds } }
+		-- EMPTY: place what's on top of your stack (box or held object), otherwise your best pocket object
+		local entry = Svc.Carry.TakeTop(player)
+		if entry and entry.Kind == "Box" then
+			local box = entry.Box
+			local seconds = Formulas.BoxOpenSeconds(box)
+			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Id = box.Id, ReadyAt = os.time() + seconds } }
 			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = seconds })
+		elseif entry and entry.Kind == "Item" and findItem(data, entry.U) and not slottedSet(data)[entry.U] then
+			data.Slots[key] = { U = entry.U }
+			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = 0 })
 		else
-			local item = bestPocketItem(data)
+			local item = bestPocketItem(player, data)
 			if not item then
-				Svc.Net.Notify(player, "🎒 Shrink something and bring the box here!", "info")
+				Svc.Net.Notify(player, "🎒 Shrink a box in the zones and bring it here!", "info")
 				return
 			end
 			data.Slots[key] = { U = item.U }
@@ -420,8 +436,14 @@ function onPrompt(player, i)
 		slot.Box.ReadyAt = os.time()
 		MuseumService.OpenReadyBoxes(player)
 	elseif slot.U then
-		-- OBJECT: pick it up (back to your pocket)
+		-- OBJECT: lift it above your head (real size!), or into your pocket if your hands are full
+		local item = findItem(data, slot.U)
 		data.Slots[key] = nil
+		if item and Svc.Carry.Hold(player, item) then
+			Svc.Net.Notify(player, "🙌 Holding your " .. Formulas.ItemName(item) .. " (" .. Formulas.FormatWeight(Formulas.ItemWeight(item)) .. ")", "info")
+		else
+			Svc.Net.Notify(player, "🎒 Hands full — put it in your pocket.", "info")
+		end
 		MuseumService.Recompute(player)
 	end
 end
@@ -436,7 +458,8 @@ function MuseumService.OpenReadyBoxes(player)
 	local opened = false
 	for key, slot in pairs(data.Slots) do
 		if slot.Box and slot.Box.ReadyAt <= now then
-			local item = MuseumService.AddItem(player, slot.Box.Id, slot.Box.V, nil, true)
+			local id, rolledVariant, size = Svc.Spawn.RollContents(player, slot.Box)
+			local item = MuseumService.AddItem(player, id, rolledVariant, { Z = size }, true)
 			if item then
 				data.Slots[key] = { U = item.U }
 				opened = true
@@ -446,7 +469,7 @@ function MuseumService.OpenReadyBoxes(player)
 				local def = ObjectConfig.Get(item.Id)
 				local variant = RarityConfig.GetVariant(item.V)
 				local rarity = RarityConfig.GetRarity(def.Rarity)
-				if variant.Order >= 4 or rarity.Order >= 6 then
+				if variant.Order >= 4 or rarity.Order >= 6 or (item.Z or 1) >= 3 then
 					Svc.Net.Announce("🎉 " .. player.DisplayName .. " unboxed a " .. Formulas.ItemName(item) .. "!", variant.Color or rarity.Color)
 				end
 			end
@@ -474,6 +497,31 @@ function MuseumService.GetPlotOwner(plotId)
 		end
 	end
 	return nil
+end
+
+-- Moves object `uid` from `from` to `to` (PvP steal). Returns the new item of `to`, or nil.
+function MuseumService.TransferItem(from, to, uid)
+	local fromData = Svc.Data.Get(from)
+	if not fromData or not Svc.Data.Get(to) then
+		return nil
+	end
+	local item, index = findItem(fromData, uid)
+	if not item then
+		return nil
+	end
+	local def = ObjectConfig.Get(item.Id)
+	if def and def.Exclusive then
+		return nil -- exclusives can't be stolen
+	end
+	table.remove(fromData.Items, index)
+	unslot(fromData, uid)
+	MuseumService.Recompute(from)
+	return MuseumService.AddItem(to, item.Id, item.V, { Stolen = true, Z = item.Z })
+end
+
+function MuseumService.FindItem(player, uid)
+	local data = Svc.Data.Get(player)
+	return data and findItem(data, uid) or nil
 end
 
 -- Object on pedestal #slotIndex (used by raids), or nil.
@@ -594,6 +642,7 @@ function MuseumService.Start()
 		end
 		table.remove(data.Items, index)
 		unslot(data, uid)
+		Svc.Carry.ForgetItem(player, uid)
 		local coins = Formulas.ItemBaseIncome(item) * Svc.Economy.GetIncomeMultiplier(player) * GameConfig.SellSeconds
 		Svc.Economy.AddCoins(player, coins)
 		MuseumService.Recompute(player)
@@ -638,14 +687,18 @@ function MuseumService.Start()
 				table.insert(remove, uid)
 			end
 		end
+		local sizeSum = 0
 		for _, uid in ipairs(remove) do
-			local _, index = findItem(data, uid)
+			local old, index = findItem(data, uid)
 			if index then
+				sizeSum += old.Z or 1
 				table.remove(data.Items, index)
 			end
 			unslot(data, uid)
+			Svc.Carry.ForgetItem(player, uid)
 		end
-		local item = MuseumService.AddItem(player, id, nextVariant)
+		-- the fused object is as big as the average of the three
+		local item = MuseumService.AddItem(player, id, nextVariant, { Z = Formulas.SizeInfo(sizeSum / #remove).Mult })
 		return { ok = true, msg = "✨ Fused into " .. Formulas.ItemName(item) .. "! (in your pocket)" }
 	end)
 
@@ -657,7 +710,7 @@ function MuseumService.Start()
 		local mult = Svc.Economy.GetIncomeMultiplier(player)
 		for _, item in ipairs(data.Items) do
 			local def = ObjectConfig.Get(item.Id)
-			if slotted[item.U] or (def and def.Exclusive) then
+			if slotted[item.U] or (def and def.Exclusive) or Svc.Carry.IsHolding(player, item.U) then
 				table.insert(kept, item)
 			else
 				total += Formulas.ItemBaseIncome(item) * mult * GameConfig.SellSeconds
@@ -671,6 +724,43 @@ function MuseumService.Start()
 		Svc.Economy.AddCoins(player, total)
 		MuseumService.Recompute(player)
 		return { ok = true, msg = string.format("💰 Sold %d object%s for %s", count, count == 1 and "" or "s", Format.Coins(total)) }
+	end)
+
+	-- EQUIP BEST: fills every pedestal that isn't opening a box with your best objects
+	Svc.Net.Handle("EquipBest", function(player)
+		local data = Svc.Data.Get(player)
+		local s = Svc.Session.Get(player)
+		if not data or not s or not Svc.Session.Throttle(player, "equipbest", 1) then
+			return { ok = false }
+		end
+		local candidates = {}
+		for _, item in ipairs(data.Items) do
+			if not Svc.Carry.IsHolding(player, item.U) then
+				table.insert(candidates, item)
+			end
+		end
+		table.sort(candidates, function(a, b)
+			return Formulas.ItemBaseIncome(a) > Formulas.ItemBaseIncome(b)
+		end)
+		local freeSlots = {}
+		for i = 1, s.PedestalCount or 0 do
+			local slot = data.Slots[tostring(i)]
+			if not (slot and slot.Box) then
+				data.Slots[tostring(i)] = nil
+				table.insert(freeSlots, i)
+			end
+		end
+		local placed = 0
+		for i, index in ipairs(freeSlots) do
+			local item = candidates[i]
+			if not item then
+				break
+			end
+			data.Slots[tostring(index)] = { U = item.U }
+			placed += 1
+		end
+		MuseumService.Recompute(player)
+		return { ok = true, msg = placed > 0 and ("⭐ Equipped your best " .. placed .. " object" .. (placed == 1 and "" or "s") .. "!") or "Nothing to equip yet!" }
 	end)
 
 	Svc.Net.Handle("TeleportMuseum", function(player)

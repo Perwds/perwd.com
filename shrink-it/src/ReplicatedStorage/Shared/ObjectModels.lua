@@ -808,6 +808,270 @@ B.HugeDragon = function(m)
 	fire.Parent = m:FindFirstChildWhichIsA("BasePart")
 end
 
+-- Zone 5 · Desert ─────────────────────────────────
+B.Cactus = function(m)
+	local g = C(70, 160, 70)
+	add(m, "Cyl", V(1.8, 0.6, 1.8), V(0, 0.3, 0), C(200, 110, 70), M.SmoothPlastic)
+	add(m, "Cyl", V(2.2, 10, 2.2), V(0, 5.6, 0), g)
+	add(m, "Ball", V(2.2, 2.2, 2.2), V(0, 10.6, 0), g)
+	for _, s in ipairs({ -1, 1 }) do
+		local h = s < 0 and 3.2 or 4.4
+		add(m, "CylX", V(2, 1.4, 1.4), V(s * 1.8, h + 2, 0), g)
+		add(m, "Cyl", V(1.4, 3.2, 1.4), V(s * 2.8, h + 3.5, 0), g)
+		add(m, "Ball", V(1.4, 1.4, 1.4), V(s * 2.8, h + 5.1, 0), g)
+	end
+	add(m, "Ball", V(0.9, 0.9, 0.9), V(0, 11.6, 0), C(255, 90, 160))
+	for i = 1, 8 do
+		local a = i / 8 * math.pi * 2
+		add(m, "Block", V(0.1, 0.5, 0.1), V(math.cos(a) * 1.15, 3 + i, math.sin(a) * 1.15), C(250, 250, 220))
+	end
+end
+
+B.Tumbleweed = function(m)
+	local rng = Random.new(7)
+	add(m, "Ball", V(4.6, 4.6, 4.6), V(0, 3, 0), C(170, 130, 80), M.Fabric, { Transparency = 0.4 })
+	for _ = 1, 22 do
+		local a, b = rng:NextNumber(0, math.pi * 2), rng:NextNumber(-1, 1)
+		local dir = V(math.cos(a) * math.sqrt(1 - b * b), b, math.sin(a) * math.sqrt(1 - b * b))
+		beam(m, V(0, 3, 0) + dir * 0.5, V(0, 3, 0) + dir * 2.9, 0.18, C(150, 110, 65), M.Wood)
+	end
+end
+
+B.OilPump = function(m)
+	local dark = C(55, 55, 65)
+	add(m, "Block", V(5, 1, 14), V(0, 0.5, 0), C(120, 120, 130), M.Metal)
+	beam(m, V(-1.5, 1, 0), V(0, 8, 0), 0.6, dark, M.Metal)
+	beam(m, V(1.5, 1, 0), V(0, 8, 0), 0.6, dark, M.Metal)
+	add(m, "Block", V(1.2, 1.2, 12), rot(V(0, 8.6, 0), 12, 0, 0), C(240, 180, 40), M.Metal)
+	add(m, "Block", V(2, 3.6, 2), rot(V(0, 7.6, -5.8), 12, 0, 0), C(240, 180, 40), M.Metal)
+	add(m, "CylX", V(1.2, 4, 4), V(0, 3.4, 5), C(200, 60, 50), M.Metal)
+	add(m, "Cyl", V(0.5, 7, 0.5), V(0, 4, -6.2), dark, M.Metal)
+end
+
+B.Pyramid = function(m)
+	local sand = C(232, 200, 120)
+	for i = 0, 9 do
+		local w = 30 - i * 3
+		add(m, "Block", V(w, 2, w), V(0, 1 + i * 2, 0), sand:Lerp(C(255, 240, 180), i * 0.03), M.Sandstone)
+	end
+	add(m, "Block", V(4, 6, 1), V(0, 3, -13.6), C(60, 40, 30))
+	neon(m, "Block", V(1.2, 1.2, 1.2), V(0, 20.6, 0), C(255, 215, 80))
+end
+
+-- Zone 6 · Jungle ─────────────────────────────────
+B.PalmTree = function(m)
+	local trunk = C(150, 105, 60)
+	for i = 0, 6 do
+		add(m, "Cyl", V(1.8 - i * 0.08, 2.6, 1.8 - i * 0.08), rot(V(i * 0.35, 1.3 + i * 2.4, 0), 0, 0, -4), i % 2 == 0 and trunk or trunk:Lerp(C(0, 0, 0), 0.15), M.Wood)
+	end
+	for i = 0, 6 do
+		local a = i / 7 * math.pi * 2
+		add(m, "Block", V(7, 0.3, 2), CFrame.new(V(2.4 + math.cos(a) * 3.2, 17.4, math.sin(a) * 3.2)) * CFrame.Angles(0, -a, rad(-22)), C(50, 160, 60))
+	end
+	for i = 0, 2 do
+		add(m, "Ball", V(1.2, 1.2, 1.2), V(2.4 + (i - 1) * 0.9, 16.6, 0.4), C(120, 80, 40))
+	end
+end
+
+B.TikiStatue = function(m)
+	local wood = C(150, 100, 60)
+	add(m, "Block", V(4.5, 12, 4), V(0, 6, 0), wood, M.Wood)
+	add(m, "Block", V(5.2, 1, 4.6), V(0, 12.5, 0), C(200, 60, 40), M.Wood)
+	for _, s in ipairs({ -1, 1 }) do
+		add(m, "Block", V(1.2, 1.6, 0.4), V(s * 1.1, 9.4, -2.1), C(240, 230, 200))
+		add(m, "Block", V(0.6, 0.8, 0.5), V(s * 1.1, 9.2, -2.2), C(20, 20, 20))
+		add(m, "Block", V(0.8, 3, 1.4), V(s * 2.6, 7, 0), wood:Lerp(C(0, 0, 0), 0.2), M.Wood)
+	end
+	add(m, "Block", V(3, 1, 0.5), V(0, 6.2, -2.1), C(240, 230, 200))
+	add(m, "Block", V(1, 2, 0.6), V(0, 7.8, -2.2), wood:Lerp(C(0, 0, 0), 0.25), M.Wood)
+	for i = 0, 2 do
+		add(m, "Block", V(4.6, 0.3, 4.1), V(0, 2 + i * 1.2, 0), C(60, 170, 90))
+	end
+end
+
+B.Treehouse = function(m)
+	local trunk = C(120, 80, 45)
+	add(m, "Cyl", V(3, 14, 3), V(0, 7, 0), trunk, M.Wood)
+	add(m, "Block", V(12, 0.8, 12), V(0, 12, 0), C(170, 120, 70), M.WoodPlanks)
+	add(m, "Block", V(8, 6, 8), V(0, 15.4, 0), C(190, 140, 85), M.WoodPlanks)
+	add(m, "Wedge", V(9, 3, 4.5), rot(V(0, 19.9, -2.25), 0, 180, 0), C(180, 60, 50))
+	add(m, "Wedge", V(9, 3, 4.5), V(0, 19.9, 2.25), C(180, 60, 50))
+	add(m, "Block", V(2.4, 3.6, 0.3), V(0, 14.2, -4.1), C(90, 60, 40))
+	window(m, CFrame.new(2.4, 16, -4.1), 1.6, 1.6)
+	for i = 0, 5 do
+		add(m, "Block", V(2, 0.3, 0.3), V(2.2, 1.4 + i * 1.8, -1.6), C(150, 105, 60), M.Wood)
+	end
+	add(m, "Ball", V(10, 7, 10), V(0, 23, 0), C(70, 160, 60))
+end
+
+-- Zone 8 · Volcano ────────────────────────────────
+B.LavaRock = function(m)
+	local rock = C(55, 40, 38)
+	add(m, "Ball", V(10, 8, 10), V(0, 4, 0), rock, M.Basalt)
+	add(m, "Ball", V(6, 5, 6), V(3, 6, 2), rock:Lerp(C(0, 0, 0), 0.2), M.Basalt)
+	for i = 1, 5 do
+		local a = i / 5 * math.pi * 2
+		neon(m, "Block", V(0.4, 3, 0.4), CFrame.new(V(math.cos(a) * 4.2, 4, math.sin(a) * 4.2)) * CFrame.Angles(rad(20), -a, rad(30)), C(255, 110, 20))
+	end
+end
+
+B.MagmaCrystal = function(m)
+	add(m, "Cyl", V(6, 1.2, 6), V(0, 0.6, 0), C(45, 35, 35), M.Basalt)
+	local pieces = { { V(2, 12, 2), V(0, 6.6, 0), 0 }, { V(1.4, 8, 1.4), V(1.8, 4.6, 0.5), -20 }, { V(1.4, 7, 1.4), V(-1.6, 4.2, -0.6), 22 } }
+	for _, p in ipairs(pieces) do
+		local cf = CFrame.new(p[2]) * CFrame.Angles(0, rad(45), rad(p[3]))
+		neon(m, "Block", p[1], cf, C(255, 100, 30))
+		add(m, "Block", p[1] * V(1.15, 0.6, 1.15), cf * CFrame.new(0, -p[1].Y * 0.2, 0), C(120, 30, 20), M.Glass, { Transparency = 0.3 })
+	end
+	local light = Instance.new("PointLight")
+	light.Color = C(255, 120, 40)
+	light.Range = 20
+	light.Parent = m:FindFirstChildWhichIsA("BasePart")
+end
+
+-- Zone 9 · Summit ─────────────────────────────────
+B.SnowCastle = function(m)
+	local snow = C(240, 246, 255)
+	add(m, "Block", V(18, 10, 18), V(0, 5, 0), snow, M.Snow)
+	for _, x in ipairs({ -9, 9 }) do
+		for _, z in ipairs({ -9, 9 }) do
+			add(m, "Cyl", V(5, 16, 5), V(x, 8, z), snow, M.Snow)
+			add(m, "Cyl", V(5.6, 1.2, 5.6), V(x, 16.6, z), C(180, 220, 255), M.Ice)
+		end
+	end
+	for i = -3, 3 do
+		add(m, "Block", V(1.6, 1.6, 1.6), V(i * 2.4, 10.8, -9), snow, M.Snow)
+	end
+	add(m, "Block", V(4, 6, 0.6), V(0, 3, -9.1), C(120, 170, 230), M.Ice)
+	add(m, "Cyl", V(4, 8, 4), V(0, 14, 0), snow, M.Snow)
+	neon(m, "Block", V(0.4, 3, 2), V(0, 19.5, 0), C(120, 200, 255))
+end
+
+-- Zone 10 · Outer Space ───────────────────────────
+B.Satellite = function(m)
+	add(m, "Block", V(4, 4, 4), V(0, 4, 0), C(220, 200, 120), M.Foil)
+	for _, s in ipairs({ -1, 1 }) do
+		add(m, "Block", V(7, 0.2, 3.6), V(s * 6, 4, 0), C(40, 60, 140), M.Glass, { Reflectance = 0.3 })
+		beam(m, V(s * 2, 4, 0), V(s * 2.6, 4, 0), 0.3, C(180, 180, 190), M.Metal)
+		for k = -2, 2 do
+			add(m, "Block", V(0.08, 0.22, 3.6), V(s * 6 + k * 1.4, 4, 0), C(200, 200, 210), M.Metal)
+		end
+	end
+	add(m, "Cyl", V(3, 0.6, 3), V(0, 6.4, 0), C(240, 240, 245), M.Metal)
+	beam(m, V(0, 6.6, 0), V(0, 8, 0), 0.2, C(200, 200, 210), M.Metal)
+	neon(m, "Ball", V(0.5, 0.5, 0.5), V(0, 8.2, 0), C(255, 60, 60))
+	add(m, "Cyl", V(1.4, 2, 1.4), V(0, 1, 0), C(120, 120, 130), M.Metal)
+end
+
+B.UFO = function(m)
+	add(m, "Cyl", V(18, 1.6, 18), V(0, 3, 0), C(180, 185, 200), M.Metal)
+	add(m, "Cyl", V(14, 1.2, 14), V(0, 4.2, 0), C(150, 155, 175), M.Metal)
+	add(m, "Ball", V(8, 6, 8), V(0, 5.4, 0), C(120, 230, 255), M.Glass, { Transparency = 0.35 })
+	add(m, "Ball", V(2, 2.4, 2), V(0, 5.4, 0), C(120, 230, 120))
+	for i = 0, 9 do
+		local a = i / 10 * math.pi * 2
+		neon(m, "Ball", V(0.8, 0.8, 0.8), V(math.cos(a) * 8.4, 3, math.sin(a) * 8.4), i % 2 == 0 and C(255, 220, 60) or C(80, 255, 160))
+	end
+	neon(m, "Cyl", V(5, 0.4, 5), V(0, 2, 0), C(140, 255, 180))
+	for _, a in ipairs({ 0, 120, 240 }) do
+		beam(m, V(math.cos(rad(a)) * 5, 2.4, math.sin(rad(a)) * 5), V(math.cos(rad(a)) * 6, 0, math.sin(rad(a)) * 6), 0.4, C(140, 140, 150), M.Metal)
+	end
+end
+
+B.SpaceStation = function(m)
+	local white = C(230, 232, 240)
+	add(m, "CylX", V(14, 4, 4), V(0, 7, 0), white, M.Metal)
+	add(m, "CylZ", V(4, 4, 14), V(0, 7, 0), white, M.Metal)
+	add(m, "Ball", V(6, 6, 6), V(0, 7, 0), C(200, 205, 220), M.Metal)
+	for _, s in ipairs({ -1, 1 }) do
+		add(m, "Block", V(10, 0.2, 5), V(s * 12, 7, 0), C(40, 60, 150), M.Glass, { Reflectance = 0.3 })
+		add(m, "Block", V(5, 0.2, 10), V(0, 7, s * 12), C(40, 60, 150), M.Glass, { Reflectance = 0.3 })
+	end
+	add(m, "CylX", V(0.6, 26, 26), V(0, 7, 0), C(180, 185, 200), M.Metal, { Transparency = 0.2 })
+	neon(m, "Ball", V(1, 1, 1), V(0, 10.4, 0), C(255, 80, 80))
+	add(m, "Cyl", V(1.2, 4, 1.2), V(0, 2, 0), C(120, 120, 130), M.Metal)
+end
+
+-- Royal Crate exclusives (Robux only) ──────────────
+B.KingDuck = function(m)
+	local yellow = C(255, 215, 40)
+	add(m, "Ball", V(4, 3.2, 4.4), V(0, 1.8, 0.2), yellow)
+	add(m, "Ball", V(2.6, 2.6, 2.6), V(0, 4, -1.2), yellow)
+	add(m, "Block", V(1.4, 0.5, 1.2), V(0, 3.8, -2.6), C(255, 140, 30))
+	for _, s in ipairs({ -1, 1 }) do
+		add(m, "Ball", V(0.5, 0.5, 0.5), V(s * 0.6, 4.4, -2.3), C(20, 20, 25))
+		add(m, "Ball", V(1.2, 1.6, 2.2), V(s * 1.9, 2, 0.4), yellow:Lerp(C(255, 160, 0), 0.2))
+	end
+	-- crown
+	add(m, "Cyl", V(1.8, 0.6, 1.8), V(0, 5.5, -1.2), C(255, 200, 40), M.Metal)
+	for i = 0, 4 do
+		local a = i / 5 * math.pi * 2
+		add(m, "Wedge", V(0.4, 0.7, 0.4), V(math.cos(a) * 0.75, 6.1, -1.2 + math.sin(a) * 0.75), C(255, 200, 40), M.Metal)
+	end
+	neon(m, "Ball", V(0.35, 0.35, 0.35), V(0, 5.6, -2.1), C(255, 40, 80))
+end
+
+B.GoldenToilet = function(m)
+	local gold = C(255, 205, 50)
+	add(m, "Cyl", V(2.2, 2, 2.2), V(0, 1, 0.2), gold, M.Metal, { Reflectance = 0.3 })
+	add(m, "Cyl", V(3.4, 0.7, 3.8), V(0, 2.3, -0.2), gold, M.Metal, { Reflectance = 0.3 })
+	add(m, "Cyl", V(2.6, 0.2, 3), V(0, 2.7, -0.2), C(80, 160, 230), M.Glass, { Transparency = 0.2 })
+	add(m, "Block", V(3.2, 3.4, 1.2), V(0, 4, 1.8), gold, M.Metal, { Reflectance = 0.3 })
+	add(m, "Block", V(3.6, 0.4, 1.6), V(0, 5.9, 1.8), gold, M.Metal, { Reflectance = 0.3 })
+	neon(m, "Ball", V(0.5, 0.5, 0.5), V(1.2, 6.3, 1.8), C(255, 255, 255))
+	local sparkle = Instance.new("Sparkles")
+	sparkle.SparkleColor = gold
+	sparkle.Parent = m:FindFirstChildWhichIsA("BasePart")
+end
+
+B.NeonUnicorn = function(m)
+	local pink = C(255, 120, 220)
+	add(m, "Block", V(2.2, 2.2, 4.2), V(0, 3.4, 0), pink, M.Neon)
+	for _, x in ipairs({ -0.7, 0.7 }) do
+		for _, z in ipairs({ -1.5, 1.5 }) do
+			add(m, "Block", V(0.6, 2.4, 0.6), V(x, 1.2, z), pink:Lerp(C(255, 255, 255), 0.3), M.Neon)
+		end
+	end
+	beam(m, V(0, 4, -1.8), V(0, 5.6, -2.6), 1.2, pink, M.Neon)
+	add(m, "Block", V(1.2, 1.2, 2), V(0, 5.8, -3.2), pink, M.Neon)
+	add(m, "Wedge", V(0.35, 1.8, 0.35), rot(V(0, 7.2, -3.4), -20, 0, 0), C(255, 230, 90), M.Neon)
+	for i = 0, 3 do
+		add(m, "Block", V(0.4, 0.8, 0.5), V(0, 5.2 - i * 0.4, -1.6 + i * 0.5), Color3.fromHSV(i / 4, 0.8, 1), M.Neon)
+	end
+	beam(m, V(0, 3.8, 2.1), V(0, 2.4, 3.4), 0.6, C(150, 220, 255), M.Neon)
+end
+
+B.DragonEgg = function(m)
+	add(m, "Cyl", V(4, 0.8, 4), V(0, 0.4, 0), C(60, 50, 60), M.Basalt)
+	add(m, "Ball", V(3.4, 4.6, 3.4), V(0, 3, 0), C(110, 40, 190), M.Slate)
+	for i = 0, 7 do
+		local a = i / 8 * math.pi * 2
+		add(m, "Ball", V(0.8, 0.8, 0.8), V(math.cos(a) * 1.55, 2.4 + (i % 2) * 1.2, math.sin(a) * 1.55), C(170, 90, 255), M.Slate)
+	end
+	neon(m, "Block", V(0.15, 2, 0.15), rot(V(0.8, 3.4, -1.5), 0, 0, 20), C(255, 150, 40))
+	local fire = Instance.new("Fire")
+	fire.Size = 2
+	fire.Heat = 2
+	fire.Color = C(170, 80, 255)
+	fire.Parent = m:FindFirstChildWhichIsA("BasePart")
+end
+
+B.GalaxyOrb = function(m)
+	add(m, "Cyl", V(3, 1, 3), V(0, 0.5, 0), C(40, 30, 70), M.Metal)
+	add(m, "Ball", V(4.4, 4.4, 4.4), V(0, 3.4, 0), C(70, 40, 200), M.Glass, { Transparency = 0.25, Reflectance = 0.2 })
+	neon(m, "Ball", V(2.2, 2.2, 2.2), V(0, 3.4, 0), C(170, 110, 255))
+	local rng = Random.new(3)
+	for _ = 1, 10 do
+		neon(m, "Ball", V(0.25, 0.25, 0.25), V(rng:NextNumber(-1.4, 1.4), 3.4 + rng:NextNumber(-1.4, 1.4), rng:NextNumber(-1.4, 1.4)), C(255, 255, 255))
+	end
+	add(m, "CylX", V(0.15, 6, 6), rot(V(0, 3.4, 0), 0, 0, 20), C(200, 160, 255), M.Neon, { Transparency = 0.4 })
+	local light = Instance.new("PointLight")
+	light.Color = C(170, 110, 255)
+	light.Range = 16
+	light.Brightness = 2
+	light.Parent = m:FindFirstChildWhichIsA("BasePart")
+end
+
 -- ── public ───────────────────────────────────────────────────────────
 function ObjectModels.Has(id)
 	return B[id] ~= nil

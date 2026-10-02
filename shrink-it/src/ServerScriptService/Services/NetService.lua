@@ -39,6 +39,15 @@ function NetService.Announce(text, color)
 	Remotes.Event("Announce"):FireAllClients(text, color)
 end
 
+-- Plays a GameConfig.Sounds entry: for one player, or everyone; at `position` (3D) or as UI sound.
+function NetService.Sound(name, player, position)
+	if player then
+		Remotes.Event("PlaySound"):FireClient(player, name, position)
+	else
+		Remotes.Event("PlaySound"):FireAllClients(name, position)
+	end
+end
+
 function NetService.Popup(player, kind, payload)
 	Remotes.Event("Popup"):FireClient(player, kind, payload)
 end

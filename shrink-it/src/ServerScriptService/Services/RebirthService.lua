@@ -1,15 +1,13 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > RebirthService (ModuleScript)
 
-	Rebirth: resets Coins, upgrades and the museum (Exclusive "Huge" items are kept)
-	for a permanent income multiplier, Gems and Rebirth Tokens.
-	The Index, Gems, Tokens, token upgrades, skins and potions are kept.
+	Rebirth: resets Coins and upgrades for a permanent income multiplier, Gems and Rebirth Tokens.
+	Your objects, pedestals, speed, Index, Gems, Tokens, token upgrades, skins and potions are KEPT.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
-local ObjectConfig = require(Shared.Config.ObjectConfig)
 local Formulas = require(Shared.Formulas)
 local Format = require(Shared.Format)
 
@@ -42,18 +40,12 @@ function RebirthService.DoRebirth(player, free)
 	data.Rebirths += 1
 	data.Coins = 0
 	for id in pairs(data.Upgrades) do
-		data.Upgrades[id] = 1
-	end
-	data.GatesOpened = {}
-	local kept = {}
-	for _, item in ipairs(data.Items) do
-		local def = ObjectConfig.Get(item.Id)
-		if def and def.Exclusive then
-			table.insert(kept, item)
+		if id ~= "MuseumSize" and id ~= "Treadmill" then -- your pedestals & treadmill stay
+			data.Upgrades[id] = 1
 		end
 	end
-	data.Items = kept
-	data.Slots = {} -- pedestals are cleared; kept exclusives wait in the pocket
+	data.GatesOpened = {}
+	-- your objects and pedestals are KEPT (only Coins & upgrades reset)
 	data.Gems += rewards.Gems
 	data.RebirthTokens += rewards.Tokens
 
