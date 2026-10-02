@@ -13,6 +13,8 @@
 	  Walls      · tall checkered walls in each zone's colors with a grass/ice cap
 	  Arches     · a sign at the start of every zone (name, Ray Power, who's chasing you)
 
+	Style: bright studded LEGO-like bricks everywhere (MapDecor.Studify runs over the finished map).
+
 	Everything here has CanQuery = false so the Shrink Ray aims straight through it,
 	and it stays in the outer strips (|x| > 74) so it never overlaps object spawn points.
 ]]
@@ -229,8 +231,8 @@ end
 
 -- ── floor & wall styles ──────────────────────────────────────────────
 MapDecor.FloorStyle = {
-	[1] = { Material = Enum.Material.SmoothPlastic, Color = RGB(110, 210, 80) },
-	[2] = { Material = Enum.Material.SmoothPlastic, Color = RGB(95, 195, 75) },
+	[1] = { Material = Enum.Material.Plastic, Color = RGB(105, 215, 50) },
+	[2] = { Material = Enum.Material.Plastic, Color = RGB(96, 200, 48) },
 	[3] = { Material = Enum.Material.Concrete, Color = RGB(170, 170, 180) },
 	[4] = { Material = Enum.Material.Sand, Color = RGB(238, 216, 160) },
 	[5] = { Material = Enum.Material.Pavement, Color = RGB(110, 105, 140) },
@@ -238,9 +240,10 @@ MapDecor.FloorStyle = {
 }
 
 local WALL_STYLE = {
-	Base = { A = RGB(90, 175, 225), B = RGB(70, 150, 205), Cap = RGB(110, 210, 80), Material = Enum.Material.SmoothPlastic },
-	[1] = { A = RGB(205, 125, 75), B = RGB(180, 100, 58), Cap = RGB(110, 210, 80), Material = Enum.Material.SmoothPlastic },
-	[2] = { A = RGB(185, 85, 65), B = RGB(160, 70, 55), Cap = RGB(95, 195, 75), Material = Enum.Material.Brick },
+	-- brown "dirt" walls with a grass top (the Steal-an-Egg look)
+	Base = { A = RGB(204, 146, 96), B = RGB(186, 128, 80), Cap = RGB(105, 215, 50), Material = Enum.Material.Plastic },
+	[1] = { A = RGB(204, 146, 96), B = RGB(186, 128, 80), Cap = RGB(105, 215, 50), Material = Enum.Material.Plastic },
+	[2] = { A = RGB(196, 136, 88), B = RGB(176, 118, 72), Cap = RGB(96, 200, 48), Material = Enum.Material.Plastic },
 	[3] = { A = RGB(150, 150, 162), B = RGB(128, 128, 140), Cap = RGB(80, 80, 92), Material = Enum.Material.Concrete },
 	[4] = { A = RGB(160, 112, 65), B = RGB(135, 92, 52), Cap = RGB(60, 150, 220), Material = Enum.Material.WoodPlanks },
 	[5] = { A = RGB(62, 72, 112), B = RGB(46, 54, 90), Cap = RGB(200, 90, 255), Material = Enum.Material.Glass },
@@ -266,7 +269,7 @@ local function wallRun(parent, a, b, height, style)
 		part(parent, Vector3.new(2, height / 2, seg), cf * CFrame.new(0, height * 3 / 4, 0), (i % 2 == 0) and style.B or style.A, style.Material)
 	end
 	local cf = CFrame.lookAt(a + delta / 2, b)
-	part(parent, Vector3.new(3, 2, len + 1), cf * CFrame.new(0, height + 1, 0), style.Cap, Enum.Material.SmoothPlastic)
+	part(parent, Vector3.new(4, 3, len + 2), cf * CFrame.new(0, height + 1.5, 0), style.Cap, Enum.Material.Plastic)
 end
 
 -- opts: { BaseWidth, BaseDepth, Corridor, Height, Zones = { {Tier, StartZ, Depth} } }
@@ -313,7 +316,34 @@ function MapDecor.ZoneArch(zone, tier, t, z, width)
 	sign(beam, Enum.NormalId.Front, chaser.Emoji .. " " .. string.upper(t.Area), color:Lerp(RGB(255, 255, 255), 0.35), 8)
 	sign(beam, Enum.NormalId.Back, tier == 1 and "🏠 SAFE" or "⬇ BASE", RGB(120, 255, 140), 8)
 	-- floor line
-	deco(arch, Vector3.new(width - 4, 0.25, 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(255, 60, 60) or color, Enum.Material.Neon)
+	deco(arch, Vector3.new(width - 4, 0.25, tier == 1 and 1 or 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(230, 40, 40) or color, Enum.Material.Neon)
+	if tier == 1 then
+		-- "SAFE ZONE" painted on the ground just inside the base
+		-- turned 180° so the words read the right way up from inside the base (looking out at the zones)
+		local paint = deco(arch, Vector3.new(60, 0.1, 9), CFrame.new(0, 0.06, z - 7) * CFrame.Angles(0, math.pi, 0), RGB(255, 255, 255), Enum.Material.SmoothPlastic)
+		paint.Transparency = 1
+		local gui = Instance.new("SurfaceGui")
+		gui.Face = Enum.NormalId.Top
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 20
+		gui.LightInfluence = 0.3
+		gui.Parent = paint
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.fromScale(1, 1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.FredokaOne
+		label.TextScaled = true
+		label.TextColor3 = RGB(255, 255, 255)
+		label.Text = "SAFE ZONE"
+		label.Parent = gui
+		local stroke = Instance.new("UIStroke")
+		stroke.Thickness = 8
+		stroke.Parent = label
+		for _, sx in ipairs({ -1, 1 }) do -- blue pills either side
+			local pill = deco(arch, Vector3.new(0.12, 3, 7), CFrame.new(sx * 36, 0.07, z - 7) * CFrame.Angles(0, 0, math.rad(90)), RGB(70, 170, 255), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+			pill.Name = "SafePill"
+		end
+	end
 end
 
 -- ── zones ────────────────────────────────────────────────────────────
@@ -365,12 +395,14 @@ function MapDecor.GrassPatches(parent, count, picker)
 	end
 end
 
+-- Blocky studded bush (a few stacked green bricks).
 local function bush(parent, pos, scale, color)
 	scale = scale or 1
-	color = color or RGB(75, 160, 70)
-	part(parent, Vector3.one * 3 * scale, CFrame.new(pos + Vector3.new(0, 1.2 * scale, 0)), color, Enum.Material.SmoothPlastic, Enum.PartType.Ball)
-	part(parent, Vector3.one * 2.2 * scale, CFrame.new(pos + Vector3.new(1.3 * scale, 0.9 * scale, 0.4 * scale)), color:Lerp(RGB(255, 255, 255), 0.08), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
-	part(parent, Vector3.one * 2 * scale, CFrame.new(pos + Vector3.new(-1.2 * scale, 0.8 * scale, -0.3 * scale)), color:Lerp(RGB(0, 0, 0), 0.06), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+	color = color or RGB(70, 165, 50)
+	local s = scale
+	part(parent, Vector3.new(6, 2, 4) * s, CFrame.new(pos + Vector3.new(0, 1 * s, 0)), color, Enum.Material.Plastic)
+	part(parent, Vector3.new(4, 2, 3) * s, CFrame.new(pos + Vector3.new(-0.5 * s, 3 * s, 0)), color:Lerp(RGB(0, 0, 0), 0.06), Enum.Material.Plastic)
+	part(parent, Vector3.new(2, 2, 2) * s, CFrame.new(pos + Vector3.new(2.6 * s, 1 * s, 2.4 * s)), color:Lerp(RGB(255, 255, 255), 0.06), Enum.Material.Plastic)
 end
 
 function MapDecor.Zone(zoneModel, tier, z0, depth, width)
@@ -388,7 +420,6 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 	end
 
 	if tier == 1 then -- Grandpa's Backyard
-		MapDecor.LawnStripes(decor, -e, e, z0, zEnd, RGB(118, 210, 88), 15)
 		sides(function(s)
 			fence(decor, Vector3.new(s * I, 0, z0 + 6), Vector3.new(s * I, 0, zEnd - 6))
 		end)
@@ -425,9 +456,7 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 		for _ = 1, 10 do
 			flowers(decor, inside(), 1.6)
 		end
-		MapDecor.GrassPatches(decor, 45, inside)
 	elseif tier == 2 then -- Neighborhood
-		MapDecor.LawnStripes(decor, -e, e, z0, zEnd, RGB(108, 200, 82), 15)
 		road(decor, z0, depth, 22)
 		sides(function(s)
 			part(decor, Vector3.new(5, 0.5, depth), CFrame.new(s * 13.5, 0.25, z0 + depth / 2), RGB(205, 205, 210), Enum.Material.Concrete)
@@ -448,13 +477,6 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 				lamp(decor, Vector3.new(s * 16, 0, z + 11))
 			end)
 		end
-		MapDecor.GrassPatches(decor, 35, function()
-			local p = inside()
-			if math.abs(p.X) < 18 then
-				return nil -- not on the road
-			end
-			return p
-		end)
 	elseif tier == 3 then -- Downtown
 		road(decor, z0, depth, 30)
 		sides(function(s)
@@ -529,6 +551,67 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 		end
 	end
 end
+
+-- ── shared helpers for stands & machines ──
+local function pipeSegment(parent, a, b, d, color)
+	local len = (b - a).Magnitude
+	return part(parent, Vector3.new(len + d * 0.5, d, d), CFrame.lookAt((a + b) / 2, b) * CFrame.Angles(0, math.rad(90), 0), color, Enum.Material.Plastic, Enum.PartType.Cylinder)
+end
+
+local function screenText(target, face, text, color, ppS)
+	local gui = Instance.new("SurfaceGui")
+	gui.Face = face
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = ppS or 30
+	gui.LightInfluence = 0
+	gui.Parent = target
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = color
+	label.Text = text
+	label.Parent = gui
+	return label
+end
+
+local function floatingTitle(adornee, text, colors, height, sub)
+	local gui = Instance.new("BillboardGui")
+	gui.Size = UDim2.fromOffset(380, sub and 130 or 84)
+	gui.StudsOffsetWorldSpace = Vector3.new(0, height, 0)
+	gui.Adornee = adornee
+	gui.MaxDistance = 260
+	gui.LightInfluence = 0
+	gui.Parent = adornee
+	local label = Instance.new("TextLabel")
+	label.Name = "Title"
+	label.Size = UDim2.new(1, 0, 0, 84)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = RGB(255, 255, 255)
+	label.Text = text
+	label.Parent = gui
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 5
+	stroke.Parent = label
+	local grad = Instance.new("UIGradient")
+	grad.Color = ColorSequence.new(colors[1], colors[2])
+	grad.Rotation = 90
+	grad.Parent = label
+	if sub then
+		local s = label:Clone()
+		s.Name = "Sub"
+		s.Text = sub
+		s.Position = UDim2.fromOffset(0, 84)
+		s.Size = UDim2.new(1, 0, 0, 46)
+		s:FindFirstChildOfClass("UIGradient"):Destroy()
+		s.Parent = gui
+	end
+	return gui
+end
+MapDecor.FloatingTitle = floatingTitle
 
 -- ── stands (SELL / FUSE / TRAILS / SHOP) ──────────────────────────────
 -- A market stall with a striped awning, a big floating label and a ProximityPrompt that
@@ -619,28 +702,7 @@ function MapDecor.Stand(parent, name, label, colors, worldPos, menu, propFn)
 		end
 		npc.Parent = m
 	end)
-	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.fromOffset(360, 84)
-	gui.StudsOffsetWorldSpace = Vector3.new(0, 15, 0)
-	gui.Adornee = counter
-	gui.MaxDistance = 260
-	gui.LightInfluence = 0
-	gui.Parent = counter
-	local text = Instance.new("TextLabel")
-	text.Size = UDim2.fromScale(1, 1)
-	text.BackgroundTransparency = 1
-	text.Font = Enum.Font.FredokaOne
-	text.TextScaled = true
-	text.TextColor3 = RGB(255, 255, 255) -- the gradient below adds the color
-	text.Text = label
-	text.Parent = gui
-	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 5
-	stroke.Parent = text
-	local grad = Instance.new("UIGradient")
-	grad.Color = ColorSequence.new(RGB(255, 255, 255), colors[2])
-	grad.Rotation = 90
-	grad.Parent = text
+	floatingTitle(counter, label, { colors[2]:Lerp(RGB(255, 255, 255), 0.25), colors[1] }, 15)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Open"
 	prompt.ObjectText = label
@@ -656,23 +718,84 @@ function MapDecor.Stand(parent, name, label, colors, worldPos, menu, propFn)
 	return m
 end
 
+-- ── the Fuse Machine (a big blue machine with a glowing "?" screen) ───
+
+function MapDecor.FuseMachine(parent, worldPos)
+	local m = Instance.new("Model")
+	m.Name = "FuseStand"
+	m.Parent = parent
+	local BLUE = RGB(45, 110, 235)
+	local DARK = RGB(62, 66, 84)
+	local DARKER = RGB(44, 47, 62)
+	local GLOW = RGB(140, 225, 255)
+	-- platform with a step in front
+	part(m, Vector3.new(22, 1, 15), CFrame.new(1, 0.5, 0), DARK, Enum.Material.Plastic)
+	part(m, Vector3.new(14, 0.6, 3), CFrame.new(3, 0.3, 8.8), DARK, Enum.Material.Plastic)
+	-- main body + glowing "?" screen
+	local body = part(m, Vector3.new(11, 10, 9), CFrame.new(4, 6, -0.5), BLUE, Enum.Material.Plastic)
+	body.Name = "Body"
+	for _, x in ipairs({ -1.2, 9.2 }) do -- dark frame pillars
+		part(m, Vector3.new(1, 10.4, 9.4), CFrame.new(x, 6, -0.5), DARKER, Enum.Material.Plastic)
+	end
+	local screen = part(m, Vector3.new(8.4, 7.8, 0.4), CFrame.new(4, 6, 4.1), GLOW, Enum.Material.Neon)
+	screen.Name = "Screen"
+	screenText(screen, Enum.NormalId.Back, "?", RGB(35, 90, 190), 40)
+	local light = Instance.new("PointLight")
+	light.Color = GLOW
+	light.Range = 18
+	light.Brightness = 1.6
+	light.Parent = screen
+	-- domed lid with a little window
+	part(m, Vector3.new(1.4, 10, 10), CFrame.new(4, 11.7, -0.5) * CFrame.Angles(0, 0, math.rad(90)), DARK, Enum.Material.Plastic, Enum.PartType.Cylinder)
+	part(m, Vector3.new(1.4, 7.6, 7.6), CFrame.new(4, 13.1, -0.5) * CFrame.Angles(0, 0, math.rad(90)), DARKER, Enum.Material.Plastic, Enum.PartType.Cylinder)
+	part(m, Vector3.new(1, 4.6, 4.6), CFrame.new(4, 14.3, -0.5) * CFrame.Angles(0, 0, math.rad(90)), DARK, Enum.Material.Plastic, Enum.PartType.Cylinder)
+	deco(m, Vector3.new(3.4, 1.4, 0.3), CFrame.new(4, 12.6, 3.3) * CFrame.Angles(math.rad(-20), 0, 0), GLOW, Enum.Material.Neon)
+	-- side unit: star screen, heart gauge, antennas
+	part(m, Vector3.new(6, 7, 6.5), CFrame.new(-5.5, 4.5, 0), RGB(36, 80, 190), Enum.Material.Plastic)
+	local star = part(m, Vector3.new(3.4, 3.4, 0.3), CFrame.new(-6, 5, 3.3), RGB(235, 245, 255), Enum.Material.Neon)
+	screenText(star, Enum.NormalId.Back, "★", RGB(60, 120, 230), 40)
+	local gauge = part(m, Vector3.new(1.4, 4.4, 0.4), CFrame.new(-3.2, 5, 3.4), RGB(230, 40, 50), Enum.Material.Neon)
+	screenText(gauge, Enum.NormalId.Back, "♥\n♥\n♥", RGB(255, 210, 215), 40)
+	for _, x in ipairs({ -7.6, -6.4 }) do
+		local h = x < -7 and 6 or 4
+		part(m, Vector3.new(h, 0.5, 0.5), CFrame.new(x, 8 + h / 2, -1.5) * CFrame.Angles(0, 0, math.rad(90)), DARKER, Enum.Material.Plastic, Enum.PartType.Cylinder)
+		part(m, Vector3.one * 0.9, CFrame.new(x, 8 + h, -1.5), DARKER, Enum.Material.Plastic, Enum.PartType.Ball)
+	end
+	-- curved pipe from the side unit into the lid
+	local prev
+	for i = 0, 6 do
+		local a = math.rad(180 - i * 30)
+		local p = Vector3.new(-1.3 + math.cos(a) * 4.2, 8 + math.sin(a) * 4.6, -0.5)
+		if prev then
+			pipeSegment(m, prev, p, 1.5, DARKER)
+		end
+		prev = p
+	end
+	-- red guide arrows on the ground pointing at the step
+	for i = 0, 1 do
+		local arrow = deco(m, Vector3.new(1.6, 0.2, 1.6), CFrame.new(-1 + i * 2.2, 1.15, 8) * CFrame.Angles(0, math.rad(45), 0), RGB(235, 30, 30), Enum.Material.Neon)
+		arrow.Name = "Arrow"
+	end
+	floatingTitle(body, "Fuse Machine", { RGB(90, 220, 255), RGB(30, 110, 230) }, 13)
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = "Fuse"
+	prompt.ObjectText = "Fuse Machine"
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 16
+	prompt.RequiresLineOfSight = false
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
+	prompt:SetAttribute("OpensMenu", "Fuse")
+	prompt.Parent = screen
+	m.WorldPivot = CFrame.new()
+	m:PivotTo(CFrame.new(worldPos))
+	return m
+end
+
 local function coinStack(m, top)
 	for i = 0, 4 do
 		deco(m, Vector3.new(0.35, 1.6, 1.6), CFrame.new(top + Vector3.new(-2 + (i % 2) * 0.2, 0.2 + i * 0.36, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(255, 205, 50), Enum.Material.Metal, Enum.PartType.Cylinder)
 	end
 	deco(m, Vector3.one * 1.4, CFrame.new(top + Vector3.new(2, 0.7, 0)), RGB(110, 220, 255), Enum.Material.Glass, Enum.PartType.Ball)
-end
-
-local function fuseMachine(m, top)
-	deco(m, Vector3.new(2.6, 1.2, 2.6), CFrame.new(top + Vector3.new(0, 0.6, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(60, 60, 75), Enum.Material.Metal, Enum.PartType.Cylinder)
-	local orb = deco(m, Vector3.one * 2.2, CFrame.new(top + Vector3.new(0, 2.2, 0)), RGB(180, 110, 255), Enum.Material.Neon, Enum.PartType.Ball)
-	local light = Instance.new("PointLight")
-	light.Color = RGB(180, 110, 255)
-	light.Range = 14
-	light.Parent = orb
-	for _, x in ipairs({ -1.6, 1.6 }) do
-		deco(m, Vector3.new(0.25, 2.6, 0.25), CFrame.new(top + Vector3.new(x, 1.6, 0)) * CFrame.Angles(0, 0, math.rad(x * 10)), RGB(200, 200, 215), Enum.Material.Metal)
-	end
 end
 
 local function trailSwirl(m, top)
@@ -694,14 +817,10 @@ end
 function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 	local decor = folder(base, "Decor")
 	local stands = folder(base, "Stands")
-	MapDecor.Stand(stands, "SellStand", "💰 SELL", { RGB(230, 50, 50), RGB(255, 90, 90) }, Vector3.new(-100, 0, -40), "Sell", coinStack)
-	MapDecor.Stand(stands, "FuseStand", "✨ FUSE", { RGB(150, 80, 230), RGB(200, 140, 255) }, Vector3.new(-48, 0, -82), "Fuse", fuseMachine)
-	MapDecor.Stand(stands, "TrailsStand", "🌈 TRAILS", { RGB(60, 190, 90), RGB(255, 225, 70) }, Vector3.new(48, 0, -82), "Trails", trailSwirl)
-	MapDecor.Stand(stands, "ShopStand", "🛒 SHOP", { RGB(40, 140, 230), RGB(110, 210, 255) }, Vector3.new(100, 0, -40), "Shop", giftBox)
-
-	if not MapDecor.UsingTerrain then
-		MapDecor.LawnStripes(decor, -width / 2, width / 2, -depth, 0, RGB(112, 202, 85), 20)
-	end
+	MapDecor.Stand(stands, "SellStand", "SELL", { RGB(230, 30, 30), RGB(255, 70, 60) }, Vector3.new(-100, 0, -40), "Sell", coinStack)
+	MapDecor.FuseMachine(stands, Vector3.new(-50, 0, -84))
+	MapDecor.Stand(stands, "TrailsStand", "TRAILS", { RGB(190, 50, 240), RGB(240, 120, 255) }, Vector3.new(48, 0, -82), "Trails", trailSwirl)
+	MapDecor.Stand(stands, "ShopStand", "SHOP", { RGB(245, 170, 20), RGB(255, 225, 70) }, Vector3.new(100, 0, -40), "Shop", giftBox)
 
 	-- cobblestone ring path past every plot's gate + a path from the ring to the zone gate
 	local ringR = plotRadius - 58
@@ -754,19 +873,6 @@ function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 	for x = -width / 2 + 18, width / 2 - 18, 32 do
 		tree(decor, Vector3.new(x, 0, -depth + 9), 0.65)
 	end
-	if not MapDecor.UsingTerrain then
-		MapDecor.GrassPatches(decor, 70, function()
-			local p = Vector3.new(math.random(-width / 2 + 8, width / 2 - 8), 0, math.random(-depth + 6, -6))
-			local r = Vector3.new(p.X, 0, p.Z).Magnitude
-			if r > ringR - 8 and r < plotRadius + 62 then
-				return nil -- keep the ring path and the plots clean
-			end
-			if math.abs(p.X) < 20 and p.Z > -130 then
-				return nil -- not on the center path / spawn / VIP
-			end
-			return p
-		end)
-	end
 end
 
 -- ── terrain ground (only when GameConfig.Ground == "Terrain") ─────────
@@ -802,6 +908,41 @@ function MapDecor.Terrain(baseW, baseD, corridor, _corridorEnd)
 			fill(hw - 16, hw, z, z + t.AreaDepth, Enum.Material.Water, 4)
 		end
 		z += t.AreaDepth
+	end
+end
+
+-- ── studs ────────────────────────────────────────────────────────────
+-- Turns the finished map into studded plastic bricks (classic LEGO look, like Steal an Egg):
+-- every visible block/wedge gets Plastic + Studs on top (and on the sides of big walls/floors).
+-- Glass, neon, metal, force fields, see-through parts and characters are left alone.
+local KEEP = {
+	[Enum.Material.Glass] = true,
+	[Enum.Material.Neon] = true,
+	[Enum.Material.Metal] = true,
+	[Enum.Material.DiamondPlate] = true,
+	[Enum.Material.ForceField] = true,
+	[Enum.Material.Ice] = true,
+	[Enum.Material.Foil] = true,
+}
+function MapDecor.Studify(root)
+	for _, p in ipairs(root:GetDescendants()) do
+		local owner = p:FindFirstAncestorWhichIsA("Model")
+		local isCharacter = owner ~= nil and owner:FindFirstChildOfClass("Humanoid") ~= nil
+		if p:IsA("BasePart") and not KEEP[p.Material] and p.Transparency < 0.5 and not isCharacter then
+			local block = p:IsA("WedgePart") or (p:IsA("Part") and p.Shape == Enum.PartType.Block)
+			p.Material = Enum.Material.Plastic
+			if block then
+				p.TopSurface = Enum.SurfaceType.Studs
+				p.BottomSurface = Enum.SurfaceType.Inlet
+				local big = math.max(p.Size.X, p.Size.Z) >= 12 or p.Size.Y >= 12
+				if big then
+					p.FrontSurface = Enum.SurfaceType.Studs
+					p.BackSurface = Enum.SurfaceType.Studs
+					p.LeftSurface = Enum.SurfaceType.Studs
+					p.RightSurface = Enum.SurfaceType.Studs
+				end
+			end
+		end
 	end
 end
 

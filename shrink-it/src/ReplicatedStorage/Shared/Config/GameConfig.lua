@@ -8,8 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v8 (boxes)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 8 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v9 (studs)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 9 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -37,9 +37,11 @@ GameConfig.ChargeTolerance = 0.8 -- server accepts a shot after chargeTime * thi
 GameConfig.RangeTolerance = 8 -- extra studs the server allows over the client's range
 GameConfig.MultiShrinkRadius = 30
 
--- Ground look: "Stylized" = clean two-tone lawn stripes + short grass patches (default),
+-- Ground look: "Stylized" = bright studded plastic ground (default),
 -- "Terrain" = Roblox terrain with long swaying grass blades.
 GameConfig.Ground = "Stylized"
+-- true = the whole generated map is built from studded LEGO-style bricks (the Steal-an-Egg look)
+GameConfig.Studs = true
 
 -- Fusing: this many identical objects (same object + same variant) fuse into ONE of the next variant
 -- (Normal → Golden → Diamond → Rainbow → Cosmic).

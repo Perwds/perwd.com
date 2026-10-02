@@ -1,8 +1,9 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > CosmeticService (ModuleScript)
 
-	Trails (bought at the TRAILS stand): buy with Coins / Gems, or unlock with a gamepass
-	(Rainbow = Rainbow Ray pass). The equipped trail is attached to your character on every spawn.
+	Trails (bought at the TRAILS stand): buy with Coins or Robux (Developer Product), or unlock with
+	a gamepass (Rainbow = Rainbow Ray pass). Every trail makes you run faster (Trail.Speed multiplier).
+	The equipped trail is attached to your character on every spawn.
 	Config: MonetizationConfig.Trails / TrailOrder.
 ]]
 
@@ -28,6 +29,19 @@ local function owns(player, data, key)
 		return Svc.Session.HasPass(player, cfg.Pass)
 	end
 	return data.Trails[key] == true
+end
+
+local function stripes(a, b, count)
+	local kps = {}
+	for i = 0, count do
+		local t = i / count
+		local c = (i % 2 == 0) and a or b
+		table.insert(kps, ColorSequenceKeypoint.new(t, c))
+		if i < count then
+			table.insert(kps, ColorSequenceKeypoint.new(math.min(1, t + 1 / count - 0.001), c))
+		end
+	end
+	return ColorSequence.new(kps)
 end
 
 local RAINBOW = ColorSequence.new({
@@ -73,7 +87,29 @@ function CosmeticService.ApplyTrail(player)
 	trail.MinLength = 0.1
 	trail.LightEmission = 0.8
 	trail.FaceCamera = true
-	trail.Color = cfg.Rainbow and RAINBOW or ColorSequence.new(cfg.Colors[1], cfg.Colors[2])
+	if cfg.Rainbow then
+		trail.Color = RAINBOW
+	elseif cfg.Pattern == "Zebra" then
+		trail.Color = stripes(cfg.Colors[1], cfg.Colors[2], 9)
+		trail.LightEmission = 0
+	elseif cfg.Pattern == "Galaxy" then
+		trail.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, cfg.Colors[1]),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(90, 60, 255)),
+			ColorSequenceKeypoint.new(1, cfg.Colors[2]),
+		})
+		local stars = Instance.new("ParticleEmitter")
+		stars.Name = "TrailStars"
+		stars.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+		stars.Rate = 12
+		stars.Lifetime = NumberRange.new(0.5, 0.9)
+		stars.Speed = NumberRange.new(0.5, 1.5)
+		stars.Size = NumberSequence.new(0.35, 0)
+		stars.LightEmission = 1
+		stars.Parent = bottom
+	else
+		trail.Color = ColorSequence.new(cfg.Colors[1], cfg.Colors[2])
+	end
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
 	trail.WidthScale = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0.2) })
 	trail.Parent = root
@@ -89,6 +125,25 @@ function CosmeticService.OnPlayerLoaded(player)
 	end
 end
 
+-- Unlocks + equips a trail (coins purchase, Robux product, or admin grant).
+function CosmeticService.GrantTrail(player, key)
+	local data = Svc.Data.Get(player)
+	local cfg = MonetizationConfig.Trails[key]
+	if not data or not cfg then
+		return
+	end
+	data.Trails[key] = true
+	data.EquippedTrail = key
+	CosmeticService.Refresh(player)
+	Svc.Data.MarkDirty(player)
+	Svc.Net.Notify(player, "🌈 " .. cfg.Name .. " unlocked! x" .. cfg.Speed .. " Speed", "success")
+end
+
+function CosmeticService.Refresh(player)
+	CosmeticService.ApplyTrail(player)
+	Svc.Monetization.ApplyMovement(player) -- trails change walk speed
+end
+
 function CosmeticService.Start()
 	Svc.Net.Handle("BuyTrail", function(player, key)
 		local data = Svc.Data.Get(player)
@@ -102,15 +157,23 @@ function CosmeticService.Start()
 		if cfg.Pass then
 			return { ok = false, msg = "Unlocked by the " .. MonetizationConfig.GamePasses[cfg.Pass].Name .. " gamepass (Shop)!" }
 		end
-		if not Svc.Economy.Spend(player, cfg.Currency, cfg.Cost) then
-			local label = cfg.Currency == "Coins" and Format.Coins(cfg.Cost) or (Format.Abbrev(cfg.Cost) .. " Gems")
-			return { ok = false, msg = "Need " .. label }
+		if not Svc.Economy.Spend(player, "Coins", cfg.Cost) then
+			return { ok = false, msg = "Need " .. Format.Coins(cfg.Cost) }
 		end
-		data.Trails[key] = true
-		data.EquippedTrail = key
-		CosmeticService.ApplyTrail(player)
-		Svc.Data.MarkDirty(player)
-		return { ok = true, msg = "🌈 " .. cfg.Name .. " trail unlocked & equipped!" }
+		CosmeticService.GrantTrail(player, key)
+		return { ok = true }
+	end)
+
+	Svc.Net.Handle("BuyTrailRobux", function(player, key)
+		local data = Svc.Data.Get(player)
+		local cfg = type(key) == "string" and MonetizationConfig.Trails[key]
+		if not cfg or not cfg.Product then
+			return { ok = false }
+		end
+		if owns(player, data, key) then
+			return { ok = false, msg = "You already own this trail!" }
+		end
+		return Svc.Monetization.PromptProduct(player, cfg.Product)
 	end)
 
 	Svc.Net.Handle("EquipTrail", function(player, key)
@@ -122,7 +185,7 @@ function CosmeticService.Start()
 		else
 			return { ok = false, msg = "You don't own that trail!" }
 		end
-		CosmeticService.ApplyTrail(player)
+		CosmeticService.Refresh(player)
 		Svc.Data.MarkDirty(player)
 		return { ok = true }
 	end)

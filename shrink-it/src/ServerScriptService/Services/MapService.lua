@@ -11,7 +11,7 @@
 	  │      [P3]  VIP   [P4]       │
 	  └─────────────────────────────┘
 
-	Ground: GameConfig.Ground == "Stylized" (default) = lawn stripes + short grass patches;
+	Ground: GameConfig.Ground == "Stylized" (default) = bright studded bricks (GameConfig.Studs);
 	"Terrain" = Roblox terrain (Floor parts then only mark the zone bounds, invisible).
 
 	If Workspace has no "ShrinkItMap", this builds it all (with themed scenery from MapDecor).
@@ -101,7 +101,6 @@ end
 -- Plot local space: +Z = front (faces the plaza / zones), temple at the back (-Z).
 local MARBLE = Color3.fromRGB(246, 243, 236)
 local GOLD = Color3.fromRGB(240, 190, 60)
-local WOOD = Color3.fromRGB(150, 100, 60)
 
 local function local_(floor, x, y, z)
 	return floor.CFrame * CFrame.new(x, y, z)
@@ -113,23 +112,35 @@ local function buildPlot(parent, id, cframe)
 	plot:SetAttribute("PlotId", id)
 	plot:SetAttribute("OwnerUserId", 0)
 	plot.Parent = parent
-	local floor = part({ Name = "Floor", Size = Vector3.new(PLOT_W, 1, PLOT_D), CFrame = cframe * CFrame.new(0, -0.38, 0), Color = Color3.fromRGB(235, 228, 215), Material = Enum.Material.Marble, Parent = plot })
+	local floor = part({ Name = "Floor", Size = Vector3.new(PLOT_W, 1, PLOT_D), CFrame = cframe * CFrame.new(0, -0.38, 0), Color = Color3.fromRGB(125, 225, 70), Material = Enum.Material.Plastic, Parent = plot })
 	local hw, hd = PLOT_W / 2, PLOT_D / 2
 	local zb = -hd -- back edge (temple is built relative to this)
 
-	-- wooden fence around the plot with an entrance gap at the front
+	-- chunky wooden X-fence around the plot (stone posts) with an entrance gap at the front
+	local POST = Color3.fromRGB(78, 78, 88)
+	local PLANK = Color3.fromRGB(205, 112, 48)
 	local function fenceRun(x1, z1, x2, z2)
 		local a, b = Vector3.new(x1, 0, z1), Vector3.new(x2, 0, z2)
 		local len = (b - a).Magnitude
-		local mid = local_(floor, (x1 + x2) / 2, 0, (z1 + z2) / 2)
-		local look = CFrame.lookAt(mid.Position, (local_(floor, x2, 0, z2)).Position)
-		for _, y in ipairs({ 1.6, 3.0 }) do
-			part({ Name = "FenceRail", Size = Vector3.new(0.35, 0.45, len), CFrame = look * CFrame.new(0, y, 0), Color = WOOD, Material = Enum.Material.WoodPlanks, CanQuery = false, Parent = plot })
+		local panels = math.max(1, math.floor(len / 10 + 0.5))
+		for i = 0, panels do
+			local p = a:Lerp(b, i / panels)
+			part({ Name = "FencePost", Size = Vector3.new(1.8, 5.6, 1.8), CFrame = local_(floor, p.X, 2.8, p.Z), Color = POST, Material = Enum.Material.Plastic, CanQuery = false, Parent = plot })
+			part({ Name = "PostCap", Size = Vector3.new(2.1, 0.6, 2.1), CFrame = local_(floor, p.X, 5.9, p.Z), Color = POST:Lerp(Color3.new(0, 0, 0), 0.2), Material = Enum.Material.Plastic, CanQuery = false, Parent = plot })
 		end
-		local posts = math.max(1, math.floor(len / 6))
-		for i = 0, posts do
-			local p = a:Lerp(b, i / posts)
-			part({ Name = "FencePost", Size = Vector3.new(0.6, 3.8, 0.6), CFrame = local_(floor, p.X, 2.0, p.Z), Color = WOOD:Lerp(Color3.new(0, 0, 0), 0.15), Material = Enum.Material.Wood, CanQuery = false, Parent = plot })
+		for i = 0, panels - 1 do
+			local p0, p1 = a:Lerp(b, i / panels), a:Lerp(b, (i + 1) / panels)
+			local mid = (p0 + p1) / 2
+			local seg = (p1 - p0).Magnitude - 1.8
+			local look = CFrame.lookAt(local_(floor, mid.X, 0, mid.Z).Position, local_(floor, p1.X, 0, p1.Z).Position)
+			for _, y in ipairs({ 1.1, 4.5 }) do -- top & bottom rails
+				part({ Name = "FenceRail", Size = Vector3.new(0.7, 0.8, seg), CFrame = look * CFrame.new(0, y, 0), Color = PLANK, Material = Enum.Material.Plastic, CanQuery = false, Parent = plot })
+			end
+			local diag = math.sqrt(seg * seg + 3.4 * 3.4)
+			local angle = math.atan2(3.4, seg)
+			for _, sgn in ipairs({ 1, -1 }) do -- the X
+				part({ Name = "FenceBrace", Size = Vector3.new(0.6, 0.7, diag), CFrame = look * CFrame.new(0, 2.8, 0) * CFrame.Angles(sgn * angle, 0, 0), Color = PLANK:Lerp(Color3.new(0, 0, 0), 0.1), Material = Enum.Material.Plastic, CanQuery = false, Parent = plot })
+			end
 		end
 	end
 	fenceRun(-hw, -hd, hw, -hd)
@@ -137,10 +148,6 @@ local function buildPlot(parent, id, cframe)
 	fenceRun(hw, -hd, hw, hd)
 	fenceRun(-hw, hd, -9, hd)
 	fenceRun(9, hd, hw, hd)
-	for _, s in ipairs({ -1, 1 }) do -- gate pillars with gold caps
-		part({ Name = "GatePillar", Size = Vector3.new(1.6, 6, 1.6), CFrame = local_(floor, s * 9, 3, hd), Color = MARBLE, Material = Enum.Material.Marble, CanQuery = false, Parent = plot })
-		part({ Name = "GateCap", Shape = Enum.PartType.Ball, Size = Vector3.new(1.8, 1.8, 1.8), CFrame = local_(floor, s * 9, 6.6, hd), Color = GOLD, Material = Enum.Material.Metal, CanQuery = false, Parent = plot })
-	end
 
 	-- ── the museum building (Greek temple) at the back ──
 	local building = Instance.new("Model")
@@ -249,7 +256,7 @@ local function buildMap()
 	local base = Instance.new("Model")
 	base.Name = "Base"
 	base.Parent = map
-	floorPart({ Name = "Floor", Size = Vector3.new(BASE_W, 2, BASE_D), CFrame = CFrame.new(0, -1, -BASE_D / 2), Color = Color3.fromRGB(100, 190, 75), Material = Enum.Material.SmoothPlastic, Parent = base })
+	floorPart({ Name = "Floor", Size = Vector3.new(BASE_W, 2, BASE_D), CFrame = CFrame.new(0, -1, -BASE_D / 2), Color = Color3.fromRGB(105, 215, 50), Material = Enum.Material.Plastic, Parent = base })
 	part({ Name = "SafeZone", Size = Vector3.new(BASE_W, 200, BASE_D), CFrame = CFrame.new(0, 99, -BASE_D / 2), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "SpawnLocation"
@@ -381,6 +388,9 @@ local function buildMap()
 	chasers.Name = "Chasers"
 	chasers.Parent = map
 
+	if GameConfig.Studs ~= false then
+		safe("Studs", MapDecor.Studify, map)
+	end
 	safe("Lighting", MapDecor.Lighting)
 	map:SetAttribute("GeneratedMapVersion", GameConfig.MapVersion)
 	map.Parent = workspace

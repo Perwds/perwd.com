@@ -3,8 +3,10 @@
 	(Helper module, not a service: Main does not boot it.)
 
 	Creates object models:
-	  1. ServerStorage > ShrinkableTemplates > <ObjectId> (your real model), or
-	  2. a colored placeholder built from ObjectConfig Size / Color / Shape.
+	  1. ReplicatedStorage (or ServerStorage) > ShrinkableTemplates > <ObjectId>: your real 3D model
+	     (e.g. from the Toolbox; tools/ImportToolboxModels.lua fills this folder for you), or
+	  2. the built-in part model from ObjectModels, or
+	  3. a colored placeholder built from ObjectConfig Size / Color / Shape.
 	Also applies variant glow (Highlight + light + sparkles) and name labels.
 ]]
 
@@ -82,7 +84,8 @@ end
 
 function ModelFactory.Create(id)
 	local def = ObjectConfig.Get(id) or { Name = id }
-	local template = ModelFactory.TemplatesFolder():FindFirstChild(id)
+	local shared = ReplicatedStorage:FindFirstChild("ShrinkableTemplates")
+	local template = (shared and shared:FindFirstChild(id)) or ModelFactory.TemplatesFolder():FindFirstChild(id)
 	local model
 	if template then
 		model = template:Clone()
@@ -113,8 +116,8 @@ function ModelFactory.Create(id)
 	for _, d in ipairs(model:GetDescendants()) do
 		if d:IsA("BasePart") then
 			d.Anchored = true
-		elseif d:IsA("Script") or d:IsA("LocalScript") then
-			d:Destroy()
+		elseif d:IsA("LuaSourceContainer") then
+			d:Destroy() -- never run scripts that came with a Toolbox model
 		end
 	end
 	return model

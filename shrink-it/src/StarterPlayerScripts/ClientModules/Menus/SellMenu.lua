@@ -23,14 +23,14 @@ local SellMenu = {}
 local MAX_ROWS = 80
 
 function SellMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Sell", Emoji = "💰", Size = UDim2.fromOffset(820, 600), Colors = UIKit.Colors.Red })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Sell", Style = "Header", Size = UDim2.fromOffset(840, 640), Colors = { Color3.fromRGB(255, 90, 80), Color3.fromRGB(200, 20, 30) } })
 	local content = panel.Content
 
-	local summary = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(230, 70, 70), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 18), Parent = content })
+	local summary = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(255, 120, 110), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 18), Parent = content })
 	local sellAll, sellAllLabel = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(460, 64), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 58), Parent = content, OnClick = function()
 		ctx.HUD.Result(State.Action("SellPocket"))
 	end })
-	UIKit.Label({ Text = "Objects on display are kept. Huge exclusives are never sold.", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 24), Position = UDim2.fromOffset(0, 128), Parent = content })
+	UIKit.Label({ Text = "Objects on display are kept. Huge exclusives are never sold.", TextColor3 = Color3.fromRGB(210, 210, 225), StrokeThickness = 2, Size = UDim2.new(1, 0, 0, 24), Position = UDim2.fromOffset(0, 128), Parent = content })
 
 	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -164), Position = UDim2.fromOffset(0, 160), Parent = content })
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = list })

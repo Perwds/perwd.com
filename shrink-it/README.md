@@ -85,8 +85,17 @@ Roblox's built-in textured materials (wood planks, brick, marble, metal, glass, 
 so nothing needs uploading. See `ObjectModels` (all 31 objects), `MapService` (museum temple), `MuseumService`
 (pedestals), `ShrinkService` (ray gun) and `ChaserConfig` (chaser outfits & props).
 
+### ⭐ Real 3D models for the objects (2 minutes, recommended)
+- [ ] Open the place in Studio → **View › Command Bar** → paste all of **`tools/ImportToolboxModels.lua`** → Enter.
+      For every object it searches the Toolbox, takes the first free model that loads, **strips all scripts/sounds/seats**
+      and saves it as **ReplicatedStorage › ShrinkableTemplates › `<ObjectId>`**. They're used in the world, on the
+      pedestals AND in the menu previews, auto-scaled. Look them over: delete or replace any you don't like (keep the
+      name), tweak `SEARCH` in the script and run it again for the missing ones. Then **Publish/Save**.
+- [ ] **Trail Robux products**: create 8 Developer Products (Green … Eternal Trail) and paste their ids into
+      `MonetizationConfig.Products.TrailGreen … TrailEternal` (purple buttons in the Trail Shop).
+
 ### Optional: your own meshes instead of the built-in models
-- [ ] **Object models**: put Models in **ServerStorage › ShrinkableTemplates** (create the folder), each **named
+- [ ] **Object models**: put Models in **ReplicatedStorage › ShrinkableTemplates** (or ServerStorage › ShrinkableTemplates), each **named
       exactly like its ObjectConfig id** (e.g. `FerrisWheel`, `SodaCan`, `TheMoon`). Set a PrimaryPart. The game
       anchors them, removes scripts, places them on the ground, and scales them down for museum display.
       Objects without a template use the built-in detailed models from `ObjectModels`. Any model you drop in (e.g. a free
@@ -137,8 +146,9 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 | Compact map: a walled base with ONE gate leading into a short corridor of 6 themed zones (~960 studs) | `MapService`, `MapDecor`, `TierConfig` |
 | Mystery boxes: shrinking gives a rarity-colored BOX; carry it home, PLACE it on one of your pedestals (prompt), it opens after a timer (skip with Gems), then earns. Pick up / place objects yourself | `CarryService`, `MuseumService`, `GameConfig.Boxes` |
 | Fair base: 6 fenced plots in a semicircle around the gate, all exactly the same distance from it | `MapService` |
-| Stands in the base: 💰 SELL (sell all pocket items), ✨ FUSE (3 → next variant), 🌈 TRAILS, 🛒 SHOP (ProximityPrompts) | `MapDecor`, `SellMenu`, `FuseMenu`, `TrailsMenu`, `CosmeticService` |
-| Clean two-tone lawn stripes + short grass patches (default); `GameConfig.Ground = "Terrain"` for terrain grass | `MapDecor` |
+| Base: SELL stall, a big blue **Fuse Machine** (3 slots → pipes → result), TRAILS & SHOP stalls (ProximityPrompts) | `MapDecor`, `SellMenu`, `FuseMenu`, `TrailsMenu`, `CosmeticService` |
+| **Trail Shop**: 10 trails that make you run faster (x1.05 … x1.6), bought with Coins or Robux; sideways card row | `TrailsMenu`, `CosmeticService`, `MonetizationConfig.Trails` |
+| Studded LEGO-style map (bright green studs, brown dirt walls, X-fences, painted SAFE ZONE line); `GameConfig.Studs = false` turns studs off | `MapDecor.Studify`, `MapService` |
 | Sleeping zone owners (💤) in every zone | `CarryService` |
 | Chasers: each zone's owner chases you when you grab something; get caught = drop everything | `CarryService`, `ChaserConfig` |
 | Rarities, variants (Golden x5, Diamond x10, Rainbow x25, Cosmic x100) with glow; luck-weighted rolls | `RarityConfig`, `SpawnService`, `ModelFactory` |

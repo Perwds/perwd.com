@@ -96,6 +96,9 @@ local productHandlers = {
 	SpawnGolden = function(player)
 		Svc.Spawn.SpawnNear(player, "Golden")
 	end,
+	Trail = function(player, _data, key)
+		Svc.Cosmetic.GrantTrail(player, MonetizationConfig.Products[key].Trail)
+	end,
 	InfinitePack = function(player, _data, key)
 		Svc.InfinitePack.OnPurchased(player, key)
 	end,

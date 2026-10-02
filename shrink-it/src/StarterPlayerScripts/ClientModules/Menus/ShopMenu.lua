@@ -18,7 +18,7 @@ local Prices = require(Modules.Prices)
 local ShopMenu = {}
 
 function ShopMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Shop", Emoji = "🛒", Size = UDim2.fromOffset(940, 620), Colors = UIKit.Colors.Yellow })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Shop", Style = "Header", Size = UDim2.fromOffset(960, 660), Colors = { Color3.fromRGB(255, 225, 70), Color3.fromRGB(245, 150, 20) } })
 	local content = panel.Content
 
 	local tabsBar = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 52), Position = UDim2.fromOffset(0, 18), Parent = content })
@@ -142,7 +142,7 @@ function ShopMenu.Build(ctx)
 
 	-- ── Codes ───────────────────────────────────────────────────────
 	local codesPage = pages.Codes
-	UIKit.Label({ Text = "Enter a code:", TextColor3 = UIKit.Outline, StrokeThickness = 0, Size = UDim2.new(1, -20, 0, 40), Position = UDim2.fromOffset(10, 30), Parent = codesPage })
+	UIKit.Label({ Text = "Enter a code:", StrokeThickness = 3, Size = UDim2.new(1, -20, 0, 40), Position = UDim2.fromOffset(10, 30), Parent = codesPage })
 	local box = UIKit.Create("TextBox", {
 		PlaceholderText = "CODE HERE",
 		Text = "",
@@ -166,7 +166,7 @@ function ShopMenu.Build(ctx)
 			box.Text = ""
 		end
 	end })
-	UIKit.Label({ Text = "👍 Like the game! Like goals unlock new codes — check the sign in the lobby.", TextColor3 = Color3.fromRGB(90, 90, 110), StrokeThickness = 0, Size = UDim2.new(1, -40, 0, 50), Position = UDim2.fromOffset(20, 250), Parent = codesPage })
+	UIKit.Label({ Text = "👍 Like the game! Like goals unlock new codes — check the sign in the lobby.", TextColor3 = Color3.fromRGB(220, 220, 235), StrokeThickness = 2, Size = UDim2.new(1, -40, 0, 50), Position = UDim2.fromOffset(20, 250), Parent = codesPage })
 
 	showTab(current)
 

@@ -382,8 +382,26 @@ function UIKit.ModelPreview(props)
 	})
 	local template = previewTemplates[props.Id]
 	if template == nil then
-		local ok, built = pcall(ObjectModels.Build, props.Id)
-		template = ok and built or false
+		-- your own 3D model (ReplicatedStorage > ShrinkableTemplates) wins over the built-in one
+		local custom = ReplicatedStorage:FindFirstChild("ShrinkableTemplates")
+		custom = custom and custom:FindFirstChild(props.Id)
+		if custom then
+			local clone = custom:Clone()
+			if clone:IsA("BasePart") then
+				local wrap = Instance.new("Model")
+				clone.Parent = wrap
+				clone = wrap
+			end
+			for _, d in ipairs(clone:GetDescendants()) do
+				if d:IsA("LuaSourceContainer") then
+					d:Destroy()
+				end
+			end
+			template = clone
+		else
+			local ok, built = pcall(ObjectModels.Build, props.Id)
+			template = ok and built or false
+		end
 		previewTemplates[props.Id] = template
 	end
 	if not template then
@@ -461,10 +479,14 @@ function UIKit.Panel(props)
 		ZIndex = 50,
 		Parent = holder,
 	})
+	local anim = UIKit.Create("UIScale", { Name = "AnimScale", Scale = 1, Parent = frame })
+	local panel = {}
+	if props.Style == "Header" then
+		return UIKit._HeaderPanel(props, holder, frame, anim, panel)
+	end
 	UIKit.Corner(frame, 26)
 	UIKit.Stroke(frame, 6, UIKit.Outline, true)
 	UIKit.Gradient(frame, { Color3.fromRGB(255, 255, 255), Color3.fromRGB(228, 234, 248) })
-	local anim = UIKit.Create("UIScale", { Name = "AnimScale", Scale = 1, Parent = frame })
 
 	-- title pill overlapping the top-left edge
 	local titleBar = UIKit.Create("Frame", {
@@ -494,7 +516,6 @@ function UIKit.Panel(props)
 	UIKit.Icon({ Icon = { Emoji = props.Emoji or "⭐", Image = props.Image }, Size = UDim2.new(1, -16, 1, -16), Position = UDim2.fromOffset(8, 8), ZIndex = 63, Parent = iconCircle })
 
 	-- red X close button (top-right)
-	local panel = {}
 	UIKit.Button({
 		Name = "Close",
 		Text = "X",
@@ -519,6 +540,12 @@ function UIKit.Panel(props)
 		Parent = frame,
 	})
 
+	return UIKit._FinishPanel(holder, content, anim, panel)
+end
+
+-- Open/close behaviour shared by both panel styles.
+function UIKit._FinishPanel(holder, content, anim, panel)
+	local frame = holder:FindFirstChild("Panel")
 	local isOpen = false
 	local openEvent = Instance.new("BindableEvent")
 	local closeEvent = Instance.new("BindableEvent")
@@ -561,6 +588,89 @@ function UIKit.Panel(props)
 		end
 	end
 	return panel
+end
+
+-- "Shop" style panel: dark studded body + full-width striped header bar + square red X.
+-- (Used by the Trail Shop, Fuse Machine, Sell and Shop menus.)
+UIKit.PanelBody = Color3.fromRGB(56, 58, 80)
+UIKit.PanelCard = Color3.fromRGB(38, 40, 58)
+function UIKit._HeaderPanel(props, holder, frame, anim, panel)
+	frame.BackgroundColor3 = UIKit.PanelBody
+	UIKit.Corner(frame, 10)
+	UIKit.Stroke(frame, 6, UIKit.Outline, true)
+	-- faint stud pattern on the body
+	local dots = UIKit.Create("Frame", { Name = "Studs", BackgroundTransparency = 1, ClipsDescendants = true, Size = UDim2.fromScale(1, 1), ZIndex = 50, Parent = frame })
+	UIKit.Corner(dots, 10)
+	local grid = UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(10, 10), CellPadding = UDim2.fromOffset(22, 22), Parent = dots })
+	grid.StartCorner = Enum.StartCorner.TopLeft
+	for _ = 1, 600 do
+		local d = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.94, ZIndex = 50, Parent = dots })
+		UIKit.Corner(d, UDim.new(1, 0))
+	end
+	local headerH = props.HeaderHeight or 84
+	local header = UIKit.Create("Frame", {
+		Name = "Header",
+		BackgroundColor3 = Color3.new(1, 1, 1),
+		ClipsDescendants = true,
+		Size = UDim2.new(1, 0, 0, headerH),
+		ZIndex = 60,
+		Parent = frame,
+	})
+	UIKit.Corner(header, 10)
+	UIKit.Stroke(header, 5, UIKit.Outline, true)
+	UIKit.Gradient(header, props.Colors or { RGB(235, 120, 255), RGB(160, 40, 230) }, 0)
+	for i = 0, 3 do -- diagonal shine stripes
+		local stripe = UIKit.Create("Frame", {
+			BackgroundColor3 = Color3.new(1, 1, 1),
+			BackgroundTransparency = 0.8,
+			BorderSizePixel = 0,
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0.55 + i * 0.07, 0, 0.5, 0),
+			Size = UDim2.new(0, i % 2 == 0 and 26 or 12, 2.4, 0),
+			Rotation = 35,
+			ZIndex = 60,
+			Parent = header,
+		})
+		stripe.Name = "Stripe"
+	end
+	UIKit.Label({
+		Text = props.Title or "",
+		Size = UDim2.new(0.6, 0, 1, -18),
+		Position = UDim2.fromOffset(28, 9),
+		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 62,
+		StrokeThickness = 4,
+		Parent = header,
+	})
+	UIKit.Button({
+		Name = "Close",
+		Text = "X",
+		Colors = { RGB(240, 50, 50), RGB(200, 20, 30) },
+		Size = UDim2.fromOffset(headerH - 22, headerH - 22),
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(1, -12, 0, headerH / 2),
+		ZIndex = 70,
+		CornerRadius = 4,
+		Parent = frame,
+		OnClick = function()
+			panel.Close()
+		end,
+	})
+	local content = UIKit.Create("Frame", {
+		Name = "Content",
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(16, headerH + 12),
+		Size = UDim2.new(1, -32, 1, -headerH - 26),
+		ZIndex = 51,
+		Parent = frame,
+	})
+	return UIKit._FinishPanel(holder, content, anim, panel)
+end
+
+-- Big chunky label with a thick black outline (the "Steal an Egg" look).
+function UIKit.Title(props)
+	props.StrokeThickness = props.StrokeThickness or 3.5
+	return UIKit.Label(props)
 end
 
 -- Simple confirm dialog. onYes called if confirmed.

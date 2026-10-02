@@ -229,8 +229,8 @@ return EventConfig
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v8 (boxes)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 8 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v9 (studs)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 9 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -258,9 +258,11 @@ GameConfig.ChargeTolerance = 0.8 -- server accepts a shot after chargeTime * thi
 GameConfig.RangeTolerance = 8 -- extra studs the server allows over the client's range
 GameConfig.MultiShrinkRadius = 30
 
--- Ground look: "Stylized" = clean two-tone lawn stripes + short grass patches (default),
+-- Ground look: "Stylized" = bright studded plastic ground (default),
 -- "Terrain" = Roblox terrain with long swaying grass blades.
 GameConfig.Ground = "Stylized"
+-- true = the whole generated map is built from studded LEGO-style bricks (the Steal-an-Egg look)
+GameConfig.Studs = true
 
 -- Fusing: this many identical objects (same object + same variant) fuse into ONE of the next variant
 -- (Normal → Golden → Diamond → Rainbow → Cosmic).
@@ -397,6 +399,16 @@ MonetizationConfig.Products = {
 	InstantRebirth = { Id = 0, Name = "Instant Rebirth", Emoji = "♻️", Image = "rbxassetid://0", PriceLabel = "R$ 99", Handler = "InstantRebirth" }, -- 🔧 REPLACE Id
 	SpawnGolden = { Id = 0, Name = "Spawn a Golden Object", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "SpawnGolden" }, -- 🔧 REPLACE Id
 
+	-- Trails bought with Robux (Trail Shop purple buttons). Hidden from the Shop list.
+	TrailGreen = { Id = 0, Name = "Green Trail", Emoji = "🟩", PriceLabel = "R$ 19", Handler = "Trail", Trail = "Green", Hidden = true }, -- 🔧 REPLACE Id
+	TrailBlue = { Id = 0, Name = "Blue Trail", Emoji = "🟦", PriceLabel = "R$ 29", Handler = "Trail", Trail = "Blue", Hidden = true }, -- 🔧 REPLACE Id
+	TrailPurple = { Id = 0, Name = "Purple Trail", Emoji = "🟪", PriceLabel = "R$ 49", Handler = "Trail", Trail = "Purple", Hidden = true }, -- 🔧 REPLACE Id
+	TrailGold = { Id = 0, Name = "Gold Trail", Emoji = "🟨", PriceLabel = "R$ 79", Handler = "Trail", Trail = "Gold", Hidden = true }, -- 🔧 REPLACE Id
+	TrailRed = { Id = 0, Name = "Red Trail", Emoji = "🟥", PriceLabel = "R$ 119", Handler = "Trail", Trail = "Red", Hidden = true }, -- 🔧 REPLACE Id
+	TrailGalaxy = { Id = 0, Name = "Galaxy Trail", Emoji = "🌌", PriceLabel = "R$ 199", Handler = "Trail", Trail = "Galaxy", Hidden = true }, -- 🔧 REPLACE Id
+	TrailSecret = { Id = 0, Name = "Secret Trail", Emoji = "🦓", PriceLabel = "R$ 349", Handler = "Trail", Trail = "Secret", Hidden = true }, -- 🔧 REPLACE Id
+	TrailEternal = { Id = 0, Name = "Eternal Trail", Emoji = "♾️", PriceLabel = "R$ 499", Handler = "Trail", Trail = "Eternal", Hidden = true }, -- 🔧 REPLACE Id
+
 	-- Infinite Pack paid tiles (repeatable). Price tier is picked by tile position.
 	PackTier1 = { Id = 0, Name = "Infinite Pack Tile", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 25", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
 	PackTier2 = { Id = 0, Name = "Infinite Pack Tile+", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 59", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
@@ -414,18 +426,35 @@ MonetizationConfig.RaySkins = {
 	Rainbow = { Name = "Rainbow", Colors = { Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 0, 255) }, Rainbow = true, Pass = "RainbowRay" },
 }
 
--- ── Trails (cosmetic, bought at the TRAILS stand) ─────────────────────
--- Currency = "Coins" | "Gems"; Pass = a gamepass key that unlocks it instead.
-MonetizationConfig.TrailOrder = { "Sparkle", "Bubblegum", "Fire", "Toxic", "Ocean", "Galaxy", "Gold", "Rainbow" }
+-- ── Trails (bought at the TRAILS stand) ───────────────────────────────
+-- Every trail makes you run faster (Speed = walk-speed multiplier while equipped).
+-- Cost = price in Coins; Product = a Developer Product key to buy it with Robux instead (optional);
+-- Pass = a gamepass key that unlocks it. Pattern = "Zebra" / "Galaxy" for striped / starry trails.
+MonetizationConfig.TrailOrder = { "Grey", "Green", "Blue", "Purple", "Gold", "Red", "Galaxy", "Secret", "Eternal", "Rainbow" }
 MonetizationConfig.Trails = {
-	Sparkle = { Name = "Sparkle", Colors = { Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 220, 255) }, Currency = "Coins", Cost = 5_000 },
-	Bubblegum = { Name = "Bubblegum", Colors = { Color3.fromRGB(255, 160, 220), Color3.fromRGB(255, 80, 170) }, Currency = "Coins", Cost = 50_000 },
-	Fire = { Name = "Fire", Colors = { Color3.fromRGB(255, 230, 80), Color3.fromRGB(255, 60, 20) }, Currency = "Coins", Cost = 750_000 },
-	Toxic = { Name = "Toxic", Colors = { Color3.fromRGB(200, 255, 80), Color3.fromRGB(40, 200, 60) }, Currency = "Coins", Cost = 25_000_000 },
-	Ocean = { Name = "Ocean", Colors = { Color3.fromRGB(120, 240, 255), Color3.fromRGB(20, 90, 220) }, Currency = "Gems", Cost = 250 },
-	Galaxy = { Name = "Galaxy", Colors = { Color3.fromRGB(200, 120, 255), Color3.fromRGB(30, 10, 90) }, Currency = "Gems", Cost = 750 },
-	Gold = { Name = "Pure Gold", Colors = { Color3.fromRGB(255, 240, 150), Color3.fromRGB(230, 160, 20) }, Currency = "Gems", Cost = 2_000 },
-	Rainbow = { Name = "Rainbow", Rainbow = true, Pass = "RainbowRay" },
+	Grey = { Name = "Grey Trail", Rarity = "Common", Speed = 1.05, Cost = 100, Colors = { Color3.fromRGB(235, 235, 240), Color3.fromRGB(150, 150, 160) } },
+	Green = { Name = "Green Trail", Rarity = "Uncommon", Speed = 1.1, Cost = 5_000, Product = "TrailGreen", Colors = { Color3.fromRGB(120, 255, 90), Color3.fromRGB(30, 190, 40) } },
+	Blue = { Name = "Blue Trail", Rarity = "Rare", Speed = 1.15, Cost = 75_000, Product = "TrailBlue", Colors = { Color3.fromRGB(110, 230, 255), Color3.fromRGB(20, 120, 240) } },
+	Purple = { Name = "Purple Trail", Rarity = "Epic", Speed = 1.2, Cost = 1_000_000, Product = "TrailPurple", Colors = { Color3.fromRGB(215, 140, 255), Color3.fromRGB(130, 40, 230) } },
+	Gold = { Name = "Gold Trail", Rarity = "Legendary", Speed = 1.25, Cost = 50_000_000, Product = "TrailGold", Colors = { Color3.fromRGB(255, 240, 120), Color3.fromRGB(240, 160, 20) } },
+	Red = { Name = "Red Trail", Rarity = "Mythic", Speed = 1.3, Cost = 1_000_000_000, Product = "TrailRed", Colors = { Color3.fromRGB(255, 110, 90), Color3.fromRGB(210, 20, 30) } },
+	Galaxy = { Name = "Galaxy Trail", Rarity = "Cosmic", Speed = 1.4, Cost = 20_000_000_000, Product = "TrailGalaxy", Pattern = "Galaxy", Colors = { Color3.fromRGB(230, 120, 255), Color3.fromRGB(40, 20, 140) } },
+	Secret = { Name = "Secret Trail", Rarity = "Secret", Speed = 1.5, Cost = 500_000_000_000, Product = "TrailSecret", Pattern = "Zebra", Colors = { Color3.fromRGB(255, 255, 255), Color3.fromRGB(20, 20, 25) } },
+	Eternal = { Name = "Eternal Trail", Rarity = "Eternal", Speed = 1.6, Cost = 12_500_000_000_000, Product = "TrailEternal", Colors = { Color3.fromRGB(255, 120, 230), Color3.fromRGB(60, 230, 255) } },
+	Rainbow = { Name = "Rainbow Trail", Rarity = "Gamepass", Speed = 1.3, Rainbow = true, Pass = "RainbowRay", Colors = { Color3.fromRGB(255, 80, 80), Color3.fromRGB(80, 120, 255) } },
+}
+-- card colors per trail rarity (Trail Shop)
+MonetizationConfig.TrailRarityColors = {
+	Common = { Color3.fromRGB(250, 250, 252), Color3.fromRGB(190, 190, 200) },
+	Uncommon = { Color3.fromRGB(110, 255, 60), Color3.fromRGB(40, 190, 30) },
+	Rare = { Color3.fromRGB(80, 200, 255), Color3.fromRGB(20, 110, 230) },
+	Epic = { Color3.fromRGB(200, 110, 255), Color3.fromRGB(110, 30, 210) },
+	Legendary = { Color3.fromRGB(255, 225, 80), Color3.fromRGB(245, 140, 10) },
+	Mythic = { Color3.fromRGB(255, 90, 80), Color3.fromRGB(170, 10, 20) },
+	Cosmic = { Color3.fromRGB(170, 70, 255), Color3.fromRGB(50, 20, 170) },
+	Secret = { Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 150, 160) },
+	Eternal = { Color3.fromRGB(40, 245, 255), Color3.fromRGB(255, 60, 220) },
+	Gamepass = { Color3.fromRGB(255, 120, 120), Color3.fromRGB(120, 120, 255) },
 }
 
 -- ── Gem shop (spend Gems in-game) ─────────────────────────────────────
@@ -1114,6 +1143,7 @@ local TierConfig = require(Config:WaitForChild("TierConfig"))
 local ObjectConfig = require(Config:WaitForChild("ObjectConfig"))
 local RarityConfig = require(Config:WaitForChild("RarityConfig"))
 local RewardConfig = require(Config:WaitForChild("RewardConfig"))
+local MonetizationConfig = require(Config:WaitForChild("MonetizationConfig"))
 
 local Formulas = {}
 
@@ -1171,6 +1201,27 @@ function Formulas.SortItems(items)
 	return sorted
 end
 
+-- Walk-speed multiplier of the equipped trail (1 if none / not owned).
+function Formulas.OwnsTrail(data, passes, key)
+	local cfg = MonetizationConfig.Trails[key]
+	if not cfg then
+		return false
+	end
+	if cfg.Pass then
+		return (passes or {})[cfg.Pass] == true
+	end
+	return data.Trails ~= nil and data.Trails[key] == true
+end
+
+function Formulas.TrailSpeed(data, passes)
+	local key = data.EquippedTrail
+	local cfg = key and MonetizationConfig.Trails[key]
+	if cfg and Formulas.OwnsTrail(data, passes, key) then
+		return cfg.Speed or 1
+	end
+	return 1
+end
+
 -- ── Ray stats ────────────────────────────────────────────────────────
 -- passes: set of owned gamepass keys
 function Formulas.RayStats(data, passes)
@@ -1201,6 +1252,7 @@ function Formulas.RayStats(data, passes)
 	if passes.SpeedBoots then
 		walk += GameConfig.SpeedBootsBonus
 	end
+	walk *= Formulas.TrailSpeed(data, passes)
 	return {
 		WalkSpeed = walk,
 		Carry = multi,
@@ -3218,8 +3270,9 @@ return CarryService
           <string name="Source"><![CDATA[--[[
 	📍 LOCATION: ServerScriptService > Services > CosmeticService (ModuleScript)
 
-	Trails (bought at the TRAILS stand): buy with Coins / Gems, or unlock with a gamepass
-	(Rainbow = Rainbow Ray pass). The equipped trail is attached to your character on every spawn.
+	Trails (bought at the TRAILS stand): buy with Coins or Robux (Developer Product), or unlock with
+	a gamepass (Rainbow = Rainbow Ray pass). Every trail makes you run faster (Trail.Speed multiplier).
+	The equipped trail is attached to your character on every spawn.
 	Config: MonetizationConfig.Trails / TrailOrder.
 ]]
 
@@ -3245,6 +3298,19 @@ local function owns(player, data, key)
 		return Svc.Session.HasPass(player, cfg.Pass)
 	end
 	return data.Trails[key] == true
+end
+
+local function stripes(a, b, count)
+	local kps = {}
+	for i = 0, count do
+		local t = i / count
+		local c = (i % 2 == 0) and a or b
+		table.insert(kps, ColorSequenceKeypoint.new(t, c))
+		if i < count then
+			table.insert(kps, ColorSequenceKeypoint.new(math.min(1, t + 1 / count - 0.001), c))
+		end
+	end
+	return ColorSequence.new(kps)
 end
 
 local RAINBOW = ColorSequence.new({
@@ -3290,7 +3356,29 @@ function CosmeticService.ApplyTrail(player)
 	trail.MinLength = 0.1
 	trail.LightEmission = 0.8
 	trail.FaceCamera = true
-	trail.Color = cfg.Rainbow and RAINBOW or ColorSequence.new(cfg.Colors[1], cfg.Colors[2])
+	if cfg.Rainbow then
+		trail.Color = RAINBOW
+	elseif cfg.Pattern == "Zebra" then
+		trail.Color = stripes(cfg.Colors[1], cfg.Colors[2], 9)
+		trail.LightEmission = 0
+	elseif cfg.Pattern == "Galaxy" then
+		trail.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, cfg.Colors[1]),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(90, 60, 255)),
+			ColorSequenceKeypoint.new(1, cfg.Colors[2]),
+		})
+		local stars = Instance.new("ParticleEmitter")
+		stars.Name = "TrailStars"
+		stars.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+		stars.Rate = 12
+		stars.Lifetime = NumberRange.new(0.5, 0.9)
+		stars.Speed = NumberRange.new(0.5, 1.5)
+		stars.Size = NumberSequence.new(0.35, 0)
+		stars.LightEmission = 1
+		stars.Parent = bottom
+	else
+		trail.Color = ColorSequence.new(cfg.Colors[1], cfg.Colors[2])
+	end
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
 	trail.WidthScale = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0.2) })
 	trail.Parent = root
@@ -3306,6 +3394,25 @@ function CosmeticService.OnPlayerLoaded(player)
 	end
 end
 
+-- Unlocks + equips a trail (coins purchase, Robux product, or admin grant).
+function CosmeticService.GrantTrail(player, key)
+	local data = Svc.Data.Get(player)
+	local cfg = MonetizationConfig.Trails[key]
+	if not data or not cfg then
+		return
+	end
+	data.Trails[key] = true
+	data.EquippedTrail = key
+	CosmeticService.Refresh(player)
+	Svc.Data.MarkDirty(player)
+	Svc.Net.Notify(player, "🌈 " .. cfg.Name .. " unlocked! x" .. cfg.Speed .. " Speed", "success")
+end
+
+function CosmeticService.Refresh(player)
+	CosmeticService.ApplyTrail(player)
+	Svc.Monetization.ApplyMovement(player) -- trails change walk speed
+end
+
 function CosmeticService.Start()
 	Svc.Net.Handle("BuyTrail", function(player, key)
 		local data = Svc.Data.Get(player)
@@ -3319,15 +3426,23 @@ function CosmeticService.Start()
 		if cfg.Pass then
 			return { ok = false, msg = "Unlocked by the " .. MonetizationConfig.GamePasses[cfg.Pass].Name .. " gamepass (Shop)!" }
 		end
-		if not Svc.Economy.Spend(player, cfg.Currency, cfg.Cost) then
-			local label = cfg.Currency == "Coins" and Format.Coins(cfg.Cost) or (Format.Abbrev(cfg.Cost) .. " Gems")
-			return { ok = false, msg = "Need " .. label }
+		if not Svc.Economy.Spend(player, "Coins", cfg.Cost) then
+			return { ok = false, msg = "Need " .. Format.Coins(cfg.Cost) }
 		end
-		data.Trails[key] = true
-		data.EquippedTrail = key
-		CosmeticService.ApplyTrail(player)
-		Svc.Data.MarkDirty(player)
-		return { ok = true, msg = "🌈 " .. cfg.Name .. " trail unlocked & equipped!" }
+		CosmeticService.GrantTrail(player, key)
+		return { ok = true }
+	end)
+
+	Svc.Net.Handle("BuyTrailRobux", function(player, key)
+		local data = Svc.Data.Get(player)
+		local cfg = type(key) == "string" and MonetizationConfig.Trails[key]
+		if not cfg or not cfg.Product then
+			return { ok = false }
+		end
+		if owns(player, data, key) then
+			return { ok = false, msg = "You already own this trail!" }
+		end
+		return Svc.Monetization.PromptProduct(player, cfg.Product)
 	end)
 
 	Svc.Net.Handle("EquipTrail", function(player, key)
@@ -3339,7 +3454,7 @@ function CosmeticService.Start()
 		else
 			return { ok = false, msg = "You don't own that trail!" }
 		end
-		CosmeticService.ApplyTrail(player)
+		CosmeticService.Refresh(player)
 		Svc.Data.MarkDirty(player)
 		return { ok = true }
 	end)
@@ -4436,6 +4551,8 @@ return LeaderboardService
 	  Walls      · tall checkered walls in each zone's colors with a grass/ice cap
 	  Arches     · a sign at the start of every zone (name, Ray Power, who's chasing you)
 
+	Style: bright studded LEGO-like bricks everywhere (MapDecor.Studify runs over the finished map).
+
 	Everything here has CanQuery = false so the Shrink Ray aims straight through it,
 	and it stays in the outer strips (|x| > 74) so it never overlaps object spawn points.
 ]]
@@ -4652,8 +4769,8 @@ end
 
 -- ── floor & wall styles ──────────────────────────────────────────────
 MapDecor.FloorStyle = {
-	[1] = { Material = Enum.Material.SmoothPlastic, Color = RGB(110, 210, 80) },
-	[2] = { Material = Enum.Material.SmoothPlastic, Color = RGB(95, 195, 75) },
+	[1] = { Material = Enum.Material.Plastic, Color = RGB(105, 215, 50) },
+	[2] = { Material = Enum.Material.Plastic, Color = RGB(96, 200, 48) },
 	[3] = { Material = Enum.Material.Concrete, Color = RGB(170, 170, 180) },
 	[4] = { Material = Enum.Material.Sand, Color = RGB(238, 216, 160) },
 	[5] = { Material = Enum.Material.Pavement, Color = RGB(110, 105, 140) },
@@ -4661,9 +4778,10 @@ MapDecor.FloorStyle = {
 }
 
 local WALL_STYLE = {
-	Base = { A = RGB(90, 175, 225), B = RGB(70, 150, 205), Cap = RGB(110, 210, 80), Material = Enum.Material.SmoothPlastic },
-	[1] = { A = RGB(205, 125, 75), B = RGB(180, 100, 58), Cap = RGB(110, 210, 80), Material = Enum.Material.SmoothPlastic },
-	[2] = { A = RGB(185, 85, 65), B = RGB(160, 70, 55), Cap = RGB(95, 195, 75), Material = Enum.Material.Brick },
+	-- brown "dirt" walls with a grass top (the Steal-an-Egg look)
+	Base = { A = RGB(204, 146, 96), B = RGB(186, 128, 80), Cap = RGB(105, 215, 50), Material = Enum.Material.Plastic },
+	[1] = { A = RGB(204, 146, 96), B = RGB(186, 128, 80), Cap = RGB(105, 215, 50), Material = Enum.Material.Plastic },
+	[2] = { A = RGB(196, 136, 88), B = RGB(176, 118, 72), Cap = RGB(96, 200, 48), Material = Enum.Material.Plastic },
 	[3] = { A = RGB(150, 150, 162), B = RGB(128, 128, 140), Cap = RGB(80, 80, 92), Material = Enum.Material.Concrete },
 	[4] = { A = RGB(160, 112, 65), B = RGB(135, 92, 52), Cap = RGB(60, 150, 220), Material = Enum.Material.WoodPlanks },
 	[5] = { A = RGB(62, 72, 112), B = RGB(46, 54, 90), Cap = RGB(200, 90, 255), Material = Enum.Material.Glass },
@@ -4689,7 +4807,7 @@ local function wallRun(parent, a, b, height, style)
 		part(parent, Vector3.new(2, height / 2, seg), cf * CFrame.new(0, height * 3 / 4, 0), (i % 2 == 0) and style.B or style.A, style.Material)
 	end
 	local cf = CFrame.lookAt(a + delta / 2, b)
-	part(parent, Vector3.new(3, 2, len + 1), cf * CFrame.new(0, height + 1, 0), style.Cap, Enum.Material.SmoothPlastic)
+	part(parent, Vector3.new(4, 3, len + 2), cf * CFrame.new(0, height + 1.5, 0), style.Cap, Enum.Material.Plastic)
 end
 
 -- opts: { BaseWidth, BaseDepth, Corridor, Height, Zones = { {Tier, StartZ, Depth} } }
@@ -4736,7 +4854,34 @@ function MapDecor.ZoneArch(zone, tier, t, z, width)
 	sign(beam, Enum.NormalId.Front, chaser.Emoji .. " " .. string.upper(t.Area), color:Lerp(RGB(255, 255, 255), 0.35), 8)
 	sign(beam, Enum.NormalId.Back, tier == 1 and "🏠 SAFE" or "⬇ BASE", RGB(120, 255, 140), 8)
 	-- floor line
-	deco(arch, Vector3.new(width - 4, 0.25, 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(255, 60, 60) or color, Enum.Material.Neon)
+	deco(arch, Vector3.new(width - 4, 0.25, tier == 1 and 1 or 3), CFrame.new(0, 0.12, z), tier == 1 and RGB(230, 40, 40) or color, Enum.Material.Neon)
+	if tier == 1 then
+		-- "SAFE ZONE" painted on the ground just inside the base
+		-- turned 180° so the words read the right way up from inside the base (looking out at the zones)
+		local paint = deco(arch, Vector3.new(60, 0.1, 9), CFrame.new(0, 0.06, z - 7) * CFrame.Angles(0, math.pi, 0), RGB(255, 255, 255), Enum.Material.SmoothPlastic)
+		paint.Transparency = 1
+		local gui = Instance.new("SurfaceGui")
+		gui.Face = Enum.NormalId.Top
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 20
+		gui.LightInfluence = 0.3
+		gui.Parent = paint
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.fromScale(1, 1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.FredokaOne
+		label.TextScaled = true
+		label.TextColor3 = RGB(255, 255, 255)
+		label.Text = "SAFE ZONE"
+		label.Parent = gui
+		local stroke = Instance.new("UIStroke")
+		stroke.Thickness = 8
+		stroke.Parent = label
+		for _, sx in ipairs({ -1, 1 }) do -- blue pills either side
+			local pill = deco(arch, Vector3.new(0.12, 3, 7), CFrame.new(sx * 36, 0.07, z - 7) * CFrame.Angles(0, 0, math.rad(90)), RGB(70, 170, 255), Enum.Material.SmoothPlastic, Enum.PartType.Cylinder)
+			pill.Name = "SafePill"
+		end
+	end
 end
 
 -- ── zones ────────────────────────────────────────────────────────────
@@ -4788,12 +4933,14 @@ function MapDecor.GrassPatches(parent, count, picker)
 	end
 end
 
+-- Blocky studded bush (a few stacked green bricks).
 local function bush(parent, pos, scale, color)
 	scale = scale or 1
-	color = color or RGB(75, 160, 70)
-	part(parent, Vector3.one * 3 * scale, CFrame.new(pos + Vector3.new(0, 1.2 * scale, 0)), color, Enum.Material.SmoothPlastic, Enum.PartType.Ball)
-	part(parent, Vector3.one * 2.2 * scale, CFrame.new(pos + Vector3.new(1.3 * scale, 0.9 * scale, 0.4 * scale)), color:Lerp(RGB(255, 255, 255), 0.08), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
-	part(parent, Vector3.one * 2 * scale, CFrame.new(pos + Vector3.new(-1.2 * scale, 0.8 * scale, -0.3 * scale)), color:Lerp(RGB(0, 0, 0), 0.06), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+	color = color or RGB(70, 165, 50)
+	local s = scale
+	part(parent, Vector3.new(6, 2, 4) * s, CFrame.new(pos + Vector3.new(0, 1 * s, 0)), color, Enum.Material.Plastic)
+	part(parent, Vector3.new(4, 2, 3) * s, CFrame.new(pos + Vector3.new(-0.5 * s, 3 * s, 0)), color:Lerp(RGB(0, 0, 0), 0.06), Enum.Material.Plastic)
+	part(parent, Vector3.new(2, 2, 2) * s, CFrame.new(pos + Vector3.new(2.6 * s, 1 * s, 2.4 * s)), color:Lerp(RGB(255, 255, 255), 0.06), Enum.Material.Plastic)
 end
 
 function MapDecor.Zone(zoneModel, tier, z0, depth, width)
@@ -4811,7 +4958,6 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 	end
 
 	if tier == 1 then -- Grandpa's Backyard
-		MapDecor.LawnStripes(decor, -e, e, z0, zEnd, RGB(118, 210, 88), 15)
 		sides(function(s)
 			fence(decor, Vector3.new(s * I, 0, z0 + 6), Vector3.new(s * I, 0, zEnd - 6))
 		end)
@@ -4848,9 +4994,7 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 		for _ = 1, 10 do
 			flowers(decor, inside(), 1.6)
 		end
-		MapDecor.GrassPatches(decor, 45, inside)
 	elseif tier == 2 then -- Neighborhood
-		MapDecor.LawnStripes(decor, -e, e, z0, zEnd, RGB(108, 200, 82), 15)
 		road(decor, z0, depth, 22)
 		sides(function(s)
 			part(decor, Vector3.new(5, 0.5, depth), CFrame.new(s * 13.5, 0.25, z0 + depth / 2), RGB(205, 205, 210), Enum.Material.Concrete)
@@ -4871,13 +5015,6 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 				lamp(decor, Vector3.new(s * 16, 0, z + 11))
 			end)
 		end
-		MapDecor.GrassPatches(decor, 35, function()
-			local p = inside()
-			if math.abs(p.X) < 18 then
-				return nil -- not on the road
-			end
-			return p
-		end)
 	elseif tier == 3 then -- Downtown
 		road(decor, z0, depth, 30)
 		sides(function(s)
@@ -4952,6 +5089,67 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 		end
 	end
 end
+
+-- ── shared helpers for stands & machines ──
+local function pipeSegment(parent, a, b, d, color)
+	local len = (b - a).Magnitude
+	return part(parent, Vector3.new(len + d * 0.5, d, d), CFrame.lookAt((a + b) / 2, b) * CFrame.Angles(0, math.rad(90), 0), color, Enum.Material.Plastic, Enum.PartType.Cylinder)
+end
+
+local function screenText(target, face, text, color, ppS)
+	local gui = Instance.new("SurfaceGui")
+	gui.Face = face
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = ppS or 30
+	gui.LightInfluence = 0
+	gui.Parent = target
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = color
+	label.Text = text
+	label.Parent = gui
+	return label
+end
+
+local function floatingTitle(adornee, text, colors, height, sub)
+	local gui = Instance.new("BillboardGui")
+	gui.Size = UDim2.fromOffset(380, sub and 130 or 84)
+	gui.StudsOffsetWorldSpace = Vector3.new(0, height, 0)
+	gui.Adornee = adornee
+	gui.MaxDistance = 260
+	gui.LightInfluence = 0
+	gui.Parent = adornee
+	local label = Instance.new("TextLabel")
+	label.Name = "Title"
+	label.Size = UDim2.new(1, 0, 0, 84)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = RGB(255, 255, 255)
+	label.Text = text
+	label.Parent = gui
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 5
+	stroke.Parent = label
+	local grad = Instance.new("UIGradient")
+	grad.Color = ColorSequence.new(colors[1], colors[2])
+	grad.Rotation = 90
+	grad.Parent = label
+	if sub then
+		local s = label:Clone()
+		s.Name = "Sub"
+		s.Text = sub
+		s.Position = UDim2.fromOffset(0, 84)
+		s.Size = UDim2.new(1, 0, 0, 46)
+		s:FindFirstChildOfClass("UIGradient"):Destroy()
+		s.Parent = gui
+	end
+	return gui
+end
+MapDecor.FloatingTitle = floatingTitle
 
 -- ── stands (SELL / FUSE / TRAILS / SHOP) ──────────────────────────────
 -- A market stall with a striped awning, a big floating label and a ProximityPrompt that
@@ -5042,28 +5240,7 @@ function MapDecor.Stand(parent, name, label, colors, worldPos, menu, propFn)
 		end
 		npc.Parent = m
 	end)
-	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.fromOffset(360, 84)
-	gui.StudsOffsetWorldSpace = Vector3.new(0, 15, 0)
-	gui.Adornee = counter
-	gui.MaxDistance = 260
-	gui.LightInfluence = 0
-	gui.Parent = counter
-	local text = Instance.new("TextLabel")
-	text.Size = UDim2.fromScale(1, 1)
-	text.BackgroundTransparency = 1
-	text.Font = Enum.Font.FredokaOne
-	text.TextScaled = true
-	text.TextColor3 = RGB(255, 255, 255) -- the gradient below adds the color
-	text.Text = label
-	text.Parent = gui
-	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 5
-	stroke.Parent = text
-	local grad = Instance.new("UIGradient")
-	grad.Color = ColorSequence.new(RGB(255, 255, 255), colors[2])
-	grad.Rotation = 90
-	grad.Parent = text
+	floatingTitle(counter, label, { colors[2]:Lerp(RGB(255, 255, 255), 0.25), colors[1] }, 15)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Open"
 	prompt.ObjectText = label
@@ -5079,23 +5256,84 @@ function MapDecor.Stand(parent, name, label, colors, worldPos, menu, propFn)
 	return m
 end
 
+-- ── the Fuse Machine (a big blue machine with a glowing "?" screen) ───
+
+function MapDecor.FuseMachine(parent, worldPos)
+	local m = Instance.new("Model")
+	m.Name = "FuseStand"
+	m.Parent = parent
+	local BLUE = RGB(45, 110, 235)
+	local DARK = RGB(62, 66, 84)
+	local DARKER = RGB(44, 47, 62)
+	local GLOW = RGB(140, 225, 255)
+	-- platform with a step in front
+	part(m, Vector3.new(22, 1, 15), CFrame.new(1, 0.5, 0), DARK, Enum.Material.Plastic)
+	part(m, Vector3.new(14, 0.6, 3), CFrame.new(3, 0.3, 8.8), DARK, Enum.Material.Plastic)
+	-- main body + glowing "?" screen
+	local body = part(m, Vector3.new(11, 10, 9), CFrame.new(4, 6, -0.5), BLUE, Enum.Material.Plastic)
+	body.Name = "Body"
+	for _, x in ipairs({ -1.2, 9.2 }) do -- dark frame pillars
+		part(m, Vector3.new(1, 10.4, 9.4), CFrame.new(x, 6, -0.5), DARKER, Enum.Material.Plastic)
+	end
+	local screen = part(m, Vector3.new(8.4, 7.8, 0.4), CFrame.new(4, 6, 4.1), GLOW, Enum.Material.Neon)
+	screen.Name = "Screen"
+	screenText(screen, Enum.NormalId.Back, "?", RGB(35, 90, 190), 40)
+	local light = Instance.new("PointLight")
+	light.Color = GLOW
+	light.Range = 18
+	light.Brightness = 1.6
+	light.Parent = screen
+	-- domed lid with a little window
+	part(m, Vector3.new(1.4, 10, 10), CFrame.new(4, 11.7, -0.5) * CFrame.Angles(0, 0, math.rad(90)), DARK, Enum.Material.Plastic, Enum.PartType.Cylinder)
+	part(m, Vector3.new(1.4, 7.6, 7.6), CFrame.new(4, 13.1, -0.5) * CFrame.Angles(0, 0, math.rad(90)), DARKER, Enum.Material.Plastic, Enum.PartType.Cylinder)
+	part(m, Vector3.new(1, 4.6, 4.6), CFrame.new(4, 14.3, -0.5) * CFrame.Angles(0, 0, math.rad(90)), DARK, Enum.Material.Plastic, Enum.PartType.Cylinder)
+	deco(m, Vector3.new(3.4, 1.4, 0.3), CFrame.new(4, 12.6, 3.3) * CFrame.Angles(math.rad(-20), 0, 0), GLOW, Enum.Material.Neon)
+	-- side unit: star screen, heart gauge, antennas
+	part(m, Vector3.new(6, 7, 6.5), CFrame.new(-5.5, 4.5, 0), RGB(36, 80, 190), Enum.Material.Plastic)
+	local star = part(m, Vector3.new(3.4, 3.4, 0.3), CFrame.new(-6, 5, 3.3), RGB(235, 245, 255), Enum.Material.Neon)
+	screenText(star, Enum.NormalId.Back, "★", RGB(60, 120, 230), 40)
+	local gauge = part(m, Vector3.new(1.4, 4.4, 0.4), CFrame.new(-3.2, 5, 3.4), RGB(230, 40, 50), Enum.Material.Neon)
+	screenText(gauge, Enum.NormalId.Back, "♥\n♥\n♥", RGB(255, 210, 215), 40)
+	for _, x in ipairs({ -7.6, -6.4 }) do
+		local h = x < -7 and 6 or 4
+		part(m, Vector3.new(h, 0.5, 0.5), CFrame.new(x, 8 + h / 2, -1.5) * CFrame.Angles(0, 0, math.rad(90)), DARKER, Enum.Material.Plastic, Enum.PartType.Cylinder)
+		part(m, Vector3.one * 0.9, CFrame.new(x, 8 + h, -1.5), DARKER, Enum.Material.Plastic, Enum.PartType.Ball)
+	end
+	-- curved pipe from the side unit into the lid
+	local prev
+	for i = 0, 6 do
+		local a = math.rad(180 - i * 30)
+		local p = Vector3.new(-1.3 + math.cos(a) * 4.2, 8 + math.sin(a) * 4.6, -0.5)
+		if prev then
+			pipeSegment(m, prev, p, 1.5, DARKER)
+		end
+		prev = p
+	end
+	-- red guide arrows on the ground pointing at the step
+	for i = 0, 1 do
+		local arrow = deco(m, Vector3.new(1.6, 0.2, 1.6), CFrame.new(-1 + i * 2.2, 1.15, 8) * CFrame.Angles(0, math.rad(45), 0), RGB(235, 30, 30), Enum.Material.Neon)
+		arrow.Name = "Arrow"
+	end
+	floatingTitle(body, "Fuse Machine", { RGB(90, 220, 255), RGB(30, 110, 230) }, 13)
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = "Fuse"
+	prompt.ObjectText = "Fuse Machine"
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 16
+	prompt.RequiresLineOfSight = false
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
+	prompt:SetAttribute("OpensMenu", "Fuse")
+	prompt.Parent = screen
+	m.WorldPivot = CFrame.new()
+	m:PivotTo(CFrame.new(worldPos))
+	return m
+end
+
 local function coinStack(m, top)
 	for i = 0, 4 do
 		deco(m, Vector3.new(0.35, 1.6, 1.6), CFrame.new(top + Vector3.new(-2 + (i % 2) * 0.2, 0.2 + i * 0.36, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(255, 205, 50), Enum.Material.Metal, Enum.PartType.Cylinder)
 	end
 	deco(m, Vector3.one * 1.4, CFrame.new(top + Vector3.new(2, 0.7, 0)), RGB(110, 220, 255), Enum.Material.Glass, Enum.PartType.Ball)
-end
-
-local function fuseMachine(m, top)
-	deco(m, Vector3.new(2.6, 1.2, 2.6), CFrame.new(top + Vector3.new(0, 0.6, 0)) * CFrame.Angles(0, 0, math.rad(90)), RGB(60, 60, 75), Enum.Material.Metal, Enum.PartType.Cylinder)
-	local orb = deco(m, Vector3.one * 2.2, CFrame.new(top + Vector3.new(0, 2.2, 0)), RGB(180, 110, 255), Enum.Material.Neon, Enum.PartType.Ball)
-	local light = Instance.new("PointLight")
-	light.Color = RGB(180, 110, 255)
-	light.Range = 14
-	light.Parent = orb
-	for _, x in ipairs({ -1.6, 1.6 }) do
-		deco(m, Vector3.new(0.25, 2.6, 0.25), CFrame.new(top + Vector3.new(x, 1.6, 0)) * CFrame.Angles(0, 0, math.rad(x * 10)), RGB(200, 200, 215), Enum.Material.Metal)
-	end
 end
 
 local function trailSwirl(m, top)
@@ -5117,14 +5355,10 @@ end
 function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 	local decor = folder(base, "Decor")
 	local stands = folder(base, "Stands")
-	MapDecor.Stand(stands, "SellStand", "💰 SELL", { RGB(230, 50, 50), RGB(255, 90, 90) }, Vector3.new(-100, 0, -40), "Sell", coinStack)
-	MapDecor.Stand(stands, "FuseStand", "✨ FUSE", { RGB(150, 80, 230), RGB(200, 140, 255) }, Vector3.new(-48, 0, -82), "Fuse", fuseMachine)
-	MapDecor.Stand(stands, "TrailsStand", "🌈 TRAILS", { RGB(60, 190, 90), RGB(255, 225, 70) }, Vector3.new(48, 0, -82), "Trails", trailSwirl)
-	MapDecor.Stand(stands, "ShopStand", "🛒 SHOP", { RGB(40, 140, 230), RGB(110, 210, 255) }, Vector3.new(100, 0, -40), "Shop", giftBox)
-
-	if not MapDecor.UsingTerrain then
-		MapDecor.LawnStripes(decor, -width / 2, width / 2, -depth, 0, RGB(112, 202, 85), 20)
-	end
+	MapDecor.Stand(stands, "SellStand", "SELL", { RGB(230, 30, 30), RGB(255, 70, 60) }, Vector3.new(-100, 0, -40), "Sell", coinStack)
+	MapDecor.FuseMachine(stands, Vector3.new(-50, 0, -84))
+	MapDecor.Stand(stands, "TrailsStand", "TRAILS", { RGB(190, 50, 240), RGB(240, 120, 255) }, Vector3.new(48, 0, -82), "Trails", trailSwirl)
+	MapDecor.Stand(stands, "ShopStand", "SHOP", { RGB(245, 170, 20), RGB(255, 225, 70) }, Vector3.new(100, 0, -40), "Shop", giftBox)
 
 	-- cobblestone ring path past every plot's gate + a path from the ring to the zone gate
 	local ringR = plotRadius - 58
@@ -5177,19 +5411,6 @@ function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 	for x = -width / 2 + 18, width / 2 - 18, 32 do
 		tree(decor, Vector3.new(x, 0, -depth + 9), 0.65)
 	end
-	if not MapDecor.UsingTerrain then
-		MapDecor.GrassPatches(decor, 70, function()
-			local p = Vector3.new(math.random(-width / 2 + 8, width / 2 - 8), 0, math.random(-depth + 6, -6))
-			local r = Vector3.new(p.X, 0, p.Z).Magnitude
-			if r > ringR - 8 and r < plotRadius + 62 then
-				return nil -- keep the ring path and the plots clean
-			end
-			if math.abs(p.X) < 20 and p.Z > -130 then
-				return nil -- not on the center path / spawn / VIP
-			end
-			return p
-		end)
-	end
 end
 
 -- ── terrain ground (only when GameConfig.Ground == "Terrain") ─────────
@@ -5225,6 +5446,41 @@ function MapDecor.Terrain(baseW, baseD, corridor, _corridorEnd)
 			fill(hw - 16, hw, z, z + t.AreaDepth, Enum.Material.Water, 4)
 		end
 		z += t.AreaDepth
+	end
+end
+
+-- ── studs ────────────────────────────────────────────────────────────
+-- Turns the finished map into studded plastic bricks (classic LEGO look, like Steal an Egg):
+-- every visible block/wedge gets Plastic + Studs on top (and on the sides of big walls/floors).
+-- Glass, neon, metal, force fields, see-through parts and characters are left alone.
+local KEEP = {
+	[Enum.Material.Glass] = true,
+	[Enum.Material.Neon] = true,
+	[Enum.Material.Metal] = true,
+	[Enum.Material.DiamondPlate] = true,
+	[Enum.Material.ForceField] = true,
+	[Enum.Material.Ice] = true,
+	[Enum.Material.Foil] = true,
+}
+function MapDecor.Studify(root)
+	for _, p in ipairs(root:GetDescendants()) do
+		local owner = p:FindFirstAncestorWhichIsA("Model")
+		local isCharacter = owner ~= nil and owner:FindFirstChildOfClass("Humanoid") ~= nil
+		if p:IsA("BasePart") and not KEEP[p.Material] and p.Transparency < 0.5 and not isCharacter then
+			local block = p:IsA("WedgePart") or (p:IsA("Part") and p.Shape == Enum.PartType.Block)
+			p.Material = Enum.Material.Plastic
+			if block then
+				p.TopSurface = Enum.SurfaceType.Studs
+				p.BottomSurface = Enum.SurfaceType.Inlet
+				local big = math.max(p.Size.X, p.Size.Z) >= 12 or p.Size.Y >= 12
+				if big then
+					p.FrontSurface = Enum.SurfaceType.Studs
+					p.BackSurface = Enum.SurfaceType.Studs
+					p.LeftSurface = Enum.SurfaceType.Studs
+					p.RightSurface = Enum.SurfaceType.Studs
+				end
+			end
+		end
 	end
 end
 
@@ -5277,7 +5533,7 @@ return MapDecor
 	  │      [P3]  VIP   [P4]       │
 	  └─────────────────────────────┘
 
-	Ground: GameConfig.Ground == "Stylized" (default) = lawn stripes + short grass patches;
+	Ground: GameConfig.Ground == "Stylized" (default) = bright studded bricks (GameConfig.Studs);
 	"Terrain" = Roblox terrain (Floor parts then only mark the zone bounds, invisible).
 
 	If Workspace has no "ShrinkItMap", this builds it all (with themed scenery from MapDecor).
@@ -5367,7 +5623,6 @@ end
 -- Plot local space: +Z = front (faces the plaza / zones), temple at the back (-Z).
 local MARBLE = Color3.fromRGB(246, 243, 236)
 local GOLD = Color3.fromRGB(240, 190, 60)
-local WOOD = Color3.fromRGB(150, 100, 60)
 
 local function local_(floor, x, y, z)
 	return floor.CFrame * CFrame.new(x, y, z)
@@ -5379,23 +5634,35 @@ local function buildPlot(parent, id, cframe)
 	plot:SetAttribute("PlotId", id)
 	plot:SetAttribute("OwnerUserId", 0)
 	plot.Parent = parent
-	local floor = part({ Name = "Floor", Size = Vector3.new(PLOT_W, 1, PLOT_D), CFrame = cframe * CFrame.new(0, -0.38, 0), Color = Color3.fromRGB(235, 228, 215), Material = Enum.Material.Marble, Parent = plot })
+	local floor = part({ Name = "Floor", Size = Vector3.new(PLOT_W, 1, PLOT_D), CFrame = cframe * CFrame.new(0, -0.38, 0), Color = Color3.fromRGB(125, 225, 70), Material = Enum.Material.Plastic, Parent = plot })
 	local hw, hd = PLOT_W / 2, PLOT_D / 2
 	local zb = -hd -- back edge (temple is built relative to this)
 
-	-- wooden fence around the plot with an entrance gap at the front
+	-- chunky wooden X-fence around the plot (stone posts) with an entrance gap at the front
+	local POST = Color3.fromRGB(78, 78, 88)
+	local PLANK = Color3.fromRGB(205, 112, 48)
 	local function fenceRun(x1, z1, x2, z2)
 		local a, b = Vector3.new(x1, 0, z1), Vector3.new(x2, 0, z2)
 		local len = (b - a).Magnitude
-		local mid = local_(floor, (x1 + x2) / 2, 0, (z1 + z2) / 2)
-		local look = CFrame.lookAt(mid.Position, (local_(floor, x2, 0, z2)).Position)
-		for _, y in ipairs({ 1.6, 3.0 }) do
-			part({ Name = "FenceRail", Size = Vector3.new(0.35, 0.45, len), CFrame = look * CFrame.new(0, y, 0), Color = WOOD, Material = Enum.Material.WoodPlanks, CanQuery = false, Parent = plot })
+		local panels = math.max(1, math.floor(len / 10 + 0.5))
+		for i = 0, panels do
+			local p = a:Lerp(b, i / panels)
+			part({ Name = "FencePost", Size = Vector3.new(1.8, 5.6, 1.8), CFrame = local_(floor, p.X, 2.8, p.Z), Color = POST, Material = Enum.Material.Plastic, CanQuery = false, Parent = plot })
+			part({ Name = "PostCap", Size = Vector3.new(2.1, 0.6, 2.1), CFrame = local_(floor, p.X, 5.9, p.Z), Color = POST:Lerp(Color3.new(0, 0, 0), 0.2), Material = Enum.Material.Plastic, CanQuery = false, Parent = plot })
 		end
-		local posts = math.max(1, math.floor(len / 6))
-		for i = 0, posts do
-			local p = a:Lerp(b, i / posts)
-			part({ Name = "FencePost", Size = Vector3.new(0.6, 3.8, 0.6), CFrame = local_(floor, p.X, 2.0, p.Z), Color = WOOD:Lerp(Color3.new(0, 0, 0), 0.15), Material = Enum.Material.Wood, CanQuery = false, Parent = plot })
+		for i = 0, panels - 1 do
+			local p0, p1 = a:Lerp(b, i / panels), a:Lerp(b, (i + 1) / panels)
+			local mid = (p0 + p1) / 2
+			local seg = (p1 - p0).Magnitude - 1.8
+			local look = CFrame.lookAt(local_(floor, mid.X, 0, mid.Z).Position, local_(floor, p1.X, 0, p1.Z).Position)
+			for _, y in ipairs({ 1.1, 4.5 }) do -- top & bottom rails
+				part({ Name = "FenceRail", Size = Vector3.new(0.7, 0.8, seg), CFrame = look * CFrame.new(0, y, 0), Color = PLANK, Material = Enum.Material.Plastic, CanQuery = false, Parent = plot })
+			end
+			local diag = math.sqrt(seg * seg + 3.4 * 3.4)
+			local angle = math.atan2(3.4, seg)
+			for _, sgn in ipairs({ 1, -1 }) do -- the X
+				part({ Name = "FenceBrace", Size = Vector3.new(0.6, 0.7, diag), CFrame = look * CFrame.new(0, 2.8, 0) * CFrame.Angles(sgn * angle, 0, 0), Color = PLANK:Lerp(Color3.new(0, 0, 0), 0.1), Material = Enum.Material.Plastic, CanQuery = false, Parent = plot })
+			end
 		end
 	end
 	fenceRun(-hw, -hd, hw, -hd)
@@ -5403,10 +5670,6 @@ local function buildPlot(parent, id, cframe)
 	fenceRun(hw, -hd, hw, hd)
 	fenceRun(-hw, hd, -9, hd)
 	fenceRun(9, hd, hw, hd)
-	for _, s in ipairs({ -1, 1 }) do -- gate pillars with gold caps
-		part({ Name = "GatePillar", Size = Vector3.new(1.6, 6, 1.6), CFrame = local_(floor, s * 9, 3, hd), Color = MARBLE, Material = Enum.Material.Marble, CanQuery = false, Parent = plot })
-		part({ Name = "GateCap", Shape = Enum.PartType.Ball, Size = Vector3.new(1.8, 1.8, 1.8), CFrame = local_(floor, s * 9, 6.6, hd), Color = GOLD, Material = Enum.Material.Metal, CanQuery = false, Parent = plot })
-	end
 
 	-- ── the museum building (Greek temple) at the back ──
 	local building = Instance.new("Model")
@@ -5515,7 +5778,7 @@ local function buildMap()
 	local base = Instance.new("Model")
 	base.Name = "Base"
 	base.Parent = map
-	floorPart({ Name = "Floor", Size = Vector3.new(BASE_W, 2, BASE_D), CFrame = CFrame.new(0, -1, -BASE_D / 2), Color = Color3.fromRGB(100, 190, 75), Material = Enum.Material.SmoothPlastic, Parent = base })
+	floorPart({ Name = "Floor", Size = Vector3.new(BASE_W, 2, BASE_D), CFrame = CFrame.new(0, -1, -BASE_D / 2), Color = Color3.fromRGB(105, 215, 50), Material = Enum.Material.Plastic, Parent = base })
 	part({ Name = "SafeZone", Size = Vector3.new(BASE_W, 200, BASE_D), CFrame = CFrame.new(0, 99, -BASE_D / 2), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "SpawnLocation"
@@ -5647,6 +5910,9 @@ local function buildMap()
 	chasers.Name = "Chasers"
 	chasers.Parent = map
 
+	if GameConfig.Studs ~= false then
+		safe("Studs", MapDecor.Studify, map)
+	end
 	safe("Lighting", MapDecor.Lighting)
 	map:SetAttribute("GeneratedMapVersion", GameConfig.MapVersion)
 	map.Parent = workspace
@@ -5824,8 +6090,10 @@ return MapService
 	(Helper module, not a service: Main does not boot it.)
 
 	Creates object models:
-	  1. ServerStorage > ShrinkableTemplates > <ObjectId> (your real model), or
-	  2. a colored placeholder built from ObjectConfig Size / Color / Shape.
+	  1. ReplicatedStorage (or ServerStorage) > ShrinkableTemplates > <ObjectId>: your real 3D model
+	     (e.g. from the Toolbox; tools/ImportToolboxModels.lua fills this folder for you), or
+	  2. the built-in part model from ObjectModels, or
+	  3. a colored placeholder built from ObjectConfig Size / Color / Shape.
 	Also applies variant glow (Highlight + light + sparkles) and name labels.
 ]]
 
@@ -5903,7 +6171,8 @@ end
 
 function ModelFactory.Create(id)
 	local def = ObjectConfig.Get(id) or { Name = id }
-	local template = ModelFactory.TemplatesFolder():FindFirstChild(id)
+	local shared = ReplicatedStorage:FindFirstChild("ShrinkableTemplates")
+	local template = (shared and shared:FindFirstChild(id)) or ModelFactory.TemplatesFolder():FindFirstChild(id)
 	local model
 	if template then
 		model = template:Clone()
@@ -5934,8 +6203,8 @@ function ModelFactory.Create(id)
 	for _, d in ipairs(model:GetDescendants()) do
 		if d:IsA("BasePart") then
 			d.Anchored = true
-		elseif d:IsA("Script") or d:IsA("LocalScript") then
-			d:Destroy()
+		elseif d:IsA("LuaSourceContainer") then
+			d:Destroy() -- never run scripts that came with a Toolbox model
 		end
 	end
 	return model
@@ -6237,6 +6506,9 @@ local productHandlers = {
 	end,
 	SpawnGolden = function(player)
 		Svc.Spawn.SpawnNear(player, "Golden")
+	end,
+	Trail = function(player, _data, key)
+		Svc.Cosmetic.GrantTrail(player, MonetizationConfig.Products[key].Trail)
 	end,
 	InfinitePack = function(player, _data, key)
 		Svc.InfinitePack.OnPurchased(player, key)
@@ -10023,15 +10295,16 @@ return HUD
               <string name="Source"><![CDATA[--[[
 	📍 LOCATION: StarterPlayer > StarterPlayerScripts > ClientModules > Menus > FuseMenu (ModuleScript)
 
-	Opened from the ✨ FUSE stand. Fuse GameConfig.Fuse.Count identical objects (same object + variant)
-	into ONE of the next variant: Normal → Golden (x5) → Diamond (x10) → Rainbow (x25) → Cosmic (x100).
+	"Fuse Machine" (opened from the FUSE machine in the base). Press a green + to pick an object,
+	the 3 slots fill with your copies of it, the pipes feed the result in the middle, then FUSE.
+	3 identical objects (same object + variant) → 1 of the next variant:
+	Normal → Golden (x5) → Diamond (x10) → Rainbow (x25) → Cosmic (x100).
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
-local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
 local Formulas = require(Shared.Formulas)
 
@@ -10040,6 +10313,10 @@ local UIKit = require(Modules.UIKit)
 local State = require(Modules.State)
 
 local FuseMenu = {}
+
+local RGB = Color3.fromRGB
+local GREEN = { RGB(130, 255, 60), RGB(50, 200, 20) }
+local PIPE = RGB(30, 30, 38)
 
 local function nextVariant(v)
 	for i, name in ipairs(RarityConfig.VariantOrder) do
@@ -10050,43 +10327,123 @@ local function nextVariant(v)
 	return nil
 end
 
-function FuseMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Fuse", Emoji = "✨", Size = UDim2.fromOffset(860, 600), Colors = UIKit.Colors.Purple })
-	local content = panel.Content
-	local need = GameConfig.Fuse.Count
-	UIKit.Label({ Text = string.format("Fuse %d of the same object → 1 of the next variant!", need), TextColor3 = Color3.fromRGB(150, 80, 230), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 18), Parent = content })
-	UIKit.Label({ Text = "Normal → 🌟 Golden x5 → 💎 Diamond x10 → 🌈 Rainbow x25 → 🌌 Cosmic x100", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 26), Position = UDim2.fromOffset(0, 54), Parent = content })
+local function clear(frame)
+	for _, c in ipairs(frame:GetChildren()) do
+		if c:IsA("GuiObject") then
+			c:Destroy()
+		end
+	end
+end
 
-	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -96), Position = UDim2.fromOffset(0, 92), Parent = content })
-	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = list })
+local function box(parent, size, pos, z)
+	local f = UIKit.Create("Frame", { BackgroundColor3 = UIKit.PanelCard, Size = size, Position = pos, ZIndex = z or 53, Parent = parent })
+	UIKit.Corner(f, 6)
+	UIKit.Stroke(f, 4, UIKit.Outline, true)
+	return f
+end
+
+local function pipe(parent, size, pos)
+	local f = UIKit.Create("Frame", { BackgroundColor3 = PIPE, BorderSizePixel = 0, Size = size, Position = pos, ZIndex = 52, Parent = parent })
+	return f
+end
+
+local function glowCap(parent, size, pos)
+	local f = UIKit.Create("Frame", { BackgroundColor3 = RGB(110, 255, 60), BorderSizePixel = 0, Size = size, Position = pos, ZIndex = 54, Parent = parent })
+	UIKit.Corner(f, UDim.new(1, 0))
+	UIKit.Stroke(f, 3, UIKit.Outline, true)
+	return f
+end
+
+function FuseMenu.Build(ctx)
+	local need = GameConfig.Fuse.Count
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Fuse Machine", Style = "Header", Colors = { RGB(235, 110, 255), RGB(165, 30, 230) }, Size = UDim2.fromOffset(1000, 640) })
+	local content = panel.Content
+	local W = 1000 - 32
+
+	local head = UIKit.Label({ Text = "", RichText = true, Size = UDim2.new(1, 0, 0, 46), Position = UDim2.fromOffset(0, 0), StrokeThickness = 3, ZIndex = 54, Parent = content })
+	head.Text = string.format('Bring <font color="#FF3838">%d</font> same objects to Fuse', need)
+	local sub = UIKit.Label({ Text = "", RichText = true, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 46), StrokeThickness = 3, ZIndex = 54, Parent = content })
+	sub.Text = '<i><font color="#5CFF3C">Fused objects</font> earn <font color="#5CFF3C">WAY more</font>!</i>'
+
+	-- 3 input slots
+	local slotW, slotH, gap = 260, 130, 30
+	local resultTop = 92 + slotH + 40
+	local midY = resultTop + 70
+	local left = (W - (slotW * 3 + gap * 2)) / 2
+	local slots = {}
+	local picker -- forward
+	for i = 1, need do
+		local x = left + (i - 1) * (slotW + gap)
+		local f = box(content, UDim2.fromOffset(slotW, slotH), UDim2.fromOffset(x, 92))
+		local name = UIKit.Label({ Text = "Empty", Size = UDim2.new(1, -12, 0, 36), Position = UDim2.fromOffset(6, 6), StrokeThickness = 3, ZIndex = 55, Parent = f })
+		local holder = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 1, -44), Position = UDim2.fromOffset(0, 42), ZIndex = 55, Parent = f })
+		local plus = UIKit.Button({ Text = "+", Colors = GREEN, CornerRadius = 4, Size = UDim2.fromOffset(170, 74), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 52), ZIndex = 56, Parent = f, OnClick = function()
+			picker.Visible = true
+		end })
+		-- pipe from the slot down into the result box
+		local cx = x + slotW / 2
+		local y0 = 92 + slotH + 16
+		glowCap(content, UDim2.fromOffset(70, 14), UDim2.fromOffset(cx - 35, 92 + slotH + 4))
+		slots[i] = { Name = name, Holder = holder, Plus = plus }
+		if i == 2 then
+			pipe(content, UDim2.fromOffset(26, resultTop - y0), UDim2.fromOffset(cx - 13, y0))
+		else
+			local edgeX = i < 2 and (W / 2 - 130) or (W / 2 + 130)
+			pipe(content, UDim2.fromOffset(22, midY + 11 - y0), UDim2.fromOffset(cx - 11, y0))
+			pipe(content, UDim2.fromOffset(math.abs(edgeX - cx) + 11, 22), UDim2.fromOffset(math.min(cx, edgeX) - (i < 2 and 11 or 0), midY - 11))
+			glowCap(content, UDim2.fromOffset(14, 56), UDim2.fromOffset(edgeX - 7 + (i < 2 and -10 or 10), midY - 28))
+		end
+	end
+
+	-- result in the middle
+	local result = box(content, UDim2.fromOffset(260, 170), UDim2.fromOffset(W / 2 - 130, resultTop))
+	local resultHolder = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, -16, 1, -16), Position = UDim2.fromOffset(8, 8), ZIndex = 55, Parent = result })
+	local resultName = UIKit.Label({ Text = "", Size = UDim2.new(1, -12, 0, 30), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 6, 1, -4), StrokeThickness = 3, ZIndex = 57, Parent = result })
+
+	local selected -- { Id, V }
+	local fuseButton, fuseLabel = UIKit.Button({ Text = need .. " Left", Colors = GREEN, CornerRadius = 4, Size = UDim2.fromOffset(380, 76), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), ZIndex = 56, Parent = content, OnClick = function()
+		if selected then
+			ctx.HUD.Result(State.Action("FuseItems", selected.Id, selected.V))
+		else
+			picker.Visible = true
+		end
+	end })
+
+	-- hint card on the left: "3 small ≈ 1 better"  [OK!]
+	local hint = box(panel.Holder, UDim2.fromOffset(280, 190), UDim2.new(0, -300, 0.5, -95), 52)
+	hint.BackgroundColor3 = UIKit.PanelBody
+	UIKit.Label({ Text = "x3", Size = UDim2.fromOffset(80, 60), Position = UDim2.fromOffset(18, 28), TextColor3 = RGB(255, 255, 255), StrokeThickness = 3, ZIndex = 55, Parent = hint })
+	UIKit.Label({ Text = "≈", Size = UDim2.fromOffset(50, 60), Position = UDim2.fromOffset(110, 28), StrokeThickness = 3, ZIndex = 55, Parent = hint })
+	UIKit.Label({ Text = "🌟", StrokeThickness = 0, Size = UDim2.fromOffset(80, 70), Position = UDim2.fromOffset(170, 22), ZIndex = 55, Parent = hint })
+	UIKit.Button({ Text = "OK!", Colors = GREEN, CornerRadius = 4, Size = UDim2.fromOffset(150, 56), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), ZIndex = 56, Parent = hint, OnClick = function()
+		hint.Visible = false
+	end })
+
+	-- picker overlay: every object you own, grouped by object + variant
+	picker = UIKit.Create("Frame", { Name = "Picker", BackgroundColor3 = UIKit.PanelBody, Visible = false, Size = UDim2.fromScale(1, 1), ZIndex = 80, Parent = content })
+	UIKit.Corner(picker, 8)
+	UIKit.Stroke(picker, 4, UIKit.Outline, true)
+	UIKit.Label({ Text = "Pick an object to fuse", Size = UDim2.new(1, -120, 0, 44), Position = UDim2.fromOffset(16, 8), TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 3, ZIndex = 81, Parent = picker })
+	UIKit.Button({ Text = "Back", Colors = UIKit.Colors.Red, CornerRadius = 4, Size = UDim2.fromOffset(110, 46), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 8), ZIndex = 82, Parent = picker, OnClick = function()
+		picker.Visible = false
+	end })
+	local grid = UIKit.Scroll({ Size = UDim2.new(1, -20, 1, -70), Position = UDim2.fromOffset(10, 62), Parent = picker })
+	grid.ZIndex = 81
+	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(170, 190), CellPadding = UDim2.fromOffset(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = grid })
 
 	local menu = { Panel = panel }
 	local lastKey
 
-	function menu.Refresh()
+	local function groups()
 		local data = State.Data
-		if not data then
-			return
-		end
-		local key = #data.Items .. ":" .. (data.NextUid or 0)
-		if key == lastKey then
-			return
-		end
-		lastKey = key
-		for _, c in ipairs(list:GetChildren()) do
-			if c:IsA("GuiObject") then
-				c:Destroy()
-			end
-		end
-		-- group by object + variant
-		local groups, order = {}, {}
-		for _, item in ipairs(data.Items) do
+		local map, order = {}, {}
+		for _, item in ipairs(data and data.Items or {}) do
 			local k = item.Id .. ":" .. item.V
-			if not groups[k] then
-				groups[k] = { Id = item.Id, V = item.V, Count = 0 }
-				table.insert(order, groups[k])
+			if not map[k] then
+				map[k] = { Id = item.Id, V = item.V, Count = 0 }
+				table.insert(order, map[k])
 			end
-			groups[k].Count += 1
+			map[k].Count += 1
 		end
 		table.sort(order, function(a, b)
 			local fa, fb = a.Count >= need and nextVariant(a.V) ~= nil, b.Count >= need and nextVariant(b.V) ~= nil
@@ -10095,29 +10452,98 @@ function FuseMenu.Build(ctx)
 			end
 			return Formulas.ItemBaseIncome(a) > Formulas.ItemBaseIncome(b)
 		end)
-		if #order == 0 then
-			UIKit.Label({ Text = "Shrink some objects first!", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 40), Parent = list })
+		return map, order
+	end
+
+	local function render()
+		local map, order = groups()
+		local g = selected and map[selected.Id .. ":" .. selected.V]
+		if selected and not g then
+			selected = nil
 		end
-		for i, g in ipairs(order) do
-			local variant = RarityConfig.GetVariant(g.V)
-			local nv = nextVariant(g.V)
-			local ready = nv and g.Count >= need
-			local row = UIKit.Card({ Size = UDim2.new(1, -16, 0, 60), LayoutOrder = i, Colors = ready and { Color3.fromRGB(250, 240, 255), Color3.fromRGB(230, 210, 255) } or nil, Parent = list, CornerRadius = 12 })
-			UIKit.ModelPreview({ Id = g.Id, Variant = g.V, Size = UDim2.fromOffset(52, 52), Position = UDim2.fromOffset(4, 4), Parent = row })
-			UIKit.Label({ Text = Formulas.ItemName({ Id = g.Id, V = g.V }) .. "  x" .. g.Count, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = variant.Color or Color3.fromRGB(60, 60, 80), StrokeThickness = variant.Color and 2 or 0, Size = UDim2.fromOffset(380, 30), Position = UDim2.fromOffset(60, 4), Parent = row })
-			local bar = UIKit.ProgressBar({ Size = UDim2.fromOffset(260, 18), Position = UDim2.fromOffset(60, 36), Colors = UIKit.Colors.Purple, Parent = row })
-			bar.Set(math.min(1, g.Count / need), math.min(g.Count, need) .. "/" .. need)
-			local label = not nv and "MAX ✔" or ("FUSE → " .. RarityConfig.Variants[nv].Prefix:gsub(" $", ""))
-			UIKit.Button({ Text = label, Colors = ready and UIKit.Colors.Purple or UIKit.Colors.Gray, Size = UDim2.fromOffset(220, 44), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -8, 0.5, 0), Parent = row, OnClick = function()
-				if ready then
-					ctx.HUD.Result(State.Action("FuseItems", g.Id, g.V))
-				end
-			end })
+		local have = g and math.min(g.Count, need) or 0
+		for i, s in ipairs(slots) do
+			clear(s.Holder)
+			local filled = g and i <= have
+			s.Plus.Visible = not filled
+			s.Name.Text = filled and Formulas.ItemName({ Id = g.Id, V = g.V }) or "Empty"
+			if filled then
+				UIKit.ModelPreview({ Id = g.Id, Variant = g.V, Size = UDim2.fromScale(1, 1), ZIndex = 56, Parent = s.Holder })
+			end
+		end
+		clear(resultHolder)
+		local nv = g and nextVariant(g.V)
+		if g and nv then
+			local vf = UIKit.ModelPreview({ Id = g.Id, Variant = nv, Size = UDim2.new(1, 0, 1, -30), ZIndex = 56, Parent = resultHolder })
+			if have < need then
+				vf.ImageColor3 = RGB(0, 0, 0) -- mystery silhouette until all slots are full
+				resultName.Text = "???"
+			else
+				resultName.Text = Formulas.ItemName({ Id = g.Id, V = nv })
+			end
+		else
+			resultName.Text = g and "MAX!" or ""
+			UIKit.Label({ Text = "❔", StrokeThickness = 0, Size = UDim2.fromScale(1, 1), ZIndex = 56, Parent = resultHolder })
+		end
+		if g and not nv then
+			fuseLabel.Text = "Already Cosmic!"
+			UIKit.SetButtonColors(fuseButton, UIKit.Colors.Gray)
+		elseif g and have >= need then
+			fuseLabel.Text = "FUSE!"
+			UIKit.SetButtonColors(fuseButton, GREEN)
+		else
+			fuseLabel.Text = (need - have) .. " Left"
+			UIKit.SetButtonColors(fuseButton, g and GREEN or UIKit.Colors.Gray)
+		end
+
+		-- picker tiles
+		clear(grid)
+		if #order == 0 then
+			UIKit.Label({ Text = "Shrink some objects first!", StrokeThickness = 2, Size = UDim2.fromOffset(400, 40), ZIndex = 82, Parent = grid })
+		end
+		for i, entry in ipairs(order) do
+			local ready = entry.Count >= need and nextVariant(entry.V) ~= nil
+			local tile = UIKit.Create("TextButton", { Text = "", AutoButtonColor = false, BackgroundColor3 = ready and RGB(70, 110, 60) or UIKit.PanelCard, LayoutOrder = i, ZIndex = 82, Parent = grid })
+			UIKit.Corner(tile, 6)
+			UIKit.Stroke(tile, 4, ready and RGB(110, 255, 60) or UIKit.Outline, true)
+			UIKit.ModelPreview({ Id = entry.Id, Variant = entry.V, Size = UDim2.new(1, -20, 0, 120), Position = UDim2.fromOffset(10, 6), ZIndex = 83, Parent = tile })
+			local variant = RarityConfig.GetVariant(entry.V)
+			UIKit.Label({ Text = Formulas.ItemName({ Id = entry.Id, V = entry.V }), TextColor3 = variant.Color or RGB(255, 255, 255), Size = UDim2.new(1, -10, 0, 28), Position = UDim2.fromOffset(5, 126), StrokeThickness = 2.5, ZIndex = 83, Parent = tile })
+			UIKit.Label({ Text = math.min(entry.Count, 999) .. "/" .. need .. (ready and "  ✔" or ""), TextColor3 = ready and RGB(130, 255, 90) or RGB(220, 220, 230), Size = UDim2.new(1, -10, 0, 26), Position = UDim2.fromOffset(5, 156), StrokeThickness = 2.5, ZIndex = 83, Parent = tile })
+			UIKit.Bouncy(tile)
+			tile.Activated:Connect(function()
+				UIKit.PlaySound("Click", 0.4)
+				selected = { Id = entry.Id, V = entry.V }
+				picker.Visible = false
+				lastKey = nil
+			end)
 		end
 	end
 
+	function menu.Refresh()
+		local data = State.Data
+		if not data then
+			return
+		end
+		local key = #data.Items .. ":" .. (data.NextUid or 0) .. ":" .. (selected and (selected.Id .. selected.V) or "")
+		if key == lastKey then
+			return
+		end
+		lastKey = key
+		render()
+	end
+	menu.Tick = menu.Refresh
+
 	panel.OnOpen:Connect(function()
 		lastKey = nil
+		picker.Visible = false
+		hint.Visible = true
+		-- auto-select the best thing you can fuse right now
+		local _, order = groups()
+		local best = order[1]
+		if best and best.Count >= need and nextVariant(best.V) then
+			selected = { Id = best.Id, V = best.V }
+		end
 	end)
 
 	return menu
@@ -11020,14 +11446,14 @@ local SellMenu = {}
 local MAX_ROWS = 80
 
 function SellMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Sell", Emoji = "💰", Size = UDim2.fromOffset(820, 600), Colors = UIKit.Colors.Red })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Sell", Style = "Header", Size = UDim2.fromOffset(840, 640), Colors = { Color3.fromRGB(255, 90, 80), Color3.fromRGB(200, 20, 30) } })
 	local content = panel.Content
 
-	local summary = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(230, 70, 70), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 18), Parent = content })
+	local summary = UIKit.Label({ Text = "", TextColor3 = Color3.fromRGB(255, 120, 110), StrokeThickness = 3, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 18), Parent = content })
 	local sellAll, sellAllLabel = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(460, 64), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 58), Parent = content, OnClick = function()
 		ctx.HUD.Result(State.Action("SellPocket"))
 	end })
-	UIKit.Label({ Text = "Objects on display are kept. Huge exclusives are never sold.", TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, 0, 0, 24), Position = UDim2.fromOffset(0, 128), Parent = content })
+	UIKit.Label({ Text = "Objects on display are kept. Huge exclusives are never sold.", TextColor3 = Color3.fromRGB(210, 210, 225), StrokeThickness = 2, Size = UDim2.new(1, 0, 0, 24), Position = UDim2.fromOffset(0, 128), Parent = content })
 
 	local list = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -164), Position = UDim2.fromOffset(0, 160), Parent = content })
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = list })
@@ -11115,7 +11541,7 @@ local Prices = require(Modules.Prices)
 local ShopMenu = {}
 
 function ShopMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Shop", Emoji = "🛒", Size = UDim2.fromOffset(940, 620), Colors = UIKit.Colors.Yellow })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Shop", Style = "Header", Size = UDim2.fromOffset(960, 660), Colors = { Color3.fromRGB(255, 225, 70), Color3.fromRGB(245, 150, 20) } })
 	local content = panel.Content
 
 	local tabsBar = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 52), Position = UDim2.fromOffset(0, 18), Parent = content })
@@ -11239,7 +11665,7 @@ function ShopMenu.Build(ctx)
 
 	-- ── Codes ───────────────────────────────────────────────────────
 	local codesPage = pages.Codes
-	UIKit.Label({ Text = "Enter a code:", TextColor3 = UIKit.Outline, StrokeThickness = 0, Size = UDim2.new(1, -20, 0, 40), Position = UDim2.fromOffset(10, 30), Parent = codesPage })
+	UIKit.Label({ Text = "Enter a code:", StrokeThickness = 3, Size = UDim2.new(1, -20, 0, 40), Position = UDim2.fromOffset(10, 30), Parent = codesPage })
 	local box = UIKit.Create("TextBox", {
 		PlaceholderText = "CODE HERE",
 		Text = "",
@@ -11263,7 +11689,7 @@ function ShopMenu.Build(ctx)
 			box.Text = ""
 		end
 	end })
-	UIKit.Label({ Text = "👍 Like the game! Like goals unlock new codes — check the sign in the lobby.", TextColor3 = Color3.fromRGB(90, 90, 110), StrokeThickness = 0, Size = UDim2.new(1, -40, 0, 50), Position = UDim2.fromOffset(20, 250), Parent = codesPage })
+	UIKit.Label({ Text = "👍 Like the game! Like goals unlock new codes — check the sign in the lobby.", TextColor3 = Color3.fromRGB(220, 220, 235), StrokeThickness = 2, Size = UDim2.new(1, -40, 0, 50), Position = UDim2.fromOffset(20, 250), Parent = codesPage })
 
 	showTab(current)
 
@@ -11327,8 +11753,9 @@ return ShopMenu
               <string name="Source"><![CDATA[--[[
 	📍 LOCATION: StarterPlayer > StarterPlayerScripts > ClientModules > Menus > TrailsMenu (ModuleScript)
 
-	Opened from the 🌈 TRAILS stand. Buy trails with Coins or Gems (Rainbow comes with the Rainbow Ray pass),
-	then equip one. Config: MonetizationConfig.Trails.
+	"Trail Shop" (opened from the TRAILS stand): a row of big rarity-colored cards you scroll sideways.
+	Every trail gives a Speed multiplier. Buy with Coins (green button) or Robux (purple button),
+	then equip. Config: MonetizationConfig.Trails / TrailOrder / TrailRarityColors.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -11340,52 +11767,136 @@ local Format = require(Shared.Format)
 local Modules = script.Parent.Parent
 local UIKit = require(Modules.UIKit)
 local State = require(Modules.State)
+local Prices = require(Modules.Prices)
 
 local TrailsMenu = {}
 
-function TrailsMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Trails", Emoji = "🌈", Size = UDim2.fromOffset(880, 600), Colors = UIKit.Colors.Green })
-	local content = panel.Content
-	local grid = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -84), Position = UDim2.fromOffset(0, 18), Parent = content })
-	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(196, 200), CellPadding = UDim2.fromOffset(12, 12), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = grid })
-	UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, 6), Parent = grid })
+local RGB = Color3.fromRGB
+local PURPLE = { RGB(235, 110, 255), RGB(165, 30, 230) }
+local GREEN = { RGB(130, 255, 60), RGB(50, 200, 20) }
 
-	UIKit.Button({ Text = "Unequip trail", Colors = UIKit.Colors.Gray, Size = UDim2.fromOffset(240, 52), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -4), Parent = content, OnClick = function()
-		ctx.HUD.Result(State.Action("EquipTrail", ""))
-	end })
+-- A little blocky runner in the trail's colors with a swoosh behind it, rendered in 3D.
+local function runnerPreview(parent, cfg)
+	local vf = UIKit.Create("ViewportFrame", {
+		BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 0, 230),
+		Position = UDim2.fromOffset(0, 70),
+		Ambient = RGB(170, 170, 180),
+		LightColor = RGB(255, 255, 255),
+		LightDirection = Vector3.new(-0.6, -1, -0.8),
+		ZIndex = 53,
+		Parent = parent,
+	})
+	local model = Instance.new("Model")
+	local c1, c2 = cfg.Colors[1], cfg.Colors[2]
+	local function block(size, cf, color, material)
+		local p = Instance.new("Part")
+		p.Anchored = true
+		p.Size = size
+		p.CFrame = cf
+		p.Color = color
+		p.Material = material or Enum.Material.SmoothPlastic
+		p.Parent = model
+		return p
+	end
+	local body = c1:Lerp(c2, 0.3)
+	local root = CFrame.Angles(0, math.rad(-35), 0) * CFrame.Angles(math.rad(-12), 0, 0)
+	block(Vector3.new(2, 2, 1), root * CFrame.new(0, 3, 0), body)
+	local head = block(Vector3.new(1.25, 1.25, 1.25), root * CFrame.new(0, 4.65, 0), body)
+	local mesh = Instance.new("SpecialMesh")
+	mesh.MeshType = Enum.MeshType.Head
+	mesh.Scale = Vector3.new(1, 1, 1)
+	mesh.Parent = head
+	block(Vector3.new(1, 2, 1), root * CFrame.new(-1.5, 3.2, 0) * CFrame.Angles(math.rad(50), 0, 0), body:Lerp(c2, 0.2))
+	block(Vector3.new(1, 2, 1), root * CFrame.new(1.5, 3.2, 0) * CFrame.Angles(math.rad(-50), 0, 0), body:Lerp(c2, 0.2))
+	block(Vector3.new(1, 2, 1), root * CFrame.new(-0.5, 1, 0.3) * CFrame.Angles(math.rad(-40), 0, 0), body:Lerp(c2, 0.35))
+	block(Vector3.new(1, 2, 1), root * CFrame.new(0.5, 1, -0.3) * CFrame.Angles(math.rad(45), 0, 0), body:Lerp(c2, 0.35))
+	-- the swoosh: a curved ribbon of thin panels behind the runner
+	local segments = 14
+	for i = 0, segments - 1 do
+		local t = i / segments
+		local x = 1.2 + t * 7
+		local y = 3 - math.sin(t * math.pi) * 1.2 + t * 0.6
+		local color
+		if cfg.Rainbow then
+			color = Color3.fromHSV(t, 0.75, 1)
+		elseif cfg.Pattern == "Zebra" then
+			color = (i % 2 == 0) and c1 or c2
+		else
+			color = c1:Lerp(c2, t)
+		end
+		local p = block(Vector3.new(7 / segments + 0.05, 2.6 - t * 1.6, 0.2), root * CFrame.new(x, y, 0.8 + t * 1.5) * CFrame.Angles(0, math.rad(-12), 0), color, cfg.Pattern == "Galaxy" and Enum.Material.Neon or Enum.Material.SmoothPlastic)
+		p.Transparency = t * 0.35
+	end
+	model.Parent = vf
+	local camera = Instance.new("Camera")
+	camera.FieldOfView = 40
+	camera.Parent = vf
+	vf.CurrentCamera = camera
+	local cf, size = model:GetBoundingBox()
+	camera.CFrame = CFrame.lookAt(cf.Position + Vector3.new(0, 0.6, -1).Unit * size.Magnitude * 1.25, cf.Position)
+	return vf
+end
+
+local function rarityColors(cfg)
+	return MonetizationConfig.TrailRarityColors[cfg.Rarity] or UIKit.Colors.Gray
+end
+
+function TrailsMenu.Build(ctx)
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Trail Shop", Style = "Header", Colors = PURPLE, Size = UDim2.fromOffset(1060, 590) })
+	local content = panel.Content
+	local row = UIKit.Scroll({ Size = UDim2.fromScale(1, 1), Horizontal = true, Parent = content })
+	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 16), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center, Parent = row })
+	UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6), Parent = row })
 
 	local cards = {}
 	for i, key in ipairs(MonetizationConfig.TrailOrder) do
 		local cfg = MonetizationConfig.Trails[key]
-		local card = UIKit.Card({ LayoutOrder = i, Colors = UIKit.Colors.White, Parent = grid, CornerRadius = 18 })
-		local swatch = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.new(1, -30, 0, 60), Position = UDim2.fromOffset(15, 14), Parent = card })
-		UIKit.Corner(swatch, UDim.new(1, 0))
-		UIKit.Stroke(swatch, 3, UIKit.Outline, true)
-		if cfg.Rainbow then
-			UIKit.Create("UIGradient", { Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
-				ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 230, 60)),
-				ColorSequenceKeypoint.new(0.66, Color3.fromRGB(60, 160, 255)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(190, 80, 255)),
-			}), Parent = swatch })
-		else
-			UIKit.Gradient(swatch, cfg.Colors, 0)
+		local card = UIKit.Create("Frame", { Name = key, BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(310, 440), LayoutOrder = i, ZIndex = 52, Parent = row })
+		UIKit.Corner(card, 8)
+		UIKit.Stroke(card, 5, UIKit.Outline, true)
+		UIKit.Gradient(card, rarityColors(cfg), 90)
+		-- soft light burst behind the runner
+		local burst = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(155, 190), Size = UDim2.fromOffset(220, 220), ZIndex = 52, Parent = card })
+		UIKit.Corner(burst, UDim.new(1, 0))
+		UIKit.Create("UIGradient", { Transparency = NumberSequence.new(0.2, 1), Parent = burst })
+		UIKit.Label({ Text = cfg.Name, Size = UDim2.new(1, -16, 0, 44), Position = UDim2.fromOffset(8, 10), StrokeThickness = 3.5, ZIndex = 54, Parent = card })
+		UIKit.Label({ Text = cfg.Rarity, Size = UDim2.new(1, -16, 0, 26), Position = UDim2.fromOffset(8, 50), StrokeThickness = 2.5, ZIndex = 54, Parent = card })
+		runnerPreview(card, cfg)
+		-- "x1.5 Speed" plate
+		local plate = UIKit.Create("Frame", { BackgroundColor3 = RGB(30, 30, 40), BackgroundTransparency = 0.35, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 300), Size = UDim2.new(1, -36, 0, 56), ZIndex = 54, Parent = card })
+		UIKit.Corner(plate, 6)
+		UIKit.Stroke(plate, 3, UIKit.Outline, true)
+		local speed = UIKit.Label({ Text = "", RichText = true, Size = UDim2.new(1, -12, 1, -8), Position = UDim2.fromOffset(6, 4), StrokeThickness = 3, ZIndex = 55, Parent = plate })
+		speed.Text = string.format('<font color="#5CFF3C">x%s</font> Speed', tostring(cfg.Speed))
+		-- buttons: coins (green) + Robux (purple), or equip
+		local buyCoins, coinsLabel = UIKit.Button({ Text = cfg.Cost and Format.Coins(cfg.Cost) or "", Colors = GREEN, CornerRadius = 4, Size = UDim2.fromOffset(cfg.Product and 160 or 200, 58), Position = UDim2.fromOffset(cfg.Product and 14 or 14, 370), ZIndex = 56, Parent = card, OnClick = function()
+			ctx.HUD.Result(State.Action("BuyTrail", key))
+		end })
+		local buyRobux, robuxLabel
+		if cfg.Product then
+			local product = MonetizationConfig.Products[cfg.Product]
+			local function price()
+				return Prices.Get(Enum.InfoType.Product, product.Id, product.PriceLabel)
+			end
+			buyRobux, robuxLabel = UIKit.Button({ Text = price(), Colors = PURPLE, CornerRadius = 4, Size = UDim2.fromOffset(112, 58), Position = UDim2.fromOffset(184, 370), ZIndex = 56, Parent = card, OnClick = function()
+				ctx.HUD.Result(State.Action("BuyTrailRobux", key))
+			end })
+			Prices.OnUpdated(function()
+				robuxLabel.Text = price()
+			end)
 		end
-		UIKit.Label({ Text = cfg.Name, TextColor3 = Color3.fromRGB(60, 60, 80), StrokeThickness = 0, Size = UDim2.new(1, -16, 0, 30), Position = UDim2.fromOffset(8, 82), Parent = card })
-		local price = cfg.Pass and ("🎟️ " .. MonetizationConfig.GamePasses[cfg.Pass].Name) or (cfg.Currency == "Coins" and Format.Coins(cfg.Cost) or ("💎 " .. Format.Abbrev(cfg.Cost)))
-		UIKit.Label({ Text = price, TextColor3 = Color3.fromRGB(110, 110, 130), StrokeThickness = 0, Size = UDim2.new(1, -16, 0, 24), Position = UDim2.fromOffset(8, 112), Parent = card })
-		local button, label = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.new(1, -24, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -8), Parent = card, OnClick = function()
+		local equip, equipLabel = UIKit.Button({ Text = "EQUIP", Colors = UIKit.Colors.Blue, CornerRadius = 4, Size = UDim2.new(1, -28, 0, 58), Position = UDim2.fromOffset(14, 370), ZIndex = 56, Parent = card, OnClick = function()
 			local data = State.Data
-			local owned = cfg.Pass and State.HasPass(cfg.Pass) or (data and data.Trails and data.Trails[key])
-			if owned then
-				ctx.HUD.Result(State.Action("EquipTrail", key))
-			elseif cfg.Pass then
+			if data and data.EquippedTrail == key then
+				ctx.HUD.Result(State.Action("EquipTrail", ""))
+			elseif cfg.Pass and not State.HasPass(cfg.Pass) then
 				ctx.HUD.Result(State.Action("PromptPass", cfg.Pass))
 			else
-				ctx.HUD.Result(State.Action("BuyTrail", key))
+				ctx.HUD.Result(State.Action("EquipTrail", key))
 			end
 		end })
-		cards[key] = { Button = button, Label = label, Cfg = cfg }
+		cards[key] = { Cfg = cfg, Coins = buyCoins, CoinsLabel = coinsLabel, Robux = buyRobux, Equip = equip, EquipLabel = equipLabel }
 	end
 
 	local menu = { Panel = panel }
@@ -11397,19 +11908,24 @@ function TrailsMenu.Build(ctx)
 		end
 		for key, c in pairs(cards) do
 			local owned = c.Cfg.Pass and State.HasPass(c.Cfg.Pass) or (data.Trails and data.Trails[key])
-			if data.EquippedTrail == key then
-				c.Label.Text = "EQUIPPED ✔"
-				UIKit.SetButtonColors(c.Button, UIKit.Colors.Gray)
+			local showEquip = owned or c.Cfg.Pass ~= nil
+			c.Equip.Visible = showEquip
+			c.Coins.Visible = not showEquip
+			if c.Robux then
+				c.Robux.Visible = not showEquip
+			end
+			if data.EquippedTrail == key and owned then
+				c.EquipLabel.Text = "EQUIPPED"
+				UIKit.SetButtonColors(c.Equip, UIKit.Colors.Gray)
 			elseif owned then
-				c.Label.Text = "EQUIP"
-				UIKit.SetButtonColors(c.Button, UIKit.Colors.Blue)
+				c.EquipLabel.Text = "EQUIP"
+				UIKit.SetButtonColors(c.Equip, UIKit.Colors.Blue)
 			elseif c.Cfg.Pass then
-				c.Label.Text = "GET PASS"
-				UIKit.SetButtonColors(c.Button, UIKit.Colors.Yellow)
-			else
-				local have = c.Cfg.Currency == "Coins" and State.Coins or State.Gems
-				c.Label.Text = "BUY"
-				UIKit.SetButtonColors(c.Button, have >= c.Cfg.Cost and UIKit.Colors.Green or UIKit.Colors.Gray)
+				c.EquipLabel.Text = "GET PASS"
+				UIKit.SetButtonColors(c.Equip, PURPLE)
+			end
+			if not showEquip then
+				UIKit.SetButtonColors(c.Coins, State.Coins >= c.Cfg.Cost and GREEN or UIKit.Colors.Gray)
 			end
 		end
 	end
@@ -12389,8 +12905,26 @@ function UIKit.ModelPreview(props)
 	})
 	local template = previewTemplates[props.Id]
 	if template == nil then
-		local ok, built = pcall(ObjectModels.Build, props.Id)
-		template = ok and built or false
+		-- your own 3D model (ReplicatedStorage > ShrinkableTemplates) wins over the built-in one
+		local custom = ReplicatedStorage:FindFirstChild("ShrinkableTemplates")
+		custom = custom and custom:FindFirstChild(props.Id)
+		if custom then
+			local clone = custom:Clone()
+			if clone:IsA("BasePart") then
+				local wrap = Instance.new("Model")
+				clone.Parent = wrap
+				clone = wrap
+			end
+			for _, d in ipairs(clone:GetDescendants()) do
+				if d:IsA("LuaSourceContainer") then
+					d:Destroy()
+				end
+			end
+			template = clone
+		else
+			local ok, built = pcall(ObjectModels.Build, props.Id)
+			template = ok and built or false
+		end
 		previewTemplates[props.Id] = template
 	end
 	if not template then
@@ -12468,10 +13002,14 @@ function UIKit.Panel(props)
 		ZIndex = 50,
 		Parent = holder,
 	})
+	local anim = UIKit.Create("UIScale", { Name = "AnimScale", Scale = 1, Parent = frame })
+	local panel = {}
+	if props.Style == "Header" then
+		return UIKit._HeaderPanel(props, holder, frame, anim, panel)
+	end
 	UIKit.Corner(frame, 26)
 	UIKit.Stroke(frame, 6, UIKit.Outline, true)
 	UIKit.Gradient(frame, { Color3.fromRGB(255, 255, 255), Color3.fromRGB(228, 234, 248) })
-	local anim = UIKit.Create("UIScale", { Name = "AnimScale", Scale = 1, Parent = frame })
 
 	-- title pill overlapping the top-left edge
 	local titleBar = UIKit.Create("Frame", {
@@ -12501,7 +13039,6 @@ function UIKit.Panel(props)
 	UIKit.Icon({ Icon = { Emoji = props.Emoji or "⭐", Image = props.Image }, Size = UDim2.new(1, -16, 1, -16), Position = UDim2.fromOffset(8, 8), ZIndex = 63, Parent = iconCircle })
 
 	-- red X close button (top-right)
-	local panel = {}
 	UIKit.Button({
 		Name = "Close",
 		Text = "X",
@@ -12526,6 +13063,12 @@ function UIKit.Panel(props)
 		Parent = frame,
 	})
 
+	return UIKit._FinishPanel(holder, content, anim, panel)
+end
+
+-- Open/close behaviour shared by both panel styles.
+function UIKit._FinishPanel(holder, content, anim, panel)
+	local frame = holder:FindFirstChild("Panel")
 	local isOpen = false
 	local openEvent = Instance.new("BindableEvent")
 	local closeEvent = Instance.new("BindableEvent")
@@ -12568,6 +13111,89 @@ function UIKit.Panel(props)
 		end
 	end
 	return panel
+end
+
+-- "Shop" style panel: dark studded body + full-width striped header bar + square red X.
+-- (Used by the Trail Shop, Fuse Machine, Sell and Shop menus.)
+UIKit.PanelBody = Color3.fromRGB(56, 58, 80)
+UIKit.PanelCard = Color3.fromRGB(38, 40, 58)
+function UIKit._HeaderPanel(props, holder, frame, anim, panel)
+	frame.BackgroundColor3 = UIKit.PanelBody
+	UIKit.Corner(frame, 10)
+	UIKit.Stroke(frame, 6, UIKit.Outline, true)
+	-- faint stud pattern on the body
+	local dots = UIKit.Create("Frame", { Name = "Studs", BackgroundTransparency = 1, ClipsDescendants = true, Size = UDim2.fromScale(1, 1), ZIndex = 50, Parent = frame })
+	UIKit.Corner(dots, 10)
+	local grid = UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(10, 10), CellPadding = UDim2.fromOffset(22, 22), Parent = dots })
+	grid.StartCorner = Enum.StartCorner.TopLeft
+	for _ = 1, 600 do
+		local d = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.94, ZIndex = 50, Parent = dots })
+		UIKit.Corner(d, UDim.new(1, 0))
+	end
+	local headerH = props.HeaderHeight or 84
+	local header = UIKit.Create("Frame", {
+		Name = "Header",
+		BackgroundColor3 = Color3.new(1, 1, 1),
+		ClipsDescendants = true,
+		Size = UDim2.new(1, 0, 0, headerH),
+		ZIndex = 60,
+		Parent = frame,
+	})
+	UIKit.Corner(header, 10)
+	UIKit.Stroke(header, 5, UIKit.Outline, true)
+	UIKit.Gradient(header, props.Colors or { RGB(235, 120, 255), RGB(160, 40, 230) }, 0)
+	for i = 0, 3 do -- diagonal shine stripes
+		local stripe = UIKit.Create("Frame", {
+			BackgroundColor3 = Color3.new(1, 1, 1),
+			BackgroundTransparency = 0.8,
+			BorderSizePixel = 0,
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0.55 + i * 0.07, 0, 0.5, 0),
+			Size = UDim2.new(0, i % 2 == 0 and 26 or 12, 2.4, 0),
+			Rotation = 35,
+			ZIndex = 60,
+			Parent = header,
+		})
+		stripe.Name = "Stripe"
+	end
+	UIKit.Label({
+		Text = props.Title or "",
+		Size = UDim2.new(0.6, 0, 1, -18),
+		Position = UDim2.fromOffset(28, 9),
+		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 62,
+		StrokeThickness = 4,
+		Parent = header,
+	})
+	UIKit.Button({
+		Name = "Close",
+		Text = "X",
+		Colors = { RGB(240, 50, 50), RGB(200, 20, 30) },
+		Size = UDim2.fromOffset(headerH - 22, headerH - 22),
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(1, -12, 0, headerH / 2),
+		ZIndex = 70,
+		CornerRadius = 4,
+		Parent = frame,
+		OnClick = function()
+			panel.Close()
+		end,
+	})
+	local content = UIKit.Create("Frame", {
+		Name = "Content",
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(16, headerH + 12),
+		Size = UDim2.new(1, -32, 1, -headerH - 26),
+		ZIndex = 51,
+		Parent = frame,
+	})
+	return UIKit._FinishPanel(holder, content, anim, panel)
+end
+
+-- Big chunky label with a thick black outline (the "Steal an Egg" look).
+function UIKit.Title(props)
+	props.StrokeThickness = props.StrokeThickness or 3.5
+	return UIKit.Label(props)
 end
 
 -- Simple confirm dialog. onYes called if confirmed.

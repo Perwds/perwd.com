@@ -57,6 +57,16 @@ MonetizationConfig.Products = {
 	InstantRebirth = { Id = 0, Name = "Instant Rebirth", Emoji = "♻️", Image = "rbxassetid://0", PriceLabel = "R$ 99", Handler = "InstantRebirth" }, -- 🔧 REPLACE Id
 	SpawnGolden = { Id = 0, Name = "Spawn a Golden Object", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "SpawnGolden" }, -- 🔧 REPLACE Id
 
+	-- Trails bought with Robux (Trail Shop purple buttons). Hidden from the Shop list.
+	TrailGreen = { Id = 0, Name = "Green Trail", Emoji = "🟩", PriceLabel = "R$ 19", Handler = "Trail", Trail = "Green", Hidden = true }, -- 🔧 REPLACE Id
+	TrailBlue = { Id = 0, Name = "Blue Trail", Emoji = "🟦", PriceLabel = "R$ 29", Handler = "Trail", Trail = "Blue", Hidden = true }, -- 🔧 REPLACE Id
+	TrailPurple = { Id = 0, Name = "Purple Trail", Emoji = "🟪", PriceLabel = "R$ 49", Handler = "Trail", Trail = "Purple", Hidden = true }, -- 🔧 REPLACE Id
+	TrailGold = { Id = 0, Name = "Gold Trail", Emoji = "🟨", PriceLabel = "R$ 79", Handler = "Trail", Trail = "Gold", Hidden = true }, -- 🔧 REPLACE Id
+	TrailRed = { Id = 0, Name = "Red Trail", Emoji = "🟥", PriceLabel = "R$ 119", Handler = "Trail", Trail = "Red", Hidden = true }, -- 🔧 REPLACE Id
+	TrailGalaxy = { Id = 0, Name = "Galaxy Trail", Emoji = "🌌", PriceLabel = "R$ 199", Handler = "Trail", Trail = "Galaxy", Hidden = true }, -- 🔧 REPLACE Id
+	TrailSecret = { Id = 0, Name = "Secret Trail", Emoji = "🦓", PriceLabel = "R$ 349", Handler = "Trail", Trail = "Secret", Hidden = true }, -- 🔧 REPLACE Id
+	TrailEternal = { Id = 0, Name = "Eternal Trail", Emoji = "♾️", PriceLabel = "R$ 499", Handler = "Trail", Trail = "Eternal", Hidden = true }, -- 🔧 REPLACE Id
+
 	-- Infinite Pack paid tiles (repeatable). Price tier is picked by tile position.
 	PackTier1 = { Id = 0, Name = "Infinite Pack Tile", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 25", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
 	PackTier2 = { Id = 0, Name = "Infinite Pack Tile+", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 59", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
@@ -74,18 +84,35 @@ MonetizationConfig.RaySkins = {
 	Rainbow = { Name = "Rainbow", Colors = { Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 0, 255) }, Rainbow = true, Pass = "RainbowRay" },
 }
 
--- ── Trails (cosmetic, bought at the TRAILS stand) ─────────────────────
--- Currency = "Coins" | "Gems"; Pass = a gamepass key that unlocks it instead.
-MonetizationConfig.TrailOrder = { "Sparkle", "Bubblegum", "Fire", "Toxic", "Ocean", "Galaxy", "Gold", "Rainbow" }
+-- ── Trails (bought at the TRAILS stand) ───────────────────────────────
+-- Every trail makes you run faster (Speed = walk-speed multiplier while equipped).
+-- Cost = price in Coins; Product = a Developer Product key to buy it with Robux instead (optional);
+-- Pass = a gamepass key that unlocks it. Pattern = "Zebra" / "Galaxy" for striped / starry trails.
+MonetizationConfig.TrailOrder = { "Grey", "Green", "Blue", "Purple", "Gold", "Red", "Galaxy", "Secret", "Eternal", "Rainbow" }
 MonetizationConfig.Trails = {
-	Sparkle = { Name = "Sparkle", Colors = { Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 220, 255) }, Currency = "Coins", Cost = 5_000 },
-	Bubblegum = { Name = "Bubblegum", Colors = { Color3.fromRGB(255, 160, 220), Color3.fromRGB(255, 80, 170) }, Currency = "Coins", Cost = 50_000 },
-	Fire = { Name = "Fire", Colors = { Color3.fromRGB(255, 230, 80), Color3.fromRGB(255, 60, 20) }, Currency = "Coins", Cost = 750_000 },
-	Toxic = { Name = "Toxic", Colors = { Color3.fromRGB(200, 255, 80), Color3.fromRGB(40, 200, 60) }, Currency = "Coins", Cost = 25_000_000 },
-	Ocean = { Name = "Ocean", Colors = { Color3.fromRGB(120, 240, 255), Color3.fromRGB(20, 90, 220) }, Currency = "Gems", Cost = 250 },
-	Galaxy = { Name = "Galaxy", Colors = { Color3.fromRGB(200, 120, 255), Color3.fromRGB(30, 10, 90) }, Currency = "Gems", Cost = 750 },
-	Gold = { Name = "Pure Gold", Colors = { Color3.fromRGB(255, 240, 150), Color3.fromRGB(230, 160, 20) }, Currency = "Gems", Cost = 2_000 },
-	Rainbow = { Name = "Rainbow", Rainbow = true, Pass = "RainbowRay" },
+	Grey = { Name = "Grey Trail", Rarity = "Common", Speed = 1.05, Cost = 100, Colors = { Color3.fromRGB(235, 235, 240), Color3.fromRGB(150, 150, 160) } },
+	Green = { Name = "Green Trail", Rarity = "Uncommon", Speed = 1.1, Cost = 5_000, Product = "TrailGreen", Colors = { Color3.fromRGB(120, 255, 90), Color3.fromRGB(30, 190, 40) } },
+	Blue = { Name = "Blue Trail", Rarity = "Rare", Speed = 1.15, Cost = 75_000, Product = "TrailBlue", Colors = { Color3.fromRGB(110, 230, 255), Color3.fromRGB(20, 120, 240) } },
+	Purple = { Name = "Purple Trail", Rarity = "Epic", Speed = 1.2, Cost = 1_000_000, Product = "TrailPurple", Colors = { Color3.fromRGB(215, 140, 255), Color3.fromRGB(130, 40, 230) } },
+	Gold = { Name = "Gold Trail", Rarity = "Legendary", Speed = 1.25, Cost = 50_000_000, Product = "TrailGold", Colors = { Color3.fromRGB(255, 240, 120), Color3.fromRGB(240, 160, 20) } },
+	Red = { Name = "Red Trail", Rarity = "Mythic", Speed = 1.3, Cost = 1_000_000_000, Product = "TrailRed", Colors = { Color3.fromRGB(255, 110, 90), Color3.fromRGB(210, 20, 30) } },
+	Galaxy = { Name = "Galaxy Trail", Rarity = "Cosmic", Speed = 1.4, Cost = 20_000_000_000, Product = "TrailGalaxy", Pattern = "Galaxy", Colors = { Color3.fromRGB(230, 120, 255), Color3.fromRGB(40, 20, 140) } },
+	Secret = { Name = "Secret Trail", Rarity = "Secret", Speed = 1.5, Cost = 500_000_000_000, Product = "TrailSecret", Pattern = "Zebra", Colors = { Color3.fromRGB(255, 255, 255), Color3.fromRGB(20, 20, 25) } },
+	Eternal = { Name = "Eternal Trail", Rarity = "Eternal", Speed = 1.6, Cost = 12_500_000_000_000, Product = "TrailEternal", Colors = { Color3.fromRGB(255, 120, 230), Color3.fromRGB(60, 230, 255) } },
+	Rainbow = { Name = "Rainbow Trail", Rarity = "Gamepass", Speed = 1.3, Rainbow = true, Pass = "RainbowRay", Colors = { Color3.fromRGB(255, 80, 80), Color3.fromRGB(80, 120, 255) } },
+}
+-- card colors per trail rarity (Trail Shop)
+MonetizationConfig.TrailRarityColors = {
+	Common = { Color3.fromRGB(250, 250, 252), Color3.fromRGB(190, 190, 200) },
+	Uncommon = { Color3.fromRGB(110, 255, 60), Color3.fromRGB(40, 190, 30) },
+	Rare = { Color3.fromRGB(80, 200, 255), Color3.fromRGB(20, 110, 230) },
+	Epic = { Color3.fromRGB(200, 110, 255), Color3.fromRGB(110, 30, 210) },
+	Legendary = { Color3.fromRGB(255, 225, 80), Color3.fromRGB(245, 140, 10) },
+	Mythic = { Color3.fromRGB(255, 90, 80), Color3.fromRGB(170, 10, 20) },
+	Cosmic = { Color3.fromRGB(170, 70, 255), Color3.fromRGB(50, 20, 170) },
+	Secret = { Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 150, 160) },
+	Eternal = { Color3.fromRGB(40, 245, 255), Color3.fromRGB(255, 60, 220) },
+	Gamepass = { Color3.fromRGB(255, 120, 120), Color3.fromRGB(120, 120, 255) },
 }
 
 -- ── Gem shop (spend Gems in-game) ─────────────────────────────────────

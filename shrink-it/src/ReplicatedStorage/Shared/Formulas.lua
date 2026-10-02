@@ -13,6 +13,7 @@ local TierConfig = require(Config:WaitForChild("TierConfig"))
 local ObjectConfig = require(Config:WaitForChild("ObjectConfig"))
 local RarityConfig = require(Config:WaitForChild("RarityConfig"))
 local RewardConfig = require(Config:WaitForChild("RewardConfig"))
+local MonetizationConfig = require(Config:WaitForChild("MonetizationConfig"))
 
 local Formulas = {}
 
@@ -70,6 +71,27 @@ function Formulas.SortItems(items)
 	return sorted
 end
 
+-- Walk-speed multiplier of the equipped trail (1 if none / not owned).
+function Formulas.OwnsTrail(data, passes, key)
+	local cfg = MonetizationConfig.Trails[key]
+	if not cfg then
+		return false
+	end
+	if cfg.Pass then
+		return (passes or {})[cfg.Pass] == true
+	end
+	return data.Trails ~= nil and data.Trails[key] == true
+end
+
+function Formulas.TrailSpeed(data, passes)
+	local key = data.EquippedTrail
+	local cfg = key and MonetizationConfig.Trails[key]
+	if cfg and Formulas.OwnsTrail(data, passes, key) then
+		return cfg.Speed or 1
+	end
+	return 1
+end
+
 -- ── Ray stats ────────────────────────────────────────────────────────
 -- passes: set of owned gamepass keys
 function Formulas.RayStats(data, passes)
@@ -100,6 +122,7 @@ function Formulas.RayStats(data, passes)
 	if passes.SpeedBoots then
 		walk += GameConfig.SpeedBootsBonus
 	end
+	walk *= Formulas.TrailSpeed(data, passes)
 	return {
 		WalkSpeed = walk,
 		Carry = multi,
