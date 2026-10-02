@@ -27,6 +27,7 @@ settings:
   
   # Delay before auto-closing the reward GUI (in ticks, 20 = 1 second)
   # Set to -1 to disable auto-close (player must close manually)
+  # Closing the GUI early (e.g. pressing Esc) skips the animation and gives the reward right away
   auto-close-delay: 60
   
   # Enable particle effects during animations
@@ -40,8 +41,8 @@ daily-reward:
   enabled: true
   # Cooldown in hours
   cooldown-hours: 24
-  # What crate tier to give for daily reward
-  reward-tier: COMMON
+  # ID of the crate to give for the daily reward (see /lcadmin list)
+  reward-crate: common
 
 # Lootbox Tiers Configuration
 tiers:

@@ -249,8 +249,12 @@ public class CustomCrateManager {
          return "AQUA";
       } else if (color.equals(Color.LIME)) {
          return "LIME";
+      } else if (color.equals(Color.BLACK)) {
+         return "BLACK";
+      } else if (color.equals(Color.GRAY)) {
+         return "GRAY";
       } else {
-         return color.equals(Color.BLACK) ? "BLACK" : "WHITE";
+         return color.equals(Color.SILVER) ? "SILVER" : "WHITE";
       }
    }
 

@@ -12,9 +12,15 @@ import com.lootcrates.managers.CustomCrateManager;
 import com.lootcrates.managers.DataManager;
 import com.lootcrates.managers.HistoryManager;
 import com.lootcrates.managers.RewardManager;
+import java.util.Map;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LootCrates extends JavaPlugin {
+   private static final long AUTOSAVE_TICKS = 6000L;
    private static LootCrates instance;
    private CustomCrateManager customCrateManager;
    private RewardManager rewardManager;
@@ -39,11 +45,23 @@ public class LootCrates extends JavaPlugin {
       this.getServer().getPluginManager().registerEvents(new CratePlaceListener(this), this);
       this.getServer().getPluginManager().registerEvents(new GUIListener(this), this);
       this.getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+      this.getServer().getPluginManager().registerEvents(this.animationManager, this);
+      this.getServer().getPluginManager().registerEvents(this.hologramManager, this);
+      // Player data used to be written only on shutdown, so a crash lost daily cooldowns and history.
+      this.getServer().getScheduler().runTaskTimer(this, () -> {
+         this.dataManager.saveAll();
+         this.historyManager.saveAll();
+      }, AUTOSAVE_TICKS, AUTOSAVE_TICKS);
       this.getLogger().info("LootCrates has been enabled!");
       this.getLogger().info("Loaded " + this.customCrateManager.getAllCrates().size() + " crate types.");
    }
 
    public void onDisable() {
+      // Finish open crate animations first so nobody loses a reward they already paid a key for.
+      if (this.animationManager != null) {
+         this.animationManager.completeAll();
+      }
+
       if (this.dataManager != null) {
          this.dataManager.saveAll();
       }
@@ -99,6 +117,7 @@ public class LootCrates extends JavaPlugin {
       this.reloadConfig();
       this.customCrateManager.reloadCrates();
       this.rewardManager.reloadRewards();
+      this.hologramManager.refreshAllHolograms();
    }
 
    public String getPrefix() {
@@ -110,7 +129,33 @@ public class LootCrates extends JavaPlugin {
    }
 
    public static String colorize(String text) {
-      return text == null ? "" : text.replace("&", "§");
+      return text == null ? "" : ChatColor.translateAlternateColorCodes('&', text);
+   }
+
+   /**
+    * Builds the "{@code <reward> x<amount>}" text for {@code placeholder} in an already colorized message.
+    * The amount continues in the color and style the message has right before the placeholder.
+    */
+   public static String rewardWithAmount(String message, String placeholder, String rewardName, int amount) {
+      int index = message.indexOf(placeholder);
+      String style = index < 0 ? "" : ChatColor.getLastColors(message.substring(0, index));
+      return colorize(rewardName) + (style.isEmpty() ? "§r" : style) + " x" + amount;
+   }
+
+   /** Gives an item to a player, dropping whatever does not fit at their feet instead of deleting it. */
+   public static boolean giveOrDrop(Player player, ItemStack item) {
+      Location location = player.getLocation();
+      if (player.isDead()) {
+         player.getWorld().dropItemNaturally(location, item);
+         return true;
+      }
+
+      Map<Integer, ItemStack> leftovers = player.getInventory().addItem(item);
+      for (ItemStack leftover : leftovers.values()) {
+         player.getWorld().dropItemNaturally(location, leftover);
+      }
+
+      return !leftovers.isEmpty();
    }
 
    public static String stripColor(String text) {

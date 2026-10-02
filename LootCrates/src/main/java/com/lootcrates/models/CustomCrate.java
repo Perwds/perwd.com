@@ -162,6 +162,34 @@ public class CustomCrate {
       this.particleColor = particleColor;
    }
 
+   /** Stained glass pane matching the crate color, used for GUI borders. */
+   public Material getGlassPane() {
+      Color color = this.particleColor;
+      if (Color.BLUE.equals(color)) {
+         return Material.BLUE_STAINED_GLASS_PANE;
+      } else if (Color.RED.equals(color)) {
+         return Material.RED_STAINED_GLASS_PANE;
+      } else if (Color.GREEN.equals(color) || Color.LIME.equals(color)) {
+         return Material.LIME_STAINED_GLASS_PANE;
+      } else if (Color.PURPLE.equals(color)) {
+         return Material.PURPLE_STAINED_GLASS_PANE;
+      } else if (Color.FUCHSIA.equals(color)) {
+         return Material.PINK_STAINED_GLASS_PANE;
+      } else if (Color.ORANGE.equals(color)) {
+         return Material.ORANGE_STAINED_GLASS_PANE;
+      } else if (Color.YELLOW.equals(color)) {
+         return Material.YELLOW_STAINED_GLASS_PANE;
+      } else if (Color.AQUA.equals(color)) {
+         return Material.CYAN_STAINED_GLASS_PANE;
+      } else if (Color.BLACK.equals(color)) {
+         return Material.BLACK_STAINED_GLASS_PANE;
+      } else if (Color.GRAY.equals(color)) {
+         return Material.GRAY_STAINED_GLASS_PANE;
+      } else {
+         return Color.SILVER.equals(color) ? Material.LIGHT_GRAY_STAINED_GLASS_PANE : Material.WHITE_STAINED_GLASS_PANE;
+      }
+   }
+
    public Sound getOpenSound() {
       return this.openSound;
    }

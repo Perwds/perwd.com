@@ -99,14 +99,11 @@ public class LootCrateAdminCommand implements CommandExecutor, TabCompleter {
                }
 
                ItemStack crateItem = crate.createCrateItem(amount);
-               if (target.getInventory().firstEmpty() == -1) {
-                  target.getWorld().dropItemNaturally(target.getLocation(), crateItem);
+               if (LootCrates.giveOrDrop(target, crateItem)) {
                   sender.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&ePlayer's inventory was full, dropped on ground."));
-               } else {
-                  target.getInventory().addItem(new ItemStack[]{crateItem});
                }
 
-               target.sendMessage(this.plugin.getPrefix() + this.plugin.getMessage("crate-received").replace("%crate%", crate.getDisplayName()));
+               target.sendMessage(this.plugin.getPrefix() + this.plugin.getMessage("crate-received").replace("%crate%", LootCrates.colorize(crate.getDisplayName())));
                sender.sendMessage(
                   this.plugin.getPrefix() + LootCrates.colorize("&aGave " + amount + "x " + crate.getDisplayName() + " &ato " + target.getName())
                );
@@ -142,16 +139,13 @@ public class LootCrateAdminCommand implements CommandExecutor, TabCompleter {
                }
 
                ItemStack keyItem = crate.createKeyItem(amount);
-               if (target.getInventory().firstEmpty() == -1) {
-                  target.getWorld().dropItemNaturally(target.getLocation(), keyItem);
+               if (LootCrates.giveOrDrop(target, keyItem)) {
                   sender.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&ePlayer's inventory was full, dropped on ground."));
-               } else {
-                  target.getInventory().addItem(new ItemStack[]{keyItem});
                }
 
                target.sendMessage(
                   this.plugin.getPrefix()
-                     + this.plugin.getMessage("key-received").replace("%amount%", String.valueOf(amount)).replace("%key%", crate.getKeyName())
+                     + this.plugin.getMessage("key-received").replace("%amount%", String.valueOf(amount)).replace("%key%", LootCrates.colorize(crate.getKeyName()))
                );
                sender.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&aGave " + amount + "x " + crate.getKeyName() + " &ato " + target.getName()));
             }

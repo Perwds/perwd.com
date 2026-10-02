@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,34 +32,7 @@ public class GUIListener implements Listener {
    public void onInventoryClick(InventoryClickEvent event) {
       if (event.getWhoClicked() instanceof Player player) {
          String title = event.getView().getTitle();
-         if (title.contains("Opening...")
-            || title.contains("- Classic")
-            || title.contains("- Slow Reveal")
-            || title.contains("- Fast Spin")
-            || title.contains("- Bounce")
-            || title.contains("- Spiral")
-            || title.contains("- Pulse")
-            || title.contains("- Wave")
-            || title.contains("- Cascade")
-            || title.contains("- Explosion")
-            || title.contains("- Vortex")
-            || title.contains("- Rainbow")
-            || title.contains("- Meteor")
-            || title.contains("- Lightning")
-            || title.contains("- Firework")
-            || title.contains("- Galaxy")
-            || title.contains("- Portal")
-            || title.contains("- Tornado")
-            || title.contains("- Earthquake")
-            || title.contains("- Bubble")
-            || title.contains("- Crystal")
-            || title.contains("- Phoenix")
-            || title.contains("- Dragon")
-            || title.contains("- Mystic")
-            || title.contains("- Neon")
-            || title.contains("- Glitch")) {
-            event.setCancelled(true);
-         } else if (title.contains("Select Crate to Edit")) {
+         if (title.contains("Select Crate to Edit")) {
             event.setCancelled(true);
             this.handleCrateSelect(player, event);
          } else if (title.startsWith(LootCrates.colorize("&6Edit:"))) {
@@ -123,6 +97,7 @@ public class GUIListener implements Listener {
                if (event.isShiftClick()) {
                   this.plugin.getCustomCrateManager().deleteCrate(crateId);
                   this.plugin.getRewardManager().clearRewards(crateId);
+                  this.plugin.getHologramManager().removeHolograms(crateId);
                   player.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&cCrate deleted!"));
                   this.plugin.getCrateEditGUI().openCrateSelectGUI(player);
                } else {
@@ -327,6 +302,12 @@ public class GUIListener implements Listener {
    public void onInventoryClose(InventoryCloseEvent event) {
       if (event.getPlayer() instanceof Player player) {
          String title = event.getView().getTitle();
+         if (title.contains("Set Weight")) {
+            // Confirming already consumed the session; anything else means the edit was abandoned.
+            this.weightEditSessions.remove(player.getUniqueId());
+            this.pendingNewItems.remove(player.getUniqueId());
+         }
+
          if (title.startsWith(LootCrates.colorize("&6Edit:")) && !this.weightEditSessions.containsKey(player.getUniqueId())) {
             this.plugin
                .getServer()
@@ -347,6 +328,14 @@ public class GUIListener implements Listener {
                );
          }
       }
+   }
+
+   @EventHandler
+   public void onPlayerQuit(PlayerQuitEvent event) {
+      UUID uuid = event.getPlayer().getUniqueId();
+      this.weightEditSessions.remove(uuid);
+      this.pendingNewItems.remove(uuid);
+      this.plugin.getCrateEditGUI().clearSessions(uuid);
    }
 
    private boolean isRewardSlot(int slot) {

@@ -65,6 +65,8 @@ public class DataManager {
 
    public void setDailyCooldown(UUID uuid, long timestamp) {
       this.dailyCooldowns.put(uuid, timestamp);
+      // Save right away; otherwise a crash lets everyone claim their daily reward again.
+      this.saveAll();
    }
 
    public boolean canClaimDaily(UUID uuid) {

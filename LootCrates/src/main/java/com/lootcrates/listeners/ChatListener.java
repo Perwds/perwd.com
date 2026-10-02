@@ -31,22 +31,22 @@ public class ChatListener implements Listener {
          } else {
             String color = this.plugin.getCrateEditGUI().getPendingColor(uuid);
             this.plugin.getCrateEditGUI().removePendingCreation(uuid);
-            String crateId = this.generateCrateId(message);
-            if (this.plugin.getCustomCrateManager().getCrate(crateId) != null) {
-               int i = 2;
+            // Chat is async: look up existing crates on the main thread.
+            this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
+               String crateId = this.generateCrateId(message);
+               if (this.plugin.getCustomCrateManager().getCrate(crateId) != null) {
+                  int i = 2;
 
-               while (this.plugin.getCustomCrateManager().getCrate(crateId + i) != null) {
-                  i++;
+                  while (this.plugin.getCustomCrateManager().getCrate(crateId + i) != null) {
+                     i++;
+                  }
+
+                  crateId = crateId + i;
                }
 
-               crateId = crateId + i;
-            }
-
-            String finalCrateId = crateId;
-            this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
-               this.plugin.getCustomCrateManager().createCrate(finalCrateId, message, color);
+               this.plugin.getCustomCrateManager().createCrate(crateId, message, color);
                player.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&aCreated crate: " + message));
-               this.plugin.getCrateEditGUI().openEditGUI(player, finalCrateId);
+               this.plugin.getCrateEditGUI().openEditGUI(player, crateId);
             });
          }
       } else if (this.plugin.getCrateEditGUI().hasRenamingSession(uuid)) {
@@ -95,6 +95,7 @@ public class ChatListener implements Listener {
 
    private String generateCrateId(String displayName) {
       String stripped = LootCrates.stripColor(displayName);
-      return stripped.toLowerCase().replaceAll("[^a-z0-9]", "_").replaceAll("_+", "_").replaceAll("^_|_$", "");
+      String id = stripped.toLowerCase().replaceAll("[^a-z0-9]", "_").replaceAll("_+", "_").replaceAll("^_|_$", "");
+      return id.isEmpty() ? "crate" : id;
    }
 }

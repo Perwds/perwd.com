@@ -121,7 +121,7 @@ public class CrateEditGUI {
          Map<Integer, Integer> indexMap = new HashMap<>();
          this.slotToIndexMap.put(player.getUniqueId(), indexMap);
          Inventory gui = Bukkit.createInventory(null, 54, LootCrates.colorize("&6Edit: " + crate.getDisplayName()));
-         ItemStack glass = this.createGlass(this.getGlassColor(crate));
+         ItemStack glass = this.createGlass(crate.getGlassPane());
 
          for (int i = 0; i < 9; i++) {
             gui.setItem(i, glass);
@@ -537,6 +537,14 @@ public class CrateEditGUI {
       this.slotToIndexMap.remove(uuid);
    }
 
+   /** Forgets everything a player was doing in the editor, so a stale chat prompt doesn't swallow their next message. */
+   public void clearSessions(UUID uuid) {
+      this.removeEditingSession(uuid);
+      this.pendingCrateCreation.remove(uuid);
+      this.renamingSessions.remove(uuid);
+      this.keyRenamingSessions.remove(uuid);
+   }
+
    public Map<Integer, Integer> getSlotToIndexMap(UUID uuid) {
       return this.slotToIndexMap.get(uuid);
    }
@@ -547,26 +555,5 @@ public class CrateEditGUI {
       meta.setDisplayName(" ");
       glass.setItemMeta(meta);
       return glass;
-   }
-
-   private Material getGlassColor(CustomCrate crate) {
-      String colorName = crate.getParticleColor().toString();
-      if (colorName.contains("BLUE")) {
-         return Material.BLUE_STAINED_GLASS_PANE;
-      } else if (colorName.contains("RED")) {
-         return Material.RED_STAINED_GLASS_PANE;
-      } else if (colorName.contains("GREEN") || colorName.contains("LIME")) {
-         return Material.LIME_STAINED_GLASS_PANE;
-      } else if (colorName.contains("PURPLE") || colorName.contains("FUCHSIA")) {
-         return Material.PURPLE_STAINED_GLASS_PANE;
-      } else if (colorName.contains("ORANGE")) {
-         return Material.ORANGE_STAINED_GLASS_PANE;
-      } else if (colorName.contains("YELLOW")) {
-         return Material.YELLOW_STAINED_GLASS_PANE;
-      } else if (colorName.contains("AQUA") || colorName.contains("CYAN")) {
-         return Material.CYAN_STAINED_GLASS_PANE;
-      } else {
-         return colorName.contains("PINK") ? Material.PINK_STAINED_GLASS_PANE : Material.WHITE_STAINED_GLASS_PANE;
-      }
    }
 }

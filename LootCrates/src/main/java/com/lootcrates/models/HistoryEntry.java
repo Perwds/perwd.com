@@ -46,15 +46,18 @@ public class HistoryEntry {
    }
 
    public static HistoryEntry deserialize(String data) {
-      String[] parts = data.split(";");
-      if (parts.length != 4) {
+      // The reward name may itself contain ';', so split off the first two fields and the last one.
+      int first = data.indexOf(';');
+      int second = first < 0 ? -1 : data.indexOf(';', first + 1);
+      int last = data.lastIndexOf(';');
+      if (second < 0 || last <= second) {
          return null;
       } else {
          try {
-            LocalDateTime timestamp = LocalDateTime.parse(parts[0]);
-            String crateId = parts[1];
-            String rewardName = parts[2];
-            int amount = Integer.parseInt(parts[3]);
+            LocalDateTime timestamp = LocalDateTime.parse(data.substring(0, first));
+            String crateId = data.substring(first + 1, second);
+            String rewardName = data.substring(second + 1, last);
+            int amount = Integer.parseInt(data.substring(last + 1));
             return new HistoryEntry(timestamp, crateId, rewardName, amount);
          } catch (Exception var6) {
             return null;

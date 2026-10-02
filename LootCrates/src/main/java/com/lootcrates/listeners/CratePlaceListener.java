@@ -21,9 +21,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,43 +37,9 @@ public class CratePlaceListener implements Listener {
       this.plugin = plugin;
    }
 
-   @EventHandler
-   public void onInventoryClose(InventoryCloseEvent event) {
-      if (event.getPlayer() instanceof Player player) {
-         String title = event.getView().getTitle();
-         if (title.contains("- Classic")
-            || title.contains("- Slow Reveal")
-            || title.contains("- Fast Spin")
-            || title.contains("- Bounce")
-            || title.contains("- Spiral")
-            || title.contains("- Pulse")
-            || title.contains("- Wave")
-            || title.contains("- Cascade")
-            || title.contains("- Explosion")
-            || title.contains("- Vortex")
-            || title.contains("- Rainbow")
-            || title.contains("- Meteor")
-            || title.contains("- Lightning")
-            || title.contains("- Firework")
-            || title.contains("- Galaxy")
-            || title.contains("- Portal")
-            || title.contains("- Tornado")
-            || title.contains("- Earthquake")
-            || title.contains("- Bubble")
-            || title.contains("- Crystal")
-            || title.contains("- Phoenix")
-            || title.contains("- Dragon")
-            || title.contains("- Mystic")
-            || title.contains("- Neon")
-            || title.contains("- Glitch")
-            || title.contains("Opening...")) {
-            Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.openingCrate.remove(player.getUniqueId()), 5L);
-         }
-      }
-   }
-
    @EventHandler(
-      priority = EventPriority.HIGH
+      priority = EventPriority.HIGH,
+      ignoreCancelled = true
    )
    public void onBlockPlace(BlockPlaceEvent event) {
       Player player = event.getPlayer();
@@ -89,6 +57,10 @@ public class CratePlaceListener implements Listener {
             } else {
                Location loc = placedBlock.getLocation();
                Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+                  if (placedBlock.getType() != crate.getCrateMaterial()) {
+                     return;
+                  }
+
                   if (placedBlock.getBlockData() instanceof Chest chestData) {
                      chestData.setType(Type.SINGLE);
                      placedBlock.setBlockData(chestData);
@@ -116,7 +88,8 @@ public class CratePlaceListener implements Listener {
    }
 
    @EventHandler(
-      priority = EventPriority.HIGH
+      priority = EventPriority.HIGH,
+      ignoreCancelled = true
    )
    public void onBlockBreak(BlockBreakEvent event) {
       Location loc = event.getBlock().getLocation();
@@ -128,7 +101,9 @@ public class CratePlaceListener implements Listener {
          } else if (player.getGameMode() == GameMode.CREATIVE && !player.isSneaking()) {
             event.setCancelled(true);
             String crateId = this.plugin.getHologramManager().getCrateIdAt(loc);
-            if (crateId != null) {
+            if (!player.hasPermission("lootcrates.admin.edit")) {
+               player.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&eSneak + break to remove this crate."));
+            } else if (crateId != null) {
                this.plugin.getCrateEditGUI().openEditGUI(player, crateId);
             }
          } else if (!player.isSneaking()) {
@@ -166,7 +141,7 @@ public class CratePlaceListener implements Listener {
                      }
 
                      if (keyItem == null) {
-                        String message = this.plugin.getMessage("no-key").replace("%key%", crate.getKeyName());
+                        String message = this.plugin.getMessage("no-key").replace("%key%", LootCrates.colorize(crate.getKeyName()));
                         player.sendMessage(this.plugin.getPrefix() + message);
                      } else if (!player.hasPermission("lootcrates.use")) {
                         player.sendMessage(this.plugin.getPrefix() + this.plugin.getMessage("no-permission"));
@@ -193,16 +168,16 @@ public class CratePlaceListener implements Listener {
                                     reward,
                                     wonItem -> {
                                        this.openingCrate.remove(player.getUniqueId());
-                                       if (player.getInventory().firstEmpty() == -1) {
-                                          player.getWorld().dropItemNaturally(player.getLocation(), wonItem);
+                                       if (LootCrates.giveOrDrop(player, wonItem)) {
                                           player.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&eInventory full! Dropped on ground."));
-                                       } else {
-                                          player.getInventory().addItem(new ItemStack[]{wonItem});
                                        }
 
                                        String rewardName = reward.getDisplayName();
-                                       String rewardDisplay = rewardName + " &rx" + wonItem.getAmount();
-                                       player.sendMessage(this.plugin.getPrefix() + this.plugin.getMessage("reward-won").replace("%reward%", rewardDisplay));
+                                       String wonMessage = this.plugin.getMessage("reward-won");
+                                       player.sendMessage(
+                                          this.plugin.getPrefix()
+                                             + wonMessage.replace("%reward%", LootCrates.rewardWithAmount(wonMessage, "%reward%", rewardName, wonItem.getAmount()))
+                                       );
                                        this.plugin.getHistoryManager().addEntry(player.getUniqueId(), crateId, rewardName, wonItem.getAmount());
                                        int broadcastThreshold = this.plugin.getConfig().getInt("settings.broadcast-rarity-threshold", 5);
                                        if (this.plugin.getConfig().getBoolean("settings.broadcast-legendary", true)
@@ -211,11 +186,10 @@ public class CratePlaceListener implements Listener {
                                                 || crateId.toLowerCase().contains("legendary")
                                                 || crateId.toLowerCase().contains("mythic")
                                           )) {
-                                          String broadcast = this.plugin
-                                             .getMessage("legendary-broadcast")
+                                          String broadcast = this.plugin.getMessage("legendary-broadcast");
+                                          broadcast = broadcast.replace("%reward%", LootCrates.rewardWithAmount(broadcast, "%reward%", rewardName, wonItem.getAmount()))
                                              .replace("%player%", player.getName())
-                                             .replace("%reward%", rewardDisplay)
-                                             .replace("%crate%", crate.getDisplayName());
+                                             .replace("%crate%", LootCrates.colorize(crate.getDisplayName()));
 
                                           for (Player online : Bukkit.getOnlinePlayers()) {
                                              online.sendMessage(this.plugin.getPrefix() + broadcast);
@@ -231,5 +205,25 @@ public class CratePlaceListener implements Listener {
             }
          }
       }
+   }
+
+   @EventHandler
+   public void onPlayerQuit(PlayerQuitEvent event) {
+      this.openingCrate.remove(event.getPlayer().getUniqueId());
+   }
+
+   // Explosions used to destroy crate blocks while leaving the hologram and the registered crate behind.
+   @EventHandler(
+      ignoreCancelled = true
+   )
+   public void onEntityExplode(EntityExplodeEvent event) {
+      event.blockList().removeIf(block -> this.plugin.getHologramManager().isCrateLocation(block.getLocation()));
+   }
+
+   @EventHandler(
+      ignoreCancelled = true
+   )
+   public void onBlockExplode(BlockExplodeEvent event) {
+      event.blockList().removeIf(block -> this.plugin.getHologramManager().isCrateLocation(block.getLocation()));
    }
 }

@@ -72,7 +72,8 @@ public class LootCrateCommand implements CommandExecutor, TabCompleter {
          String time = this.plugin.getDataManager().getRemainingCooldownFormatted(player.getUniqueId());
          player.sendMessage(this.plugin.getPrefix() + this.plugin.getMessage("daily-cooldown").replace("%time%", time));
       } else {
-         String crateId = this.plugin.getConfig().getString("daily-reward.reward-crate", "common");
+         // config.yml shipped with "reward-tier", but only "reward-crate" was ever read.
+         String crateId = this.plugin.getConfig().getString("daily-reward.reward-crate", this.plugin.getConfig().getString("daily-reward.reward-tier", "common"));
          CustomCrate crate = this.plugin.getCustomCrateManager().getCrate(crateId);
          if (crate == null && !this.plugin.getCustomCrateManager().getAllCrates().isEmpty()) {
             crate = this.plugin.getCustomCrateManager().getAllCrates().iterator().next();
@@ -86,14 +87,19 @@ public class LootCrateCommand implements CommandExecutor, TabCompleter {
             if (player.getInventory().firstEmpty() == -1) {
                player.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&cYour inventory is full!"));
             } else {
-               player.getInventory().addItem(new ItemStack[]{crateItem});
-               player.getInventory().addItem(new ItemStack[]{keyItem});
+               // Two items but only one free slot used to delete the key; drop whatever doesn't fit instead.
+               boolean dropped = LootCrates.giveOrDrop(player, crateItem);
+               dropped |= LootCrates.giveOrDrop(player, keyItem);
                this.plugin.getDataManager().setDailyCooldown(player.getUniqueId(), System.currentTimeMillis());
                player.sendMessage(this.plugin.getPrefix() + this.plugin.getMessage("daily-claimed"));
-               player.sendMessage(this.plugin.getPrefix() + this.plugin.getMessage("crate-received").replace("%crate%", crate.getDisplayName()));
+               player.sendMessage(this.plugin.getPrefix() + this.plugin.getMessage("crate-received").replace("%crate%", LootCrates.colorize(crate.getDisplayName())));
                player.sendMessage(
-                  this.plugin.getPrefix() + this.plugin.getMessage("key-received").replace("%amount%", "1").replace("%key%", crate.getKeyName())
+                  this.plugin.getPrefix()
+                     + this.plugin.getMessage("key-received").replace("%amount%", "1").replace("%key%", LootCrates.colorize(crate.getKeyName()))
                );
+               if (dropped) {
+                  player.sendMessage(this.plugin.getPrefix() + LootCrates.colorize("&eInventory full! Dropped on ground."));
+               }
             }
          }
       }
@@ -129,12 +135,11 @@ public class LootCrateCommand implements CommandExecutor, TabCompleter {
                HistoryEntry entry = history.get(i);
                CustomCrate crate = this.plugin.getCustomCrateManager().getCrate(entry.getCrateId());
                String crateName = crate != null ? crate.getDisplayName() : entry.getCrateId();
-               String message = this.plugin
-                  .getMessage("history-entry")
+               String message = this.plugin.getMessage("history-entry");
+               message = message.replace("%reward%", LootCrates.rewardWithAmount(message, "%reward%", entry.getRewardName(), entry.getAmount()))
                   .replace("%date%", entry.getFormattedDate())
-                  .replace("%tier%", crateName)
-                  .replace("%reward%", entry.getRewardName() + " x" + entry.getAmount());
-               player.sendMessage(LootCrates.colorize(message));
+                  .replace("%tier%", LootCrates.colorize(crateName));
+               player.sendMessage(message);
             }
          }
       }

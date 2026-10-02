@@ -3,112 +3,157 @@ package com.lootcrates.animation;
 import com.lootcrates.LootCrates;
 import com.lootcrates.managers.RewardManager;
 import com.lootcrates.models.CustomCrate;
+import com.lootcrates.util.ParticleUtil;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
-public class CrateAnimationManager {
+public class CrateAnimationManager implements Listener {
    private final LootCrates plugin;
    private final Random random = new Random();
+   private final Map<UUID, CrateAnimationManager.Session> sessions = new HashMap<>();
 
    public CrateAnimationManager(LootCrates plugin) {
       this.plugin = plugin;
    }
 
    public void playAnimation(Player player, CustomCrate crate, AnimationType type, RewardManager.Reward finalReward, Consumer<ItemStack> onComplete) {
+      CrateAnimationManager.Session previous = this.sessions.get(player.getUniqueId());
+      if (previous != null) {
+         this.finish(previous);
+      }
+
+      CrateAnimationManager.Session session = new CrateAnimationManager.Session(player, finalReward.getItem(), onComplete);
+      if (!this.plugin.getConfig().getBoolean("settings.animation-enabled", true)) {
+         this.complete(session);
+         return;
+      }
+
+      this.sessions.put(player.getUniqueId(), session);
+
+      try {
+         this.startAnimation(player, crate, type, finalReward);
+      } catch (RuntimeException var9) {
+         this.plugin.getLogger().log(Level.WARNING, "Crate animation " + type + " failed, giving the reward directly", var9);
+         this.finish(session);
+         return;
+      }
+
+      // Another plugin can stop the GUI from opening; give the reward instead of leaving the player with nothing.
+      if (player.getOpenInventory().getTopInventory() != session.inventory) {
+         this.complete(session);
+      }
+   }
+
+   private void startAnimation(Player player, CustomCrate crate, AnimationType type, RewardManager.Reward finalReward) {
       switch (type) {
          case CLASSIC:
-            this.playClassicAnimation(player, crate, finalReward, onComplete);
+            this.playClassicAnimation(player, crate, finalReward);
             break;
          case SLOW_REVEAL:
-            this.playSlowRevealAnimation(player, crate, finalReward, onComplete);
+            this.playSlowRevealAnimation(player, crate, finalReward);
             break;
          case FAST_SPIN:
-            this.playFastSpinAnimation(player, crate, finalReward, onComplete);
+            this.playFastSpinAnimation(player, crate, finalReward);
             break;
          case BOUNCE:
-            this.playBounceAnimation(player, crate, finalReward, onComplete);
+            this.playBounceAnimation(player, crate, finalReward);
             break;
          case SPIRAL:
-            this.playSpiralAnimation(player, crate, finalReward, onComplete);
+            this.playSpiralAnimation(player, crate, finalReward);
             break;
          case PULSE:
-            this.playPulseAnimation(player, crate, finalReward, onComplete);
+            this.playPulseAnimation(player, crate, finalReward);
             break;
          case WAVE:
-            this.playWaveAnimation(player, crate, finalReward, onComplete);
+            this.playWaveAnimation(player, crate, finalReward);
             break;
          case CASCADE:
-            this.playCascadeAnimation(player, crate, finalReward, onComplete);
+            this.playCascadeAnimation(player, crate, finalReward);
             break;
          case EXPLOSION:
-            this.playExplosionAnimation(player, crate, finalReward, onComplete);
+            this.playExplosionAnimation(player, crate, finalReward);
             break;
          case VORTEX:
-            this.playVortexAnimation(player, crate, finalReward, onComplete);
+            this.playVortexAnimation(player, crate, finalReward);
             break;
          case RAINBOW:
-            this.playRainbowAnimation(player, crate, finalReward, onComplete);
+            this.playRainbowAnimation(player, crate, finalReward);
             break;
          case METEOR:
-            this.playMeteorAnimation(player, crate, finalReward, onComplete);
+            this.playMeteorAnimation(player, crate, finalReward);
             break;
          case LIGHTNING:
-            this.playLightningAnimation(player, crate, finalReward, onComplete);
+            this.playLightningAnimation(player, crate, finalReward);
             break;
          case FIREWORK:
-            this.playFireworkAnimation(player, crate, finalReward, onComplete);
+            this.playFireworkAnimation(player, crate, finalReward);
             break;
          case GALAXY:
-            this.playGalaxyAnimation(player, crate, finalReward, onComplete);
+            this.playGalaxyAnimation(player, crate, finalReward);
             break;
          case PORTAL:
-            this.playPortalAnimation(player, crate, finalReward, onComplete);
+            this.playPortalAnimation(player, crate, finalReward);
             break;
          case TORNADO:
-            this.playTornadoAnimation(player, crate, finalReward, onComplete);
+            this.playTornadoAnimation(player, crate, finalReward);
             break;
          case EARTHQUAKE:
-            this.playEarthquakeAnimation(player, crate, finalReward, onComplete);
+            this.playEarthquakeAnimation(player, crate, finalReward);
             break;
          case BUBBLE:
-            this.playBubbleAnimation(player, crate, finalReward, onComplete);
+            this.playBubbleAnimation(player, crate, finalReward);
             break;
          case CRYSTAL:
-            this.playCrystalAnimation(player, crate, finalReward, onComplete);
+            this.playCrystalAnimation(player, crate, finalReward);
             break;
          case PHOENIX:
-            this.playPhoenixAnimation(player, crate, finalReward, onComplete);
+            this.playPhoenixAnimation(player, crate, finalReward);
             break;
          case DRAGON:
-            this.playDragonAnimation(player, crate, finalReward, onComplete);
+            this.playDragonAnimation(player, crate, finalReward);
             break;
          case MYSTIC:
-            this.playMysticAnimation(player, crate, finalReward, onComplete);
+            this.playMysticAnimation(player, crate, finalReward);
             break;
          case NEON:
-            this.playNeonAnimation(player, crate, finalReward, onComplete);
+            this.playNeonAnimation(player, crate, finalReward);
             break;
          case GLITCH:
-            this.playGlitchAnimation(player, crate, finalReward, onComplete);
+            this.playGlitchAnimation(player, crate, finalReward);
             break;
          default:
-            this.playClassicAnimation(player, crate, finalReward, onComplete);
+            this.playClassicAnimation(player, crate, finalReward);
       }
    }
 
    private double getSpeedMultiplier() {
-      return this.plugin.getConfig().getDouble("settings.animation-speed", 1.0);
+      // Zero or a negative value would turn every task period into "never" and freeze the animation.
+      return Math.max(0.1, this.plugin.getConfig().getDouble("settings.animation-speed", 1.0));
    }
 
    private float getSoundVolume() {
@@ -145,36 +190,12 @@ public class CrateAnimationManager {
       return glass;
    }
 
-   private Material getGlassColor(CustomCrate crate) {
-      String colorName = crate.getParticleColor().toString();
-      if (colorName.contains("BLUE")) {
-         return Material.BLUE_STAINED_GLASS_PANE;
-      } else if (colorName.contains("RED")) {
-         return Material.RED_STAINED_GLASS_PANE;
-      } else if (colorName.contains("GREEN") || colorName.contains("LIME")) {
-         return Material.LIME_STAINED_GLASS_PANE;
-      } else if (colorName.contains("PURPLE") || colorName.contains("FUCHSIA")) {
-         return Material.PURPLE_STAINED_GLASS_PANE;
-      } else if (colorName.contains("ORANGE")) {
-         return Material.ORANGE_STAINED_GLASS_PANE;
-      } else if (colorName.contains("YELLOW")) {
-         return Material.YELLOW_STAINED_GLASS_PANE;
-      } else if (colorName.contains("AQUA") || colorName.contains("CYAN")) {
-         return Material.CYAN_STAINED_GLASS_PANE;
-      } else {
-         return colorName.contains("PINK") ? Material.PINK_STAINED_GLASS_PANE : Material.WHITE_STAINED_GLASS_PANE;
-      }
-   }
-
-   private void finishAnimation(
-      final Player player, final Inventory gui, final CustomCrate crate, RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete
-   ) {
+   private void finishAnimation(final Player player, final Inventory gui, final CustomCrate crate, RewardManager.Reward finalReward) {
       for (int i = 10; i <= 16; i++) {
          gui.setItem(i, null);
       }
 
-      final ItemStack rewardItem = finalReward.getItem();
-      gui.setItem(13, rewardItem);
+      gui.setItem(13, finalReward.getItem());
       player.playSound(player.getLocation(), crate.getWinSound(), this.getSoundVolume(), 1.0F);
       (new BukkitRunnable() {
             int flashes = 0;
@@ -182,15 +203,11 @@ public class CrateAnimationManager {
             public void run() {
                if (this.flashes >= 6) {
                   this.cancel();
-                  int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                  Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                     player.closeInventory();
-                     onComplete.accept(rewardItem);
-                  }, closeDelay);
+                  CrateAnimationManager.this.scheduleAutoClose(gui);
                } else {
                   ItemStack flash = this.flashes % 2 == 0
                      ? CrateAnimationManager.this.createGlass(Material.YELLOW_STAINED_GLASS_PANE)
-                     : CrateAnimationManager.this.createGlass(CrateAnimationManager.this.getGlassColor(crate));
+                     : CrateAnimationManager.this.createGlass(crate.getGlassPane());
 
                   for (int i = 0; i < 27; i++) {
                      if (i < 9 || i >= 18 || i == 9 || i == 17) {
@@ -205,8 +222,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, 3L);
    }
 
-   private void playClassicAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Classic"));
+   private void playClassicAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Classic"));
       this.fillBorders(gui, crate);
       this.addSelector(gui);
       player.openInventory(gui);
@@ -222,7 +239,7 @@ public class CrateAnimationManager {
                   this.cancel();
                } else if (this.ticks >= this.maxTicks) {
                   this.cancel();
-                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward, onComplete);
+                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward);
                } else {
                   int delay = CrateAnimationManager.this.getDelay(this.ticks, this.maxTicks);
                   if (this.ticks % delay == 0) {
@@ -242,10 +259,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, 1L);
    }
 
-   private void playSlowRevealAnimation(
-      final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete
-   ) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Slow Reveal"));
+   private void playSlowRevealAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Slow Reveal"));
       ItemStack mystery = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
       ItemMeta meta = mystery.getItemMeta();
       meta.setDisplayName(LootCrates.colorize("&5&l???"));
@@ -268,11 +283,7 @@ public class CrateAnimationManager {
                   this.cancel();
                   gui.setItem(13, finalReward.getItem());
                   player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                  int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                  Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                     player.closeInventory();
-                     onComplete.accept(finalReward.getItem());
-                  }, closeDelay);
+                  CrateAnimationManager.this.scheduleAutoClose(gui);
                } else {
                   int slot = this.revealOrder[this.stage];
                   if (slot == 13) {
@@ -280,7 +291,7 @@ public class CrateAnimationManager {
                   } else if (slot >= 9 && slot < 18 && slot != 9 && slot != 17) {
                      gui.setItem(slot, null);
                   } else {
-                     gui.setItem(slot, CrateAnimationManager.this.createGlass(CrateAnimationManager.this.getGlassColor(crate)));
+                     gui.setItem(slot, CrateAnimationManager.this.createGlass(crate.getGlassPane()));
                   }
 
                   player.playSound(
@@ -293,10 +304,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(3.0 / speed));
    }
 
-   private void playFastSpinAnimation(
-      final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete
-   ) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Fast Spin"));
+   private void playFastSpinAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Fast Spin"));
       this.fillBorders(gui, crate);
       this.addSelector(gui);
       player.openInventory(gui);
@@ -312,7 +321,7 @@ public class CrateAnimationManager {
                this.cancel();
             } else if (this.ticks >= this.maxTicks) {
                this.cancel();
-               CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward, onComplete);
+               CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward);
             } else {
                CrateAnimationManager.this.shiftItems(gui, displayRewards, this.currentSlot++);
                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, CrateAnimationManager.this.getSoundVolume() * 0.3F, 2.0F);
@@ -322,8 +331,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, 1L);
    }
 
-   private void playBounceAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Bounce"));
+   private void playBounceAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Bounce"));
       this.fillBorders(gui, crate);
       player.openInventory(gui);
       double speed = this.getSpeedMultiplier();
@@ -344,11 +353,7 @@ public class CrateAnimationManager {
                      this.cancel();
                      gui.setItem(13, finalReward.getItem());
                      player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                     int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                     Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                        player.closeInventory();
-                        onComplete.accept(finalReward.getItem());
-                     }, closeDelay);
+                     CrateAnimationManager.this.scheduleAutoClose(gui);
                   } else {
                      gui.setItem(bounceSlots[this.currentPos], finalReward.getItem());
                      player.playSound(
@@ -379,8 +384,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(3.0 / speed));
    }
 
-   private void playSpiralAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Spiral"));
+   private void playSpiralAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Spiral"));
       ItemStack mystery = this.createGlass(Material.GRAY_STAINED_GLASS_PANE);
 
       for (int i = 0; i < 27; i++) {
@@ -400,14 +405,10 @@ public class CrateAnimationManager {
                   this.cancel();
                   gui.setItem(13, finalReward.getItem());
                   player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                  int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                  Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                     player.closeInventory();
-                     onComplete.accept(finalReward.getItem());
-                  }, closeDelay);
+                  CrateAnimationManager.this.scheduleAutoClose(gui);
                } else {
                   int slot = spiralOrder[this.index];
-                  gui.setItem(slot, CrateAnimationManager.this.createGlass(CrateAnimationManager.this.getGlassColor(crate)));
+                  gui.setItem(slot, CrateAnimationManager.this.createGlass(crate.getGlassPane()));
                   player.playSound(
                      player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, CrateAnimationManager.this.getSoundVolume() * 0.3F, 1.0F + this.index * 0.03F
                   );
@@ -418,8 +419,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(2.0 / speed));
    }
 
-   private void playPulseAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Pulse"));
+   private void playPulseAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Pulse"));
       this.fillBorders(gui, crate);
       player.openInventory(gui);
       double speed = this.getSpeedMultiplier();
@@ -437,11 +438,7 @@ public class CrateAnimationManager {
                   this.cancel();
                   gui.setItem(13, finalReward.getItem());
                   player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                  int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                  Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                     player.closeInventory();
-                     onComplete.accept(finalReward.getItem());
-                  }, closeDelay);
+                  CrateAnimationManager.this.scheduleAutoClose(gui);
                } else {
                   ItemStack glass = CrateAnimationManager.this.createGlass(pulseColors[this.colorIndex % pulseColors.length]);
 
@@ -466,8 +463,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(4.0 / speed));
    }
 
-   private void playWaveAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Wave"));
+   private void playWaveAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Wave"));
       this.fillBorders(gui, crate);
       player.openInventory(gui);
       final List<RewardManager.Reward> displayRewards = this.generateDisplayRewards(crate.getId(), finalReward);
@@ -481,7 +478,7 @@ public class CrateAnimationManager {
             if (player.isOnline() && player.getOpenInventory().getTopInventory() == gui) {
                if (this.wave >= 40) {
                   this.cancel();
-                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward, onComplete);
+                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward);
                } else {
                   for (int i = 0; i < 7; i++) {
                      int slot = 10 + i;
@@ -505,8 +502,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(2.0 / speed));
    }
 
-   private void playCascadeAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Cascade"));
+   private void playCascadeAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Cascade"));
       this.fillBorders(gui, crate);
       player.openInventory(gui);
       final List<RewardManager.Reward> displayRewards = this.generateDisplayRewards(crate.getId(), finalReward);
@@ -520,7 +517,7 @@ public class CrateAnimationManager {
             if (player.isOnline() && player.getOpenInventory().getTopInventory() == gui) {
                if (this.tick >= 50) {
                   this.cancel();
-                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward, onComplete);
+                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward);
                } else {
                   for (int i = 0; i < 7; i++) {
                      int slot = 10 + i;
@@ -541,10 +538,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(2.0 / speed));
    }
 
-   private void playExplosionAnimation(
-      final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete
-   ) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Explosion"));
+   private void playExplosionAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Explosion"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.BLACK_STAINED_GLASS_PANE));
@@ -591,7 +586,7 @@ public class CrateAnimationManager {
                         gui.setItem(i, CrateAnimationManager.this.createGlass(Material.YELLOW_STAINED_GLASS_PANE));
                      }
 
-                     player.spawnParticle(Particle.EXPLOSION, player.getLocation().add(0.0, 1.0, 0.0), 1);
+                     CrateAnimationManager.this.spawnParticle(player, Particle.EXPLOSION, player.getLocation().add(0.0, 1.0, 0.0), 1, 0.0, 0.0, 0.0, 1.0);
                      break;
                   case 4:
                      for (int i = 0; i < 27; i++) {
@@ -610,11 +605,7 @@ public class CrateAnimationManager {
                      break;
                   default:
                      this.cancel();
-                     int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                     Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                        player.closeInventory();
-                        onComplete.accept(finalReward.getItem());
-                     }, closeDelay);
+                     CrateAnimationManager.this.scheduleAutoClose(gui);
                      return;
                }
 
@@ -626,8 +617,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(5.0 / speed));
    }
 
-   private void playVortexAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Vortex"));
+   private void playVortexAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Vortex"));
       this.fillBorders(gui, crate);
       player.openInventory(gui);
       final List<RewardManager.Reward> displayRewards = this.generateDisplayRewards(crate.getId(), finalReward);
@@ -642,7 +633,7 @@ public class CrateAnimationManager {
                this.cancel();
             } else if (this.tick >= 60) {
                this.cancel();
-               CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward, onComplete);
+               CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward);
             } else {
                for (int i = 0; i < 7; i++) {
                   int slot = 10 + i;
@@ -659,8 +650,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(1.0 / speed));
    }
 
-   private void playRainbowAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Rainbow"));
+   private void playRainbowAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Rainbow"));
       player.openInventory(gui);
       final Material[] rainbow = new Material[]{
          Material.RED_STAINED_GLASS_PANE,
@@ -683,7 +674,7 @@ public class CrateAnimationManager {
                   this.cancel();
                } else if (this.tick >= 60) {
                   this.cancel();
-                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward, onComplete);
+                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward);
                } else {
                   for (int i = 0; i < 9; i++) {
                      gui.setItem(i, CrateAnimationManager.this.createGlass(rainbow[(i + this.colorOffset) % rainbow.length]));
@@ -709,8 +700,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(2.0 / speed));
    }
 
-   private void playMeteorAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Meteor"));
+   private void playMeteorAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Meteor"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.BLACK_STAINED_GLASS_PANE));
@@ -730,11 +721,7 @@ public class CrateAnimationManager {
                this.cancel();
                gui.setItem(13, finalReward.getItem());
                player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-               int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-               Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                  player.closeInventory();
-                  onComplete.accept(finalReward.getItem());
-               }, closeDelay);
+               CrateAnimationManager.this.scheduleAutoClose(gui);
             } else {
                int slot = this.meteorSlots[this.meteor];
                gui.setItem(slot, CrateAnimationManager.this.createGlass(Material.ORANGE_STAINED_GLASS_PANE));
@@ -757,10 +744,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(5.0 / speed));
    }
 
-   private void playLightningAnimation(
-      final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete
-   ) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Lightning"));
+   private void playLightningAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Lightning"));
       this.fillBorders(gui, crate);
       player.openInventory(gui);
       double speed = this.getSpeedMultiplier();
@@ -779,11 +764,7 @@ public class CrateAnimationManager {
 
                   gui.setItem(13, finalReward.getItem());
                   player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                  int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                  Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                     player.closeInventory();
-                     onComplete.accept(finalReward.getItem());
-                  }, closeDelay);
+                  CrateAnimationManager.this.scheduleAutoClose(gui);
                } else {
                   boolean isFlash = this.strikes % 2 == 0;
 
@@ -808,10 +789,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(4.0 / speed));
    }
 
-   private void playFireworkAnimation(
-      final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete
-   ) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Firework"));
+   private void playFireworkAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Firework"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.BLACK_STAINED_GLASS_PANE));
@@ -845,7 +824,7 @@ public class CrateAnimationManager {
                      }
 
                      player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, CrateAnimationManager.this.getSoundVolume() * 0.5F, 1.0F);
-                     player.spawnParticle(Particle.FIREWORK, player.getLocation().add(0.0, 1.0, 0.0), 5, 0.5, 0.5, 0.5, 0.1);
+                     CrateAnimationManager.this.spawnParticle(player, Particle.FIREWORK, player.getLocation().add(0.0, 1.0, 0.0), 5, 0.5, 0.5, 0.5, 0.1);
                      this.stage++;
                   } else {
                      this.cancel();
@@ -857,11 +836,7 @@ public class CrateAnimationManager {
                      CrateAnimationManager.this.fillBorders(gui, crate);
                      gui.setItem(13, finalReward.getItem());
                      player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                     int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                     Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                        player.closeInventory();
-                        onComplete.accept(finalReward.getItem());
-                     }, closeDelay);
+                     CrateAnimationManager.this.scheduleAutoClose(gui);
                   }
                } else {
                   this.cancel();
@@ -871,8 +846,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(5.0 / speed));
    }
 
-   private void playGalaxyAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Galaxy"));
+   private void playGalaxyAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Galaxy"));
       player.openInventory(gui);
       final Material[] stars = new Material[]{
          Material.WHITE_STAINED_GLASS_PANE,
@@ -916,11 +891,7 @@ public class CrateAnimationManager {
 
                   gui.setItem(13, finalReward.getItem());
                   player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                  int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                  Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                     player.closeInventory();
-                     onComplete.accept(finalReward.getItem());
-                  }, closeDelay);
+                  CrateAnimationManager.this.scheduleAutoClose(gui);
                }
             } else {
                this.cancel();
@@ -929,8 +900,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(2.0 / speed));
    }
 
-   private void playPortalAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Portal"));
+   private void playPortalAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Portal"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.BLACK_STAINED_GLASS_PANE));
@@ -949,26 +920,22 @@ public class CrateAnimationManager {
                this.cancel();
                gui.setItem(13, finalReward.getItem());
                player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-               int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-               Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                  player.closeInventory();
-                  onComplete.accept(finalReward.getItem());
-               }, closeDelay);
+               CrateAnimationManager.this.scheduleAutoClose(gui);
             } else {
                for (int slot : this.rings[this.ring]) {
                   gui.setItem(slot, CrateAnimationManager.this.createGlass(Material.PURPLE_STAINED_GLASS_PANE));
                }
 
                player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_AMBIENT, CrateAnimationManager.this.getSoundVolume() * 0.3F, 1.0F + this.ring * 0.2F);
-               player.spawnParticle(Particle.PORTAL, player.getLocation().add(0.0, 1.0, 0.0), 20, 0.5, 0.5, 0.5, 0.5);
+               CrateAnimationManager.this.spawnParticle(player, Particle.PORTAL, player.getLocation().add(0.0, 1.0, 0.0), 20, 0.5, 0.5, 0.5, 0.5);
                this.ring++;
             }
          }
       }).runTaskTimer(this.plugin, 0L, (long)(8.0 / speed));
    }
 
-   private void playTornadoAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Tornado"));
+   private void playTornadoAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Tornado"));
       this.fillBorders(gui, crate);
       player.openInventory(gui);
       final List<RewardManager.Reward> displayRewards = this.generateDisplayRewards(crate.getId(), finalReward);
@@ -982,7 +949,7 @@ public class CrateAnimationManager {
             if (player.isOnline() && player.getOpenInventory().getTopInventory() == gui) {
                if (this.tick >= 60) {
                   this.cancel();
-                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward, onComplete);
+                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward);
                } else {
                   int center = 3 + (int)(Math.sin(this.spin) * 3.0);
 
@@ -1008,10 +975,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(1.0 / speed));
    }
 
-   private void playEarthquakeAnimation(
-      final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete
-   ) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Earthquake"));
+   private void playEarthquakeAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Earthquake"));
       this.fillBorders(gui, crate);
       player.openInventory(gui);
       final List<RewardManager.Reward> displayRewards = this.generateDisplayRewards(crate.getId(), finalReward);
@@ -1025,7 +990,7 @@ public class CrateAnimationManager {
                   this.cancel();
                } else if (this.tick >= 50) {
                   this.cancel();
-                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward, onComplete);
+                  CrateAnimationManager.this.finishAnimation(player, gui, crate, finalReward);
                } else {
                   for (int i = 0; i < 7; i++) {
                      int slot = 10 + i;
@@ -1040,7 +1005,7 @@ public class CrateAnimationManager {
                   if (this.tick % 3 == 0) {
                      Material shakeMat = CrateAnimationManager.this.random.nextBoolean()
                         ? Material.BROWN_STAINED_GLASS_PANE
-                        : CrateAnimationManager.this.getGlassColor(crate);
+                        : crate.getGlassPane();
 
                      for (int ix = 0; ix < 9; ix++) {
                         gui.setItem(ix, CrateAnimationManager.this.createGlass(shakeMat));
@@ -1056,8 +1021,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(1.0 / speed));
    }
 
-   private void playBubbleAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Bubble"));
+   private void playBubbleAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Bubble"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.LIGHT_BLUE_STAINED_GLASS_PANE));
@@ -1083,11 +1048,7 @@ public class CrateAnimationManager {
 
                gui.setItem(13, finalReward.getItem());
                player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-               int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-               Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                  player.closeInventory();
-                  onComplete.accept(finalReward.getItem());
-               }, closeDelay);
+               CrateAnimationManager.this.scheduleAutoClose(gui);
             } else {
                if (this.tick % 2 == 0 && this.bubbles.size() < 27) {
                   int newBubble;
@@ -1106,8 +1067,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(3.0 / speed));
    }
 
-   private void playCrystalAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Crystal"));
+   private void playCrystalAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Crystal"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.BLACK_STAINED_GLASS_PANE));
@@ -1149,11 +1110,7 @@ public class CrateAnimationManager {
 
                      gui.setItem(13, finalReward.getItem());
                      player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                     int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                     Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                        player.closeInventory();
-                        onComplete.accept(finalReward.getItem());
-                     }, closeDelay);
+                     CrateAnimationManager.this.scheduleAutoClose(gui);
                   }
                } else {
                   this.cancel();
@@ -1163,8 +1120,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(4.0 / speed));
    }
 
-   private void playPhoenixAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Phoenix"));
+   private void playPhoenixAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Phoenix"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.BLACK_STAINED_GLASS_PANE));
@@ -1187,12 +1144,8 @@ public class CrateAnimationManager {
 
                   gui.setItem(13, finalReward.getItem());
                   player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                  player.spawnParticle(Particle.FLAME, player.getLocation().add(0.0, 1.0, 0.0), 30, 0.5, 0.5, 0.5, 0.1);
-                  int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                  Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                     player.closeInventory();
-                     onComplete.accept(finalReward.getItem());
-                  }, closeDelay);
+                  CrateAnimationManager.this.spawnParticle(player, Particle.FLAME, player.getLocation().add(0.0, 1.0, 0.0), 30, 0.5, 0.5, 0.5, 0.1);
+                  CrateAnimationManager.this.scheduleAutoClose(gui);
                } else {
                   Material[] flames = new Material[]{Material.RED_STAINED_GLASS_PANE, Material.ORANGE_STAINED_GLASS_PANE, Material.YELLOW_STAINED_GLASS_PANE};
 
@@ -1209,7 +1162,7 @@ public class CrateAnimationManager {
                   }
 
                   player.playSound(player.getLocation(), Sound.BLOCK_FIRE_AMBIENT, CrateAnimationManager.this.getSoundVolume() * 0.5F, 1.0F);
-                  player.spawnParticle(Particle.FLAME, player.getLocation().add(0.0, 0.5, 0.0), 5, 0.3, 0.1, 0.3, 0.02);
+                  CrateAnimationManager.this.spawnParticle(player, Particle.FLAME, player.getLocation().add(0.0, 0.5, 0.0), 5, 0.3, 0.1, 0.3, 0.02);
                   this.flame++;
                }
             } else {
@@ -1219,8 +1172,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(3.0 / speed));
    }
 
-   private void playDragonAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Dragon"));
+   private void playDragonAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Dragon"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.PURPLE_STAINED_GLASS_PANE));
@@ -1245,11 +1198,7 @@ public class CrateAnimationManager {
 
                   gui.setItem(13, finalReward.getItem());
                   player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                  int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                  Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                     player.closeInventory();
-                     onComplete.accept(finalReward.getItem());
-                  }, closeDelay);
+                  CrateAnimationManager.this.scheduleAutoClose(gui);
                } else {
                   Material breathColor = this.breath % 3 == 0
                      ? Material.PURPLE_STAINED_GLASS_PANE
@@ -1261,7 +1210,7 @@ public class CrateAnimationManager {
                   }
 
                   player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, CrateAnimationManager.this.getSoundVolume() * 0.2F, 1.5F);
-                  player.spawnParticle(Particle.DRAGON_BREATH, player.getLocation().add(0.0, 1.0, 0.0), 10, 0.5, 0.3, 0.5, 0.02);
+                  CrateAnimationManager.this.spawnParticle(player, Particle.DRAGON_BREATH, player.getLocation().add(0.0, 1.0, 0.0), 10, 0.5, 0.3, 0.5, 0.02);
                   this.breath++;
                }
             }
@@ -1269,8 +1218,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(4.0 / speed));
    }
 
-   private void playMysticAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Mystic"));
+   private void playMysticAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Mystic"));
       player.openInventory(gui);
       double speed = this.getSpeedMultiplier();
       final Material[] mysticColors = new Material[]{
@@ -1294,11 +1243,7 @@ public class CrateAnimationManager {
 
                gui.setItem(13, finalReward.getItem());
                player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-               int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-               Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                  player.closeInventory();
-                  onComplete.accept(finalReward.getItem());
-               }, closeDelay);
+               CrateAnimationManager.this.scheduleAutoClose(gui);
             } else {
                for (int i = 0; i < 27; i++) {
                   double wave = Math.sin(this.phase + i * 0.3);
@@ -1314,8 +1259,8 @@ public class CrateAnimationManager {
       }).runTaskTimer(this.plugin, 0L, (long)(2.0 / speed));
    }
 
-   private void playNeonAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Neon"));
+   private void playNeonAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Neon"));
 
       for (int i = 0; i < 27; i++) {
          gui.setItem(i, this.createGlass(Material.BLACK_STAINED_GLASS_PANE));
@@ -1360,11 +1305,7 @@ public class CrateAnimationManager {
 
                      gui.setItem(13, finalReward.getItem());
                      player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                     int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                     Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                        player.closeInventory();
-                        onComplete.accept(finalReward.getItem());
-                     }, closeDelay);
+                     CrateAnimationManager.this.scheduleAutoClose(gui);
                   }
                } else {
                   this.cancel();
@@ -1374,8 +1315,8 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(2.0 / speed));
    }
 
-   private void playGlitchAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward, final Consumer<ItemStack> onComplete) {
-      final Inventory gui = Bukkit.createInventory(null, 27, LootCrates.colorize(crate.getDisplayName() + " &8- Glitch"));
+   private void playGlitchAnimation(final Player player, final CustomCrate crate, final RewardManager.Reward finalReward) {
+      final Inventory gui = this.createGui(player, LootCrates.colorize(crate.getDisplayName() + " &8- Glitch"));
       player.openInventory(gui);
       final List<RewardManager.Reward> displayRewards = this.generateDisplayRewards(crate.getId(), finalReward);
       double speed = this.getSpeedMultiplier();
@@ -1398,11 +1339,7 @@ public class CrateAnimationManager {
 
                      gui.setItem(13, finalReward.getItem());
                      player.playSound(player.getLocation(), crate.getWinSound(), CrateAnimationManager.this.getSoundVolume(), 1.0F);
-                     int closeDelay = CrateAnimationManager.this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
-                     Bukkit.getScheduler().runTaskLater(CrateAnimationManager.this.plugin, () -> {
-                        player.closeInventory();
-                        onComplete.accept(finalReward.getItem());
-                     }, closeDelay);
+                     CrateAnimationManager.this.scheduleAutoClose(gui);
                   } else {
                      for (int i = 0; i < 27; i++) {
                         if (CrateAnimationManager.this.random.nextFloat() < 0.3F) {
@@ -1435,8 +1372,102 @@ public class CrateAnimationManager {
          .runTaskTimer(this.plugin, 0L, (long)(2.0 / speed));
    }
 
+   private Inventory createGui(Player player, String title) {
+      CrateAnimationManager.Session session = this.sessions.get(player.getUniqueId());
+      Inventory gui = Bukkit.createInventory(session, 27, title);
+      if (session != null) {
+         session.inventory = gui;
+      }
+
+      return gui;
+   }
+
+   private CrateAnimationManager.Session getSession(Inventory inventory) {
+      for (CrateAnimationManager.Session session : this.sessions.values()) {
+         if (session.inventory == inventory) {
+            return session;
+         }
+      }
+
+      return null;
+   }
+
+   private void scheduleAutoClose(Inventory gui) {
+      CrateAnimationManager.Session session = this.getSession(gui);
+      if (session != null && session.closeTask == null) {
+         int closeDelay = this.plugin.getConfig().getInt("settings.auto-close-delay", 20);
+         // -1 leaves the GUI open; the reward is handed out when the player closes it.
+         if (closeDelay >= 0) {
+            session.closeTask = Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.finish(session), closeDelay);
+         }
+      }
+   }
+
+   /** Closes the animation GUI if it is still open and hands out the reward. */
+   private void finish(CrateAnimationManager.Session session) {
+      if (session.player.isOnline() && session.player.getOpenInventory().getTopInventory() == session.inventory) {
+         session.player.closeInventory();
+      }
+
+      this.complete(session);
+   }
+
+   /** Hands out the reward exactly once, however the animation ended. */
+   private void complete(CrateAnimationManager.Session session) {
+      if (session != null && !session.completed) {
+         session.completed = true;
+         if (session.closeTask != null) {
+            session.closeTask.cancel();
+         }
+
+         this.sessions.remove(session.player.getUniqueId(), session);
+         session.onComplete.accept(session.reward.clone());
+      }
+   }
+
+   public void completeAll() {
+      for (CrateAnimationManager.Session session : new ArrayList<>(this.sessions.values())) {
+         this.finish(session);
+      }
+   }
+
+   @EventHandler
+   public void onInventoryClose(InventoryCloseEvent event) {
+      // Closing the GUI early (e.g. pressing Esc) skips the rest of the animation and gives the reward right away.
+      this.complete(this.getSession(event.getInventory()));
+   }
+
+   @EventHandler
+   public void onPlayerQuit(PlayerQuitEvent event) {
+      this.complete(this.sessions.get(event.getPlayer().getUniqueId()));
+   }
+
+   @EventHandler(
+      priority = EventPriority.LOWEST
+   )
+   public void onInventoryClick(InventoryClickEvent event) {
+      if (this.getSession(event.getView().getTopInventory()) != null) {
+         event.setCancelled(true);
+      }
+   }
+
+   @EventHandler(
+      priority = EventPriority.LOWEST
+   )
+   public void onInventoryDrag(InventoryDragEvent event) {
+      if (this.getSession(event.getView().getTopInventory()) != null) {
+         event.setCancelled(true);
+      }
+   }
+
+   private void spawnParticle(Player player, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+      if (this.plugin.getConfig().getBoolean("settings.particles-enabled", true)) {
+         ParticleUtil.spawn(player, particle, location, count, offsetX, offsetY, offsetZ, extra);
+      }
+   }
+
    private void fillBorders(Inventory gui, CustomCrate crate) {
-      ItemStack borderGlass = this.createGlass(this.getGlassColor(crate));
+      ItemStack borderGlass = this.createGlass(crate.getGlassPane());
 
       for (int i = 0; i < 27; i++) {
          if (i < 9 || i >= 18 || i == 9 || i == 17) {
@@ -1470,6 +1501,25 @@ public class CrateAnimationManager {
          return 3;
       } else {
          return progress < 0.95 ? 5 : 8;
+      }
+   }
+
+   private static final class Session implements InventoryHolder {
+      private final Player player;
+      private final ItemStack reward;
+      private final Consumer<ItemStack> onComplete;
+      private Inventory inventory;
+      private BukkitTask closeTask;
+      private boolean completed;
+
+      private Session(Player player, ItemStack reward, Consumer<ItemStack> onComplete) {
+         this.player = player;
+         this.reward = reward;
+         this.onComplete = onComplete;
+      }
+
+      public Inventory getInventory() {
+         return this.inventory;
       }
    }
 }
