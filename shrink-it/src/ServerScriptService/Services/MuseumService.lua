@@ -87,6 +87,22 @@ local function pedestalCFrame(plot, i)
 	return floor.CFrame * CFrame.new(x, floor.Size.Y / 2, z)
 end
 
+-- Where slot i sits: your own spot if you placed it freely (slot.P = { x, z, yaw } on the plot floor),
+-- otherwise the default grid.
+local function slotCFrame(plot, i, slot)
+	local p = slot and slot.P
+	if p and type(p[1]) == "number" and type(p[2]) == "number" then
+		local floor = plot.Floor
+		return floor.CFrame * CFrame.new(p[1], floor.Size.Y / 2, p[2]) * CFrame.Angles(0, p[3] or 0, 0)
+	end
+	return pedestalCFrame(plot, i)
+end
+
+-- Free placement area on the plot floor (local coordinates): everything except the museum building at the back.
+local PLACE_MARGIN = 2
+local TEMPLE_DEPTH = 25
+local MIN_SPACING = 3.6
+
 -- ── pedestals ────────────────────────────────────────────────────────
 local onPrompt -- forward declaration
 
@@ -208,12 +224,13 @@ local function setDisplay(pedestal, slot, data)
 end
 
 local function slotKey(slot)
+	local pos = slot and slot.P and ("@" .. slot.P[1] .. "," .. slot.P[2]) or ""
 	if not slot then
 		return "E"
 	elseif slot.Box then
-		return "B|" .. tostring(slot.Box.R or slot.Box.Id) .. "|" .. tostring(slot.Box.V) .. "|" .. slot.Box.ReadyAt
+		return "B|" .. tostring(slot.Box.R or slot.Box.Id) .. "|" .. tostring(slot.Box.V) .. "|" .. slot.Box.ReadyAt .. pos
 	elseif slot.U then
-		return "I|" .. slot.U
+		return "I|" .. slot.U .. pos
 	end
 	return "E"
 end
@@ -299,6 +316,7 @@ local function refreshVisuals(player)
 		local rec = mySlots[i]
 		if rec.Key ~= key then
 			rec.Key = key
+			rec.Model:PivotTo(slotCFrame(plot, i, slot))
 			setDisplay(rec.Model, slot, data)
 		end
 	end
@@ -383,7 +401,7 @@ local function bestPocketItem(player, data)
 	return best
 end
 
-function onPrompt(player, i)
+function onPrompt(player, i, placeAt)
 	local data = Svc.Data.Get(player)
 	local s = Svc.Session.Get(player)
 	if not data or not s or not Svc.Session.Throttle(player, "pedestal", 0.25) then
@@ -401,10 +419,10 @@ function onPrompt(player, i)
 		if entry and entry.Kind == "Box" then
 			local box = entry.Box
 			local seconds = Formulas.BoxOpenSeconds(box)
-			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Id = box.Id, ReadyAt = os.time() + seconds } }
+			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Id = box.Id, ReadyAt = os.time() + seconds }, P = placeAt }
 			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = seconds })
 		elseif entry and entry.Kind == "Item" and findItem(data, entry.U) and not slottedSet(data)[entry.U] then
-			data.Slots[key] = { U = entry.U }
+			data.Slots[key] = { U = entry.U, P = placeAt }
 			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = 0 })
 		else
 			local item = bestPocketItem(player, data)
@@ -412,7 +430,7 @@ function onPrompt(player, i)
 				Svc.Net.Notify(player, "🎒 Shrink a box in the zones and bring it here!", "info")
 				return
 			end
-			data.Slots[key] = { U = item.U }
+			data.Slots[key] = { U = item.U, P = placeAt }
 		end
 		MuseumService.Recompute(player)
 	elseif slot.Box then
@@ -735,10 +753,11 @@ function MuseumService.Start()
 		table.sort(candidates, function(a, b)
 			return Formulas.ItemBaseIncome(a) > Formulas.ItemBaseIncome(b)
 		end)
-		local freeSlots = {}
+		local freeSlots, keepPos = {}, {}
 		for i = 1, s.PedestalCount or 0 do
 			local slot = data.Slots[tostring(i)]
 			if not (slot and slot.Box) then
+				keepPos[i] = slot and slot.P -- objects you placed yourself stay where they were
 				data.Slots[tostring(i)] = nil
 				table.insert(freeSlots, i)
 			end
@@ -749,15 +768,16 @@ function MuseumService.Start()
 			if not item then
 				break
 			end
-			data.Slots[tostring(index)] = { U = item.U }
+			data.Slots[tostring(index)] = { U = item.U, P = keepPos[index] }
 			placed += 1
 		end
 		MuseumService.Recompute(player)
 		return { ok = true, msg = placed > 0 and ("⭐ Equipped your best " .. placed .. " object" .. (placed == 1 and "" or "s") .. "!") or "Nothing to equip yet!" }
 	end)
 
-	-- PLACE ON THE GROUND (F key / Place button): puts what you carry on the free spot nearest to you
-	Svc.Net.Handle("PlaceGround", function(player)
+	-- PLACE ANYWHERE (F key / Place button): puts what you carry exactly where you aim (or in front of you),
+	-- anywhere on your plot's floor except inside the museum building.
+	Svc.Net.Handle("PlaceGround", function(player, target)
 		local plot = plotOf[player]
 		local s = Svc.Session.Get(player)
 		local data = Svc.Data.Get(player)
@@ -771,19 +791,40 @@ function MuseumService.Start()
 		if not Svc.Carry.IsCarrying(player) then
 			return { ok = false, msg = "🎒 You're not carrying anything." }
 		end
-		local best, bestDist
+		local floor = plot.Floor
+		-- where: the aimed point (if it's close and on your floor) or 4 studs in front of you
+		local world = root.Position + root.CFrame.LookVector * 4
+		if typeof(target) == "Vector3" and (target - root.Position).Magnitude <= 30 then
+			world = target
+		end
+		local rel = floor.CFrame:PointToObjectSpace(world)
+		local hw, hd = floor.Size.X / 2 - PLACE_MARGIN, floor.Size.Z / 2 - PLACE_MARGIN
+		local x = math.clamp(rel.X, -hw, hw)
+		local z = math.clamp(rel.Z, -floor.Size.Z / 2 + TEMPLE_DEPTH, hd)
+		-- not on top of something else
 		for i = 1, s.PedestalCount or 0 do
-			if not data.Slots[tostring(i)] then
-				local d = (pedestalCFrame(plot, i).Position - root.Position) * Vector3.new(1, 0, 1)
-				if not bestDist or d.Magnitude < bestDist then
-					best, bestDist = i, d.Magnitude
+			local other = data.Slots[tostring(i)]
+			if other then
+				local o = floor.CFrame:PointToObjectSpace(slotCFrame(plot, i, other).Position)
+				if (Vector3.new(o.X - x, 0, o.Z - z)).Magnitude < MIN_SPACING then
+					return { ok = false, msg = "Too close to another object — move a little!" }
 				end
 			end
 		end
-		if not best then
+		local free
+		for i = 1, s.PedestalCount or 0 do
+			if not data.Slots[tostring(i)] then
+				free = i
+				break
+			end
+		end
+		if not free then
 			return { ok = false, msg = "🏛️ Your plot is full! Upgrade Museum Size or sell something." }
 		end
-		onPrompt(player, best)
+		-- face the player who put it down
+		local toPlayer = floor.CFrame:PointToObjectSpace(root.Position) - Vector3.new(x, 0, z)
+		local yaw = math.atan2(-toPlayer.X, -toPlayer.Z)
+		onPrompt(player, free, { math.floor(x * 10) / 10, math.floor(z * 10) / 10, math.floor(yaw * 100) / 100 })
 		return { ok = true }
 	end)
 

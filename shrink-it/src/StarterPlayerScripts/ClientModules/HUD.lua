@@ -488,7 +488,7 @@ local function refreshTimers()
 		carryFrame.Visible = true
 		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
 		local what = carry.TopKind == "Item" and "it" or "your box"
-		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and ("Press F to put " .. what .. " on the ground") or "Bring it to YOUR plot ⬇")
+		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and ("Press F to put " .. what .. " down anywhere") or "Bring it to YOUR plot ⬇")
 		if (carry.Rage or 0) > 0 then
 			goal = string.rep("😡", carry.Rage) .. " " .. goal
 		end
@@ -615,10 +615,46 @@ function HUD.Init()
 	end })
 	speedLabel = UIKit.Label({ Name = "Speed", Text = "", TextXAlignment = Enum.TextXAlignment.Right, StrokeThickness = 3, Size = UDim2.fromOffset(190, 40), LayoutOrder = 3, Parent = right })
 
-	-- Place button (in your plot while carrying) + F key: puts it on the ground at the nearest free spot
-	local function placeOnGround()
-		HUD.Result(State.Action("PlaceGround"))
+	-- Place button (in your plot while carrying) + F key: puts it down ANYWHERE in your plot.
+	-- Keyboard/mouse: where your mouse points (a green ring shows the spot). Touch/button: right in front of you.
+	local ghost = Instance.new("Part")
+	ghost.Name = "PlaceGhost"
+	ghost.Shape = Enum.PartType.Cylinder
+	ghost.Size = Vector3.new(0.2, 4.2, 4.2)
+	ghost.Anchored, ghost.CanCollide, ghost.CanQuery, ghost.CanTouch = true, false, false, false
+	ghost.Material = Enum.Material.Neon
+	ghost.Color = Color3.fromRGB(90, 255, 120)
+	ghost.Transparency = 0.5
+	local function aimPoint()
+		if not UserInputService.MouseEnabled then
+			return nil
+		end
+		local camera = workspace.CurrentCamera
+		local m = UserInputService:GetMouseLocation()
+		local ray = camera:ViewportPointToRay(m.X, m.Y)
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Exclude
+		params.FilterDescendantsInstances = { player.Character, ghost }
+		local hit = workspace:Raycast(ray.Origin, ray.Direction * 200, params)
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if hit and root and (hit.Position - root.Position).Magnitude <= 30 then
+			return hit.Position
+		end
+		return nil
 	end
+	local function placeOnGround(useMouse)
+		HUD.Result(State.Action("PlaceGround", useMouse and aimPoint() or nil))
+	end
+	game:GetService("RunService").RenderStepped:Connect(function()
+		local show = placeButton and placeButton.Visible
+		local p = show and aimPoint()
+		if p then
+			ghost.CFrame = CFrame.new(p + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
+			ghost.Parent = workspace
+		else
+			ghost.Parent = nil
+		end
+	end)
 	placeButton = UIKit.Button({
 		Name = "Place",
 		Text = "📦 Place (F)",
@@ -627,7 +663,9 @@ function HUD.Init()
 		AnchorPoint = Vector2.new(0.5, 1),
 		Position = UDim2.new(0.5, 0, 1, -100),
 		Parent = screen,
-		OnClick = placeOnGround,
+		OnClick = function()
+			placeOnGround(false)
+		end,
 	})
 	placeButton.Visible = false
 	UIKit.AutoScale(placeButton)
@@ -635,7 +673,7 @@ function HUD.Init()
 		if not processed and input.KeyCode == Enum.KeyCode.F then
 			local carry = State.Data and State.Data.Carry
 			if carry and carry.Count > 0 and carry.AtPlot then
-				placeOnGround()
+				placeOnGround(true)
 			end
 		end
 	end)

@@ -314,7 +314,7 @@ return EventConfig
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v10.5 (map saved in file)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v10.6 (place anywhere)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 11 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
@@ -8709,6 +8709,22 @@ local function pedestalCFrame(plot, i)
 	return floor.CFrame * CFrame.new(x, floor.Size.Y / 2, z)
 end
 
+-- Where slot i sits: your own spot if you placed it freely (slot.P = { x, z, yaw } on the plot floor),
+-- otherwise the default grid.
+local function slotCFrame(plot, i, slot)
+	local p = slot and slot.P
+	if p and type(p[1]) == "number" and type(p[2]) == "number" then
+		local floor = plot.Floor
+		return floor.CFrame * CFrame.new(p[1], floor.Size.Y / 2, p[2]) * CFrame.Angles(0, p[3] or 0, 0)
+	end
+	return pedestalCFrame(plot, i)
+end
+
+-- Free placement area on the plot floor (local coordinates): everything except the museum building at the back.
+local PLACE_MARGIN = 2
+local TEMPLE_DEPTH = 25
+local MIN_SPACING = 3.6
+
 -- ── pedestals ────────────────────────────────────────────────────────
 local onPrompt -- forward declaration
 
@@ -8830,12 +8846,13 @@ local function setDisplay(pedestal, slot, data)
 end
 
 local function slotKey(slot)
+	local pos = slot and slot.P and ("@" .. slot.P[1] .. "," .. slot.P[2]) or ""
 	if not slot then
 		return "E"
 	elseif slot.Box then
-		return "B|" .. tostring(slot.Box.R or slot.Box.Id) .. "|" .. tostring(slot.Box.V) .. "|" .. slot.Box.ReadyAt
+		return "B|" .. tostring(slot.Box.R or slot.Box.Id) .. "|" .. tostring(slot.Box.V) .. "|" .. slot.Box.ReadyAt .. pos
 	elseif slot.U then
-		return "I|" .. slot.U
+		return "I|" .. slot.U .. pos
 	end
 	return "E"
 end
@@ -8921,6 +8938,7 @@ local function refreshVisuals(player)
 		local rec = mySlots[i]
 		if rec.Key ~= key then
 			rec.Key = key
+			rec.Model:PivotTo(slotCFrame(plot, i, slot))
 			setDisplay(rec.Model, slot, data)
 		end
 	end
@@ -9005,7 +9023,7 @@ local function bestPocketItem(player, data)
 	return best
 end
 
-function onPrompt(player, i)
+function onPrompt(player, i, placeAt)
 	local data = Svc.Data.Get(player)
 	local s = Svc.Session.Get(player)
 	if not data or not s or not Svc.Session.Throttle(player, "pedestal", 0.25) then
@@ -9023,10 +9041,10 @@ function onPrompt(player, i)
 		if entry and entry.Kind == "Box" then
 			local box = entry.Box
 			local seconds = Formulas.BoxOpenSeconds(box)
-			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Id = box.Id, ReadyAt = os.time() + seconds } }
+			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Id = box.Id, ReadyAt = os.time() + seconds }, P = placeAt }
 			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = seconds })
 		elseif entry and entry.Kind == "Item" and findItem(data, entry.U) and not slottedSet(data)[entry.U] then
-			data.Slots[key] = { U = entry.U }
+			data.Slots[key] = { U = entry.U, P = placeAt }
 			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = 0 })
 		else
 			local item = bestPocketItem(player, data)
@@ -9034,7 +9052,7 @@ function onPrompt(player, i)
 				Svc.Net.Notify(player, "🎒 Shrink a box in the zones and bring it here!", "info")
 				return
 			end
-			data.Slots[key] = { U = item.U }
+			data.Slots[key] = { U = item.U, P = placeAt }
 		end
 		MuseumService.Recompute(player)
 	elseif slot.Box then
@@ -9357,10 +9375,11 @@ function MuseumService.Start()
 		table.sort(candidates, function(a, b)
 			return Formulas.ItemBaseIncome(a) > Formulas.ItemBaseIncome(b)
 		end)
-		local freeSlots = {}
+		local freeSlots, keepPos = {}, {}
 		for i = 1, s.PedestalCount or 0 do
 			local slot = data.Slots[tostring(i)]
 			if not (slot and slot.Box) then
+				keepPos[i] = slot and slot.P -- objects you placed yourself stay where they were
 				data.Slots[tostring(i)] = nil
 				table.insert(freeSlots, i)
 			end
@@ -9371,15 +9390,16 @@ function MuseumService.Start()
 			if not item then
 				break
 			end
-			data.Slots[tostring(index)] = { U = item.U }
+			data.Slots[tostring(index)] = { U = item.U, P = keepPos[index] }
 			placed += 1
 		end
 		MuseumService.Recompute(player)
 		return { ok = true, msg = placed > 0 and ("⭐ Equipped your best " .. placed .. " object" .. (placed == 1 and "" or "s") .. "!") or "Nothing to equip yet!" }
 	end)
 
-	-- PLACE ON THE GROUND (F key / Place button): puts what you carry on the free spot nearest to you
-	Svc.Net.Handle("PlaceGround", function(player)
+	-- PLACE ANYWHERE (F key / Place button): puts what you carry exactly where you aim (or in front of you),
+	-- anywhere on your plot's floor except inside the museum building.
+	Svc.Net.Handle("PlaceGround", function(player, target)
 		local plot = plotOf[player]
 		local s = Svc.Session.Get(player)
 		local data = Svc.Data.Get(player)
@@ -9393,19 +9413,40 @@ function MuseumService.Start()
 		if not Svc.Carry.IsCarrying(player) then
 			return { ok = false, msg = "🎒 You're not carrying anything." }
 		end
-		local best, bestDist
+		local floor = plot.Floor
+		-- where: the aimed point (if it's close and on your floor) or 4 studs in front of you
+		local world = root.Position + root.CFrame.LookVector * 4
+		if typeof(target) == "Vector3" and (target - root.Position).Magnitude <= 30 then
+			world = target
+		end
+		local rel = floor.CFrame:PointToObjectSpace(world)
+		local hw, hd = floor.Size.X / 2 - PLACE_MARGIN, floor.Size.Z / 2 - PLACE_MARGIN
+		local x = math.clamp(rel.X, -hw, hw)
+		local z = math.clamp(rel.Z, -floor.Size.Z / 2 + TEMPLE_DEPTH, hd)
+		-- not on top of something else
 		for i = 1, s.PedestalCount or 0 do
-			if not data.Slots[tostring(i)] then
-				local d = (pedestalCFrame(plot, i).Position - root.Position) * Vector3.new(1, 0, 1)
-				if not bestDist or d.Magnitude < bestDist then
-					best, bestDist = i, d.Magnitude
+			local other = data.Slots[tostring(i)]
+			if other then
+				local o = floor.CFrame:PointToObjectSpace(slotCFrame(plot, i, other).Position)
+				if (Vector3.new(o.X - x, 0, o.Z - z)).Magnitude < MIN_SPACING then
+					return { ok = false, msg = "Too close to another object — move a little!" }
 				end
 			end
 		end
-		if not best then
+		local free
+		for i = 1, s.PedestalCount or 0 do
+			if not data.Slots[tostring(i)] then
+				free = i
+				break
+			end
+		end
+		if not free then
 			return { ok = false, msg = "🏛️ Your plot is full! Upgrade Museum Size or sell something." }
 		end
-		onPrompt(player, best)
+		-- face the player who put it down
+		local toPlayer = floor.CFrame:PointToObjectSpace(root.Position) - Vector3.new(x, 0, z)
+		local yaw = math.atan2(-toPlayer.X, -toPlayer.Z)
+		onPrompt(player, free, { math.floor(x * 10) / 10, math.floor(z * 10) / 10, math.floor(yaw * 100) / 100 })
 		return { ok = true }
 	end)
 
@@ -12177,11 +12218,10 @@ local function pedestalLoop()
 				if prompt then
 					prompt.Enabled = mine and not empty -- empty spots: use F / the Place button instead
 				end
-				-- glowing rings show your free spots while you're carrying something
+				-- no fixed spots any more (you place things anywhere; HUD shows a green aim ring instead)
 				local marker = pedestal:FindFirstChild("Marker")
 				if marker then
-					local carrying = State.Data and State.Data.Carry and State.Data.Carry.Count > 0
-					marker.Transparency = (mine and empty and carrying) and (0.45 + math.sin(os.clock() * 4) * 0.15) or 1
+					marker.Transparency = 1
 				end
 				local timer = base:FindFirstChild("BoxTimer")
 				local readyAt = pedestal:GetAttribute("State") == "Box" and pedestal:GetAttribute("BoxReadyAt")
@@ -13062,7 +13102,7 @@ local function refreshTimers()
 		carryFrame.Visible = true
 		local chaser = carry.Chaser and ("  ·  " .. carry.Chaser .. " is chasing you!") or ""
 		local what = carry.TopKind == "Item" and "it" or "your box"
-		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and ("Press F to put " .. what .. " on the ground") or "Bring it to YOUR plot ⬇")
+		local goal = carry.Chaser and "RUN!! Get to the SAFE ZONE ⬇" or (carry.AtPlot and ("Press F to put " .. what .. " down anywhere") or "Bring it to YOUR plot ⬇")
 		if (carry.Rage or 0) > 0 then
 			goal = string.rep("😡", carry.Rage) .. " " .. goal
 		end
@@ -13189,10 +13229,46 @@ function HUD.Init()
 	end })
 	speedLabel = UIKit.Label({ Name = "Speed", Text = "", TextXAlignment = Enum.TextXAlignment.Right, StrokeThickness = 3, Size = UDim2.fromOffset(190, 40), LayoutOrder = 3, Parent = right })
 
-	-- Place button (in your plot while carrying) + F key: puts it on the ground at the nearest free spot
-	local function placeOnGround()
-		HUD.Result(State.Action("PlaceGround"))
+	-- Place button (in your plot while carrying) + F key: puts it down ANYWHERE in your plot.
+	-- Keyboard/mouse: where your mouse points (a green ring shows the spot). Touch/button: right in front of you.
+	local ghost = Instance.new("Part")
+	ghost.Name = "PlaceGhost"
+	ghost.Shape = Enum.PartType.Cylinder
+	ghost.Size = Vector3.new(0.2, 4.2, 4.2)
+	ghost.Anchored, ghost.CanCollide, ghost.CanQuery, ghost.CanTouch = true, false, false, false
+	ghost.Material = Enum.Material.Neon
+	ghost.Color = Color3.fromRGB(90, 255, 120)
+	ghost.Transparency = 0.5
+	local function aimPoint()
+		if not UserInputService.MouseEnabled then
+			return nil
+		end
+		local camera = workspace.CurrentCamera
+		local m = UserInputService:GetMouseLocation()
+		local ray = camera:ViewportPointToRay(m.X, m.Y)
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Exclude
+		params.FilterDescendantsInstances = { player.Character, ghost }
+		local hit = workspace:Raycast(ray.Origin, ray.Direction * 200, params)
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if hit and root and (hit.Position - root.Position).Magnitude <= 30 then
+			return hit.Position
+		end
+		return nil
 	end
+	local function placeOnGround(useMouse)
+		HUD.Result(State.Action("PlaceGround", useMouse and aimPoint() or nil))
+	end
+	game:GetService("RunService").RenderStepped:Connect(function()
+		local show = placeButton and placeButton.Visible
+		local p = show and aimPoint()
+		if p then
+			ghost.CFrame = CFrame.new(p + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
+			ghost.Parent = workspace
+		else
+			ghost.Parent = nil
+		end
+	end)
 	placeButton = UIKit.Button({
 		Name = "Place",
 		Text = "📦 Place (F)",
@@ -13201,7 +13277,9 @@ function HUD.Init()
 		AnchorPoint = Vector2.new(0.5, 1),
 		Position = UDim2.new(0.5, 0, 1, -100),
 		Parent = screen,
-		OnClick = placeOnGround,
+		OnClick = function()
+			placeOnGround(false)
+		end,
 	})
 	placeButton.Visible = false
 	UIKit.AutoScale(placeButton)
@@ -13209,7 +13287,7 @@ function HUD.Init()
 		if not processed and input.KeyCode == Enum.KeyCode.F then
 			local carry = State.Data and State.Data.Carry
 			if carry and carry.Count > 0 and carry.AtPlot then
-				placeOnGround()
+				placeOnGround(true)
 			end
 		end
 	end)

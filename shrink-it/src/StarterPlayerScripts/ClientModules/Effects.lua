@@ -406,11 +406,10 @@ local function pedestalLoop()
 				if prompt then
 					prompt.Enabled = mine and not empty -- empty spots: use F / the Place button instead
 				end
-				-- glowing rings show your free spots while you're carrying something
+				-- no fixed spots any more (you place things anywhere; HUD shows a green aim ring instead)
 				local marker = pedestal:FindFirstChild("Marker")
 				if marker then
-					local carrying = State.Data and State.Data.Carry and State.Data.Carry.Count > 0
-					marker.Transparency = (mine and empty and carrying) and (0.45 + math.sin(os.clock() * 4) * 0.15) or 1
+					marker.Transparency = 1
 				end
 				local timer = base:FindFirstChild("BoxTimer")
 				local readyAt = pedestal:GetAttribute("State") == "Box" and pedestal:GetAttribute("BoxReadyAt")
