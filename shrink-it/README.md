@@ -159,7 +159,7 @@ and can be displayed in museums. To add an object to the random spawn pool inste
 | Base: SELL stall, a big blue **Fuse Machine** (3 slots → pipes → result), TRAILS & SHOP stalls (ProximityPrompts) | `MapDecor`, `SellMenu`, `FuseMenu`, `TrailsMenu`, `CosmeticService` |
 | **Trail Shop**: 10 trails that make you run faster (x1.05 … x1.6), bought with Coins or Robux; sideways card row | `TrailsMenu`, `CosmeticService`, `MonetizationConfig.Trails` |
 | Studded LEGO-style map (bright green studs, brown dirt walls, X-fences, painted SAFE ZONE line); `GameConfig.Studs = false` turns studs off | `MapDecor.Studify`, `MapService` |
-| **Chasers** (10, much faster: 28 → 66 speed): each zone's owner chases you. Caught → your boxes fall on the ground and the chaser walks home; grab them back before they vanish and the chaser gets **ENRAGED** (faster every time) | `CarryService`, `ChaserConfig` |
+| **Chasers** (10, VERY fast: 38 → 96 speed + catch-up sprint): each zone's owner chases you. Caught → your boxes fall on the ground and the chaser walks home; grab them back before they vanish and the chaser gets **ENRAGED** (faster every time) | `CarryService`, `ChaserConfig` |
 | **Speed training**: stand on the treadmill outside your plot (AFK works, anti-idle included) to earn speed; upgrade the Treadmill to train faster; **2x Speed** gamepass | `SpeedService`, `UpgradeConfig.Treadmill`, `GameConfig.Training` |
 | **Bat & Trap** for everyone: whack a player carrying something outside the safe zone to steal it; traps freeze whoever steps in them | `PvPService`, `GameConfig.PvP` |
 | **Chat tabs**: 🌍 Global (all servers, filtered), 📍 Here (nearby), 👥 Friends | `ChatService` |

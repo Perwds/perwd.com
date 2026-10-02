@@ -4,7 +4,7 @@
 	When you shrink something, the zone's owner comes running after you!
 	Make it back to the SAFE ZONE (your base) to keep your loot. Get caught and you drop it all.
 
-	Speed is in studs/sec (players start at 24; TRAIN speed on your plot's treadmill to outrun later chasers).
+	Speed is in studs/sec (players start at 28; TRAIN speed on your plot's treadmill to outrun later chasers).
 	Colors / HeadProps build a simple look on a standard R15 body. To use your own NPC instead,
 	put a Model with a Humanoid + HumanoidRootPart in ServerStorage > Chasers named "Tier1".."Tier10".
 ]]
@@ -14,16 +14,19 @@ local ChaserConfig = {}
 local RGB = Color3.fromRGB
 
 ChaserConfig.CatchDistance = 5.5 -- studs
-ChaserConfig.HeadStart = 0.8 -- seconds the chaser waits ("!") before running
-ChaserConfig.SpawnBehind = 30 -- studs deeper into the zone than the shrunk object
+ChaserConfig.HeadStart = 0.4 -- seconds the chaser waits ("!") before running
+ChaserConfig.SpawnBehind = 26 -- studs deeper into the zone than the shrunk object
 ChaserConfig.ChaseJump = true -- chasers jump over small things
+-- Catch-up sprint: when you're more than SprintDistance studs away the chaser runs SprintMult x faster.
+ChaserConfig.SprintDistance = 30
+ChaserConfig.SprintMult = 1.3
 
 -- Getting caught: you DROP your boxes on the ground and the chaser walks back home with a smug line.
 -- The boxes stay there for DropLifetime seconds. If you (or anyone) grabs one back, that zone's
 -- chaser gets ENRAGED: +RageSpeed studs/sec per rage level (max MaxRage) and comes after you again.
 -- Rage cools down by one level every RageCooldown seconds.
 ChaserConfig.DropLifetime = 20
-ChaserConfig.RageSpeed = 5
+ChaserConfig.RageSpeed = 8
 ChaserConfig.MaxRage = 5
 ChaserConfig.RageCooldown = 90
 ChaserConfig.RunAnimation = "rbxassetid://913376220" -- Roblox default R15 run
@@ -32,7 +35,7 @@ ChaserConfig.Chasers = {
 	[1] = {
 		Name = "Grandpa Joe",
 		Emoji = "👴",
-		Speed = 28,
+		Speed = 38,
 		Shout = "HEY! THAT'S MY STUFF, YOU WHIPPERSNAPPER!",
 		CaughtLine = "Hah! Back to my yard!",
 		Skin = RGB(234, 184, 146),
@@ -53,7 +56,7 @@ ChaserConfig.Chasers = {
 	[2] = {
 		Name = "Angry Neighbor",
 		Emoji = "😠",
-		Speed = 32,
+		Speed = 44,
 		Shout = "GET OFF MY LAWN!",
 		CaughtLine = "And STAY out!",
 		Skin = RGB(200, 140, 100),
@@ -72,7 +75,7 @@ ChaserConfig.Chasers = {
 	[3] = {
 		Name = "Officer Doug",
 		Emoji = "👮",
-		Speed = 36,
+		Speed = 50,
 		Shout = "STOP RIGHT THERE!",
 		CaughtLine = "You're under arrest... for shrinking!",
 		Skin = RGB(160, 110, 80),
@@ -92,7 +95,7 @@ ChaserConfig.Chasers = {
 	[4] = {
 		Name = "Captain Barnacle",
 		Emoji = "🏴‍☠️",
-		Speed = 40,
+		Speed = 56,
 		Shout = "ARRR! THIEF ON DECK!",
 		CaughtLine = "Walk the plank, landlubber!",
 		Skin = RGB(210, 160, 120),
@@ -113,7 +116,7 @@ ChaserConfig.Chasers = {
 	[5] = {
 		Name = "Sheriff Sandy",
 		Emoji = "🤠",
-		Speed = 44,
+		Speed = 62,
 		Shout = "YEEHAW! STOP, VARMINT!",
 		CaughtLine = "This town ain't big enough for the both of us!",
 		Skin = RGB(225, 175, 130),
@@ -132,7 +135,7 @@ ChaserConfig.Chasers = {
 	[6] = {
 		Name = "Jungle Jim",
 		Emoji = "🦁",
-		Speed = 48,
+		Speed = 68,
 		Shout = "NOBODY ROBS MY JUNGLE!",
 		CaughtLine = "Ha! The jungle always wins!",
 		Skin = RGB(190, 130, 90),
@@ -151,7 +154,7 @@ ChaserConfig.Chasers = {
 	[7] = {
 		Name = "Security Bot",
 		Emoji = "🤖",
-		Speed = 52,
+		Speed = 74,
 		Shout = "INTRUDER DETECTED. INITIATING PURSUIT.",
 		CaughtLine = "TARGET NEUTRALIZED. BEEP BOOP.",
 		Skin = RGB(170, 175, 190),
@@ -166,7 +169,7 @@ ChaserConfig.Chasers = {
 	[8] = {
 		Name = "Magma Golem",
 		Emoji = "🔥",
-		Speed = 56,
+		Speed = 80,
 		Shout = "YOU... WILL... BURN!",
 		CaughtLine = "Toasty!",
 		Skin = RGB(70, 45, 40),
@@ -181,7 +184,7 @@ ChaserConfig.Chasers = {
 	[9] = {
 		Name = "The Yeti",
 		Emoji = "🦍",
-		Speed = 60,
+		Speed = 88,
 		Shout = "ROOOOAAAARRR!!!",
 		CaughtLine = "*happy yeti noises*",
 		Skin = RGB(235, 240, 250),
@@ -195,7 +198,7 @@ ChaserConfig.Chasers = {
 	[10] = {
 		Name = "Alien Overlord",
 		Emoji = "👽",
-		Speed = 66,
+		Speed = 96,
 		Shout = "EARTHLING! RETURN OUR TREASURE!",
 		CaughtLine = "Probing complete. Bye bye!",
 		Skin = RGB(120, 230, 120),

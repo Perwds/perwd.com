@@ -721,8 +721,12 @@ function CarryService.Start()
 						ch.Humanoid:MoveTo(ch.Root.Position)
 					else
 						-- aim a little ahead of where you're running
-						local lead = root.AssemblyLinearVelocity * Vector3.new(1, 0, 1) * 0.25
+						local lead = root.AssemblyLinearVelocity * Vector3.new(1, 0, 1) * 0.35
 						ch.Humanoid:MoveTo(root.Position + lead)
+						-- catch-up sprint when you've pulled away
+						local base = ch.Cfg.Speed + (ch.Rage or 0) * ChaserConfig.RageSpeed
+						local far = (ch.Root.Position - root.Position).Magnitude > ChaserConfig.SprintDistance
+						ch.Humanoid.WalkSpeed = far and base * ChaserConfig.SprintMult or base
 						if ChaserConfig.ChaseJump and ch.Root.AssemblyLinearVelocity.Magnitude < 2 then
 							ch.Humanoid.Jump = true
 						end

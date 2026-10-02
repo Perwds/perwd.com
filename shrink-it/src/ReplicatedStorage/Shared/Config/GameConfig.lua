@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It! 🔬"
-GameConfig.Version = "v10.2 (real models)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v10.3 (fast chasers)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 10 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
@@ -89,7 +89,7 @@ GameConfig.ShrinkFxTime = 0.9 -- seconds the tween plays before the server remov
 GameConfig.AutoShrinkExtraDelay = 0.75
 
 -- ── Movement & speed training ───────────────────────────────────────
-GameConfig.BaseWalkSpeed = 24
+GameConfig.BaseWalkSpeed = 28
 GameConfig.SpeedBootsBonus = 8 -- gamepass, added on top
 -- Speed is TRAINED, not bought: stand on the treadmill in your plot (AFK is fine) to earn Speed
 -- points. Points per second = the Treadmill upgrade. Walk speed = Base + bonus, where
