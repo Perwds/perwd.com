@@ -21,6 +21,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
+local MutationConfig = require(Shared.Config.MutationConfig)
 local TierConfig = require(Shared.Config.TierConfig)
 local EventConfig = require(Shared.Config.EventConfig)
 local Formulas = require(Shared.Formulas)
@@ -106,9 +107,10 @@ function SpawnService.RollVariant(player)
 	return weightedPick(entries)
 end
 
+-- player = nil → no Luck (world boxes roll their size when they spawn, the same for everyone)
 function SpawnService.RollSize(player)
-	local luck = math.sqrt(variantMults(player).Golden)
-	if Svc.Session.HasPass(player, "BigSizes") then
+	local luck = player and math.sqrt(variantMults(player).Golden) or 1
+	if player and Svc.Session.HasPass(player, "BigSizes") then
 		luck *= 3
 	end
 	local entries = {}
@@ -118,10 +120,34 @@ function SpawnService.RollSize(player)
 	return weightedPick(entries)
 end
 
--- box = { R, T, V } → id, variant, size
+-- Mutation roll (nil = none): the box zone's own mutation first, then a global one.
+-- Luck raises the chance AND tilts the roll toward the rarer mutations. box.MutationBoost (Lab serum /
+-- boss boxes) multiplies the chance; box.ForceMutation guarantees one.
+function SpawnService.RollMutation(player, box)
+	if box and box.FMName and MutationConfig.Get(box.FMName) then
+		return box.FMName -- a box that always has this mutation (limited event box)
+	end
+	local luck = math.sqrt(variantMults(player).Golden)
+	local boost = (box and box.MB) or 1
+	local zoneName = box and box.T and MutationConfig.ZoneMutation(box.T)
+	if zoneName and math.random() < MutationConfig.ZoneChance * luck * boost then
+		return zoneName
+	end
+	local chance = math.min(MutationConfig.MaxChance, MutationConfig.BaseChance * luck ^ 0.6 * boost)
+	if not (box and box.FM) and math.random() >= chance then
+		return nil
+	end
+	local entries = {}
+	for i, name in ipairs(MutationConfig.Order) do
+		table.insert(entries, { name, MutationConfig.Mutations[name].Weight * luck ^ ((i - 1) * 0.15) })
+	end
+	return weightedPick(entries)
+end
+
+-- box = { R, T, V, Z } → id, variant, size, mutation
 function SpawnService.RollContents(player, box)
 	if box.Id then -- old save: the object was decided when it was shrunk
-		return box.Id, box.V or "Normal", 1
+		return box.Id, box.V or "Normal", 1, nil
 	end
 	local boxRarity = RarityConfig.GetRarity(box.R)
 	local boost = GameConfig.Boxes.RarityBoost[box.R] or 1
@@ -134,7 +160,7 @@ function SpawnService.RollContents(player, box)
 		end
 	end
 	local id = weightedPick(entries) or ObjectConfig.IdsForTier(1, false)[1]
-	return id, box.V or SpawnService.RollVariant(player), box.Z or SpawnService.RollSize(player)
+	return id, box.V or SpawnService.RollVariant(player), box.Z or SpawnService.RollSize(player), SpawnService.RollMutation(player, box)
 end
 
 -- ── world boxes ───────────────────────────────────────────────────────
@@ -152,9 +178,10 @@ end
 -- Spawns a box of `tier` with its bottom at `position`. opts: { R, V, Point, Expires, ReservedFor, ReservedUntil, Quiet }
 function SpawnService.SpawnAt(tier, position, opts)
 	opts = opts or {}
-	local box = { R = opts.R or pickBoxRarity(tier), T = tier, V = opts.V }
+	-- the SIZE is decided now, so everyone can see the big boxes in the zone and pick a target
+	local box = { R = opts.R or pickBoxRarity(tier), T = tier, V = opts.V, Z = opts.Z or SpawnService.RollSize(nil) }
 	local model = ModelFactory.CreateBox(box)
-	ModelFactory.FitToSize(model, worldBoxSize(tier))
+	ModelFactory.FitToSize(model, worldBoxSize(tier) * box.Z ^ 0.6)
 	ModelFactory.PlaceOnGround(model, position, math.random() * math.pi * 2)
 	uidCounter += 1
 	local info = {
@@ -172,6 +199,7 @@ function SpawnService.SpawnAt(tier, position, opts)
 	model.Name = "MysteryBox"
 	model:SetAttribute("Tier", tier)
 	model:SetAttribute("BoxRarity", box.R)
+	model:SetAttribute("BoxSize", box.Z)
 	model:SetAttribute("Variant", info.Variant)
 	model:SetAttribute("SpawnUid", info.Uid)
 	model:SetAttribute("ReservedFor", info.ReservedFor)
@@ -240,7 +268,7 @@ function SpawnService.Claim(model, player)
 		retire(model, info, GameConfig.ShrinkFxTime + 0.2)
 	end
 	-- your copy of the box already knows its SIZE (the box is that big) and your LUCK when you grabbed it
-	return { R = info.Box.R, T = info.Box.T, V = info.Box.V, Z = SpawnService.RollSize(player), L = SpawnService.LuckOf(player, info.Box) }, info
+	return { R = info.Box.R, T = info.Box.T, V = info.Box.V, Z = info.Box.Z or SpawnService.RollSize(player), L = SpawnService.LuckOf(player, info.Box) }, info
 end
 
 -- Luck shown when hovering a box: your luck (upgrades, passes, events) x how good the box rarity is.
@@ -376,6 +404,9 @@ local function nightLoop()
 	workspace:SetAttribute("NightAt", os.time() + cfg.Every)
 	while true do
 		task.wait(cfg.Every - cfg.Warning)
+		while workspace:GetAttribute("BossActive") or workspace:GetAttribute("BossIn") do
+			task.wait(5) -- no night during a boss fight
+		end
 		Svc.Net.Announce("Night is coming! The zones close in " .. cfg.Warning .. " seconds - get back to base!", Color3.fromRGB(150, 160, 255))
 		for i = cfg.Warning, 1, -1 do
 			workspace:SetAttribute("NightIn", i)

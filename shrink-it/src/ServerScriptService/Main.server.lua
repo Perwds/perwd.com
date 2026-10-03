@@ -39,6 +39,7 @@ local ORDER = {
 	"InfinitePack",
 	"Raid",
 	"Leaderboard",
+	"Boss",
 }
 
 -- Every step is pcall-wrapped so one broken service can't take the whole server down.

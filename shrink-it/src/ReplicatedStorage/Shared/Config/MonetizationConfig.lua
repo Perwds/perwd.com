@@ -46,7 +46,7 @@ MonetizationConfig.GamePasses = {
 -- Handler = special server logic instead of / in addition to Grant.
 MonetizationConfig.ProductOrder = {
 	"CoinsSmall", "CoinsMedium", "CoinsLarge", "GemsSmall", "GemsMedium", "GemsLarge",
-	"LuckPotion", "IncomePotion", "ServerLuck", "OpenAllBoxes", "SpeedPoints", "InstantRebirth", "SpawnGolden",
+	"LuckPotion", "IncomePotion", "ServerLuck", "OpenAllBoxes", "LimitedBox", "SpeedPoints", "InstantRebirth", "SpawnGolden",
 }
 -- (RoyalCrate is shown on its own "Crates" tab in the Shop, with its odds)
 
@@ -60,6 +60,8 @@ MonetizationConfig.Products = {
 	LuckPotion = { Id = 0, Name = "Luck Potion (15m)", Emoji = "🧪", Image = "rbxassetid://0", PriceLabel = "R$ 39", Grant = { Type = "LuckPotion", Minutes = 15 } }, -- 🔧 REPLACE Id
 	IncomePotion = { Id = 0, Name = "2x Income Potion (15m)", Emoji = "⚗️", Image = "rbxassetid://0", PriceLabel = "R$ 39", Grant = { Type = "IncomePotion", Minutes = 15 } }, -- 🔧 REPLACE Id
 	ServerLuck = { Id = 0, Name = "Server Luck Boost (30m)", Emoji = "🌠", Image = "rbxassetid://0", PriceLabel = "R$ 149", Grant = { Type = "ServerLuck", Minutes = 30 } }, -- 🔧 REPLACE Id
+	InstantOpen = { Id = 0, Name = "Instant Open (1 box)", Emoji = "📦", PriceLabel = "R$ 9", Handler = "InstantOpen", Hidden = true }, -- 🔧 REPLACE Id (bought from the box itself)
+	LimitedBox = { Id = 0, Name = "LIMITED Festive Box", Emoji = "🎁", Image = "rbxassetid://0", PriceLabel = "R$ 149", Handler = "LimitedBox", Limited = true }, -- 🔧 REPLACE Id (Robux only, always Festive-mutated)
 	OpenAllBoxes = { Id = 0, Name = "Open All Boxes Now", Emoji = "📦", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "OpenAllBoxes" }, -- 🔧 REPLACE Id
 	SpeedPoints = { Id = 0, Name = "+30 Min of Training", Emoji = "🏃", Image = "rbxassetid://0", PriceLabel = "R$ 49", Handler = "SpeedPoints", Minutes = 30 }, -- 🔧 REPLACE Id
 	InstantRebirth = { Id = 0, Name = "Instant Rebirth", Emoji = "♻️", Image = "rbxassetid://0", PriceLabel = "R$ 99", Handler = "InstantRebirth" }, -- 🔧 REPLACE Id

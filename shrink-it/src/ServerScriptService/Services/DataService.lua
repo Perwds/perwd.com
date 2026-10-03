@@ -47,6 +47,9 @@ local TEMPLATE = {
 	Settings = { RaidEnabled = false, AutoShrink = false, Music = 0.5, Sfx = 0.8, Ambient = 0.5, ShowTrails = true, LowGraphics = false, HideOthersBoxes = false },
 	Raid = { ShieldUntil = 0, LastRaid = 0, LastToggle = 0, Revenge = {} }, -- Revenge[userIdString] = expiry
 	RaySkins = { Default = true },
+	Samples = 0, -- boss / Lab currency
+	BossKills = 0, -- Boss Mastery
+	Serums = 0, -- Mutation Serums waiting to be used
 	EquippedSkin = "Default",
 	Trails = {}, -- [trailKey] = true
 	EquippedTrail = "",

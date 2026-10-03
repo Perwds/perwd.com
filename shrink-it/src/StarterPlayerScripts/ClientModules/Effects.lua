@@ -404,10 +404,42 @@ local function pedestalLoop()
 				if prompt then
 					prompt.Enabled = mine and not empty -- empty spots: use F / the Place button instead
 				end
+				local robuxPrompt = base:FindFirstChild("RobuxOpenPrompt")
+				if robuxPrompt and not mine then
+					robuxPrompt.Enabled = false
+				end
 				-- no fixed spots any more (you place things anywhere; HUD shows a green aim ring instead)
 				local marker = pedestal:FindFirstChild("Marker")
 				if marker then
 					marker.Transparency = 1
+				end
+				-- an opening box slowly GROWS and GLOWS as it gets close to opening (just on your screen)
+				local display = pedestal:FindFirstChild("Display")
+				local readyAtGrow = pedestal:GetAttribute("State") == "Box" and pedestal:GetAttribute("BoxReadyAt")
+				if display and display:IsA("Model") and readyAtGrow then
+					local startAt = pedestal:GetAttribute("BoxStartAt") or (readyAtGrow - 60)
+					local progress = math.clamp((now - startAt) / math.max(1, readyAtGrow - startAt), 0, 1)
+					local baseScale = display:GetAttribute("_BaseScale")
+					if not baseScale then
+						baseScale = display:GetScale()
+						display:SetAttribute("_BaseScale", baseScale)
+					end
+					local wobble = progress > 0.9 and math.sin(os.clock() * 25) * 0.02 or 0
+					pcall(function()
+						display:ScaleTo(baseScale * (0.8 + 0.35 * progress + wobble))
+					end)
+					local bodyPart = display.PrimaryPart
+					local glow = bodyPart and bodyPart:FindFirstChild("OpenGlow")
+					if bodyPart and not glow then
+						glow = Instance.new("PointLight")
+						glow.Name = "OpenGlow"
+						glow.Color = Color3.fromRGB(255, 230, 120)
+						glow.Parent = bodyPart
+					end
+					if glow then
+						glow.Brightness = progress * 4 * (0.8 + 0.2 * math.sin(os.clock() * 6))
+						glow.Range = 6 + progress * 14
+					end
 				end
 				local timer = base:FindFirstChild("BoxTimer")
 				local readyAt = pedestal:GetAttribute("State") == "Box" and pedestal:GetAttribute("BoxReadyAt")

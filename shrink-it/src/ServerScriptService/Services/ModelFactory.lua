@@ -19,6 +19,7 @@ local GameConfig = require(Shared.Config.GameConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local ObjectModels = require(Shared.ObjectModels)
 local RarityConfig = require(Shared.Config.RarityConfig)
+local MutationConfig = require(Shared.Config.MutationConfig)
 local Formulas = require(Shared.Formulas)
 local TextureConfig = require(Shared.Config.TextureConfig)
 
@@ -298,6 +299,65 @@ function ModelFactory.ClearVariant(model)
 			d:Destroy()
 		end
 	end
+end
+
+-- MUTATION look: a glow + drifting particles in the mutation's color and a small name tag on top.
+function ModelFactory.ApplyMutation(model, mutationName)
+	for _, d in ipairs(model:GetDescendants()) do
+		if d.Name == "MutationFX" then
+			d:Destroy()
+		end
+	end
+	local m = MutationConfig.Get(mutationName)
+	local root = m and (model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart", true))
+	if not root then
+		return
+	end
+	local cf, ext = model:GetBoundingBox()
+	local big = math.max(ext.X, ext.Y, ext.Z)
+	local anchor = Instance.new("Attachment")
+	anchor.Name = "MutationFX"
+	anchor.WorldPosition = cf.Position
+	anchor.Parent = root
+	local light = Instance.new("PointLight")
+	light.Name = "MutationFX"
+	light.Color = m.Color
+	light.Brightness = 2.5
+	light.Range = math.clamp(big * 1.4, 8, 50)
+	light.Parent = anchor
+	local aura = Instance.new("ParticleEmitter")
+	aura.Name = "MutationFX"
+	aura.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+	aura.Color = m.Rainbow and ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(80, 255, 120)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(90, 120, 255)),
+	}) or ColorSequence.new(m.Color)
+	aura.LightEmission = 1
+	aura.Size = NumberSequence.new(math.clamp(big * 0.08, 0.3, 2), 0)
+	aura.Lifetime = NumberRange.new(1, 1.8)
+	aura.Rate = 10
+	aura.Speed = NumberRange.new(0.5, 2)
+	aura.SpreadAngle = Vector2.new(180, 180)
+	aura.Parent = anchor
+	local tag = Instance.new("BillboardGui")
+	tag.Name = "MutationFX"
+	tag.Size = UDim2.fromOffset(120, 26)
+	tag.StudsOffsetWorldSpace = Vector3.new(0, ext.Y / 2 + 1, 0)
+	tag.MaxDistance = 70
+	tag.LightInfluence = 0
+	tag.Parent = anchor
+	local label = Instance.new("TextLabel")
+	label.BackgroundTransparency = 1
+	label.Size = UDim2.fromScale(1, 1)
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = m.Color
+	label.Text = mutationName .. "  x" .. m.Mult
+	label.Parent = tag
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 2
+	stroke.Parent = label
 end
 
 -- useHighlight: Highlight instances are capped at 31 on screen, so museum displays skip them.

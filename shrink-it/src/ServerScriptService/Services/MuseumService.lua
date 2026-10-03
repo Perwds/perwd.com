@@ -27,6 +27,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
+local MutationConfig = require(Shared.Config.MutationConfig)
 local Formulas = require(Shared.Formulas)
 local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
@@ -156,6 +157,30 @@ local function makePedestal(player, plot, i)
 			onPrompt(player, i)
 		end
 	end)
+	-- second prompt on an opening box: open it right now with Robux (Instant Open product)
+	local robux = Instance.new("ProximityPrompt")
+	robux.Name = "RobuxOpenPrompt"
+	robux.ActionText = "Open now (Robux)"
+	robux.ObjectText = ""
+	robux.HoldDuration = 0
+	robux.MaxActivationDistance = 8
+	robux.RequiresLineOfSight = false
+	robux.KeyboardKeyCode = Enum.KeyCode.R
+	robux.UIOffset = Vector2.new(0, 70)
+	robux.Enabled = false
+	robux.Parent = base
+	robux.Triggered:Connect(function(who)
+		if who == player then
+			local s = Svc.Session.Get(player)
+			if s then
+				s.InstantOpenSlot = i
+			end
+			local r = Svc.Monetization.PromptProduct(player, "InstantOpen")
+			if not r.ok and r.msg then
+				Svc.Net.Notify(player, r.msg, "error")
+			end
+		end
+	end)
 
 	model.Parent = plot.Pedestals
 	return model
@@ -166,6 +191,33 @@ local function setPrompt(pedestal, action, hold)
 	if prompt then
 		prompt.ActionText = action
 		prompt.HoldDuration = hold or 0
+	end
+	local robux = pedestal.PrimaryPart and pedestal.PrimaryPart:FindFirstChild("RobuxOpenPrompt")
+	if robux then
+		robux.Enabled = action == "Open now" -- only while a box is opening
+	end
+end
+
+-- Instant Open (Robux): opens the box the player picked (or their oldest opening box).
+function MuseumService.InstantOpen(player)
+	local data = Svc.Data.Get(player)
+	local s = Svc.Session.Get(player)
+	if not data then
+		return
+	end
+	local key = s and s.InstantOpenSlot and tostring(s.InstantOpenSlot)
+	local slot = key and data.Slots[key]
+	if not (slot and slot.Box) then
+		slot = nil
+		for _, other in pairs(data.Slots) do
+			if other.Box and (not slot or other.Box.ReadyAt < slot.Box.ReadyAt) then
+				slot = other
+			end
+		end
+	end
+	if slot then
+		slot.Box.ReadyAt = os.time()
+		MuseumService.OpenReadyBoxes(player)
 	end
 end
 
@@ -185,6 +237,7 @@ local function setDisplay(pedestal, slot, data)
 	pedestal:SetAttribute("ItemUid", nil)
 	pedestal:SetAttribute("ItemId", nil)
 	pedestal:SetAttribute("BoxReadyAt", nil)
+	pedestal:SetAttribute("BoxStartAt", nil)
 	pedestal:SetAttribute("Weight", nil)
 	pedestal:SetAttribute("SizeName", nil)
 	pedestal:SetAttribute("BoxLuck", nil)
@@ -204,6 +257,7 @@ local function setDisplay(pedestal, slot, data)
 		box.Parent = pedestal
 		pedestal:SetAttribute("State", "Box")
 		pedestal:SetAttribute("BoxReadyAt", slot.Box.ReadyAt)
+		pedestal:SetAttribute("BoxStartAt", slot.Box.StartAt or (slot.Box.ReadyAt - 60))
 		setPrompt(pedestal, "Open now", 0)
 		return
 	end
@@ -218,6 +272,7 @@ local function setDisplay(pedestal, slot, data)
 		ModelFactory.SetCollision(display, false)
 		ModelFactory.PlaceOnGround(display, top, yawOf(base))
 		ModelFactory.ApplyVariant(display, item.V, false)
+		ModelFactory.ApplyMutation(display, item.M)
 		display.Parent = pedestal
 		pedestal:SetAttribute("State", "Item")
 		pedestal:SetAttribute("ItemName", Formulas.ItemName(item))
@@ -261,8 +316,8 @@ function MuseumService.Recompute(player)
 		if not index or index > stats.Pedestals or (slot.U and not findItem(data, slot.U)) then
 			if slot.Box and index then
 				-- pedestal gone but the box isn't lost: it opens straight into your pocket
-				local id, variant, size = Svc.Spawn.RollContents(player, slot.Box)
-				MuseumService.AddItem(player, id, variant, { Z = size }, true)
+				local id, variant, size, mutation = Svc.Spawn.RollContents(player, slot.Box)
+				MuseumService.AddItem(player, id, variant, { Z = size, M = mutation }, true)
 			end
 			data.Slots[key] = nil
 		end
@@ -367,6 +422,9 @@ function MuseumService.AddItem(player, id, variant, flags, skipRecompute)
 	if flags and flags.Z and flags.Z ~= 1 then
 		item.Z = flags.Z
 	end
+	if flags and flags.M then
+		item.M = flags.M
+	end
 	table.insert(data.Items, item)
 	Svc.Index.Mark(player, id, variant)
 
@@ -434,7 +492,13 @@ function onPrompt(player, i, placeAt)
 		if entry and entry.Kind == "Box" then
 			local box = entry.Box
 			local seconds = Formulas.BoxOpenSeconds(box, data, Svc.Session.Get(player).Passes)
-			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Z = box.Z, L = box.L, Id = box.Id, ReadyAt = os.time() + seconds }, P = placeAt }
+			if (data.Serums or 0) > 0 then
+				-- a Mutation Serum from the Lab goes into this box
+				data.Serums -= 1
+				box.MB = math.max(box.MB or 1, GameConfig.Lab.SerumBoost)
+				Svc.Net.Notify(player, "Mutation Serum used: this box is much more likely to mutate!", "success")
+			end
+			data.Slots[key] = { Box = { R = box.R, T = box.T, V = box.V, Z = box.Z, L = box.L, MB = box.MB, FM = box.FM, FMName = box.FMName, Id = box.Id, StartAt = os.time(), ReadyAt = os.time() + seconds }, P = placeAt }
 			Remotes.Event("CarryFX"):FireClient(player, "Placed", { Seconds = seconds })
 		elseif entry and entry.Kind == "Item" and findItem(data, entry.U) and not slottedSet(data)[entry.U] then
 			data.Slots[key] = { U = entry.U, P = placeAt }
@@ -484,8 +548,8 @@ function MuseumService.OpenReadyBoxes(player)
 	local opened = false
 	for key, slot in pairs(data.Slots) do
 		if slot.Box and slot.Box.ReadyAt <= now then
-			local id, rolledVariant, size = Svc.Spawn.RollContents(player, slot.Box)
-			local item = MuseumService.AddItem(player, id, rolledVariant, { Z = size }, true)
+			local id, rolledVariant, size, mutation = Svc.Spawn.RollContents(player, slot.Box)
+			local item = MuseumService.AddItem(player, id, rolledVariant, { Z = size, M = mutation }, true)
 			if item then
 				data.Slots[key] = { U = item.U, P = slot.P } -- stays exactly where you put the box
 				opened = true
@@ -495,7 +559,8 @@ function MuseumService.OpenReadyBoxes(player)
 				local def = ObjectConfig.Get(item.Id)
 				local variant = RarityConfig.GetVariant(item.V)
 				local rarity = RarityConfig.GetRarity(def.Rarity)
-				if variant.Order >= 4 or rarity.Order >= 6 or (item.Z or 1) >= 3 then
+				local mutationCfg = MutationConfig.Get(item.M)
+				if variant.Order >= 4 or rarity.Order >= 6 or (item.Z or 1) >= 3 or (mutationCfg and mutationCfg.Mult >= 3) then
 					Svc.Net.Announce("🎉 " .. player.DisplayName .. " unboxed a " .. Formulas.ItemName(item) .. "!", variant.Color or rarity.Color)
 				end
 			end
@@ -542,7 +607,7 @@ function MuseumService.TransferItem(from, to, uid)
 	table.remove(fromData.Items, index)
 	unslot(fromData, uid)
 	MuseumService.Recompute(from)
-	return MuseumService.AddItem(to, item.Id, item.V, { Stolen = true, Z = item.Z })
+	return MuseumService.AddItem(to, item.Id, item.V, { Stolen = true, Z = item.Z, M = item.M })
 end
 
 function MuseumService.FindItem(player, uid)
@@ -713,18 +778,22 @@ function MuseumService.Start()
 				table.insert(remove, uid)
 			end
 		end
-		local sizeSum = 0
+		local sizeSum, bestMutation = 0, nil
 		for _, uid in ipairs(remove) do
 			local old, index = findItem(data, uid)
 			if index then
 				sizeSum += old.Z or 1
+				local m = MutationConfig.Get(old.M)
+				if m and (not bestMutation or m.Mult > MutationConfig.Get(bestMutation).Mult) then
+					bestMutation = old.M -- the best mutation survives the fuse
+				end
 				table.remove(data.Items, index)
 			end
 			unslot(data, uid)
 			Svc.Carry.ForgetItem(player, uid)
 		end
 		-- the fused object is as big as the average of the three
-		local item = MuseumService.AddItem(player, id, nextVariant, { Z = Formulas.SizeInfo(sizeSum / #remove).Mult })
+		local item = MuseumService.AddItem(player, id, nextVariant, { Z = Formulas.SizeInfo(sizeSum / #remove).Mult, M = bestMutation })
 		return { ok = true, msg = "Fused into " .. Formulas.ItemName(item) .. "! (in your pocket)" }
 	end)
 

@@ -12,6 +12,7 @@ local UpgradeConfig = require(Config:WaitForChild("UpgradeConfig"))
 local TierConfig = require(Config:WaitForChild("TierConfig"))
 local ObjectConfig = require(Config:WaitForChild("ObjectConfig"))
 local RarityConfig = require(Config:WaitForChild("RarityConfig"))
+local MutationConfig = require(Config:WaitForChild("MutationConfig"))
 local RewardConfig = require(Config:WaitForChild("RewardConfig"))
 local MonetizationConfig = require(Config:WaitForChild("MonetizationConfig"))
 
@@ -49,7 +50,8 @@ function Formulas.ItemBaseIncome(item)
 	end
 	local rarity = RarityConfig.GetRarity(def.Rarity)
 	local variant = RarityConfig.GetVariant(item.V)
-	return def.BaseIncome * rarity.IncomeMult * variant.Mult * (item.Z or 1)
+	local mutation = MutationConfig.Get(item.M)
+	return def.BaseIncome * rarity.IncomeMult * variant.Mult * (item.Z or 1) * (mutation and mutation.Mult or 1)
 end
 
 -- Size entry ({ Name, Mult, ... } from GameConfig.Sizes) closest to a size multiplier.
@@ -70,7 +72,8 @@ function Formulas.ItemName(item)
 	local variant = RarityConfig.GetVariant(item.V)
 	local size = Formulas.SizeInfo(item.Z)
 	local sizePrefix = size.Name ~= "Normal" and (size.Name .. " ") or ""
-	return sizePrefix .. variant.Prefix .. (def and def.Name or item.Id)
+	local mutation = item.M and MutationConfig.Get(item.M) and (item.M .. " ") or ""
+	return sizePrefix .. mutation .. variant.Prefix .. (def and def.Name or item.Id)
 end
 
 -- Weight in kg (just for show: bigger objects weigh a LOT more).
@@ -294,7 +297,8 @@ end
 function Formulas.BoxName(box)
 	local rarity = Formulas.BoxRarity(box)
 	local variant = RarityConfig.GetVariant(box.V)
-	return variant.Prefix .. rarity .. " Box"
+	local size = box.Z and Formulas.SizeInfo(box.Z).Name or "Normal"
+	return (size ~= "Normal" and (size .. " ") or "") .. variant.Prefix .. rarity .. " Box"
 end
 
 function Formulas.BoxSkipGems(secondsLeft)

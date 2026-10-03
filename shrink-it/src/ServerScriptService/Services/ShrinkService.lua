@@ -216,7 +216,9 @@ local function targetKind(target)
 	if typeof(target) ~= "Instance" or not target:IsA("Model") or not target:IsDescendantOf(workspace) then
 		return nil
 	end
-	if target:GetAttribute("RaidBuilding") then
+	if target:GetAttribute("Boss") then
+		return "boss"
+	elseif target:GetAttribute("RaidBuilding") then
 		return "building"
 	elseif target:GetAttribute("PedestalSlot") then
 		return "pedestal"
@@ -274,6 +276,8 @@ end
 local function requiredChargeTime(kind, stats, target)
 	if kind == "building" then
 		return GameConfig.Raid.BuildingChargeTime
+	elseif kind == "boss" then
+		return GameConfig.Boss.ChargeTime
 	elseif kind == "object" then
 		local info = Svc.Spawn.GetInfo(target)
 		return Formulas.ObjectChargeTime(stats, info and info.Tier or 1)
@@ -330,7 +334,10 @@ local function onFire(player, target, extras)
 	end
 	s.LastShot = os.clock()
 
-	if charge.Kind == "building" then
+	if charge.Kind == "boss" then
+		Svc.Boss.Hit(player, target, root, stats)
+		return
+	elseif charge.Kind == "building" then
 		Svc.Raid.TryStartRaid(player, target, root)
 		return
 	elseif charge.Kind == "pedestal" then

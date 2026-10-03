@@ -100,6 +100,7 @@ local function buildVisual(entry)
 		ModelFactory.FitToSize(model, entryHeight(entry))
 		ModelFactory.Simplify(model, 0.06)
 		ModelFactory.ApplyVariant(model, entry.V, false)
+		ModelFactory.ApplyMutation(model, entry.M)
 		return model
 	end
 	local model = ModelFactory.CreateBox(entry.Box)
@@ -140,13 +141,29 @@ end
 
 local function entryName(entry)
 	if entry.Kind == "Item" then
-		return Formulas.ItemName({ Id = entry.Id, V = entry.V, Z = entry.Z })
+		return Formulas.ItemName({ Id = entry.Id, V = entry.V, Z = entry.Z, M = entry.M })
 	end
 	return Formulas.BoxName(entry.Box)
 end
 
+-- Big things are heavy: every carried box/object bigger than Normal slows you down a bit.
+function CarryService.SpeedFactor(player)
+	local c = carrying[player]
+	local slow = 0
+	for _, e in ipairs(c and c.Items or {}) do
+		local z = e.Kind == "Box" and (e.Box.Z or 1) or (e.Z or 1)
+		slow += math.max(0, z - 1) * GameConfig.CarrySlowPerSize
+	end
+	return math.max(GameConfig.CarrySlowMin, 1 - slow)
+end
+
 -- equip = put it in your hand right away (picking an object up in your base)
 local function restack(player, c, equip)
+	task.defer(function()
+		if Svc.Monetization then
+			Svc.Monetization.ApplyMovement(player) -- heavier load = slower
+		end
+	end)
 	local tool = lootTool(player)
 	if #c.Items == 0 then
 		if tool then
@@ -738,7 +755,7 @@ function CarryService.Hold(player, item)
 	if #c.Items >= CarryService.Capacity(player) then
 		return false
 	end
-	table.insert(c.Items, { Kind = "Item", U = item.U, Id = item.Id, V = item.V, Z = item.Z })
+	table.insert(c.Items, { Kind = "Item", U = item.U, Id = item.Id, V = item.V, Z = item.Z, M = item.M })
 	restack(player, c, true) -- straight into your hand
 	Svc.Data.MarkDirty(player)
 	return true
@@ -761,6 +778,27 @@ function CarryService.TakeTop(player)
 	end
 	Svc.Data.MarkDirty(player)
 	return entry
+end
+
+-- Removes the top-most BOX you carry (Lab turn-in). Returns the box table or nil.
+function CarryService.TakeTopBox(player)
+	local c = carrying[player]
+	if not c then
+		return nil
+	end
+	for i = #c.Items, 1, -1 do
+		local e = c.Items[i]
+		if e.Kind == "Box" then
+			table.remove(c.Items, i)
+			restack(player, c)
+			if CarryService.CountBoxes(player) == 0 then
+				despawnChaser(c, nil)
+			end
+			Svc.Data.MarkDirty(player)
+			return e.Box
+		end
+	end
+	return nil
 end
 
 -- Stops holding `uid` (it was sold / fused / stolen).

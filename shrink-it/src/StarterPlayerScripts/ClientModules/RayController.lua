@@ -45,6 +45,9 @@ local function findTarget(instance)
 	local node = instance
 	while node and node ~= workspace do
 		if node:IsA("Model") then
+			if node:GetAttribute("Boss") then
+				return node, "boss"
+			end
 			if CollectionService:HasTag(node, "Shrinkable") then
 				if takenByMe(node) then
 					return nil, nil
@@ -115,7 +118,9 @@ local function describe(target, kind)
 	if not stats then
 		return nil
 	end
-	if kind == "building" then
+	if kind == "boss" then
+		return string.format("Dr. Grow's Robot  ·  %d / %d HP  ·  shrink it!", workspace:GetAttribute("BossHP") or 0, workspace:GetAttribute("BossMax") or 0), Color3.fromRGB(110, 255, 90)
+	elseif kind == "building" then
 		return "RAID this museum (hold " .. GameConfig.Raid.BuildingChargeTime .. "s)", Color3.fromRGB(255, 90, 90)
 	elseif kind == "pedestal" then
 		local name = target:GetAttribute("ItemName")
@@ -205,7 +210,9 @@ local function startCharge()
 		end
 	end
 	local chargeTime = stats.ChargeTime
-	if kind == "building" then
+	if kind == "boss" then
+		chargeTime = GameConfig.Boss.ChargeTime
+	elseif kind == "building" then
 		chargeTime = GameConfig.Raid.BuildingChargeTime
 	elseif kind == "object" then
 		chargeTime = Formulas.ObjectChargeTime(stats, target:GetAttribute("Tier") or 1)

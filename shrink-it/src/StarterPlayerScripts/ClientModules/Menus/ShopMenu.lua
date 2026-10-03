@@ -125,7 +125,7 @@ function ShopMenu.Build(ctx)
 
 	-- ── Boosts (developer products) ─────────────────────────────────
 	grid(pages.Boosts, UDim2.fromOffset(204, 236))
-	local BEST = { CoinsLarge = "BEST VALUE", GemsLarge = "BEST VALUE", ServerLuck = "SERVER!" }
+	local BEST = { LimitedBox = "LIMITED!", CoinsLarge = "BEST VALUE", GemsLarge = "BEST VALUE", ServerLuck = "SERVER!" }
 	local productCards = {}
 	for i, key in ipairs(MonetizationConfig.ProductOrder) do
 		local product = MonetizationConfig.Products[key]

@@ -39,7 +39,11 @@ local function applyPassEffects(player)
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	local stats = Svc.Shrink.GetStats(player)
 	if humanoid and not (Svc.PvP.IsStunned and Svc.PvP.IsStunned(player)) then
-		humanoid.WalkSpeed = stats and stats.WalkSpeed or GameConfig.BaseWalkSpeed
+		local slow = Svc.Carry and Svc.Carry.SpeedFactor and Svc.Carry.SpeedFactor(player) or 1
+		if player:GetAttribute("Grown") then
+			slow *= GameConfig.Boss.GrowSlow -- hit by Dr. Grow's growth ray
+		end
+		humanoid.WalkSpeed = (stats and stats.WalkSpeed or GameConfig.BaseWalkSpeed) * slow
 	end
 end
 
@@ -96,6 +100,16 @@ local productHandlers = {
 	end,
 	SpawnGolden = function(player)
 		Svc.Spawn.SpawnNear(player, "Golden")
+	end,
+	InstantOpen = function(player)
+		Svc.Museum.InstantOpen(player)
+	end,
+	LimitedBox = function(player)
+		local box = Svc.Boss.MasteryBox(player)
+		box.R = GameConfig.LimitedBox.Rarity
+		box.FMName = GameConfig.LimitedBox.Mutation
+		Svc.Carry.GiveBox(player, box)
+		Svc.Net.Notify(player, "You got a LIMITED " .. GameConfig.LimitedBox.Name .. "! Put it in your base.", "success")
 	end,
 	OpenAllBoxes = function(player, data)
 		local n = 0

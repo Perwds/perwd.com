@@ -445,6 +445,27 @@ local function buildTopBits()
 	UIKit.AutoScale(boostHolder)
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Right, SortOrder = Enum.SortOrder.LayoutOrder, Parent = boostHolder })
 
+	-- boss health bar (while Dr. Grow's robot is in the base)
+	local bossBar = UIKit.Card({ Name = "BossBar", Size = UDim2.fromOffset(420, 40), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 104), Colors = UIKit.Colors.Dark, Parent = screen, CornerRadius = 14 })
+	UIKit.AutoScale(bossBar)
+	bossBar.Visible = false
+	local bossFill = UIKit.Create("Frame", { BackgroundColor3 = Color3.fromRGB(110, 255, 90), BorderSizePixel = 0, Position = UDim2.fromOffset(6, 6), Size = UDim2.new(1, -12, 1, -12), Parent = bossBar })
+	UIKit.Corner(bossFill, 10)
+	local bossLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, ZIndex = 3, Parent = bossBar })
+	task.spawn(function()
+		while true do
+			task.wait(0.2)
+			local active = workspace:GetAttribute("BossActive") == true
+			bossBar.Visible = active
+			if active then
+				local hp, max = workspace:GetAttribute("BossHP") or 0, workspace:GetAttribute("BossMax") or 1
+				bossFill.Size = UDim2.new(math.clamp(hp / max, 0, 1), -12, 1, -12)
+				local left = math.max(0, (workspace:GetAttribute("BossEndsAt") or 0) - os.time())
+				bossLabel.Text = string.format("Dr. Grow's Robot  %d / %d  ·  %d:%02d", hp, max, left // 60, left % 60)
+			end
+		end
+	end)
+
 	-- 📍 which area you're in (top-right)
 	local areaPill = UIKit.Card({ Name = "AreaPill", Size = UDim2.fromOffset(250, 44), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 12), Colors = UIKit.Colors.Dark, Parent = screen, CornerRadius = 22 })
 	UIKit.AutoScale(areaPill)
@@ -466,9 +487,12 @@ local function buildTopBits()
 						end
 					end
 				end
-				-- night countdown takes over the pill
+				-- night / boss countdowns take over the pill
 				local nightIn, nightLeft = workspace:GetAttribute("NightIn"), workspace:GetAttribute("NightLeft")
-				if nightIn then
+				local bossIn = workspace:GetAttribute("BossIn")
+				if bossIn then
+					name, color = "Boss in " .. bossIn .. "s", Color3.fromRGB(110, 255, 90)
+				elseif nightIn then
 					name, color = "Night in " .. nightIn .. "s", Color3.fromRGB(170, 180, 255)
 				elseif nightLeft then
 					name, color = "New boxes in " .. nightLeft .. "s", Color3.fromRGB(255, 220, 90)
@@ -614,7 +638,7 @@ function HUD.Init()
 	local ctx = { Screen = screen, HUD = HUD }
 	local menuFolder = Modules:WaitForChild("Menus")
 	local menuDefs = table.clone(LEFT_BUTTONS)
-	for _, extra in ipairs({ "Sell", "Fuse", "Trails", "Settings" }) do -- opened from the stands / top bar
+	for _, extra in ipairs({ "Sell", "Fuse", "Trails", "Settings", "Lab" }) do -- opened from the stands / top bar
 		table.insert(menuDefs, { Menu = extra })
 	end
 	for _, def in ipairs(menuDefs) do

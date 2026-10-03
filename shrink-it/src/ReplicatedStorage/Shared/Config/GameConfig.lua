@@ -8,8 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v14 (loot in hotbar, floor & wall deco)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 14 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v15 (mutations, boss, Lab)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 15 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -59,6 +59,42 @@ GameConfig.Fuse = { Count = 3 }
 -- Anyone still in the zones is sent back to the base (they keep what they carry).
 GameConfig.Night = { Every = 240, Warning = 15, Closed = 10 }
 
+-- ── Boss: Dr. Grow and his giant robot (every 30 minutes, everyone shrinks it down together) ──
+-- Zap the robot with your Shrink Ray (it takes Damage = DamageBase + DamagePerRayPower x Ray Power).
+-- It fires a GROWTH ray at players (they get big and slow for GrowSeconds). Beat it before
+-- TimeLimit and everyone who helped gets SAMPLES (more for more damage) + 1 Boss Mastery point.
+GameConfig.Boss = {
+	Every = 1800,
+	FirstAfter = 600, -- first visit this many seconds after the server starts
+	Warning = 30,
+	TimeLimit = 240,
+	Arena = Vector3.new(0, 0, -125),
+	BaseHP = 80,
+	HPPerPlayer = 45,
+	ChargeTime = 0.45,
+	DamageBase = 2,
+	DamagePerRayPower = 0.35,
+	ShotEvery = 3.5,
+	GrowSeconds = 6,
+	GrowScale = 1.6,
+	GrowSlow = 0.55,
+	SamplesBase = 15,
+	SamplesShare = 60, -- split by damage dealt
+	-- Boss Mastery: at these kill counts you get a MASTERY BOX (only from bosses / the Lab)
+	MasteryMilestones = { 1, 3, 5, 10, 25, 50, 100 },
+}
+-- ── Lab (turn in unopened boxes for Samples; spend Samples) ──
+GameConfig.Lab = {
+	SamplesPerRarity = { Common = 1, Uncommon = 2, Rare = 3, Epic = 5, Legendary = 8, Mythic = 12, Secret = 20 },
+	SerumCost = 25, -- Mutation Serum: your next placed box is 4x more likely to mutate
+	SerumBoost = 4,
+	MasteryBoxCost = 150,
+}
+-- A Mastery Box: very rare rarity, from your best zone, always mutated and at least Huge.
+GameConfig.MasteryBox = { R = "Mythic", MinSize = 2 }
+-- LIMITED event box (Robux product "LimitedBox"): always the Festive mutation, which you can't get any other way.
+GameConfig.LimitedBox = { Name = "Festive Box", Rarity = "Secret", Mutation = "Festive" }
+
 GameConfig.Boxes = {
 	OpenSeconds = { Common = 8, Uncommon = 15, Rare = 30, Epic = 60, Legendary = 120, Mythic = 240, Secret = 480 },
 	SecondsPerTier = 4,
@@ -88,6 +124,8 @@ GameConfig.Sizes = {
 	{ Name = "Colossal", Mult = 5, Weight = 0.3, Lucky = true },
 }
 GameConfig.HoldBaseSize = 6 -- studs: a Normal object is this big in your hands AND on the ground in your base (x its size Mult)
+GameConfig.CarrySlowPerSize = 0.06 -- walk speed -6% for every size step above Normal you carry (Colossal box = -24%)
+GameConfig.CarrySlowMin = 0.6 -- never slower than 60%
 GameConfig.InfiniteCarry = 999 -- "Infinite Carry" gamepass (shown as ∞)
 GameConfig.BoxBaseSize = 4 -- studs: a Normal-size box in your hands / on your base floor (x its size ^ 0.75)
 
