@@ -1179,6 +1179,172 @@ function MapDecor.PackDecor(map)
 end
 
 -- Sleeping shopkeepers wake up when a player comes close and doze off again when everyone leaves.
+-- ── your own imported models (ServerStorage > CustomModels, placed when the server starts) ─────
+-- Import a .glb/.fbx in Studio (File > Import 3D), rename it and drop it in ServerStorage > CustomModels:
+--   MobileShop · a cart parked next to the SHOP stand in the base
+--   Flowers    · a pack of flowers: each piece is scattered in the base and the green zones
+--   Cars       · a pack of cars: each piece is parked along the edges of the city zones
+-- Everything is resized to fit, so the import scale doesn't matter. Missing models are skipped.
+local function customModel(name)
+	local ss = game:GetService("ServerStorage")
+	local holder = ss:FindFirstChild("CustomModels")
+	return (holder and holder:FindFirstChild(name)) or ss:FindFirstChild(name)
+end
+
+-- the separate pieces of a pack (skips wrapper models that only hold one child)
+local function packPieces(pack)
+	local node = pack
+	for _ = 1, 6 do
+		local kids = {}
+		for _, c in ipairs(node:GetChildren()) do
+			if c:IsA("Model") or c:IsA("Folder") or c:IsA("BasePart") then
+				table.insert(kids, c)
+			end
+		end
+		if #kids ~= 1 or kids[1]:IsA("BasePart") then
+			return kids
+		end
+		node = kids[1]
+	end
+	return { node }
+end
+
+-- clone `src` as a Model scaled so its longest side (or its height) is `target` studs
+local function fitted(src, target, byHeight)
+	local model = src:Clone()
+	if not model:IsA("Model") then
+		local wrap = Instance.new("Model")
+		wrap.Name = src.Name
+		if model:IsA("Folder") then
+			for _, c in ipairs(model:GetChildren()) do
+				c.Parent = wrap
+			end
+			model:Destroy()
+		else
+			model.Parent = wrap
+		end
+		model = wrap
+	end
+	local ext = model:GetExtentsSize()
+	local size = byHeight and ext.Y or math.max(ext.X, ext.Y, ext.Z)
+	if size > 0.01 then
+		model:ScaleTo(model:GetScale() * (target / size))
+	end
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.CanCollide = false
+			d.CanTouch = false
+			d.CastShadow = not byHeight
+		end
+	end
+	return model
+end
+
+function MapDecor.CustomDecor(map)
+	if map:FindFirstChild("CustomDecor") then
+		return
+	end
+	local root = Instance.new("Folder")
+	root.Name = "CustomDecor"
+	root.Parent = map
+	local rng = Random.new(1607)
+
+	-- the cart beside the shop stand (shop is at (36, -30), facing the spawn)
+	local shop = customModel("MobileShop")
+	if shop then
+		local m = fitted(shop, 15)
+		placeArt(m, root, 58, 0, -34, -math.pi / 2)
+		for _, d in ipairs(m:GetDescendants()) do
+			if d:IsA("BasePart") then
+				d.CanCollide = true
+			end
+		end
+	end
+
+	-- flowers: beds in the base plaza + clumps along the edges of the green zones
+	local flowerPack = customModel("Flowers")
+	local flowerPieces = flowerPack and packPieces(flowerPack) or {}
+	local zones = map:FindFirstChild("Zones")
+	if #flowerPieces > 0 then
+		local function flower(parent, x, groundY, z)
+			local src = flowerPieces[rng:NextInteger(1, #flowerPieces)]
+			local m = fitted(src, rng:NextNumber(2.2, 3.4), true)
+			placeArt(m, parent, x, groundY, z, rng:NextNumber(0, math.pi * 2))
+		end
+		local base = folder(root, "BaseFlowers")
+		for _, c in ipairs({ Vector3.new(-22, 0, -48), Vector3.new(22, 0, -48), Vector3.new(-60, 0, -10), Vector3.new(-40, 0, -10), Vector3.new(40, 0, -10), Vector3.new(60, 0, -10) }) do
+			for _ = 1, 4 do
+				local a, r = rng:NextNumber(0, math.pi * 2), rng:NextNumber(0.5, 3.5)
+				flower(base, c.X + math.cos(a) * r, 0, c.Z + math.sin(a) * r)
+			end
+		end
+		for _, zone in ipairs(zones and zones:GetChildren() or {}) do
+			local tier = zone:GetAttribute("Tier")
+			local floor = zone:FindFirstChild("Floor")
+			if floor and (tier == 1 or tier == 2 or tier == 6) then
+				local f = folder(zone, "CustomFlowers")
+				local w, d = floor.Size.X, floor.Size.Z
+				local z0 = floor.Position.Z - d / 2
+				local groundY = floor.Position.Y + floor.Size.Y / 2
+				for z = z0 + 12, z0 + d - 12, 18 do
+					for _, side in ipairs({ -1, 1 }) do
+						local x = side * (w / 2 - rng:NextNumber(4, 9))
+						if not blocksSpawn(zone, x, z, 2, 2) then
+							for _ = 1, 3 do
+								flower(f, x + rng:NextNumber(-2, 2), groundY, z + rng:NextNumber(-3, 3))
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	-- cars parked along the edges of the city zones, nose-to-tail with the wall
+	local carPack = customModel("Cars")
+	local cars = carPack and packPieces(carPack) or {}
+	if #cars > 0 then
+		local n = 0
+		for _, zone in ipairs(zones and zones:GetChildren() or {}) do
+			local tier = zone:GetAttribute("Tier")
+			local floor = zone:FindFirstChild("Floor")
+			if floor and (tier == 2 or tier == 3 or tier == 7) then
+				local f = folder(zone, "CustomCars")
+				local w, d = floor.Size.X, floor.Size.Z
+				local z0 = floor.Position.Z - d / 2
+				local groundY = floor.Position.Y + floor.Size.Y / 2
+				for z = z0 + 20, z0 + d - 20, 30 do
+					for _, side in ipairs({ -1, 1 }) do
+						if rng:NextNumber() < 0.6 then
+							n += 1
+							local m = fitted(cars[(n - 1) % #cars + 1], 16)
+							-- longest side along the wall
+							local ext = m:GetExtentsSize()
+							local yaw = (ext.X > ext.Z) and math.pi / 2 or 0
+							if rng:NextNumber() < 0.5 then
+								yaw += math.pi
+							end
+							local hx, hz = placeArt(m, f, 0, groundY, z, yaw)
+							local x = side * (w / 2 - hx - 2)
+							if blocksSpawn(zone, x, z, hx, hz) then
+								m:Destroy()
+							else
+								placeArt(m, f, x, groundY, z, yaw)
+								clearAround(zone, x, z, hx, hz)
+								for _, d in ipairs(m:GetDescendants()) do
+									if d:IsA("BasePart") then
+										d.CanCollide = true
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 function MapDecor.ShopkeeperNaps(root)
 	local keepers = {}
 	for _, d in ipairs(root:GetDescendants()) do

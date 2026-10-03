@@ -140,7 +140,9 @@ end
 -- YOUR bear trap model (ServerStorage > BearTrap, imported in Studio) replaces the built-in one.
 -- It's scaled to fit, its bottom sits on the ground; a quick squash plays when it snaps.
 local function customTrap(parent, center, size)
-	local template = game:GetService("ServerStorage"):FindFirstChild("BearTrap")
+	local ss = game:GetService("ServerStorage")
+	local holder = ss:FindFirstChild("CustomModels")
+	local template = (holder and holder:FindFirstChild("BearTrap")) or ss:FindFirstChild("BearTrap")
 	if not template then
 		return nil
 	end
