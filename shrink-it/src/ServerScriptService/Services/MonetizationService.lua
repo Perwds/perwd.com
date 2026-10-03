@@ -146,6 +146,9 @@ local productHandlers = {
 	Trail = function(player, _data, key)
 		Svc.Cosmetic.GrantTrail(player, MonetizationConfig.Products[key].Trail)
 	end,
+	Nameplate = function(player, _data, key)
+		Svc.Cosmetic.GrantPlate(player, MonetizationConfig.Products[key].Plate)
+	end,
 	InfinitePack = function(player, _data, key)
 		Svc.InfinitePack.OnPurchased(player, key)
 	end,

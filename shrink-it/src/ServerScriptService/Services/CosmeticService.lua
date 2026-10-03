@@ -11,6 +11,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local MonetizationConfig = require(Shared.Config.MonetizationConfig)
+local NameplateConfig = require(Shared.Config.NameplateConfig)
+local Nameplate = require(Shared.Nameplate)
 local Format = require(Shared.Format)
 
 local CosmeticService = {}
@@ -115,13 +117,77 @@ function CosmeticService.ApplyTrail(player)
 	trail.Parent = root
 end
 
+-- ── Name Plates (NameplateConfig) ─────────────────────────────────────
+local function ownsPlate(player, data, key)
+	local cfg = NameplateConfig.Plates[key]
+	if not cfg or not data then
+		return false
+	end
+	if cfg.Free then
+		return true
+	end
+	if cfg.Req then
+		return (data[cfg.Req.Stat] or 0) >= cfg.Req.Amount
+	end
+	return data.Nameplates and data.Nameplates[key] == true
+end
+CosmeticService.OwnsPlate = ownsPlate
+
+-- the plate over your head (a BillboardGui in the Head, sized in studs so it shrinks with distance)
+function CosmeticService.ApplyPlate(player)
+	local data = Svc.Data.Get(player)
+	local character = player.Character
+	local head = character and character:FindFirstChild("Head")
+	if not data or not head then
+		return
+	end
+	local old = head:FindFirstChild("NameplateGui")
+	if old then
+		old:Destroy()
+	end
+	local key = data.EquippedPlate
+	if not ownsPlate(player, data, key) then
+		key = NameplateConfig.Default
+	end
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "NameplateGui"
+	gui.Size = UDim2.fromScale(6, 1.15)
+	gui.StudsOffset = Vector3.new(0, 2.3, 0)
+	gui.LightInfluence = 0
+	gui.MaxDistance = 90
+	gui.ResetOnSpawn = false
+	gui.Adornee = head
+	Nameplate.Build(key, { Parent = gui, Text = player.DisplayName })
+	gui.Parent = head
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+	end
+end
+
+function CosmeticService.GrantPlate(player, key)
+	local data = Svc.Data.Get(player)
+	local cfg = NameplateConfig.Plates[key]
+	if not data or not cfg then
+		return
+	end
+	data.Nameplates[key] = true
+	data.EquippedPlate = key
+	CosmeticService.ApplyPlate(player)
+	Svc.Data.MarkDirty(player)
+	Svc.Net.Notify(player, cfg.Name .. " Name Plate unlocked!", "success")
+end
+
 function CosmeticService.OnPlayerLoaded(player)
 	player.CharacterAdded:Connect(function(character)
 		character:WaitForChild("HumanoidRootPart", 10)
 		CosmeticService.ApplyTrail(player)
+		character:WaitForChild("Head", 10)
+		CosmeticService.ApplyPlate(player)
 	end)
 	if player.Character then
 		CosmeticService.ApplyTrail(player)
+		CosmeticService.ApplyPlate(player)
 	end
 end
 
@@ -174,6 +240,40 @@ function CosmeticService.Start()
 			return { ok = false, msg = "You already own this trail!" }
 		end
 		return Svc.Monetization.PromptProduct(player, cfg.Product)
+	end)
+
+	Svc.Net.Handle("BuyPlate", function(player, key)
+		local data = Svc.Data.Get(player)
+		local cfg = type(key) == "string" and NameplateConfig.Plates[key]
+		if not data or not cfg then
+			return { ok = false }
+		end
+		if ownsPlate(player, data, key) then
+			return { ok = false, msg = "You already own this plate!" }
+		end
+		if cfg.Product then
+			return Svc.Monetization.PromptProduct(player, cfg.Product)
+		end
+		if cfg.Req then
+			return { ok = false, msg = cfg.Req.Label .. " to unlock it!" }
+		end
+		if not cfg.Cost or not Svc.Economy.Spend(player, cfg.Currency or "Coins", cfg.Cost) then
+			local need = cfg.Currency == "Gems" and (tostring(cfg.Cost) .. " Gems") or Format.Coins(cfg.Cost or 0)
+			return { ok = false, msg = "Need " .. need }
+		end
+		CosmeticService.GrantPlate(player, key)
+		return { ok = true }
+	end)
+
+	Svc.Net.Handle("EquipPlate", function(player, key)
+		local data = Svc.Data.Get(player)
+		if not data or type(key) ~= "string" or not ownsPlate(player, data, key) then
+			return { ok = false, msg = "You don't own that plate!" }
+		end
+		data.EquippedPlate = key
+		CosmeticService.ApplyPlate(player)
+		Svc.Data.MarkDirty(player)
+		return { ok = true }
 	end)
 
 	-- ⚙️ Settings menu (volumes 0..1, toggles true/false)

@@ -30,6 +30,7 @@ local RarityConfig = require(Shared.Config.RarityConfig)
 local Formulas = require(Shared.Formulas)
 local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
+local Nameplate = require(Shared.Nameplate)
 
 local Modules = script.Parent
 local State = require(Modules.State)
@@ -695,6 +696,11 @@ end
 local function floatingTitles()
 	RunService.RenderStepped:Connect(function()
 		local t = os.clock()
+		for _, plate in ipairs(CollectionService:GetTagged("NameplateFX")) do
+			if plate:IsA("GuiObject") then
+				Nameplate.Animate(plate, t)
+			end
+		end
 		for i, gui in ipairs(CollectionService:GetTagged("FloatingTitle")) do
 			local base = gui:GetAttribute("BaseHeight")
 			if base and gui:IsA("BillboardGui") then

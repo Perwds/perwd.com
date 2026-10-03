@@ -53,6 +53,8 @@ local TEMPLATE = {
 	EquippedSkin = "Default",
 	Trails = {}, -- [trailKey] = true
 	EquippedTrail = "",
+	Nameplates = {}, -- [plateKey] = true
+	EquippedPlate = "Classic",
 	RedeemedCodes = {},
 	VipFountainAt = 0,
 	Receipts = {}, -- [purchaseId] = os.time()

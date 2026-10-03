@@ -93,6 +93,10 @@ end
 function TrailsMenu.Build(ctx)
 	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Trail Shop", Animated = true, Style = "Header", Colors = PURPLE, Size = UDim2.fromOffset(1060, 590) })
 	local content = panel.Content
+	local plates = UIKit.Button({ Text = "NAME PLATES", Colors = { RGB(255, 170, 220), RGB(225, 70, 160) }, Size = UDim2.fromOffset(230, 52), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -96, 0, 42), CornerRadius = 6, ZIndex = 70, Parent = content.Parent, OnClick = function()
+		ctx.HUD.OpenMenu("Nameplates")
+	end })
+	plates.ZIndex = 70
 	local row = UIKit.Scroll({ Size = UDim2.fromScale(1, 1), Horizontal = true, Parent = content })
 	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 16), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center, Parent = row })
 	UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6), Parent = row })

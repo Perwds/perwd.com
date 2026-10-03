@@ -18,6 +18,8 @@ local TweenService = game:GetService("TweenService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local MonetizationConfig = require(Shared.Config.MonetizationConfig)
+local NameplateConfig = require(Shared.Config.NameplateConfig)
+local Nameplate = require(Shared.Nameplate)
 local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
 local UpgradeConfig = require(Shared.Config.UpgradeConfig)
@@ -507,6 +509,32 @@ function ShopMenu.Build(ctx)
 			end
 		end
 	end)
+
+	-- ════════════════════ NAME PLATES ════════════════════
+	sections.Plates = sectionHeader("Name Plates", RGB(255, 150, 210))
+	local plateBanner = banner(page, UDim2.new(1, -16, 0, 300), { RGB(70, 30, 90), RGB(150, 50, 140), RGB(70, 30, 90) }, { Move = "slide", LayoutOrder = nextOrder(), RainbowBorder = true })
+	text(plateBanner, "Show off over your head!", UDim2.new(1, -40, 0, 40), UDim2.fromOffset(20, 12), WHITE, 3.5)
+	local localPlayer = game:GetService("Players").LocalPlayer
+	local myName = localPlayer and localPlayer.DisplayName or "You"
+	for i, key in ipairs({ "Rainbow", "Champion", "Void" }) do
+		local cfg = NameplateConfig.Plates[key]
+		local y = 62 + (i - 1) * 74
+		local plate = Nameplate.Build(key, { Parent = plateBanner, Text = myName, Size = UDim2.fromOffset(380, 64), Position = UDim2.fromOffset(28, y), ZIndex = 5 })
+		plate.Name = "Plate_" .. key
+		local product = MonetizationConfig.Products[cfg.Product]
+		if product then
+			local _, label = robuxButton(plateBanner, UDim2.fromOffset(150, 56), UDim2.fromOffset(424, y + 4), nil, function()
+				ctx.HUD.Result(State.Action("BuyPlate", key))
+			end, { RGB(255, 120, 255), RGB(150, 40, 220) })
+			onRefresh(function(data)
+				label.Text = (data.Nameplates and data.Nameplates[key]) and "Owned" or productPrice(cfg.Product)
+			end)
+		end
+	end
+	local browse = UIKit.Button({ Text = "ALL PLATES", Colors = { RGB(255, 170, 220), RGB(225, 70, 160) }, Size = UDim2.fromOffset(200, 120), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -24, 0.55, 0), CornerRadius = 14, Parent = plateBanner, OnClick = function()
+		ctx.HUD.OpenMenu("Nameplates")
+	end })
+	browse.ZIndex = 6
 
 	-- ════════════════════ CODES ════════════════════
 	sections.Codes = sectionHeader("Codes", RGB(255, 140, 210))

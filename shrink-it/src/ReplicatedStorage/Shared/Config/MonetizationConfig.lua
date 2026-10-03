@@ -88,6 +88,11 @@ MonetizationConfig.Products = {
 	TrailSecret = { Id = 0, Name = "Secret Trail", Emoji = "🦓", PriceLabel = "R$ 349", Handler = "Trail", Trail = "Secret", Hidden = true }, -- 🔧 REPLACE Id
 	TrailEternal = { Id = 0, Name = "Eternal Trail", Emoji = "♾️", PriceLabel = "R$ 499", Handler = "Trail", Trail = "Eternal", Hidden = true }, -- 🔧 REPLACE Id
 
+	-- Name Plates bought with Robux (Name Plates menu). Hidden from the Shop list.
+	PlateRainbow = { Id = 0, Name = "Rainbow Name Plate", Emoji = "", PriceLabel = "R$ 99", Handler = "Nameplate", Plate = "Rainbow", Hidden = true }, -- 🔧 REPLACE Id
+	PlateChampion = { Id = 0, Name = "Champion Name Plate", Emoji = "", PriceLabel = "R$ 199", Handler = "Nameplate", Plate = "Champion", Hidden = true }, -- 🔧 REPLACE Id
+	PlateVoid = { Id = 0, Name = "Void Name Plate", Emoji = "", PriceLabel = "R$ 299", Handler = "Nameplate", Plate = "Void", Hidden = true }, -- 🔧 REPLACE Id
+
 	-- Infinite Pack paid tiles (repeatable). Price tier is picked by tile position.
 	PackTier1 = { Id = 0, Name = "Infinite Pack Tile", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 25", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
 	PackTier2 = { Id = 0, Name = "Infinite Pack Tile+", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 59", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
