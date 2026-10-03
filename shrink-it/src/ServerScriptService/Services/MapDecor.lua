@@ -1189,7 +1189,8 @@ end
 local function customModel(name)
 	local ss = game:GetService("ServerStorage")
 	local holder = ss:FindFirstChild("CustomModels")
-	return (holder and holder:FindFirstChild(name)) or ss:FindFirstChild(name)
+	-- also finds it inside a combined import (CustomModels > ShrinkIt_Models > Cars ...)
+	return (holder and holder:FindFirstChild(name, true)) or ss:FindFirstChild(name)
 end
 
 -- the separate pieces of a pack (skips wrapper models that only hold one child)
@@ -1306,8 +1307,9 @@ function MapDecor.CustomDecor(map)
 	local cars = {}
 	local ss = game:GetService("ServerStorage")
 	for _, holder in ipairs({ ss:FindFirstChild("CustomModels"), ss }) do
-		for _, pack in ipairs(holder and holder:GetChildren() or {}) do
-			if pack.Name:match("^Cars%d*$") then
+		local list = holder and (holder.Name == "CustomModels" and holder:GetDescendants() or holder:GetChildren()) or {}
+		for _, pack in ipairs(list) do
+			if pack.Name:match("^Cars%d*$") and not pack:IsA("BasePart") and not (pack.Parent and pack.Parent.Name:match("^Cars%d*$")) then
 				for _, piece in ipairs(packPieces(pack)) do
 					table.insert(cars, piece)
 				end

@@ -55,6 +55,7 @@ local TEMPLATE = {
 	EquippedTrail = "",
 	Nameplates = {}, -- [plateKey] = true
 	EquippedPlate = "Classic",
+	PlateColor = { 255, 120, 40 }, -- Custom Color plate (R, G, B)
 	RedeemedCodes = {},
 	VipFountainAt = 0,
 	Receipts = {}, -- [purchaseId] = os.time()

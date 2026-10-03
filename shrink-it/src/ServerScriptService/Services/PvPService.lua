@@ -142,7 +142,7 @@ end
 local function customTrap(parent, center, size)
 	local ss = game:GetService("ServerStorage")
 	local holder = ss:FindFirstChild("CustomModels")
-	local template = (holder and holder:FindFirstChild("BearTrap")) or ss:FindFirstChild("BearTrap")
+	local template = (holder and holder:FindFirstChild("BearTrap", true)) or ss:FindFirstChild("BearTrap")
 	if not template then
 		return nil
 	end

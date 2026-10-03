@@ -29,6 +29,8 @@ NameplateConfig.Order = {
 	-- blinkies (pixel font, dashed frames, some of them blink)
 	"Sweetheart", "Cherry", "Sakura", "SnowDay", "Spooky", "Slime", "Crimson", "Hazard", "NightCity", "Matrix",
 	"ComputerLove", "Party", "Stargazer", "Sparkling", "GlitterGold", "Nightcore", "Rave",
+	-- glossy studded panels + your own color
+	"StudOrange", "StudRed", "StudLime", "StudPurple", "StudIce", "StudRainbow", "Custom",
 }
 
 NameplateConfig.Plates = {
@@ -78,6 +80,19 @@ P.Sparkling = blinkie({ Name = "Never Stop Sparkling", Rarity = "Gems", Cost = 1
 P.GlitterGold = blinkie({ Name = "Glitter Gold", Rarity = "Robux", Product = "PlateGlitter", Colors = { RGB(255, 235, 150), RGB(210, 160, 40) }, Border = RGB(120, 80, 10), Pattern = "Glitter", Accent = RGB(255, 250, 210), Accent2 = RGB(170, 120, 20), Icon = "crown", IconBoth = true, Blink = true, Shine = true })
 P.Nightcore = blinkie({ Name = "Nightcore", Rarity = "Robux", Product = "PlateNightcore", Colors = { RGB(25, 25, 35), RGB(10, 10, 15) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Equalizer", Blink = true, TextColor = RGB(255, 240, 120) })
 P.Rave = blinkie({ Name = "Rave", Rarity = "Robux", Product = "PlateRave", Colors = { RGB(0, 0, 0), RGB(0, 0, 0) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Checker", Icon = "star", IconBoth = true, Shine = true })
+
+-- ── glossy studded panels ──
+local function stud(name, rarity, cost, top, bottom, border, accent)
+	return { Name = name, Rarity = rarity, Cost = cost, Currency = "Coins", Colors = { top, bottom }, Vertical = true, Border = border, Pattern = "Studs", Accent = accent }
+end
+P.StudOrange = stud("Orange Panel", "Common", 10_000, RGB(255, 210, 60), RGB(255, 140, 20), RGB(150, 70, 0), RGB(255, 240, 150))
+P.StudRed = stud("Red Panel", "Uncommon", 150_000, RGB(255, 120, 130), RGB(225, 30, 55), RGB(120, 0, 20), RGB(255, 190, 200))
+P.StudLime = stud("Lime Panel", "Rare", 2_500_000, RGB(220, 255, 60), RGB(70, 210, 20), RGB(20, 100, 0), RGB(240, 255, 170))
+P.StudPurple = stud("Purple Panel", "Epic", 60_000_000, RGB(150, 110, 255), RGB(90, 30, 230), RGB(50, 0, 140), RGB(200, 180, 255))
+P.StudIce = stud("Ice Panel", "Legendary", 1_000_000_000, RGB(235, 255, 255), RGB(110, 225, 255), RGB(20, 130, 170), RGB(255, 255, 255))
+P.StudRainbow = { Name = "Rainbow Panel", Rarity = "Gems", Cost = 1_500, Currency = "Gems", Colors = { RGB(255, 255, 255), RGB(255, 255, 255) }, Vertical = true, RainbowBody = true, Border = RGB(255, 255, 255), Pattern = "Studs", Accent = RGB(255, 255, 255), Shine = true }
+-- Custom: pick ANY color (all 16,777,216) with the color picker in the Name Plates menu
+P.Custom = { Name = "Custom Color", Rarity = "Robux", Product = "PlateCustom", CustomColor = true, Colors = { RGB(255, 200, 150), RGB(255, 120, 40) }, Vertical = true, Border = RGB(140, 60, 10), Pattern = "Studs", Accent = RGB(255, 220, 190), Shine = true }
 
 -- card colors per rarity (menu)
 NameplateConfig.RarityColors = {

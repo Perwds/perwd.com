@@ -157,7 +157,8 @@ function CosmeticService.ApplyPlate(player)
 	gui.MaxDistance = 90
 	gui.ResetOnSpawn = false
 	gui.Adornee = head
-	Nameplate.Build(key, { Parent = gui, Text = player.DisplayName })
+	local pc = data.PlateColor or {}
+	Nameplate.Build(key, { Parent = gui, Text = player.DisplayName, Color = Color3.fromRGB(pc[1] or 255, pc[2] or 120, pc[3] or 40) })
 	gui.Parent = head
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
@@ -263,6 +264,22 @@ function CosmeticService.Start()
 		end
 		CosmeticService.GrantPlate(player, key)
 		return { ok = true }
+	end)
+
+	-- Custom Color plate: any RGB color
+	Svc.Net.Handle("SetPlateColor", function(player, r, g, b)
+		local data = Svc.Data.Get(player)
+		if not data or not ownsPlate(player, data, "Custom") then
+			return { ok = false, msg = "Get the Custom Color plate first!" }
+		end
+		if type(r) ~= "number" or type(g) ~= "number" or type(b) ~= "number" or r ~= r or g ~= g or b ~= b then
+			return { ok = false }
+		end
+		data.PlateColor = { math.clamp(math.floor(r), 0, 255), math.clamp(math.floor(g), 0, 255), math.clamp(math.floor(b), 0, 255) }
+		data.EquippedPlate = "Custom"
+		CosmeticService.ApplyPlate(player)
+		Svc.Data.MarkDirty(player)
+		return { ok = true, msg = "Color saved!" }
 	end)
 
 	Svc.Net.Handle("EquipPlate", function(player, key)

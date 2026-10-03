@@ -360,13 +360,44 @@ function PATTERNS.Matrix(body, cfg, z)
 	end
 end
 
+-- glossy studded panel: a grid of little raised squares, a shiny top and a lighter ledge at the bottom
+function PATTERNS.Studs(body, cfg, z)
+	local cols, rows = 18, 3
+	local light = cfg.Accent or Color3.new(1, 1, 1)
+	for row = 0, rows - 1 do
+		for col = 0, cols - 1 do
+			local x, y = (col + 0.5) / cols, 0.2 + row * 0.27
+			frame(body, { BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.82, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 1, y, 1), Size = UDim2.fromScale(0.022, 0.16), ZIndex = z })
+			frame(body, { BackgroundColor3 = light, BackgroundTransparency = 0.6, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(x, y), Size = UDim2.fromScale(0.022, 0.16), ZIndex = z })
+		end
+	end
+	local gloss = frame(body, { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.55, Size = UDim2.fromScale(1, 0.42), ZIndex = z + 1 })
+	local gg = Instance.new("UIGradient")
+	gg.Rotation = 90
+	gg.Transparency = NumberSequence.new(0.2, 1)
+	gg.Parent = gloss
+	frame(body, { BackgroundColor3 = light, BackgroundTransparency = 0.15, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.fromScale(1, 0.12), ZIndex = z + 1 })
+end
+
 function PATTERNS.Rainbow(_body, _cfg, _z)
 	-- the bar itself is the rainbow (see Build)
 end
 
--- Builds a plate. props: Parent, Size, Position, AnchorPoint, ZIndex, Text
+-- the colors of the Custom plate, made from the one color the player picked
+function Nameplate.CustomCfg(base, color)
+	local cfg = table.clone(base)
+	cfg.Colors = { color:Lerp(Color3.new(1, 1, 1), 0.45), color }
+	cfg.Border = color:Lerp(Color3.new(0, 0, 0), 0.45)
+	cfg.Accent = color:Lerp(Color3.new(1, 1, 1), 0.55)
+	return cfg
+end
+
+-- Builds a plate. props: Parent, Size, Position, AnchorPoint, ZIndex, Text, Color (Custom plate only)
 function Nameplate.Build(key, props)
 	local cfg = NameplateConfig.Plates[key] or NameplateConfig.Plates[NameplateConfig.Default]
+	if cfg.CustomColor then
+		cfg = Nameplate.CustomCfg(cfg, props.Color or cfg.Colors[#cfg.Colors])
+	end
 	local z = props.ZIndex or 1
 	local outline = frame(nil, {
 		Name = "Nameplate",
@@ -408,7 +439,7 @@ function Nameplate.Build(key, props)
 	cc.CornerRadius = UDim.new(0.25, 0)
 	cc.Parent = body
 	local bg = Instance.new("UIGradient")
-	if cfg.Pattern == "Rainbow" then
+	if cfg.Pattern == "Rainbow" or cfg.RainbowBody then
 		bg.Color = ColorSequence.new({
 			ColorSequenceKeypoint.new(0, RGB(255, 255, 255)),
 			ColorSequenceKeypoint.new(0.28, RGB(255, 235, 235)),
@@ -426,6 +457,11 @@ function Nameplate.Build(key, props)
 			ColorSequenceKeypoint.new(0.3, c1:Lerp(c2, 0.15)),
 			ColorSequenceKeypoint.new(1, c2),
 		})
+	end
+	if cfg.Vertical then
+		local c1, c2 = cfg.Colors[1], cfg.Colors[#cfg.Colors]
+		bg.Color = cfg.RainbowBody and RAINBOW or ColorSequence.new(c1, c2)
+		bg.Rotation = cfg.RainbowBody and 0 or 90
 	end
 	bg.Parent = body
 	local pattern = cfg.Pattern and PATTERNS[cfg.Pattern]
