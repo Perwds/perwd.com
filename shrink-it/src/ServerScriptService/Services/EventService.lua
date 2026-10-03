@@ -84,6 +84,16 @@ function EventService.ForcedVariant()
 	return ev and ev.ForceVariant or nil
 end
 
+function EventService.MutationMult()
+	local ev = EventService.GetCurrent()
+	return ev and ev.MutationMult or 1
+end
+
+function EventService.SizeLuck()
+	local ev = EventService.GetCurrent()
+	return ev and ev.SizeLuck or 1
+end
+
 function EventService.RespawnMult(tier)
 	local ev = EventService.GetCurrent()
 	if ev and ev.RespawnMultForTier and ev.RespawnMultForTier[tier] then
@@ -111,13 +121,28 @@ function EventService.Start()
 				if key then
 					local ev = EventConfig.Events[key]
 					Svc.Net.Announce(string.upper(ev.Name) .. " has begun! " .. ev.Description, ev.Color)
+					if ev.MegaBox then
+						task.spawn(function()
+							local ok, err = pcall(Svc.Spawn.SpawnMegaBox)
+							if not ok then
+								warn("[EventService] mega box failed: " .. tostring(err))
+							end
+						end)
+					end
 				elseif old then
 					Svc.Net.Announce(EventConfig.Events[old].Name .. " has ended.", Color3.fromRGB(200, 200, 200))
 				end
 				broadcast()
 			end
-			-- Giant Rush bonus spawns
+			-- Box Rain: boxes fall from the sky
 			local ev = EventService.GetCurrent()
+			if ev and ev.RainEvery and os.clock() >= (EventService._nextRain or 0) then
+				EventService._nextRain = os.clock() + ev.RainEvery
+				task.spawn(function()
+					pcall(Svc.Spawn.RainBox)
+				end)
+			end
+			-- Giant Rush bonus spawns
 			if ev and ev.BonusSpawnTier and os.clock() >= nextBonus then
 				nextBonus = os.clock() + ev.BonusSpawnInterval
 				Svc.Spawn.SpawnExtra(ev.BonusSpawnTier, nil, 90)

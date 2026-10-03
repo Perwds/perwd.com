@@ -365,7 +365,7 @@ local function onFire(player, target, extras)
 	ShrinkService.Capture(player, target)
 
 	-- Multi-Shrink extras (limited by how much room you have left to carry)
-	if type(extras) == "table" and room > 1 then
+	if GameConfig.MultiShrinkExtras and type(extras) == "table" and room > 1 then
 		local origin = target:GetPivot().Position
 		local seen = { [target] = true }
 		local count = 1

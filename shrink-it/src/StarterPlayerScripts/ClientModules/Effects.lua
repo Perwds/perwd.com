@@ -547,8 +547,43 @@ local function hideIfTaken(model)
 		return
 	end
 	if string.find(model:GetAttribute("Taken") or "", "," .. player.UserId .. ",", 1, true) then
+		-- its light beam / ground ring go too (local only: other players still see them)
+		local uid = model:GetAttribute("SpawnUid")
+		local live = model.Parent
+		if uid and live and model:GetAttribute("HasFX") then
+			for _, fx in ipairs(live:GetChildren()) do
+				if fx:GetAttribute("ForBox") == uid then
+					fx:Destroy()
+				end
+			end
+		end
 		model:Destroy() -- local only: other players still see it
 	end
+end
+
+-- boxes in the zones gently hover and spin (just on your screen)
+local function boxHover()
+	local base = setmetatable({}, { __mode = "k" })
+	RunService.RenderStepped:Connect(function()
+		local camera = workspace.CurrentCamera
+		if not camera then
+			return
+		end
+		local t = os.clock()
+		local camPos = camera.CFrame.Position
+		for _, model in ipairs(CollectionService:GetTagged("Shrinkable")) do
+			if model:IsA("Model") and model.Parent and model:GetAttribute("Landed") and not model:GetAttribute("LocalShrinking") then
+				local b = base[model]
+				if not b then
+					b = { CF = model:GetPivot(), Phase = (model:GetAttribute("SpawnUid") or 0) % 7 }
+					base[model] = b
+				end
+				if (b.CF.Position - camPos).Magnitude < 160 then
+					model:PivotTo(b.CF * CFrame.new(0, 0.7 + math.sin(t * 2 + b.Phase) * 0.45, 0) * CFrame.Angles(0, (t * 0.7 + b.Phase) % (math.pi * 2), 0))
+				end
+			end
+		end
+	end)
 end
 
 local function watchBoxes()
@@ -878,6 +913,7 @@ function Effects.Init()
 	task.spawn(hoverInfo)
 	task.spawn(treadmillLock)
 	task.spawn(floatingTitles)
+	task.spawn(boxHover)
 	task.spawn(settingsLoop)
 	setupChat()
 	Remotes.Event("PvPFX").OnClientEvent:Connect(onPvPFX)

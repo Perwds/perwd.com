@@ -66,33 +66,94 @@ local function weld(a, b)
 end
 
 -- ── tools ────────────────────────────────────────────────────────────
+-- Tools are held with the Handle's +Y axis pointing forward out of the hand.
 local function makeBat()
 	local tool = Instance.new("Tool")
 	tool.Name = "Bat"
 	tool.ToolTip = "Whack players to steal what they carry!"
 	tool.CanBeDropped = false
-	tool.TextureId = ""
-	local handle = part(tool, Vector3.new(0.4, 1.4, 0.4), CFrame.new(), Color3.fromRGB(60, 40, 30), Enum.Material.Fabric)
+	local wood = Color3.fromRGB(214, 160, 98)
+	local handle = part(tool, Vector3.new(0.38, 1.3, 0.38), CFrame.new(), Color3.fromRGB(35, 35, 40), Enum.Material.Fabric) -- grip tape
 	handle.Name = "Handle"
-	local barrel = part(tool, Vector3.new(0.7, 3, 0.7), handle.CFrame * CFrame.new(0, 2.1, 0), Color3.fromRGB(205, 150, 90), Enum.Material.Wood)
-	weld(handle, barrel)
-	local cap = part(tool, Vector3.new(0.72, 0.72, 0.72), handle.CFrame * CFrame.new(0, 3.6, 0), Color3.fromRGB(205, 150, 90), Enum.Material.Wood, Enum.PartType.Ball)
-	weld(handle, cap)
-	local knob = part(tool, Vector3.new(0.6, 0.2, 0.6), handle.CFrame * CFrame.new(0, -0.75, 0), Color3.fromRGB(40, 30, 25), Enum.Material.Wood)
+	local knob = part(tool, Vector3.new(0.6, 0.18, 0.6), CFrame.new(0, -0.74, 0), Color3.fromRGB(35, 35, 40), Enum.Material.Fabric, Enum.PartType.Cylinder)
+	knob.CFrame = CFrame.new(0, -0.74, 0) * CFrame.Angles(0, 0, math.rad(90))
 	weld(handle, knob)
-	tool.Grip = CFrame.new(0, -0.3, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+	-- tapered barrel (thin → thick), then a rounded end
+	local widths = { 0.42, 0.5, 0.6, 0.7, 0.78 }
+	for i, w in ipairs(widths) do
+		local seg = part(tool, Vector3.new(0.75, w, w), CFrame.new(0, 0.65 + (i - 0.5) * 0.72, 0) * CFrame.Angles(0, 0, math.rad(90)), wood, Enum.Material.Wood, Enum.PartType.Cylinder)
+		weld(handle, seg)
+	end
+	local cap = part(tool, Vector3.new(0.8, 0.8, 0.8), CFrame.new(0, 0.65 + 5 * 0.72, 0), wood, Enum.Material.Wood, Enum.PartType.Ball)
+	weld(handle, cap)
+	-- swing trail along the barrel
+	local a0 = Instance.new("Attachment")
+	a0.Name = "TrailBottom"
+	a0.Position = Vector3.new(0, 1.2, 0)
+	a0.Parent = handle
+	local a1 = Instance.new("Attachment")
+	a1.Name = "TrailTop"
+	a1.Position = Vector3.new(0, 4.2, 0)
+	a1.Parent = handle
+	local trail = Instance.new("Trail")
+	trail.Name = "SwingTrail"
+	trail.Attachment0 = a0
+	trail.Attachment1 = a1
+	trail.Lifetime = 0.2
+	trail.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
+	trail.Transparency = NumberSequence.new(0.3, 1)
+	trail.Enabled = false
+	trail.Parent = handle
+	tool.Grip = CFrame.new(0, -0.45, 0)
 	return tool
+end
+
+-- a bear trap model (used in your hand and on the ground). open = jaws flat, closed = jaws up.
+local function bearTrap(parent, center, size, open)
+	local metal = Color3.fromRGB(95, 95, 105)
+	local steel = Color3.fromRGB(205, 205, 215)
+	local r = size
+	local plate = part(parent, Vector3.new(0.18 * r, 1.6 * r, 1.6 * r), center * CFrame.Angles(0, 0, math.rad(90)), metal, Enum.Material.Metal, Enum.PartType.Cylinder)
+	plate.Name = "Plate"
+	local pad = part(parent, Vector3.new(0.7 * r, 0.12 * r, 0.7 * r), center * CFrame.new(0, 0.12 * r, 0), Color3.fromRGB(230, 60, 60), Enum.Material.Neon)
+	pad.Name = "Pad"
+	local jaws = {}
+	for _, side in ipairs({ -1, 1 }) do
+		local jaw = Instance.new("Model")
+		jaw.Name = side < 0 and "JawA" or "JawB"
+		jaw.Parent = parent
+		-- a half ring of bars + teeth, hinged on the x axis through the center
+		for k = 0, 6 do
+			local a = math.rad(-90 + k * 30)
+			local x, z = math.sin(a) * 1.25 * r, side * math.cos(a) * 1.25 * r
+			part(jaw, Vector3.new(0.62 * r, 0.14 * r, 0.14 * r), center * CFrame.new(x, 0.1 * r, z) * CFrame.Angles(0, a * side, 0), metal, Enum.Material.Metal)
+			part(jaw, Vector3.new(0.12 * r, 0.34 * r, 0.12 * r), center * CFrame.new(x * 0.92, 0.3 * r, z * 0.92), steel, Enum.Material.Metal)
+		end
+		jaws[side] = jaw
+		if not open then
+			jaw:PivotTo(center * CFrame.Angles(-side * math.rad(85), 0, 0) * center:Inverse() * jaw:GetPivot())
+		end
+	end
+	return plate, jaws
 end
 
 local function makeTrapTool()
 	local tool = Instance.new("Tool")
 	tool.Name = "Trap"
-	tool.ToolTip = "Drop a trap that stops the next player who steps on it."
+	tool.ToolTip = "Drop a bear trap. The next player who steps on it gets stuck!"
 	tool.CanBeDropped = false
-	local handle = part(tool, Vector3.new(1.6, 0.3, 1.6), CFrame.new(), Color3.fromRGB(110, 110, 120), Enum.Material.Metal, Enum.PartType.Cylinder)
+	local handle = part(tool, Vector3.new(0.3, 0.9, 0.3), CFrame.new(), Color3.fromRGB(70, 70, 80), Enum.Material.Metal) -- chain grip
 	handle.Name = "Handle"
-	handle.Size = Vector3.new(0.3, 1.6, 1.6)
-	tool.Grip = CFrame.Angles(0, 0, math.rad(90))
+	-- a closed trap carried in front of the hand
+	local holder = Instance.new("Model")
+	holder.Parent = tool
+	bearTrap(holder, CFrame.new(0, 1.1, 0) * CFrame.Angles(math.rad(90), 0, 0), 0.55, false)
+	for _, d in ipairs(holder:GetDescendants()) do
+		if d:IsA("BasePart") then
+			weld(handle, d)
+		end
+	end
+	tool.Grip = CFrame.new(0, -0.2, 0)
 	return tool
 end
 
@@ -194,6 +255,13 @@ function PvPService.Swing(player, tool)
 	anim.Value = "Slash"
 	anim.Parent = tool
 	game:GetService("Debris"):AddItem(anim, 1)
+	local trail = tool:FindFirstChild("Handle") and tool.Handle:FindFirstChild("SwingTrail")
+	if trail then
+		trail.Enabled = true
+		task.delay(0.35, function()
+			trail.Enabled = false
+		end)
+	end
 	Svc.Net.Sound("Swing", nil, root.Position)
 
 	-- closest player in front of you within range
@@ -243,43 +311,18 @@ function PvPService.Swing(player, tool)
 end
 
 -- ── traps ────────────────────────────────────────────────────────────
-local function buildTrap(owner, position)
-	local model = Instance.new("Model")
-	model.Name = "Trap"
-	model:SetAttribute("OwnerUserId", owner.UserId)
-	local base = Instance.new("Part")
-	base.Name = "Plate"
-	base.Anchored = true
-	base.CanCollide = false
-	base.Size = Vector3.new(0.3, 3.4, 3.4)
-	base.Shape = Enum.PartType.Cylinder
-	base.CFrame = CFrame.new(position + Vector3.new(0, 0.15, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	base.Color = Color3.fromRGB(90, 90, 100)
-	base.Material = Enum.Material.Metal
-	base.Parent = model
-	for i = 0, 9 do -- teeth
-		local a = i / 10 * math.pi * 2
-		local tooth = Instance.new("WedgePart")
-		tooth.Anchored = true
-		tooth.CanCollide = false
-		tooth.CanTouch = false
-		tooth.Size = Vector3.new(0.25, 0.6, 0.35)
-		tooth.CFrame = CFrame.new(position + Vector3.new(math.cos(a) * 1.5, 0.55, math.sin(a) * 1.5)) * CFrame.Angles(0, -a, 0)
-		tooth.Color = Color3.fromRGB(200, 200, 210)
-		tooth.Material = Enum.Material.Metal
-		tooth.Parent = model
+local activeTraps = {} -- { Model, Owner, Center, Jaws, Sprung, Expires }
+
+local function snap(trap)
+	-- jaws close up around the victim's legs
+	for step = 1, 4 do
+		for side, jaw in pairs(trap.Jaws) do
+			jaw:PivotTo(trap.Center * CFrame.Angles(-side * math.rad(85 / 4), 0, 0) * trap.Center:Inverse() * jaw:GetPivot())
+		end
+		if step < 4 then
+			task.wait(0.02)
+		end
 	end
-	local center = Instance.new("Part")
-	center.Anchored = true
-	center.CanCollide = false
-	center.CanTouch = false
-	center.Size = Vector3.new(0.9, 0.2, 0.9)
-	center.CFrame = CFrame.new(position + Vector3.new(0, 0.35, 0))
-	center.Color = Color3.fromRGB(230, 60, 60)
-	center.Material = Enum.Material.Neon
-	center.Parent = model
-	model.PrimaryPart = base
-	return model, base
 end
 
 function PvPService.PlaceTrap(player)
@@ -296,6 +339,13 @@ function PvPService.PlaceTrap(player)
 		Svc.Net.Notify(player, "No traps in the safe zone!", "error")
 		return
 	end
+	-- find the real ground under you (a little behind you, so the chaser / thief runs into it)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = { player.Character, Svc.Map.LiveObjects }
+	local from = root.Position - root.CFrame.LookVector * 3
+	local hit = workspace:Raycast(from, Vector3.new(0, -12, 0), params)
+	local ground = hit and hit.Position or (root.Position - Vector3.new(0, 3, 0))
 	lastTrap[player] = now
 	local list = traps[player] or {}
 	traps[player] = list
@@ -305,36 +355,58 @@ function PvPService.PlaceTrap(player)
 			old:Destroy()
 		end
 	end
-	local model, plate = buildTrap(player, root.Position - Vector3.new(0, 3, 0))
+	local model = Instance.new("Model")
+	model.Name = "Trap"
+	model:SetAttribute("OwnerUserId", player.UserId)
+	local center = CFrame.new(ground + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, math.random() * math.pi, 0)
+	local plate, jaws = bearTrap(model, center, 1, true)
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") then
+			d.Anchored = true
+			d.CanQuery = false
+			d.CanTouch = false
+		end
+	end
+	model.PrimaryPart = plate
 	model.Parent = Svc.Map.LiveObjects
 	table.insert(list, model)
-	local sprung = false
-	plate.Touched:Connect(function(hit)
-		if sprung then
-			return
-		end
-		local victim = Players:GetPlayerFromCharacter(hit.Parent)
-		if victim and victim ~= player then
-			local vRoot = rootOf(victim)
-			if vRoot and not Svc.Map.IsInBase(vRoot.Position) then
-				sprung = true
-				stun(victim, cfg.TrapStunSeconds)
-				Svc.Net.Sound("Trap", nil, plate.Position)
-				Remotes.Event("PvPFX"):FireAllClients("Trap", { Victim = victim, Attacker = player, Position = plate.Position })
-				Svc.Net.Notify(victim, "You stepped in " .. player.DisplayName .. "'s trap!", "error")
-				Svc.Net.Notify(player, "🪤 " .. victim.DisplayName .. " is stuck in your trap! Go get 'em!", "success")
-				task.delay(cfg.TrapStunSeconds, function()
-					model:Destroy()
-				end)
+	table.insert(activeTraps, { Model = model, Owner = player, Center = center, Jaws = jaws, Sprung = false, Expires = now + cfg.TrapLifetime })
+	Svc.Net.Sound("Trap", player)
+	Svc.Net.Notify(player, "Trap set!", "info")
+end
+
+local function trapLoop()
+	while true do
+		task.wait(0.1)
+		local now = os.clock()
+		for i = #activeTraps, 1, -1 do
+			local trap = activeTraps[i]
+			if not trap.Model.Parent or now >= trap.Expires then
+				table.remove(activeTraps, i)
+				if trap.Model.Parent then
+					trap.Model:Destroy()
+				end
+			elseif not trap.Sprung then
+				for _, victim in ipairs(Players:GetPlayers()) do
+					local vRoot = rootOf(victim)
+					if victim ~= trap.Owner and vRoot then
+						local offset = vRoot.Position - trap.Center.Position
+						if Vector3.new(offset.X, 0, offset.Z).Magnitude < 2.4 and math.abs(offset.Y) < 6 and not Svc.Map.IsInBase(vRoot.Position) then
+							trap.Sprung = true
+							trap.Expires = now + cfg.TrapStunSeconds + 0.5
+							stun(victim, cfg.TrapStunSeconds)
+							task.spawn(snap, trap)
+							Svc.Net.Sound("Trap", nil, trap.Center.Position)
+							Remotes.Event("PvPFX"):FireAllClients("Trap", { Victim = victim, Attacker = trap.Owner, Position = trap.Center.Position })
+							Svc.Net.Notify(victim, "You stepped in " .. trap.Owner.DisplayName .. "'s trap!", "error")
+							Svc.Net.Notify(trap.Owner, victim.DisplayName .. " is stuck in your trap! Go get 'em!", "success")
+							break
+						end
+					end
+				end
 			end
 		end
-	end)
-	task.delay(cfg.TrapLifetime, function()
-		if model.Parent then
-			model:Destroy()
-		end
-	end)
-	Svc.Net.Sound("Trap", player)
+	end
 end
 
 function PvPService.OnPlayerLoaded(player)
@@ -358,6 +430,8 @@ function PvPService.OnPlayerRemoving(player)
 	stunnedUntil[player] = nil
 end
 
-function PvPService.Start() end
+function PvPService.Start()
+	task.spawn(trapLoop)
+end
 
 return PvPService

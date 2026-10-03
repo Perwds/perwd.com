@@ -191,6 +191,8 @@ Shopkeepers are added when the server starts.
 | **Boss every 30 min**: Dr. Grow's robot lands in the base; everyone shrinks it with their rays, its growth ray makes players big and slow. Rewards: Samples + Boss Mastery (Mastery Boxes at 1/3/5/10/25/50/100 kills) | `BossService`, `GameConfig.Boss` |
 | **Lab** stand: turn in unopened boxes for Samples, buy a Mutation Serum or a Mastery Box | `BossService` (Lab), `LabMenu` |
 | Robux: Instant Open (R key on an opening box), Limited Festive Box, plus 2x Coins / Fast Boxes passes and Open All Boxes | `MonetizationConfig` |
+| Crate effects: Rare sparkle, Epic glow ring, Legendary+ light beam; zone crates hover & spin. Events every 15 min now include **Box Rain**, **Mega Box** (giant, always mutated), **Mutation Frenzy** (3x mutations) and **Size Surge** | `SpawnService.AddRarityFX`, `EventConfig` |
+| Bat (taped wooden bat with swing trail) and Bear Trap (jaws snap shut; triggers by distance, sits on the real ground) | `PvPService` |
 | **Your own textures**: paste asset IDs into `TextureConfig` (ground per zone, plot floors, shop counters, box faces, menu backgrounds) | `TextureConfig`, `MapService.ApplyTextures` |
 | Rebirth (multiplier, Gems, Tokens) + permanent Token upgrades | `RebirthService` |
 | The Index with per-area completion rewards (Normal set + full variant set) | `IndexService`, `IndexMenu` |

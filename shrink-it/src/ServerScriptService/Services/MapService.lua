@@ -40,12 +40,12 @@ MapService.Plots = {} -- [id] = { Id, Model, Floor, Building, Pedestals (Folder)
 MapService.Boards = {} -- [stat] = Part
 
 local CORRIDOR = 200 -- shrink-zone corridor width (x from -100 to 100); the base gate is this wide
-local BASE_W = 500 -- base width
-local BASE_D = 260 -- base depth (z from -260 to 0)
+local BASE_W = 420 -- base width
+local BASE_D = 220 -- base depth (z from -220 to 0)
 local WALL_H = 40
 local PLOT_W, PLOT_D = 70, 95
-local PLOT_RADIUS = 190 -- plot centers sit on this circle around the gate (0, 0, 0)
-local PLOT_ARC = { 195, 345 } -- degrees (x = cos, z = sin): a semicircle behind the gate
+local PLOT_RADIUS = 150 -- plot centers sit on this circle around the gate (0, 0, 0)
+local PLOT_ARC = { 200, 340 } -- degrees (x = cos, z = sin): a semicircle behind the gate
 MapService.CorridorWidth = CORRIDOR
 MapService.DecorBand = 20 -- outer strip of each zone reserved for scenery
 
@@ -274,7 +274,7 @@ local function buildMap()
 	spawn.Parent = base
 
 	-- small VIP lounge tucked in the back-right corner (keeps the middle of the base open)
-	local vip = Vector3.new(212, 0, -228)
+	local vip = Vector3.new(175, 0, -195)
 	local gold = Color3.fromRGB(255, 205, 60)
 	part({ Name = "VIPRoom", Size = Vector3.new(32, 18, 26), CFrame = CFrame.new(vip + Vector3.new(0, 9, 0)), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
 	part({ Name = "VIPWall", Size = Vector3.new(32, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(0, 9, -13)), Color = gold, Material = Enum.Material.Marble, Parent = base })
@@ -289,7 +289,7 @@ local function buildMap()
 
 	-- Like sign on the back wall, leaderboards on the front wall either side of the gate (facing in)
 	part({ Name = "LikeSign", Size = Vector3.new(40, 22, 2), CFrame = CFrame.lookAt(Vector3.new(0, 30, -BASE_D + 1), Vector3.new(0, 30, 0)), Color = Color3.fromRGB(40, 40, 60), Parent = base })
-	local stats = { { "MuseumValue", -205 }, { "TotalShrinks", -140 }, { "Rebirths", 140 }, { "RaidsWon", 205 } }
+	local stats = { { "MuseumValue", -170 }, { "TotalShrinks", -115 }, { "Rebirths", 115 }, { "RaidsWon", 170 } }
 	for _, st in ipairs(stats) do
 		part({ Name = "Board_" .. st[1], Size = Vector3.new(30, 22, 2), CFrame = CFrame.lookAt(Vector3.new(st[2], 20, -1.5), Vector3.new(st[2], 20, -100)), Color = Color3.fromRGB(30, 30, 45), Parent = base })
 	end

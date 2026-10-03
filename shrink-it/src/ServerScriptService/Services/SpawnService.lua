@@ -109,7 +109,7 @@ end
 
 -- player = nil → no Luck (world boxes roll their size when they spawn, the same for everyone)
 function SpawnService.RollSize(player)
-	local luck = player and math.sqrt(variantMults(player).Golden) or 1
+	local luck = player and math.sqrt(variantMults(player).Golden) or Svc.Event.SizeLuck()
 	if player and Svc.Session.HasPass(player, "BigSizes") then
 		luck *= 3
 	end
@@ -128,7 +128,7 @@ function SpawnService.RollMutation(player, box)
 		return box.FMName -- a box that always has this mutation (limited event box)
 	end
 	local luck = math.sqrt(variantMults(player).Golden)
-	local boost = (box and box.MB) or 1
+	local boost = ((box and box.MB) or 1) * Svc.Event.MutationMult()
 	local zoneName = box and box.T and MutationConfig.ZoneMutation(box.T)
 	if zoneName and math.random() < MutationConfig.ZoneChance * luck * boost then
 		return zoneName
@@ -179,7 +179,7 @@ end
 function SpawnService.SpawnAt(tier, position, opts)
 	opts = opts or {}
 	-- the SIZE is decided now, so everyone can see the big boxes in the zone and pick a target
-	local box = { R = opts.R or pickBoxRarity(tier), T = tier, V = opts.V, Z = opts.Z or SpawnService.RollSize(nil) }
+	local box = { R = opts.R or pickBoxRarity(tier), T = tier, V = opts.V, Z = opts.Z or SpawnService.RollSize(nil), FM = opts.FM, MB = opts.MB }
 	local model = ModelFactory.CreateBox(box)
 	ModelFactory.FitToSize(model, worldBoxSize(tier) * box.Z ^ 0.6)
 	ModelFactory.PlaceOnGround(model, position, math.random() * math.pi * 2)
@@ -206,12 +206,139 @@ function SpawnService.SpawnAt(tier, position, opts)
 	model:SetAttribute("Taken", ",")
 	CollectionService:AddTag(model, "Shrinkable")
 	ModelFactory.SetCollision(model, false) -- never block players running home
+	model:SetAttribute("Landed", opts.Falling ~= true)
+	if opts.Mega then
+		model:SetAttribute("Mega", true)
+	end
 	model.Parent = Svc.Map.LiveObjects
+	SpawnService.AddRarityFX(model, box, opts.Mega)
 	active[model] = info
 	if not opts.Quiet then
 		announceIfRare(box, tier)
 	end
 	return model, info
+end
+
+-- ── crate effects by rarity: sparkles (Rare), ground ring (Epic), light beam to the sky (Legendary+) ──
+function SpawnService.AddRarityFX(model, box, mega)
+	local r = RarityConfig.GetRarity(box.R)
+	local body = model.PrimaryPart
+	if not body then
+		return
+	end
+	local cf, size = model:GetBoundingBox()
+	local ground = Vector3.new(cf.Position.X, cf.Position.Y - size.Y / 2, cf.Position.Z)
+	local extras = {}
+	if r.Order >= 3 or mega then
+		local p = Instance.new("ParticleEmitter")
+		p.Name = "RarityFX"
+		p.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+		p.Color = ColorSequence.new(r.Color)
+		p.LightEmission = 1
+		p.Size = NumberSequence.new(0.6, 0)
+		p.Lifetime = NumberRange.new(1, 2)
+		p.Rate = 6 + r.Order * 2
+		p.Speed = NumberRange.new(1, 3)
+		p.SpreadAngle = Vector2.new(180, 180)
+		p.Parent = body
+	end
+	if r.Order >= 4 or mega then
+		local ring = Instance.new("Part")
+		ring.Name = "RarityRing"
+		ring.Shape = Enum.PartType.Cylinder
+		ring.Size = Vector3.new(0.12, size.X * 1.8, size.X * 1.8)
+		ring.CFrame = CFrame.new(ground + Vector3.new(0, 0.08, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		ring.Material = Enum.Material.Neon
+		ring.Color = r.Color
+		ring.Transparency = 0.55
+		ring.Anchored = true
+		ring.CanCollide = false
+		ring.CanQuery = false
+		ring.CanTouch = false
+		ring.CastShadow = false
+		table.insert(extras, ring)
+	end
+	if r.Order >= 5 or mega then
+		local beam = Instance.new("Part")
+		beam.Name = "RarityBeam"
+		local h = mega and 160 or 90
+		beam.Size = Vector3.new(mega and 4 or 2, h, mega and 4 or 2)
+		beam.CFrame = CFrame.new(ground + Vector3.new(0, h / 2, 0))
+		beam.Material = Enum.Material.Neon
+		beam.Color = mega and Color3.fromRGB(255, 120, 230) or r.Color
+		beam.Transparency = 0.6
+		beam.Anchored = true
+		beam.CanCollide = false
+		beam.CanQuery = false
+		beam.CanTouch = false
+		beam.CastShadow = false
+		local light = Instance.new("PointLight")
+		light.Color = beam.Color
+		light.Range = 30
+		light.Brightness = 2
+		light.Parent = beam
+		table.insert(extras, beam)
+	end
+	for _, e in ipairs(extras) do
+		e:SetAttribute("ForBox", model:GetAttribute("SpawnUid"))
+		e.Parent = Svc.Map.LiveObjects
+	end
+	if #extras > 0 then
+		model.Destroying:Connect(function()
+			for _, e in ipairs(extras) do
+				e:Destroy()
+			end
+		end)
+		-- gone for you = its beam/ring too (the client hides them with the box)
+		model:SetAttribute("HasFX", true)
+	end
+end
+
+-- MEGA BOX event: a giant, always-mutated box in a random zone (shared by up to MaxClaims players)
+function SpawnService.SpawnMegaBox()
+	local tiers = {}
+	for tier in pairs(Svc.Map.Areas) do
+		table.insert(tiers, tier)
+	end
+	local tier = tiers[math.random(1, #tiers)]
+	local pos = Svc.Map.RandomPointInArea(tier, 20)
+	if not pos then
+		return
+	end
+	local rarity = RarityConfig.RarityOrder[math.min(#RarityConfig.RarityOrder, 5 + math.random(0, 1))]
+	SpawnService.SpawnAt(tier, pos, { R = rarity, Z = 5, FM = true, MB = 3, Mega = true, Quiet = true, Expires = os.clock() + 180 })
+	local area = TierConfig.Tiers[tier] and TierConfig.Tiers[tier].Area or ("Zone " .. tier)
+	Svc.Net.Announce("A MEGA BOX landed in " .. area .. "! Follow the pink beam!", Color3.fromRGB(255, 120, 230))
+	Svc.Net.Sound("Alarm")
+end
+
+-- BOX RAIN event: a box drops from the sky somewhere in a random zone
+function SpawnService.RainBox()
+	local tiers = {}
+	for tier in pairs(Svc.Map.Areas) do
+		table.insert(tiers, tier)
+	end
+	local tier = tiers[math.random(1, #tiers)]
+	local pos = Svc.Map.RandomPointInArea(tier, 10)
+	if not pos then
+		return
+	end
+	local model = SpawnService.SpawnAt(tier, pos, { Quiet = true, Falling = true, Expires = os.clock() + 90 })
+	if not model then
+		return
+	end
+	local landed = model:GetPivot()
+	for i = 1, 12 do
+		if not model.Parent then
+			return
+		end
+		model:PivotTo(landed + Vector3.new(0, 60 * (1 - i / 12) ^ 2, 0))
+		task.wait(0.04)
+	end
+	if model.Parent then
+		model:PivotTo(landed)
+		model:SetAttribute("Landed", true)
+	end
 end
 
 local function spawnPoint(pt)

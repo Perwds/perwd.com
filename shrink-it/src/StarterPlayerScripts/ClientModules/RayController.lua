@@ -156,7 +156,7 @@ local function stopCharge(fire)
 		local stats = State.Data and State.Data.Stats
 		local carry = State.Data and State.Data.Carry
 		local room = carry and (carry.Capacity - carry.Count) or 1
-		if c.Kind == "object" and stats and room > 1 then
+		if GameConfig.MultiShrinkExtras and c.Kind == "object" and stats and room > 1 then
 			local origin = c.Target:GetPivot().Position
 			local candidates = {}
 			for _, model in ipairs(CollectionService:GetTagged("Shrinkable")) do
@@ -306,6 +306,16 @@ function RayController.Init()
 			local c = charging
 			if not c.Target.Parent or (c.Kind == "object" and not CollectionService:HasTag(c.Target, "Shrinkable")) then
 				stopCharge(false)
+				return
+			end
+			-- walked away / someone took it: the charge stops
+			local stats = State.Data and State.Data.Stats
+			local tooFar = stats and c.Kind == "object" and surfaceDistance(c.Target) > stats.Range + GameConfig.RangeTolerance
+			if tooFar or (c.Kind == "object" and takenByMe(c.Target)) or (c.Kind == "boss" and stats and surfaceDistance(c.Target) > stats.Range + 25) then
+				stopCharge(false)
+				if tooFar then
+					HUD.Notify("Too far away! The charge stopped.", "error")
+				end
 				return
 			end
 			local alpha = math.clamp((os.clock() - c.Start) / math.max(c.Time, 0.05), 0, 1)

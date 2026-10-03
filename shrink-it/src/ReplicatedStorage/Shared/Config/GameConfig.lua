@@ -8,8 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v15.1 (new animated shop)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 15 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v16 (smaller base, new bat & trap, crate events)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 16 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -68,7 +68,7 @@ GameConfig.Boss = {
 	FirstAfter = 600, -- first visit this many seconds after the server starts
 	Warning = 30,
 	TimeLimit = 240,
-	Arena = Vector3.new(0, 0, -125),
+	Arena = Vector3.new(0, 0, -75),
 	BaseHP = 80,
 	HPPerPlayer = 45,
 	ChargeTime = 0.45,
@@ -94,6 +94,8 @@ GameConfig.Lab = {
 GameConfig.MasteryBox = { R = "Mythic", MinSize = 2 }
 -- LIMITED event box (Robux product "LimitedBox"): always the Festive mutation, which you can't get any other way.
 GameConfig.LimitedBox = { Name = "Festive Box", Rarity = "Secret", Mutation = "Festive" }
+
+GameConfig.MultiShrinkExtras = false -- true = one zap also grabs nearby boxes (felt like a bug, so off)
 
 GameConfig.Boxes = {
 	OpenSeconds = { Common = 8, Uncommon = 15, Rare = 30, Epic = 60, Legendary = 120, Mythic = 240, Secret = 480 },

@@ -1319,9 +1319,9 @@ end
 function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 	local decor = folder(base, "Decor")
 	local stands = folder(base, "Stands")
-	MapDecor.Stand(stands, "SellStand", "SELL", { RGB(230, 30, 30), RGB(255, 70, 60) }, Vector3.new(-100, 0, -40), "Sell", coinStack)
-	MapDecor.FuseMachine(stands, Vector3.new(-50, 0, -84))
-	MapDecor.Stand(stands, "TrailsStand", "TRAILS", { RGB(190, 50, 240), RGB(240, 120, 255) }, Vector3.new(48, 0, -82), "Trails", trailSwirl)
+	MapDecor.Stand(stands, "SellStand", "SELL", { RGB(230, 30, 30), RGB(255, 70, 60) }, Vector3.new(-74, 0, -24), "Sell", coinStack)
+	MapDecor.FuseMachine(stands, Vector3.new(-48, 0, -66))
+	MapDecor.Stand(stands, "TrailsStand", "TRAILS", { RGB(190, 50, 240), RGB(240, 120, 255) }, Vector3.new(48, 0, -66), "Trails", trailSwirl)
 	-- the LAB (turn in boxes for Samples) on the other side of the spawn
 	MapDecor.Stand(stands, "LabStand", "LAB", { RGB(40, 170, 80), RGB(120, 255, 120) }, Vector3.new(-36, 0, -30), "Lab", nil, math.pi / 2)
 	-- the SHOP is right next to where you spawn, facing you
@@ -1352,7 +1352,7 @@ function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 		local a = math.rad(195 + k * 25)
 		lamp(decor, Vector3.new(math.cos(a) * (ringR - 8), 0, math.sin(a) * (ringR - 8)))
 	end
-	for _, p in ipairs({ Vector3.new(-205, 0, -20), Vector3.new(205, 0, -20) }) do
+	for _, p in ipairs({ Vector3.new(-width / 2 + 12, 0, -depth + 14), Vector3.new(width / 2 - 12, 0, -depth + 14) }) do
 		bush(decor, p, 0.9)
 	end
 	flowers(decor, Vector3.new(-22, 0, -48), 3)
@@ -1369,7 +1369,7 @@ function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 		end
 	end
 	-- slim lamp posts lining the main path (thin, out of the way)
-	for z = -20, -120, -25 do
+	for z = -20, -45, -25 do -- (stops before the boss arena)
 		for _, s in ipairs({ -1, 1 }) do
 			prop(decor, Vector3.new(s * 11, 0, z), 0.75, 0, function(m)
 				lamp(m, Vector3.zero, RGB(255, 235, 170))
@@ -1377,7 +1377,7 @@ function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
 		end
 	end
 	-- planters + benches beside every stand
-	for _, p in ipairs({ Vector3.new(-100, 0, -40), Vector3.new(-50, 0, -84), Vector3.new(48, 0, -82), Vector3.new(100, 0, -40) }) do
+	for _, p in ipairs({ Vector3.new(-74, 0, -24), Vector3.new(-48, 0, -66), Vector3.new(48, 0, -66) }) do
 		for _, s in ipairs({ -1, 1 }) do
 			pcall(extraProp, decor, "flowerpot", p + Vector3.new(s * 13, 0, 4))
 		end

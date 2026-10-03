@@ -7,8 +7,8 @@
 
 local EventConfig = {}
 
-EventConfig.Interval = 30 * 60
-EventConfig.Rotation = { "GoldenHour", "GiantRush", "MeteorShower" }
+EventConfig.Interval = 15 * 60
+EventConfig.Rotation = { "BoxRain", "GoldenHour", "MutationFrenzy", "MegaBox", "GiantRush", "SizeSurge", "MeteorShower" }
 
 EventConfig.Events = {
 	GoldenHour = {
@@ -28,6 +28,38 @@ EventConfig.Events = {
 		RespawnMultForTier = { [5] = 0.25, [6] = 0.25 },
 		BonusSpawnTier = 5,
 		BonusSpawnInterval = 20,
+	},
+	BoxRain = {
+		Name = "Box Rain",
+		Emoji = "📦",
+		Duration = 2 * 60,
+		Description = "Boxes are falling from the sky in every zone!",
+		Color = Color3.fromRGB(110, 210, 255),
+		RainEvery = 2.5, -- seconds between falling boxes
+	},
+	MutationFrenzy = {
+		Name = "Mutation Frenzy",
+		Emoji = "🧬",
+		Duration = 4 * 60,
+		Description = "3x mutation chance on every box you open!",
+		Color = Color3.fromRGB(120, 255, 140),
+		MutationMult = 3,
+	},
+	MegaBox = {
+		Name = "Mega Box",
+		Emoji = "🎁",
+		Duration = 3 * 60,
+		Description = "A giant MEGA BOX landed in a zone! Always mutated. Up to 4 players can grab it!",
+		Color = Color3.fromRGB(255, 120, 230),
+		MegaBox = true,
+	},
+	SizeSurge = {
+		Name = "Size Surge",
+		Emoji = "📏",
+		Duration = 4 * 60,
+		Description = "Every new box spawns bigger!",
+		Color = Color3.fromRGB(255, 170, 60),
+		SizeLuck = 6,
 	},
 	MeteorShower = {
 		Name = "Meteor Shower",
