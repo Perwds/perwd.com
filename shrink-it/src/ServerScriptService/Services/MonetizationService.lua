@@ -104,12 +104,19 @@ local productHandlers = {
 	InstantOpen = function(player)
 		Svc.Museum.InstantOpen(player)
 	end,
-	LimitedBox = function(player)
-		local box = Svc.Boss.MasteryBox(player)
-		box.R = GameConfig.LimitedBox.Rarity
-		box.FMName = GameConfig.LimitedBox.Mutation
-		Svc.Carry.GiveBox(player, box)
+	LimitedBox = function(player, _data, key)
+		for _ = 1, MonetizationConfig.Products[key].Count or 1 do
+			local box = Svc.Boss.MasteryBox(player)
+			box.R = GameConfig.LimitedBox.Rarity
+			box.FMName = GameConfig.LimitedBox.Mutation
+			Svc.Carry.GiveBox(player, box)
+		end
 		Svc.Net.Notify(player, "You got a LIMITED " .. GameConfig.LimitedBox.Name .. "! Put it in your base.", "success")
+	end,
+	TreadmillLevel = function(player, data)
+		local max = require(Shared.Config.UpgradeConfig).Upgrades.Treadmill.MaxLevel
+		data.Upgrades.Treadmill = math.min(max, (data.Upgrades.Treadmill or 1) + 1)
+		Svc.Net.Notify(player, "Treadmill upgraded to level " .. data.Upgrades.Treadmill .. "!", "success")
 	end,
 	OpenAllBoxes = function(player, data)
 		local n = 0

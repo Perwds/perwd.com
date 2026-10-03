@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v15 (mutations, boss, Lab)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v15.1 (new animated shop)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 15 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────

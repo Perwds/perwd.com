@@ -46,7 +46,7 @@ MonetizationConfig.GamePasses = {
 -- Handler = special server logic instead of / in addition to Grant.
 MonetizationConfig.ProductOrder = {
 	"CoinsSmall", "CoinsMedium", "CoinsLarge", "GemsSmall", "GemsMedium", "GemsLarge",
-	"LuckPotion", "IncomePotion", "ServerLuck", "OpenAllBoxes", "LimitedBox", "SpeedPoints", "InstantRebirth", "SpawnGolden",
+	"LuckPotion", "IncomePotion", "ServerLuck", "OpenAllBoxes", "InstantRebirth", "SpawnGolden",
 }
 -- (RoyalCrate is shown on its own "Crates" tab in the Shop, with its odds)
 
@@ -63,7 +63,14 @@ MonetizationConfig.Products = {
 	InstantOpen = { Id = 0, Name = "Instant Open (1 box)", Emoji = "📦", PriceLabel = "R$ 9", Handler = "InstantOpen", Hidden = true }, -- 🔧 REPLACE Id (bought from the box itself)
 	LimitedBox = { Id = 0, Name = "LIMITED Festive Box", Emoji = "🎁", Image = "rbxassetid://0", PriceLabel = "R$ 149", Handler = "LimitedBox", Limited = true }, -- 🔧 REPLACE Id (Robux only, always Festive-mutated)
 	OpenAllBoxes = { Id = 0, Name = "Open All Boxes Now", Emoji = "📦", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "OpenAllBoxes" }, -- 🔧 REPLACE Id
-	SpeedPoints = { Id = 0, Name = "+30 Min of Training", Emoji = "🏃", Image = "rbxassetid://0", PriceLabel = "R$ 49", Handler = "SpeedPoints", Minutes = 30 }, -- 🔧 REPLACE Id
+	SpeedPoints = { Id = 0, Name = "+30 Min of Training", Emoji = "🏃", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "SpeedPoints", Minutes = 30, Hidden = true }, -- 🔧 REPLACE Id
+	SpeedPack2 = { Id = 0, Name = "+2 Hours of Training", Emoji = "👟", PriceLabel = "R$ 79", Handler = "SpeedPoints", Minutes = 120, Hidden = true }, -- 🔧 REPLACE Id
+	SpeedPack3 = { Id = 0, Name = "+8 Hours of Training", Emoji = "👟", PriceLabel = "R$ 199", Handler = "SpeedPoints", Minutes = 480, Hidden = true }, -- 🔧 REPLACE Id
+	SpeedPack4 = { Id = 0, Name = "+1 Day of Training", Emoji = "👟", PriceLabel = "R$ 399", Handler = "SpeedPoints", Minutes = 1440, Hidden = true }, -- 🔧 REPLACE Id
+	SpeedPack5 = { Id = 0, Name = "+3 Days of Training", Emoji = "👟", PriceLabel = "R$ 799", Handler = "SpeedPoints", Minutes = 4320, Hidden = true }, -- 🔧 REPLACE Id
+	SpeedPack6 = { Id = 0, Name = "+1 Week of Training", Emoji = "👟", PriceLabel = "R$ 1499", Handler = "SpeedPoints", Minutes = 10080, Hidden = true }, -- 🔧 REPLACE Id
+	TreadmillLevel = { Id = 0, Name = "Upgrade Treadmill", Emoji = "🏃", PriceLabel = "R$ 19", Handler = "TreadmillLevel", Hidden = true }, -- 🔧 REPLACE Id
+	LimitedBox3 = { Id = 0, Name = "3x LIMITED Festive Box", Emoji = "🎁", PriceLabel = "R$ 399", Handler = "LimitedBox", Count = 3, Hidden = true }, -- 🔧 REPLACE Id
 	InstantRebirth = { Id = 0, Name = "Instant Rebirth", Emoji = "♻️", Image = "rbxassetid://0", PriceLabel = "R$ 99", Handler = "InstantRebirth" }, -- 🔧 REPLACE Id
 	SpawnGolden = { Id = 0, Name = "Spawn a Golden Object", Emoji = "🌟", Image = "rbxassetid://0", PriceLabel = "R$ 29", Handler = "SpawnGolden" }, -- 🔧 REPLACE Id
 
