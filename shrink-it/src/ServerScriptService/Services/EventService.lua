@@ -25,6 +25,11 @@ end
 
 local function compute(now)
 	local interval = EventConfig.Interval
+	local forced = EventService._forced -- admin panel "start event"
+	if forced and now < forced.Until then
+		local block = math.floor(now / interval)
+		return forced.Key, forced.Until, EventConfig.Rotation[((block + 1) % #EventConfig.Rotation) + 1], (block + 1) * interval
+	end
 	local block = math.floor(now / interval)
 	local key = EventConfig.Rotation[(block % #EventConfig.Rotation) + 1]
 	local nextKey = EventConfig.Rotation[((block + 1) % #EventConfig.Rotation) + 1]

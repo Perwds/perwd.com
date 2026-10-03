@@ -41,11 +41,12 @@ MapService.Boards = {} -- [stat] = Part
 
 local CORRIDOR = 200 -- shrink-zone corridor width (x from -100 to 100); the base gate is this wide
 local BASE_W = 420 -- base width
-local BASE_D = 220 -- base depth (z from -220 to 0)
+local BASE_D = 260 -- base depth (z from -260 to 0)
 local WALL_H = 40
 local PLOT_W, PLOT_D = 70, 95
-local PLOT_RADIUS = 150 -- plot centers sit on this circle around the gate (0, 0, 0)
-local PLOT_ARC = { 200, 340 } -- degrees (x = cos, z = sin): a semicircle behind the gate
+-- plots: two rows (left + right wall), each plot facing the middle aisle where the shops are
+local PLOT_ROW_Z = { -45, -130, -215 } -- plot centers along each wall (70 wide → 15-stud gaps)
+local PLOT_X = 157.5 -- |x| of the plot centers (plots run from the wall to x = ±110)
 MapService.CorridorWidth = CORRIDOR
 MapService.DecorBand = 20 -- outer strip of each zone reserved for scenery
 
@@ -211,11 +212,11 @@ local function buildPlot(parent, id, cframe)
 		light.Parent = bulb
 	end
 
-	-- 🏃 treadmill just outside the entrance: stand on it (AFK is fine) to train speed (SpeedService)
+	-- 🏃 treadmill lying along the front of the plot, beside the entrance (out of the aisle's way)
 	local treadmill = Instance.new("Model")
 	treadmill.Name = "Treadmill"
 	treadmill.Parent = plot
-	local tcf = local_(floor, hw - 8, 0, hd + 9)
+	local tcf = local_(floor, hw - 14, 0, hd + 5) * CFrame.Angles(0, math.rad(90), 0)
 	part({ Name = "Frame", Size = Vector3.new(7, 1, 12), CFrame = tcf * CFrame.new(0, 0.5, 0), Color = Color3.fromRGB(50, 52, 64), Material = Enum.Material.Plastic, Parent = treadmill })
 	part({ Name = "Belt", Size = Vector3.new(5.4, 0.3, 11), CFrame = tcf * CFrame.new(0, 1.15, 0), Color = Color3.fromRGB(30, 30, 36), Material = Enum.Material.Fabric, Parent = treadmill })
 	for _, sx in ipairs({ -1, 1 }) do
@@ -274,7 +275,7 @@ local function buildMap()
 	spawn.Parent = base
 
 	-- small VIP lounge tucked in the back-right corner (keeps the middle of the base open)
-	local vip = Vector3.new(175, 0, -195)
+	local vip = Vector3.new(0, 0, -238) -- back of the aisle, between the two plot rows
 	local gold = Color3.fromRGB(255, 205, 60)
 	part({ Name = "VIPRoom", Size = Vector3.new(32, 18, 26), CFrame = CFrame.new(vip + Vector3.new(0, 9, 0)), Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, Parent = base })
 	part({ Name = "VIPWall", Size = Vector3.new(32, 18, 1.5), CFrame = CFrame.new(vip + Vector3.new(0, 9, -13)), Color = gold, Material = Enum.Material.Marble, Parent = base })
@@ -300,17 +301,18 @@ local function buildMap()
 	plotsFolder.Parent = map
 	local count = GameConfig.PlotCount
 	local plotCFrames = {}
+	local perSide = math.ceil(count / 2)
 	for id = 1, count do
-		local t = count == 1 and 0.5 or (id - 1) / (count - 1)
-		local angle = math.rad(PLOT_ARC[1] + (PLOT_ARC[2] - PLOT_ARC[1]) * t)
-		local pos = Vector3.new(math.cos(angle) * PLOT_RADIUS, 0, math.sin(angle) * PLOT_RADIUS)
-		-- local +Z (the plot's front) points at the gate
-		local cf = CFrame.lookAt(pos, pos + pos.Unit)
+		local side = id <= perSide and -1 or 1 -- 1..3 on the left wall, 4..6 on the right
+		local row = ((id - 1) % perSide) + 1
+		local pos = Vector3.new(side * PLOT_X, 0, PLOT_ROW_Z[row] or (-45 - (row - 1) * 85))
+		-- local +Z (the plot's front) points at the middle aisle
+		local cf = CFrame.lookAt(pos, pos + Vector3.new(side, 0, 0))
 		plotCFrames[id] = cf
 		buildPlot(plotsFolder, id, cf)
 	end
 
-	safe("Base decor", MapDecor.Base, base, BASE_W, BASE_D, PLOT_RADIUS, plotCFrames)
+	safe("Base decor", MapDecor.Base, base, BASE_W, BASE_D, plotCFrames)
 
 	-- ── Zones (a short corridor through the gate) ─────────────────────────
 	local zones = Instance.new("Folder")
@@ -551,6 +553,12 @@ function MapService.Init(_registry)
 	-- The map is normally already saved in the place (so you can see it in Studio while editing);
 	-- it's only generated here if it's missing.
 	local map = existing or buildMap()
+	safe("Custom model items", function()
+		local n = require(script.Parent.ModelFactory).ImportCustomItems()
+		if n > 0 then
+			print("[MapService] " .. n .. " items now use your imported models")
+		end
+	end)
 	safe("Shopkeepers", MapDecor.AddShopkeepers, map)
 	safe("Shopkeeper naps", MapDecor.ShopkeeperNaps, map)
 	safe("Textures", MapService.ApplyTextures, map)

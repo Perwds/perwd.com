@@ -297,6 +297,7 @@ local LEFT_BUTTONS = {
 	{ Menu = "Rebirth", Label = "Rebirth", Emoji = "♻️", Colors = UIKit.Colors.Green },
 	{ Menu = "Museum", Label = "Museum", Emoji = "🏛️", Colors = UIKit.Colors.Orange },
 	{ Menu = "Upgrades", Label = "Upgrades", Emoji = "⚡", Colors = UIKit.Colors.Cyan },
+	{ Menu = "Nameplates", Label = "Custom", Emoji = "🎨", Colors = UIKit.Colors.Red },
 }
 
 local currencyLabels = {}
@@ -306,47 +307,41 @@ local boostHolder
 local raidFrame, raidLabel
 
 -- Wide "pill" buttons: a big icon that pops out of the left edge + a bold label.
+-- Grid of round icon buttons with a label under each (clean simulator style), left side of the screen.
 local function buildLeftStack()
-	local BUTTON_W, BUTTON_H, GAP = 196, 62, 12
+	local CELL_W, BTN, LABEL_H, GAP, COLS = 92, 74, 24, 10, 2
+	local rows = math.ceil(#LEFT_BUTTONS / COLS)
 	local stack = UIKit.Create("Frame", {
 		Name = "LeftStack",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 26, 0.47, 0),
-		Size = UDim2.fromOffset(BUTTON_W, #LEFT_BUTTONS * (BUTTON_H + GAP)),
+		Position = UDim2.new(0, 18, 0.47, 0),
+		Size = UDim2.fromOffset(COLS * CELL_W + (COLS - 1) * GAP, rows * (BTN + LABEL_H) + (rows - 1) * GAP),
 		Parent = screen,
 	})
 	UIKit.AutoScale(stack)
-	UIKit.Create("UIListLayout", { Padding = UDim.new(0, GAP), SortOrder = Enum.SortOrder.LayoutOrder, Parent = stack })
+	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(CELL_W, BTN + LABEL_H), CellPadding = UDim2.fromOffset(GAP, GAP), SortOrder = Enum.SortOrder.LayoutOrder, Parent = stack })
 	for i, def in ipairs(LEFT_BUTTONS) do
+		local cell = UIKit.Create("Frame", { Name = def.Menu, BackgroundTransparency = 1, LayoutOrder = i, Parent = stack })
 		local button = UIKit.Button({
-			Name = def.Menu,
+			Name = "Button",
 			Text = "",
 			Colors = def.Colors,
-			Size = UDim2.fromOffset(BUTTON_W, BUTTON_H),
-			LayoutOrder = i,
-			CornerRadius = 18,
+			Size = UDim2.fromOffset(BTN, BTN),
+			AnchorPoint = Vector2.new(0.5, 0),
+			Position = UDim2.new(0.5, 0, 0, 0),
+			CornerRadius = 22,
 			StrokeThickness = 4,
-			Parent = stack,
+			Parent = cell,
 			OnClick = function()
 				HUD.OpenMenu(def.Menu)
 			end,
 		})
-		-- icon bubble overlapping the left edge
-		local bubble = UIKit.Create("Frame", {
-			Name = "IconBubble",
-			BackgroundColor3 = Color3.new(1, 1, 1),
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = UDim2.new(0, 8, 0.5, -2),
-			Size = UDim2.fromOffset(BUTTON_H + 10, BUTTON_H + 10),
-			ZIndex = 4,
-			Parent = button,
-		})
+		-- white inner circle holding the icon
+		local bubble = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.15, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.48), Size = UDim2.fromScale(0.72, 0.72), ZIndex = 4, Parent = button })
 		UIKit.Corner(bubble, UDim.new(1, 0))
-		UIKit.Stroke(bubble, 4, UIKit.Outline, true)
-		UIKit.Gradient(bubble, { Color3.new(1, 1, 1), def.Colors[1]:Lerp(Color3.new(1, 1, 1), 0.45) })
-		UIKit.Icon({ Icon = { Emoji = def.Emoji }, Size = UDim2.new(0.74, 0, 0.74, 0), Position = UDim2.fromScale(0.13, 0.12), ZIndex = 5, Parent = bubble })
-		UIKit.Label({ Text = def.Label, TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, -(BUTTON_H / 2 + 26), 0.66, 0), Position = UDim2.new(0, BUTTON_H / 2 + 18, 0.1, 0), ZIndex = 4, StrokeThickness = 3.5, Parent = button })
+		UIKit.Icon({ Icon = { Emoji = def.Emoji }, Size = UDim2.fromScale(0.78, 0.78), Position = UDim2.fromScale(0.11, 0.11), ZIndex = 5, Parent = bubble })
+		UIKit.Label({ Text = def.Label, Size = UDim2.new(1, 8, 0, LABEL_H), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, BTN + 1), ZIndex = 4, StrokeThickness = 3, Parent = cell })
 		badgeSetters[def.Menu] = UIKit.Badge(button)
 	end
 end
@@ -638,7 +633,7 @@ function HUD.Init()
 	local ctx = { Screen = screen, HUD = HUD }
 	local menuFolder = Modules:WaitForChild("Menus")
 	local menuDefs = table.clone(LEFT_BUTTONS)
-	for _, extra in ipairs({ "Sell", "Fuse", "Trails", "Nameplates", "Settings", "Lab" }) do -- opened from the stands / top bar
+	for _, extra in ipairs({ "Sell", "Fuse", "Trails", "Settings", "Lab", "Admin" }) do -- opened from the stands / top bar
 		table.insert(menuDefs, { Menu = extra })
 	end
 	for _, def in ipairs(menuDefs) do
@@ -650,6 +645,8 @@ function HUD.Init()
 			if ok and menu then
 				menus[def.Menu] = menu
 				table.insert(menuOrder, def.Menu)
+			elseif ok then
+				-- the menu chose not to exist for this player (e.g. Admin for non-admins)
 			else
 				warn("[HUD] menu " .. def.Menu .. " failed: " .. tostring(menu))
 			end

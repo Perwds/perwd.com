@@ -86,6 +86,59 @@ local function placeholder(id, def)
 	return model
 end
 
+-- Items made from your imported models (ObjectConfig entries with Model = { Pack, Piece }):
+-- finds the piece inside ServerStorage > CustomModels (any depth, so one combined import works) and
+-- copies it into ReplicatedStorage > ShrinkableTemplates under the item's id, so the server AND the
+-- menus (Index, previews) use the real model. Runs once at server start.
+function ModelFactory.ImportCustomItems()
+	local holder = game:GetService("ServerStorage"):FindFirstChild("CustomModels")
+	if not holder then
+		return 0
+	end
+	local shared = ReplicatedStorage:FindFirstChild("ShrinkableTemplates")
+	if not shared then
+		shared = Instance.new("Folder")
+		shared.Name = "ShrinkableTemplates"
+		shared.Parent = ReplicatedStorage
+	end
+	local count = 0
+	for id, def in pairs(ObjectConfig.Objects) do
+		local spec = def.Model
+		if spec and not shared:FindFirstChild(id) then
+			local pack = holder:FindFirstChild(spec.Pack, true)
+			local src = pack and (spec.Piece and pack:FindFirstChild(spec.Piece, true) or pack)
+			if src then
+				local model = Instance.new("Model")
+				model.Name = id
+				local copy = src:Clone()
+				if copy:IsA("Model") or copy:IsA("Folder") then
+					for _, c in ipairs(copy:GetChildren()) do
+						c.Parent = model
+					end
+					copy:Destroy()
+				else
+					copy.Parent = model
+				end
+				for _, d in ipairs(model:GetDescendants()) do
+					if d:IsA("LuaSourceContainer") then
+						d:Destroy()
+					elseif d:IsA("BasePart") then
+						d.Anchored = true
+					end
+				end
+				model.PrimaryPart = model:FindFirstChildWhichIsA("BasePart", true)
+				if model.PrimaryPart then
+					model.Parent = shared
+					count += 1
+				else
+					model:Destroy()
+				end
+			end
+		end
+	end
+	return count
+end
+
 function ModelFactory.Create(id)
 	local def = ObjectConfig.Get(id) or { Name = id }
 	local shared = ReplicatedStorage:FindFirstChild("ShrinkableTemplates")

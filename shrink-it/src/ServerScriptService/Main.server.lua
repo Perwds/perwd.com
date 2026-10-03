@@ -40,6 +40,7 @@ local ORDER = {
 	"Raid",
 	"Leaderboard",
 	"Boss",
+	"Admin",
 }
 
 -- Every step is pcall-wrapped so one broken service can't take the whole server down.

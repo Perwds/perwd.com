@@ -8,8 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v16.5 (studded + custom color plates, one-file models)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 16 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v17 (new base layout, admin panel, model items, blue UI)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 17 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
@@ -22,6 +22,10 @@ GameConfig.MaxReceiptHistory = 200 -- purchase ids remembered per player for ide
 GameConfig.MaxItems = 400 -- pocket cap; lowest-earning item is auto-sold when exceeded
 GameConfig.SellSeconds = 120 -- selling an item gives this many seconds of its income
 GameConfig.DisplayMaxSize = 2.9 -- studs; displayed objects are scaled to fit this
+-- Admin panel: ONLY these accounts get it (checked on the server by username / UserId — display
+-- names are NOT used because anyone can set any display name).
+GameConfig.Admins = { Names = { "huskey08", "mulvadbase" }, UserIds = {} }
+
 GameConfig.PlotCount = 6
 GameConfig.MaxPlayers = 6 -- one museum plot per player, all in one fair row. ALSO set Max Players = 6 in Game Settings (see README)
 
@@ -68,7 +72,7 @@ GameConfig.Boss = {
 	FirstAfter = 600, -- first visit this many seconds after the server starts
 	Warning = 30,
 	TimeLimit = 240,
-	Arena = Vector3.new(0, 0, -75),
+	Arena = Vector3.new(0, 0, -140),
 	BaseHP = 80,
 	HPPerPlayer = 45,
 	ChargeTime = 0.45,

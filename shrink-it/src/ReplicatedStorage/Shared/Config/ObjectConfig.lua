@@ -84,6 +84,39 @@ ObjectConfig.Objects = {
 	SpaceStation = { Name = "Space Station", Tier = 10, Rarity = "Legendary", BaseIncome = 120_000_000_000, Size = V(30, 14, 30), Color = C(220, 225, 235), Shape = "Block", Emoji = "🚉" },
 	TheMoon = { Name = "The Moon", Tier = 10, Rarity = "Secret", BaseIncome = 900_000_000_000, Size = V(36, 36, 36), Color = C(220, 220, 210), Shape = "Ball", Emoji = "🌕" },
 
+	-- ── Your imported models (ServerStorage > CustomModels). Model = { Pack, Piece }: the piece is
+	--    copied into ShrinkableTemplates at server start; if it's missing a placeholder is used. ──
+	FlowerClump = { Name = "Flower Clump", Tier = 1, Rarity = "Common", BaseIncome = 3, Size = V(3, 2, 3), Color = C(255, 120, 180), Shape = "Ball", Emoji = "🌸", Model = { Pack = "Flowers", Piece = "Plane.001" } },
+	TallFlower = { Name = "Tall Flower", Tier = 1, Rarity = "Uncommon", BaseIncome = 5, Size = V(2, 3.5, 2), Color = C(255, 220, 60), Shape = "Block", Emoji = "🌼", Model = { Pack = "Flowers", Piece = "Plane.022" } },
+	PottedFlower = { Name = "Potted Flower", Tier = 1, Rarity = "Rare", BaseIncome = 8, Size = V(2, 3, 2), Color = C(200, 90, 60), Shape = "Cylinder", Emoji = "🪴", Model = { Pack = "Flowers", Piece = "Cylinder.001" } },
+	FlowerBush = { Name = "Flower Bush", Tier = 1, Rarity = "Epic", BaseIncome = 16, Size = V(3.5, 3.5, 3.5), Color = C(220, 60, 120), Shape = "Ball", Emoji = "💐", Model = { Pack = "Flowers", Piece = "Plane.156" } },
+	Blossom = { Name = "Blossom", Tier = 1, Rarity = "Legendary", BaseIncome = 30, Size = V(3, 3, 3), Color = C(255, 160, 220), Shape = "Ball", Emoji = "🌺", Model = { Pack = "Flowers", Piece = "flower15" } },
+
+	MiniCar = { Name = "Mini Car", Tier = 3, Rarity = "Common", BaseIncome = 520, Size = V(6, 5, 11), Color = C(120, 200, 255), Shape = "Block", Emoji = "🚗", Model = { Pack = "Cars", Piece = "Cube.053" } },
+	Hatchback = { Name = "Hatchback", Tier = 3, Rarity = "Common", BaseIncome = 550, Size = V(6, 5, 13), Color = C(255, 90, 90), Shape = "Block", Emoji = "🚗", Model = { Pack = "Cars", Piece = "Cube.015" } },
+	Sedan = { Name = "Sedan", Tier = 3, Rarity = "Common", BaseIncome = 650, Size = V(6, 5, 14), Color = C(90, 130, 255), Shape = "Block", Emoji = "🚘", Model = { Pack = "Cars", Piece = "Cube.029" } },
+	ToonHatchback = { Name = "Toon Hatchback", Tier = 3, Rarity = "Common", BaseIncome = 700, Size = V(8, 5, 11), Color = C(255, 200, 60), Shape = "Block", Emoji = "🚙", Model = { Pack = "Cars3", Piece = "SHTV_Prefab_Car_Hatchback" } },
+	StationWagon = { Name = "Station Wagon", Tier = 3, Rarity = "Uncommon", BaseIncome = 900, Size = V(6, 5, 15), Color = C(150, 210, 120), Shape = "Block", Emoji = "🚙", Model = { Pack = "Cars", Piece = "Cube.082" } },
+	ToonSedan = { Name = "Toon Sedan", Tier = 3, Rarity = "Uncommon", BaseIncome = 1_000, Size = V(8, 5, 13), Color = C(80, 200, 220), Shape = "Block", Emoji = "🚘", Model = { Pack = "Cars3", Piece = "SHTV_Prefab_Car_Sedan" } },
+	Pickup = { Name = "Pickup Truck", Tier = 3, Rarity = "Uncommon", BaseIncome = 1_100, Size = V(7, 6, 15), Color = C(200, 120, 60), Shape = "Block", Emoji = "🛻", Model = { Pack = "Cars", Piece = "Cube.074" } },
+	SUV = { Name = "SUV", Tier = 3, Rarity = "Uncommon", BaseIncome = 1_200, Size = V(7, 7, 15), Color = C(60, 60, 70), Shape = "Block", Emoji = "🚙", Model = { Pack = "Cars", Piece = "Cube.034" } },
+	DeliveryVan = { Name = "Delivery Van", Tier = 3, Rarity = "Rare", BaseIncome = 2_200, Size = V(7, 8, 14), Color = C(240, 240, 240), Shape = "Block", Emoji = "🚐", Model = { Pack = "Cars", Piece = "Cube.055" } },
+	Coupe = { Name = "Coupe", Tier = 3, Rarity = "Rare", BaseIncome = 2_600, Size = V(6, 4.5, 15), Color = C(255, 140, 40), Shape = "Block", Emoji = "🚗", Model = { Pack = "Cars", Piece = "Cube" } },
+	PoliceCar = { Name = "Police Car", Tier = 3, Rarity = "Rare", BaseIncome = 3_000, Size = V(7, 6, 14), Color = C(30, 40, 80), Shape = "Block", Emoji = "🚓", Model = { Pack = "Cars3", Piece = "SHTV_Prefab_Car_Police" } },
+	SportsCoupe = { Name = "Sports Coupe", Tier = 3, Rarity = "Epic", BaseIncome = 5_500, Size = V(7, 4, 15), Color = C(240, 220, 40), Shape = "Block", Emoji = "🏎️", Model = { Pack = "Cars", Piece = "Cube.070" } },
+	Ambulance = { Name = "Ambulance", Tier = 3, Rarity = "Epic", BaseIncome = 6_500, Size = V(8, 8, 15), Color = C(250, 250, 250), Shape = "Block", Emoji = "🚑", Model = { Pack = "Cars3", Piece = "SHTV_Prefab_Car_Ambilance" } },
+	Roadster = { Name = "Roadster", Tier = 3, Rarity = "Legendary", BaseIncome = 14_000, Size = V(7, 4, 16), Color = C(200, 30, 60), Shape = "Block", Emoji = "🏎️", Model = { Pack = "Cars", Piece = "Cube.072" } },
+
+	MarketCart = { Name = "Market Cart", Tier = 4, Rarity = "Rare", BaseIncome = 60_000, Size = V(10, 10, 12), Color = C(160, 100, 50), Shape = "Block", Emoji = "🛒", Model = { Pack = "MobileShop" } },
+
+	GrandTourer = { Name = "Grand Tourer", Tier = 7, Rarity = "Common", BaseIncome = 22_000_000, Size = V(7, 5, 16), Color = C(40, 60, 120), Shape = "Block", Emoji = "🚘", Model = { Pack = "Cars2", Piece = "M8" } },
+	LuxuryCoupe = { Name = "Luxury Coupe", Tier = 7, Rarity = "Common", BaseIncome = 24_000_000, Size = V(7, 5, 15), Color = C(200, 200, 210), Shape = "Block", Emoji = "🚗", Model = { Pack = "Cars2", Piece = "Mercedes" } },
+	MuscleCar = { Name = "Muscle Car", Tier = 7, Rarity = "Uncommon", BaseIncome = 32_000_000, Size = V(7, 5, 16), Color = C(230, 120, 30), Shape = "Block", Emoji = "🚗", Model = { Pack = "Cars2", Piece = "Mustang" } },
+	SuperSUV = { Name = "Super SUV", Tier = 7, Rarity = "Uncommon", BaseIncome = 36_000_000, Size = V(7, 6, 16), Color = C(255, 200, 30), Shape = "Block", Emoji = "🚙", Model = { Pack = "Cars2", Piece = "Urus" } },
+	ClassicSports = { Name = "Classic Sports Car", Tier = 7, Rarity = "Rare", BaseIncome = 50_000_000, Size = V(7, 4.5, 15), Color = C(240, 240, 240), Shape = "Block", Emoji = "🏎️", Model = { Pack = "Cars2", Piece = "Porsche" } },
+	StreetRacer = { Name = "Street Racer", Tier = 7, Rarity = "Epic", BaseIncome = 95_000_000, Size = V(7, 4.5, 15), Color = C(60, 70, 90), Shape = "Block", Emoji = "🏎️", Model = { Pack = "Cars2", Piece = "GTR" } },
+	Hypercar = { Name = "Hypercar", Tier = 7, Rarity = "Legendary", BaseIncome = 220_000_000, Size = V(7, 4, 16), Color = C(255, 140, 0), Shape = "Block", Emoji = "🏎️", Model = { Pack = "Cars2", Piece = "P1GTR" } },
+
 	-- ── Exclusives (never spawn; rewards & Robux only, kept through Rebirth) ──
 	HugeTeddy = { Name = "Huge Teddy", Tier = 1, Rarity = "Mythic", BaseIncome = 50_000, Size = V(6, 7, 5), Color = C(190, 130, 80), Shape = "Ball", Exclusive = true, Emoji = "🧸" },
 	HugeCrystal = { Name = "Huge Crystal", Tier = 1, Rarity = "Mythic", BaseIncome = 250_000, Size = V(4, 8, 4), Color = C(120, 255, 240), Shape = "Block", Exclusive = true, Emoji = "💎" },

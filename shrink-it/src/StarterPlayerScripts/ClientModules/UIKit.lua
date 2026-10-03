@@ -15,7 +15,13 @@ local GameConfig = require(Shared.Config.GameConfig)
 local UIKit = {}
 
 UIKit.Font = Enum.Font.FredokaOne
-UIKit.Outline = Color3.fromRGB(22, 22, 32)
+UIKit.Outline = Color3.fromRGB(24, 44, 78) -- navy outline (clean blue simulator style)
+-- panel theme: bright sky-blue panels, deeper blue inner cards, red square X
+UIKit.Theme = {
+	Body = { Color3.fromRGB(100, 205, 248), Color3.fromRGB(62, 172, 232) },
+	Header = { Color3.fromRGB(120, 215, 252), Color3.fromRGB(80, 188, 240) },
+	Card = Color3.fromRGB(38, 128, 200),
+}
 
 local RGB = Color3.fromRGB
 UIKit.Colors = {
@@ -526,6 +532,9 @@ end)
 
 function UIKit.Panel(props)
 	local size = props.Size or UDim2.fromOffset(760, 520)
+	if props.Style ~= "Header" then
+		size = size + UDim2.fromOffset(0, 22) -- room for the title bar inside the panel
+	end
 	local holder = UIKit.Create("Frame", {
 		Name = (props.Name or props.Title or "Panel") .. "Holder",
 		BackgroundTransparency = 1,
@@ -551,48 +560,35 @@ function UIKit.Panel(props)
 	if props.Style == "Header" then
 		return UIKit._HeaderPanel(props, holder, frame, anim, panel)
 	end
-	UIKit.Corner(frame, 26)
+	UIKit.Corner(frame, 14)
 	UIKit.Stroke(frame, 6, UIKit.Outline, true)
-	UIKit.Gradient(frame, { Color3.fromRGB(255, 255, 255), Color3.fromRGB(228, 234, 248) })
-	UIKit.Studs(frame, props.Animated == true, 26, false)
+	UIKit.Gradient(frame, UIKit.Theme.Body, 90)
+	UIKit.Studs(frame, props.Animated == true, 14, false)
 
-	-- title pill overlapping the top-left edge
+	-- title bar across the top (white title, icon, red square X)
 	local titleBar = UIKit.Create("Frame", {
 		Name = "Title",
 		BackgroundColor3 = Color3.new(1, 1, 1),
-		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.fromOffset(46, 0),
-		Size = UDim2.fromOffset(math.max(260, #(props.Title or "") * 22 + 110), 62),
+		Size = UDim2.new(1, 0, 0, 62),
 		ZIndex = 60,
 		Parent = frame,
 	})
-	UIKit.Corner(titleBar, 18)
+	UIKit.Corner(titleBar, 14)
 	UIKit.Stroke(titleBar, 5, UIKit.Outline, true)
-	UIKit.Gradient(titleBar, props.Colors or UIKit.Colors.Blue)
-	UIKit.Label({ Text = props.Title or "", Size = UDim2.new(1, -86, 1, -12), Position = UDim2.fromOffset(76, 6), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 61, StrokeThickness = 3.5, Parent = titleBar })
-	local iconCircle = UIKit.Create("Frame", {
-		BackgroundColor3 = Color3.new(1, 1, 1),
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromOffset(30, 31),
-		Size = UDim2.fromOffset(84, 84),
-		ZIndex = 62,
-		Parent = titleBar,
-	})
-	UIKit.Corner(iconCircle, UDim.new(1, 0))
-	UIKit.Stroke(iconCircle, 5, UIKit.Outline, true)
-	UIKit.Gradient(iconCircle, UIKit.Colors.White)
-	UIKit.Icon({ Icon = { Emoji = props.Emoji or "⭐", Image = props.Image }, Size = UDim2.new(1, -16, 1, -16), Position = UDim2.fromOffset(8, 8), ZIndex = 63, Parent = iconCircle })
+	UIKit.Gradient(titleBar, UIKit.Theme.Header, 90)
+	local iconHolder = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.fromOffset(50, 50), Position = UDim2.fromOffset(14, 6), ZIndex = 62, Parent = titleBar })
+	UIKit.Icon({ Icon = { Emoji = props.Emoji or "⭐", Image = props.Image }, Size = UDim2.fromScale(1, 1), ZIndex = 63, Parent = iconHolder })
+	UIKit.Label({ Text = props.Title or "", Size = UDim2.new(1, -160, 1, -14), Position = UDim2.fromOffset(72, 7), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 61, StrokeThickness = 3.5, Parent = titleBar })
 
-	-- red X close button (top-right)
 	UIKit.Button({
 		Name = "Close",
 		Text = "X",
 		Colors = UIKit.Colors.Red,
-		Size = UDim2.fromOffset(62, 62),
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.new(1, -14, 0, 14),
+		Size = UDim2.fromOffset(46, 46),
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(1, -10, 0, 31),
 		ZIndex = 70,
-		CornerRadius = 16,
+		CornerRadius = 8,
 		Parent = frame,
 		OnClick = function()
 			panel.Close()
@@ -602,8 +598,8 @@ function UIKit.Panel(props)
 	local content = UIKit.Create("Frame", {
 		Name = "Content",
 		BackgroundTransparency = 1,
-		Position = UDim2.fromOffset(22, 48),
-		Size = UDim2.new(1, -44, 1, -66),
+		Position = UDim2.fromOffset(22, 70),
+		Size = UDim2.new(1, -44, 1, -88),
 		ZIndex = 51,
 		Parent = frame,
 	})
@@ -660,15 +656,16 @@ end
 
 -- "Shop" style panel: dark studded body + full-width striped header bar + square red X.
 -- (Used by the Trail Shop, Fuse Machine, Sell and Shop menus.)
-UIKit.PanelBody = Color3.fromRGB(56, 58, 80)
-UIKit.PanelCard = Color3.fromRGB(38, 40, 58)
+UIKit.PanelBody = Color3.fromRGB(62, 172, 232)
+UIKit.PanelCard = UIKit.Theme.Card
 function UIKit._HeaderPanel(props, holder, frame, anim, panel)
-	frame.BackgroundColor3 = UIKit.PanelBody
-	UIKit.Corner(frame, 10)
+	frame.BackgroundColor3 = Color3.new(1, 1, 1)
+	UIKit.Gradient(frame, UIKit.Theme.Body, 90)
+	UIKit.Corner(frame, 14)
 	UIKit.Stroke(frame, 6, UIKit.Outline, true)
 	-- faint stud pattern on the body
-	UIKit.Studs(frame, props.Animated == true, 10, true)
-	local headerH = props.HeaderHeight or 84
+	UIKit.Studs(frame, props.Animated == true, 14, false)
+	local headerH = props.HeaderHeight or 70
 	local header = UIKit.Create("Frame", {
 		Name = "Header",
 		BackgroundColor3 = Color3.new(1, 1, 1),
@@ -679,7 +676,7 @@ function UIKit._HeaderPanel(props, holder, frame, anim, panel)
 	})
 	UIKit.Corner(header, 10)
 	UIKit.Stroke(header, 5, UIKit.Outline, true)
-	UIKit.Gradient(header, props.Colors or { RGB(235, 120, 255), RGB(160, 40, 230) }, 0)
+	UIKit.Gradient(header, UIKit.Theme.Header, 90)
 	for i = 0, 3 do -- diagonal shine stripes
 		local stripe = UIKit.Create("Frame", {
 			BackgroundColor3 = Color3.new(1, 1, 1),
@@ -706,8 +703,8 @@ function UIKit._HeaderPanel(props, holder, frame, anim, panel)
 	UIKit.Button({
 		Name = "Close",
 		Text = "X",
-		Colors = { RGB(240, 50, 50), RGB(200, 20, 30) },
-		Size = UDim2.fromOffset(headerH - 22, headerH - 22),
+		Colors = UIKit.Colors.Red,
+		Size = UDim2.fromOffset(headerH - 24, headerH - 24),
 		AnchorPoint = Vector2.new(1, 0.5),
 		Position = UDim2.new(1, -12, 0, headerH / 2),
 		ZIndex = 70,

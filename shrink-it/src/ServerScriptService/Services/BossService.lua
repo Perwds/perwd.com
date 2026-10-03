@@ -305,6 +305,22 @@ local function loop()
 	end
 end
 
+-- admin: bring the boss in right now (no-op if one is already here)
+function BossService.SummonNow()
+	if boss then
+		return false
+	end
+	task.spawn(function()
+		local ok, err = pcall(arrive)
+		if not ok then
+			warn("[BossService] " .. tostring(err))
+			boss = nil
+			setStatus()
+		end
+	end)
+	return true
+end
+
 -- ── the Lab ─────────────────────────────────────────────────────────
 local function labHandlers()
 	Svc.Net.Handle("LabTurnIn", function(player)

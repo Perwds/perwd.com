@@ -1251,11 +1251,12 @@ function MapDecor.CustomDecor(map)
 	root.Parent = map
 	local rng = Random.new(1607)
 
-	-- the cart beside the shop stand (shop is at (36, -30), facing the spawn)
+	-- the cart beside the shop stand
 	local shop = customModel("MobileShop")
 	if shop then
 		local m = fitted(shop, 15)
-		placeArt(m, root, 58, 0, -34, -math.pi / 2)
+		local at = MapDecor.STANDS.Shop + Vector3.new(6, 0, 22)
+		placeArt(m, root, at.X, 0, at.Z, -math.pi / 2)
 		for _, d in ipairs(m:GetDescendants()) do
 			if d:IsA("BasePart") then
 				d.CanCollide = true
@@ -1274,7 +1275,7 @@ function MapDecor.CustomDecor(map)
 			placeArt(m, parent, x, groundY, z, rng:NextNumber(0, math.pi * 2))
 		end
 		local base = folder(root, "BaseFlowers")
-		for _, c in ipairs({ Vector3.new(-22, 0, -48), Vector3.new(22, 0, -48), Vector3.new(-60, 0, -10), Vector3.new(-40, 0, -10), Vector3.new(40, 0, -10), Vector3.new(60, 0, -10) }) do
+		for _, c in ipairs({ Vector3.new(-22, 0, -60), Vector3.new(22, 0, -60), Vector3.new(40, 0, -10), Vector3.new(60, 0, -10) }) do
 			for _ = 1, 4 do
 				local a, r = rng:NextNumber(0, math.pi * 2), rng:NextNumber(0.5, 3.5)
 				flower(base, c.X + math.cos(a) * r, 0, c.Z + math.sin(a) * r)
@@ -1498,75 +1499,61 @@ local function giftBox(m, top)
 end
 
 -- ── base ─────────────────────────────────────────────────────────────
-function MapDecor.Base(base, width, depth, plotRadius, plotCFrames)
+-- where the stands go (also used by CustomDecor for the shop cart)
+-- (between the paths that lead to the plots at z = -45 / -130 / -215, so nothing blocks a path)
+MapDecor.STANDS = {
+	Fuse = Vector3.new(-62, 0, -16),
+	Sell = Vector3.new(-66, 0, -88),
+	Lab = Vector3.new(-66, 0, -172),
+	Shop = Vector3.new(66, 0, -88),
+	Trails = Vector3.new(66, 0, -172),
+}
+
+function MapDecor.Base(base, width, depth, plotCFrames)
 	local decor = folder(base, "Decor")
 	local stands = folder(base, "Stands")
-	MapDecor.Stand(stands, "SellStand", "SELL", { RGB(230, 30, 30), RGB(255, 70, 60) }, Vector3.new(-74, 0, -24), "Sell", coinStack)
-	MapDecor.FuseMachine(stands, Vector3.new(-48, 0, -66))
-	MapDecor.Stand(stands, "TrailsStand", "TRAILS", { RGB(190, 50, 240), RGB(240, 120, 255) }, Vector3.new(48, 0, -66), "Trails", trailSwirl)
-	-- the LAB (turn in boxes for Samples) on the other side of the spawn
-	MapDecor.Stand(stands, "LabStand", "LAB", { RGB(40, 170, 80), RGB(120, 255, 120) }, Vector3.new(-36, 0, -30), "Lab", nil, math.pi / 2)
-	-- the SHOP is right next to where you spawn, facing you
-	MapDecor.Stand(stands, "ShopStand", "SHOP", { RGB(245, 170, 20), RGB(255, 225, 70) }, Vector3.new(36, 0, -30), "Shop", giftBox, -math.pi / 2)
+	local S = MapDecor.STANDS
+	-- two neat columns of shops down the middle aisle, all facing the center path
+	MapDecor.Stand(stands, "SellStand", "SELL", { RGB(230, 30, 30), RGB(255, 70, 60) }, S.Sell, "Sell", coinStack, math.pi / 2)
+	MapDecor.Stand(stands, "LabStand", "LAB", { RGB(40, 170, 80), RGB(120, 255, 120) }, S.Lab, "Lab", nil, math.pi / 2)
+	MapDecor.FuseMachine(stands, S.Fuse)
+	MapDecor.Stand(stands, "ShopStand", "SHOP", { RGB(245, 170, 20), RGB(255, 225, 70) }, S.Shop, "Shop", giftBox, -math.pi / 2)
+	MapDecor.Stand(stands, "TrailsStand", "TRAILS", { RGB(190, 50, 240), RGB(240, 120, 255) }, S.Trails, "Trails", trailSwirl, -math.pi / 2)
 
-	-- cobblestone ring path past every plot's gate + a path from the ring to the zone gate
-	local ringR = plotRadius - 58
-	local segments = 28
-	for k = 0, segments - 1 do
-		local a0 = math.rad(180 + 180 * k / segments)
-		local a1 = math.rad(180 + 180 * (k + 1) / segments)
-		local p0 = Vector3.new(math.cos(a0) * ringR, 0.12, math.sin(a0) * ringR)
-		local p1 = Vector3.new(math.cos(a1) * ringR, 0.12, math.sin(a1) * ringR)
-		local len = (p1 - p0).Magnitude + 1
-		local stone = deco(decor, Vector3.new(10, 0.16, len), CFrame.lookAt((p0 + p1) / 2, p1), RGB(205, 198, 185), Enum.Material.Cobblestone)
-		stone.CanCollide = false
-	end
-	deco(decor, Vector3.new(16, 0.16, ringR), CFrame.new(0, 0.12, -ringR / 2), RGB(205, 198, 185), Enum.Material.Cobblestone)
-	-- little paths from the ring to each plot gate
+	local STONE = RGB(205, 198, 185)
+	-- main path from the gate to the VIP room, and a path from it to every plot's gate
+	local main = deco(decor, Vector3.new(16, 0.16, depth - 30), CFrame.new(0, 0.12, -(depth - 30) / 2), STONE, Enum.Material.Cobblestone)
+	main.CanCollide = false
 	for _, cf in ipairs(plotCFrames or {}) do
 		local gate = (cf * CFrame.new(0, 0, 47.5)).Position
-		local toward = Vector3.new(gate.X, 0, gate.Z).Unit * ringR
-		deco(decor, Vector3.new(8, 0.15, (Vector3.new(gate.X, 0, gate.Z) - toward).Magnitude + 2), CFrame.lookAt((Vector3.new(gate.X, 0.12, gate.Z) + toward + Vector3.new(0, 0.12, 0)) / 2 + Vector3.new(0, 0.06, 0), toward + Vector3.new(0, 0.18, 0)), RGB(205, 198, 185), Enum.Material.Cobblestone)
+		local len = math.abs(gate.X) - 8
+		local p = deco(decor, Vector3.new(len, 0.15, 10), CFrame.new(math.sign(gate.X) * (8 + len / 2), 0.13, gate.Z), STONE, Enum.Material.Cobblestone)
+		p.CanCollide = false
 	end
 
-	-- small lamps around the ring, bushes & flowers in the plaza, a row of trees along the back wall
-	for k = 0, 6 do
-		local a = math.rad(195 + k * 25)
-		lamp(decor, Vector3.new(math.cos(a) * (ringR - 8), 0, math.sin(a) * (ringR - 8)))
-	end
-	for _, p in ipairs({ Vector3.new(-width / 2 + 12, 0, -depth + 14), Vector3.new(width / 2 - 12, 0, -depth + 14) }) do
-		bush(decor, p, 0.9)
-	end
-	flowers(decor, Vector3.new(-22, 0, -48), 3)
-	flowers(decor, Vector3.new(22, 0, -48), 3)
-	for x = -width / 2 + 18, width / 2 - 18, 32 do
-		tree(decor, Vector3.new(x, 0, -depth + 9), 0.65)
-	end
-	-- trimmed hedges along both side walls, with flower pots between them
-	for z = -30, -depth + 20, -16 do
+	-- lamps along both edges of the aisle, between the plot paths
+	for _, z in ipairs({ -10, -88, -172, -250 }) do
 		for _, s in ipairs({ -1, 1 }) do
-			local x = s * (width / 2 - 4)
-			part(decor, Vector3.new(3, 3, 10), CFrame.new(x, 1.5, z), RGB(60, 135, 55), Enum.Material.Plastic)
-			pcall(extraProp, decor, "flowerpot", Vector3.new(x, 0, z - 8))
+			lamp(decor, Vector3.new(s * 96, 0, z))
 		end
 	end
-	-- slim lamp posts lining the main path (thin, out of the way)
-	for z = -20, -45, -25 do -- (stops before the boss arena)
-		for _, s in ipairs({ -1, 1 }) do
-			prop(decor, Vector3.new(s * 11, 0, z), 0.75, 0, function(m)
-				lamp(m, Vector3.zero, RGB(255, 235, 170))
-			end)
+	-- trees along the back wall (aisle only, around the VIP room)
+	for x = -84, 84, 28 do
+		if math.abs(x) > 26 then
+			tree(decor, Vector3.new(x, 0, -depth + 9), 0.65)
 		end
 	end
-	-- planters + benches beside every stand
-	for _, p in ipairs({ Vector3.new(-74, 0, -24), Vector3.new(-48, 0, -66), Vector3.new(48, 0, -66) }) do
-		for _, s in ipairs({ -1, 1 }) do
-			pcall(extraProp, decor, "flowerpot", p + Vector3.new(s * 13, 0, 4))
+	-- bushes + flower pots around the stands, flower beds by the gate
+	for _, p in pairs(S) do
+		for _, dz in ipairs({ -13, 13 }) do
+			pcall(extraProp, decor, "flowerpot", p + Vector3.new(0, 0, dz))
 		end
 	end
-	-- flower beds near the gate (not on the path)
-	for _, x in ipairs({ -60, -40, 40, 60 }) do
+	for _, x in ipairs({ 40, 60 }) do
 		flowers(decor, Vector3.new(x, 0, -10), 2.4)
+	end
+	for _, x in ipairs({ -28, 28 }) do
+		bush(decor, Vector3.new(x, 0, -depth + 18), 0.9)
 	end
 end
 
