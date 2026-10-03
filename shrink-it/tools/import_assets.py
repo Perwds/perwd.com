@@ -2,11 +2,14 @@
 """Imports the ShrinkIt_Individual_Assets pack into the Rojo project.
 
 usage: python3 tools/import_assets.py <path to Individual_Assets folder>
+       python3 tools/import_assets.py --sleeping <path to Sleeping_Character_Assets folder>
 
 - chasers            -> assets/Chasers/Tier1..Tier10.rbxmx          (ServerStorage > Chasers)
 - collectibles/rewards matching an ObjectConfig id
                      -> assets/ShrinkableTemplates/<ObjectId>.rbxmx (ReplicatedStorage > ShrinkableTemplates)
 - everything else    -> assets/Pack/<name>.rbxmx                     (ServerStorage > AssetPack)
+--sleeping: sleeping chasers   -> assets/Sleeping/Chasers/Tier1..Tier10.rbxmx (ServerStorage > SleepingChasers)
+            sleeping shopkeepers -> assets/Sleeping/Shopkeepers/<name>.rbxmx (ServerStorage > SleepingShopkeepers)
 
 The pack uses the newest Roblox XML format (<uri>, MeshContent, ContentId ...). Rojo 7.4 reads the
 classic form, so Content properties are rewritten to MeshId / TextureID / ColorMap ... (same assets).
@@ -45,7 +48,25 @@ def camel(snake):
     return "".join(p.capitalize() for p in snake.split("_"))
 
 
+def sleeping(pack):
+    out = os.path.join(ROOT, "assets", "Sleeping")
+    n = 0
+    for name in sorted(os.listdir(pack)):
+        src = os.path.join(pack, name, name + ".rbxmx")
+        if not os.path.isfile(src):
+            continue
+        if name in CHASERS:
+            dst = os.path.join(out, "Chasers", "Tier%d.rbxmx" % (CHASERS.index(name) + 1))
+        else:
+            dst = os.path.join(out, "Shopkeepers", name + ".rbxmx")
+        convert(src, dst)
+        n += 1
+    print({"Sleeping": n})
+
+
 def main():
+    if sys.argv[1] == "--sleeping":
+        return sleeping(sys.argv[2])
     pack = sys.argv[1]
     ids = set(re.findall(r"^\t(\w+) = \{ Name", open(os.path.join(ROOT, "src/ReplicatedStorage/Shared/Config/ObjectConfig.lua")).read(), re.M))
     out = os.path.join(ROOT, "assets")

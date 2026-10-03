@@ -532,6 +532,50 @@ local function returningFor(c, tier)
 	return nil
 end
 
+-- ── sleepers: each zone's owner dozes in its zone (your Sleeping_Character_Assets) ──────────
+-- Grab a box → it WAKES UP and the chase starts from where it was sleeping. When nobody is being
+-- chased by it any more (and it walked home), it goes back to sleep.
+local sleepers = {} -- [tier] = { Model, Ground, Awake, IdleSince }
+
+local function setShown(model, shown)
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") or d:IsA("Decal") then
+			if shown then
+				local t = d:GetAttribute("_T")
+				if t then
+					d.Transparency = t
+				end
+			else
+				if d:GetAttribute("_T") == nil then
+					d:SetAttribute("_T", d.Transparency)
+				end
+				d.Transparency = 1
+			end
+		end
+	end
+end
+
+local function wakeSleeper(tier)
+	local sl = sleepers[tier]
+	if not sl or sl.Awake or not sl.Model.Parent then
+		return
+	end
+	sl.Awake = true
+	sl.IdleSince = nil
+	sl.Model:SetAttribute("Sleeping", false) -- stops the snoring / Zzz
+	setShown(sl.Model, false) -- the running chaser takes its place
+end
+
+local function sleepAgain(tier)
+	local sl = sleepers[tier]
+	if not sl or not sl.Awake then
+		return
+	end
+	sl.Awake = false
+	setShown(sl.Model, true)
+	sl.Model:SetAttribute("Sleeping", true)
+end
+
 local function spawnChaser(player, c, tier, fromPos, rage)
 	local ok, model, hum, cfg = pcall(buildChaser, tier)
 	if not ok then
@@ -543,6 +587,10 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 	local root = model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart
 	local target = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	local spawnPos = Svc.Map.ClampToZone(tier, fromPos + Vector3.new(0, 0, ChaserConfig.SpawnBehind))
+	if sleepers[tier] then
+		spawnPos = sleepers[tier].Ground -- it wakes up and runs from its bed
+		wakeSleeper(tier)
+	end
 	local _, size = model:GetBoundingBox()
 	spawnPos += Vector3.new(0, size.Y / 2, 0)
 	local lookAt = target and Vector3.new(target.Position.X, spawnPos.Y, target.Position.Z) or (spawnPos - Vector3.new(0, 0, 1))
@@ -822,28 +870,56 @@ function CarryService.OnPlayerRemoving(player)
 	carrying[player] = nil
 end
 
--- A sleeping copy of each zone's owner (💤) so you can see who you're about to rob.
+-- A sleeping copy of each zone's owner so you can see who you're about to rob.
 local function spawnSleepers()
+	local folder = ServerStorage:FindFirstChild("SleepingChasers")
 	for tier, area in pairs(Svc.Map.Areas) do
-		local ok, model = pcall(buildChaser, tier)
-		if ok and model then
-			local f = area.Floor
-			local side = (tier % 2 == 0) and 1 or -1
-			local pos = Vector3.new(side * (f.Size.X / 2 - 40), 0, f.Position.Z)
-			local _, size = model:GetBoundingBox()
-			model.Name = model.Name .. " (asleep)"
+		local f = area.Floor
+		local side = (tier % 2 == 0) and 1 or -1
+		local ground = Vector3.new(side * (f.Size.X / 2 - 40), f.Position.Y + f.Size.Y / 2, f.Position.Z)
+		local template = folder and folder:FindFirstChild("Tier" .. tier)
+		if template then
+			-- your sleeping character (breathing, nodding, snoring); standing on the ground, facing the middle
+			local model = template:Clone()
+			model.Name = ChaserConfig.Get(tier).Name .. " (asleep)"
+			model:SetAttribute("Sleeping", true)
+			local root = model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart
 			for _, d in ipairs(model:GetDescendants()) do
-				if d:IsA("Script") then
-					d:Destroy() -- sleepers don't run their controller
-				elseif d:IsA("BasePart") then
-					d.Anchored = true
-					d.CanCollide = false
+				if d:IsA("BasePart") then
+					d.CanQuery = false
 				end
 			end
-			-- lying on its back, head toward the corridor center
-			model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
+			if root then
+				root.Anchored = true -- held in place until its sleep controller takes over
+			end
+			local hum = model:FindFirstChildOfClass("Humanoid")
+			if hum then
+				hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			end
+			model:PivotTo(CFrame.new(ground) * CFrame.Angles(0, side < 0 and -math.pi / 2 or math.pi / 2, 0))
+			local cf, size = model:GetBoundingBox()
+			model:PivotTo(model:GetPivot() + Vector3.new(0, ground.Y - (cf.Position.Y - size.Y / 2), 0))
 			model.Parent = Svc.Map.ChaserFolder
-			say(model, "💤", nil)
+			sleepers[tier] = { Model = model, Ground = ground, Awake = false }
+		else
+			local ok, model = pcall(buildChaser, tier)
+			if ok and model then
+				local pos = Vector3.new(ground.X, 0, ground.Z)
+				local _, size = model:GetBoundingBox()
+				model.Name = model.Name .. " (asleep)"
+				for _, d in ipairs(model:GetDescendants()) do
+					if d:IsA("Script") then
+						d:Destroy() -- sleepers don't run their controller
+					elseif d:IsA("BasePart") then
+						d.Anchored = true
+						d.CanCollide = false
+					end
+				end
+				-- lying on its back, head toward the corridor center
+				model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
+				model.Parent = Svc.Map.ChaserFolder
+				say(model, "💤", nil)
+			end
 		end
 	end
 end
@@ -924,6 +1000,29 @@ function CarryService.Start()
 						if (ch.Root.Position - root.Position).Magnitude <= reach then
 							CarryService.DropAll(player, "caught")
 						end
+					end
+				end
+			end
+			-- sleepers whose chasers are all gone go back to sleep
+			for tier, sl in pairs(sleepers) do
+				if sl.Awake then
+					local busy = false
+					for _, other in pairs(carrying) do
+						if other.Chaser and other.Chaser.Tier == tier then
+							busy = true
+						end
+					end
+					for _, ch in ipairs(returning) do
+						if ch.Tier == tier and ch.Model.Parent then
+							busy = true
+						end
+					end
+					if busy then
+						sl.IdleSince = nil
+					elseif not sl.IdleSince then
+						sl.IdleSince = os.clock()
+					elseif os.clock() - sl.IdleSince > 1.5 then
+						sleepAgain(tier)
 					end
 				end
 			end

@@ -1,0 +1,1376 @@
+<roblox version="4">
+  <External>null</External>
+  <External>nil</External>
+  <Item class="Model" referent="RBXa3bf857eda424dc0bde29bc02543440d">
+    <Properties>
+      <string name="Name">Grandpa Joe</string>
+      <bool name="archivable">true</bool>
+      <Ref name="PrimaryPart">RBX7d446f32a50d4c4995f463d30176117c</Ref>
+      <BinaryString name="AttributesSerialize">GgAAAA4AAABBbmltYXRpb25TdHlsZQIaAAAAUHJvY2VkdXJhbFNsZWVwUnVuQW5kTWVsZWUOAAAAQXR0YWNrQ29vbGRvd24GMzMzMzMz8z8MAAAAQXR0YWNrRGFtYWdlBgAAAAAAAC5ACwAAAEF0dGFja1JhbmdlBgAAAAAAABJADAAAAENoYXNlRW5hYmxlZAMBCgAAAENoYXNlU3BlZWQGAAAAAAAAQ0APAAAARGV0ZWN0aW9uUmFkaXVzBgAAAAAAAFRAEQAAAEhhc1NsZWVwQW5pbWF0aW9uAwEJAAAASG9tZUxlYXNoBgAAAAAAAGRACwAAAFBhY2tBc3NldElkAgsAAABncmFuZHBhX2pvZRAAAABSQlhfQUlfR0VORVJBVEVEAwEUAAAAUkJYX0FJX0dFTkVSQVRJT05fSUQCJAAAADA4OTJiZTU3LWUyYmQtNDNlMC1hNzAzLWJhZGZjYzdiNjk5MBYAAABSQlhfQUlfR0VORVJBVElPTl9UWVBFAgwAAABHZW5lcmF0ZU1lc2gRAAAAUkJYX0FJX01PREVMX0ZMT1cCBAAAAG1lc2gKAAAAUmlnVmVyc2lvbgYAAAAAAADwPwYAAABSaWdnZWQDAQQAAABSb2xlAgYAAABjaGFzZXIMAAAAU2hvd1NsZWVwWnp6AwEKAAAAU2xlZXBDeWNsZQbNzMzMzMwQQBEAAABTbGVlcFNvdW5kRW5hYmxlZAMBCAAAAFNsZWVwaW5nAwENAAAAU25vcmVEaXN0YW5jZQYAAAAAAIBGQBIAAABTbm9yZVBsYXliYWNrU3BlZWQGhetRuB6F6z8MAAAAU25vcmVTb3VuZElkAhcAAAByYnhhc3NldGlkOi8vNzA2NzI3NzczOAsAAABTbm9yZVZvbHVtZQZSuB6F61HYPwwAAABWaXN1YWxIZWlnaHQGDIhNIgcAGkA=</BinaryString>
+    </Properties>
+    <Item class="Model" referent="RBX2ae69e5d07d6484a9649269263a1a28b">
+      <Properties>
+        <string name="Name">torso</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBXa80cd07481b044d7ae17f1449102d374">
+        <Properties>
+          <string name="Name">torso_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">false</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">false</bool>
+          <Content name="TextureID"><url>rbxassetid://107977606400206</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>2.14794459</X>
+            <Y>2.49187092</Y>
+            <Z>1.97461651</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>1.88178611</X>
+            <Y>2.18309546</Y>
+            <Z>1.72993565</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>-0.133814667</X>
+            <Y>3.51032182</Y>
+            <Z>0.113128736</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://129815073521468</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">true</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX82f46cc9ca6d4b54a82d0c2bcd374c6f">
+      <Properties>
+        <string name="Name">head</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBXe81080b869924efe9c818f5b6f0f7f45">
+        <Properties>
+          <string name="Name">head_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">false</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">false</bool>
+          <Content name="TextureID"><url>rbxassetid://113309601015889</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>2.19221284</X>
+            <Y>2.35776778</Y>
+            <Z>2.25238742</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>1.92056894</X>
+            <Y>2.06560946</Y>
+            <Z>1.97328711</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>-0.0985626971</X>
+            <Y>5.32111584</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://77528641885917</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">true</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX2cb4ad9724bd4ddc8859d793a32be14c">
+      <Properties>
+        <string name="Name">left arm</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBX971a5607914f4be6b913b4843dd4b791">
+        <Properties>
+          <string name="Name">left arm_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">false</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">false</bool>
+          <Content name="TextureID"><url>rbxassetid://118966762529381</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.34547677</X>
+            <Y>2.6371446</Y>
+            <Z>1.158392</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>1.17875457</X>
+            <Y>2.31036782</Y>
+            <Z>1.01485205</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>-1.03942803</X>
+            <Y>3.18539389</Y>
+            <Z>0.270601651</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://123397268755469</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">true</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX5ccae9447b674f6aabb0553d33cfaa19">
+      <Properties>
+        <string name="Name">right arm</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBXdcca33420659488a82d3c4dc33c2bd49">
+        <Properties>
+          <string name="Name">right arm_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">false</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">false</bool>
+          <Content name="TextureID"><url>rbxassetid://118159262815670</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.54080046</X>
+            <Y>4.51036189</Y>
+            <Z>1.81762909</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>1.34987509</X>
+            <Y>3.95146894</Y>
+            <Z>1.59240103</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.941753595</X>
+            <Y>2.25515346</Y>
+            <Z>-0.0666711158</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://107716948763509</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">true</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX92548ef061ae4667a85de44f619a5dc3">
+      <Properties>
+        <string name="Name">left leg</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBXa056a98975294ab89c5ac9ad080e098c">
+        <Properties>
+          <string name="Name">left leg_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">false</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">false</bool>
+          <Content name="TextureID"><url>rbxassetid://121419930588223</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.16015397</X>
+            <Y>2.52091645</Y>
+            <Z>1.53738986</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>1.01639569</X>
+            <Y>2.20854187</Y>
+            <Z>1.34688711</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>-0.653380636</X>
+            <Y>1.26261957</Y>
+            <Z>0.0361200978</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://109260613449245</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">true</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Model" referent="RBX5ebd7e3ebd6c4d2daf15f182e2939fd1">
+      <Properties>
+        <string name="Name">right leg</string>
+        <bool name="archivable">true</bool>
+        <Ref name="PrimaryPart">null</Ref>
+      </Properties>
+      <Item class="MeshPart" referent="RBXb1231267f0c246bc904841aa2934764d">
+        <Properties>
+          <string name="Name">right leg_geom</string>
+          <token name="FluidFidelity">0</token>
+          <bool name="CanQuery">false</bool>
+          <Color3uint8 name="Color3uint8">4288914085</Color3uint8>
+          <bool name="Anchored">false</bool>
+          <Content name="TextureID"><url>rbxassetid://112629362471938</url></Content>
+          <token name="RenderFidelity">0</token>
+          <token name="Material">256</token>
+          <bool name="archivable">true</bool>
+          <Vector3 name="size">
+            <X>1.1712294</X>
+            <Y>2.52352574</Y>
+            <Z>1.53510579</Z>
+          </Vector3>
+          <token name="CollisionFidelity">0</token>
+          <Vector3 name="InitialSize">
+            <X>1.02609873</X>
+            <Y>2.21082783</Y>
+            <Z>1.34488606</Z>
+          </Vector3>
+          <bool name="CanCollide">false</bool>
+          <string name="CollisionGroup">Default</string>
+          <bool name="CanTouch">false</bool>
+          <CoordinateFrame name="CFrame">
+            <X>0.421421279</X>
+            <Y>1.26463558</Y>
+            <Z>0.0406789926</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <Content name="MeshId"><url>rbxassetid://119818800150970</url></Content>
+          <float name="Transparency">0</float>
+          <CoordinateFrame name="PivotOffset">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <float name="Reflectance">0</float>
+          <bool name="DoubleSided">false</bool>
+          <bool name="Massless">true</bool>
+          <bool name="CastShadow">true</bool>
+          <string name="MaterialVariantSerialized" />
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBX7d446f32a50d4c4995f463d30176117c">
+      <Properties>
+        <string name="Name">HumanoidRootPart</string>
+        <CoordinateFrame name="CFrame">
+          <X>-0.133814667</X>
+          <Y>3.51032182</Y>
+          <Z>0.113128736</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Vector3 name="size">
+          <X>1.28876675</X>
+          <Y>1.36500571</Y>
+          <Z>1.1847699</Z>
+        </Vector3>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">true</bool>
+        <bool name="CanTouch">true</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">false</bool>
+        <float name="Transparency">1</float>
+        <bool name="CastShadow">false</bool>
+        <token name="Material">256</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <BinaryString name="AttributesSerialize">AQAAAAkAAABSaWdEcml2ZXIDAQ==</BinaryString>
+      </Properties>
+      <Item class="Motor6D" referent="RBXf4321f9fbbcc47c68bfa64cecd57f4e2">
+        <Properties>
+          <string name="Name">RootJoint</string>
+          <Ref name="Part0">RBX7d446f32a50d4c4995f463d30176117c</Ref>
+          <Ref name="Part1">RBXdb84b7251efb4ae780c6978153947573</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+          <float name="MaxVelocity">0.1</float>
+          <float name="DesiredAngle">0</float>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBXdb84b7251efb4ae780c6978153947573">
+      <Properties>
+        <string name="Name">Torso</string>
+        <CoordinateFrame name="CFrame">
+          <X>-0.133814667</X>
+          <Y>3.51032182</Y>
+          <Z>0.113128736</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Vector3 name="size">
+          <X>1.28876675</X>
+          <Y>1.49512255</Y>
+          <Z>1.1847699</Z>
+        </Vector3>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <float name="Transparency">1</float>
+        <bool name="CastShadow">false</bool>
+        <token name="Material">256</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <BinaryString name="AttributesSerialize">AQAAAAkAAABSaWdEcml2ZXIDAQ==</BinaryString>
+      </Properties>
+      <Item class="Weld" referent="RBXc506f11b78954c589dd9c88305dbf400">
+        <Properties>
+          <string name="Name">VisualWeld_n3</string>
+          <Ref name="Part0">RBXdb84b7251efb4ae780c6978153947573</Ref>
+          <Ref name="Part1">RBXa80cd07481b044d7ae17f1449102d374</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+        </Properties>
+      </Item>
+      <Item class="Motor6D" referent="RBXc1c26f460c68490cb6af1609f9796968">
+        <Properties>
+          <string name="Name">Neck</string>
+          <Ref name="Part0">RBXdb84b7251efb4ae780c6978153947573</Ref>
+          <Ref name="Part1">RBXb696976566794198bca7d05dceb7e549</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0.820531547</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>-0.0352519701</X>
+            <Y>-0.990262468</Y>
+            <Z>0.113128736</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+          <float name="MaxVelocity">0.1</float>
+          <float name="DesiredAngle">0</float>
+        </Properties>
+      </Item>
+      <Item class="Motor6D" referent="RBXb539629b1e474021b936182a3b450829">
+        <Properties>
+          <string name="Name">LeftShoulder</string>
+          <Ref name="Part0">RBXdb84b7251efb4ae780c6978153947573</Ref>
+          <Ref name="Part1">RBX074c8b32c36d4e859ce60cc51e011e83</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.94509562</X>
+            <Y>0.423038364</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>-0.039482261</X>
+            <Y>0.747966302</Y>
+            <Z>-0.157472915</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+          <float name="MaxVelocity">0.1</float>
+          <float name="DesiredAngle">0</float>
+        </Properties>
+      </Item>
+      <Item class="Motor6D" referent="RBX89f0994806584f078f2d625d1b91ead2">
+        <Properties>
+          <string name="Name">LeftHip</string>
+          <Ref name="Part0">RBXdb84b7251efb4ae780c6978153947573</Ref>
+          <Ref name="Part1">RBX2fcd0a045a2640de84656e656f6ee7a5</Ref>
+          <CoordinateFrame name="C0">
+            <X>-0.519565969</X>
+            <Y>-1.04658579</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>1.20111647</Y>
+            <Z>0.0770086385</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+          <float name="MaxVelocity">0.1</float>
+          <float name="DesiredAngle">0</float>
+        </Properties>
+      </Item>
+      <Item class="Motor6D" referent="RBX8aa252242ea54c67bf2ff76c113b0f4d">
+        <Properties>
+          <string name="Name">RightShoulder</string>
+          <Ref name="Part0">RBXdb84b7251efb4ae780c6978153947573</Ref>
+          <Ref name="Part1">RBXce0b648f5fd449589720300c5a035f66</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.94509562</X>
+            <Y>0.423038364</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>-0.130472642</X>
+            <Y>1.67820673</Y>
+            <Z>0.179799852</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+          <float name="MaxVelocity">0.1</float>
+          <float name="DesiredAngle">0</float>
+        </Properties>
+      </Item>
+      <Item class="Motor6D" referent="RBXada842c03aaa487c82b450e70b0cb722">
+        <Properties>
+          <string name="Name">RightHip</string>
+          <Ref name="Part0">RBXdb84b7251efb4ae780c6978153947573</Ref>
+          <Ref name="Part1">RBX11348ad5f8594db69fec6262f7d57108</Ref>
+          <CoordinateFrame name="C0">
+            <X>0.555235947</X>
+            <Y>-1.04658579</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>1.19910046</Y>
+            <Z>0.0724497436</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+          <float name="MaxVelocity">0.1</float>
+          <float name="DesiredAngle">0</float>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBXb696976566794198bca7d05dceb7e549">
+      <Properties>
+        <string name="Name">Head</string>
+        <CoordinateFrame name="CFrame">
+          <X>-0.0985626971</X>
+          <Y>5.32111584</Y>
+          <Z>0</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Vector3 name="size">
+          <X>1.31532771</X>
+          <Y>1.41466067</Y>
+          <Z>1.35143245</Z>
+        </Vector3>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <float name="Transparency">1</float>
+        <bool name="CastShadow">false</bool>
+        <token name="Material">256</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <BinaryString name="AttributesSerialize">AQAAAAkAAABSaWdEcml2ZXIDAQ==</BinaryString>
+      </Properties>
+      <Item class="Weld" referent="RBX08b2841f452149759b4e56faa20d64ba">
+        <Properties>
+          <string name="Name">VisualWeld_n5</string>
+          <Ref name="Part0">RBXb696976566794198bca7d05dceb7e549</Ref>
+          <Ref name="Part1">RBXe81080b869924efe9c818f5b6f0f7f45</Ref>
+          <CoordinateFrame name="C0">
+            <X>-4.16333634e-17</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+        </Properties>
+      </Item>
+      <Item class="Sound" referent="RBX7ACC385BF8AD44F9822A40FF8907655C">
+        <Properties>
+          <string name="Name">Snore</string>
+          
+          <bool name="Looped">true</bool>
+          <float name="Volume">0.38</float>
+          <float name="PlaybackSpeed">0.86</float>
+          <float name="RollOffMinDistance">5</float>
+          <float name="RollOffMaxDistance">45</float>
+          <token name="RollOffMode">3</token>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBX074c8b32c36d4e859ce60cc51e011e83">
+      <Properties>
+        <string name="Name">Left Arm</string>
+        <CoordinateFrame name="CFrame">
+          <X>-1.03942803</X>
+          <Y>3.18539389</Y>
+          <Z>0.270601651</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Vector3 name="size">
+          <X>0.585002449</X>
+          <Y>1.82000762</Y>
+          <Z>0.650002721</Z>
+        </Vector3>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <float name="Transparency">1</float>
+        <bool name="CastShadow">false</bool>
+        <token name="Material">256</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <BinaryString name="AttributesSerialize">AQAAAAkAAABSaWdEcml2ZXIDAQ==</BinaryString>
+      </Properties>
+      <Item class="Weld" referent="RBX1441d2e410144c53923c0d3b6ce43774">
+        <Properties>
+          <string name="Name">VisualWeld_n7</string>
+          <Ref name="Part0">RBX074c8b32c36d4e859ce60cc51e011e83</Ref>
+          <Ref name="Part1">RBX971a5607914f4be6b913b4843dd4b791</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>4.4408921e-16</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBXce0b648f5fd449589720300c5a035f66">
+      <Properties>
+        <string name="Name">Right Arm</string>
+        <CoordinateFrame name="CFrame">
+          <X>0.941753595</X>
+          <Y>2.25515346</Y>
+          <Z>-0.0666711158</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Vector3 name="size">
+          <X>0.585002449</X>
+          <Y>1.82000762</Y>
+          <Z>0.650002721</Z>
+        </Vector3>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <float name="Transparency">1</float>
+        <bool name="CastShadow">false</bool>
+        <token name="Material">256</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <BinaryString name="AttributesSerialize">AQAAAAkAAABSaWdEcml2ZXIDAQ==</BinaryString>
+      </Properties>
+      <Item class="Weld" referent="RBXa9b22461f65c4b0d89b6d3409bba9a06">
+        <Properties>
+          <string name="Name">VisualWeld_n9</string>
+          <Ref name="Part0">RBXce0b648f5fd449589720300c5a035f66</Ref>
+          <Ref name="Part1">RBXdcca33420659488a82d3c4dc33c2bd49</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBX2fcd0a045a2640de84656e656f6ee7a5">
+      <Properties>
+        <string name="Name">Left Leg</string>
+        <CoordinateFrame name="CFrame">
+          <X>-0.653380636</X>
+          <Y>1.26261957</Y>
+          <Z>0.0361200978</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Vector3 name="size">
+          <X>0.580076984</X>
+          <Y>2.03604944</Y>
+          <Z>0.768694931</Z>
+        </Vector3>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <float name="Transparency">1</float>
+        <bool name="CastShadow">false</bool>
+        <token name="Material">256</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <BinaryString name="AttributesSerialize">AQAAAAkAAABSaWdEcml2ZXIDAQ==</BinaryString>
+      </Properties>
+      <Item class="Weld" referent="RBX2004513ad3d24d5a9f8e0140240f4ea2">
+        <Properties>
+          <string name="Name">VisualWeld_n11</string>
+          <Ref name="Part0">RBX2fcd0a045a2640de84656e656f6ee7a5</Ref>
+          <Ref name="Part1">RBXa056a98975294ab89c5ac9ad080e098c</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>6.9388939e-18</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Part" referent="RBX11348ad5f8594db69fec6262f7d57108">
+      <Properties>
+        <string name="Name">Right Leg</string>
+        <CoordinateFrame name="CFrame">
+          <X>0.421421279</X>
+          <Y>1.26463558</Y>
+          <Z>0.0406789926</Z>
+          <R00>1</R00>
+          <R01>0</R01>
+          <R02>0</R02>
+          <R10>0</R10>
+          <R11>1</R11>
+          <R12>0</R12>
+          <R20>0</R20>
+          <R21>0</R21>
+          <R22>1</R22>
+        </CoordinateFrame>
+        <Vector3 name="size">
+          <X>0.5856147</X>
+          <Y>2.03604944</Y>
+          <Z>0.767552894</Z>
+        </Vector3>
+        <bool name="Anchored">false</bool>
+        <bool name="CanCollide">false</bool>
+        <bool name="CanTouch">false</bool>
+        <bool name="CanQuery">false</bool>
+        <bool name="Massless">true</bool>
+        <float name="Transparency">1</float>
+        <bool name="CastShadow">false</bool>
+        <token name="Material">256</token>
+        <token name="TopSurface">0</token>
+        <token name="BottomSurface">0</token>
+        <BinaryString name="AttributesSerialize">AQAAAAkAAABSaWdEcml2ZXIDAQ==</BinaryString>
+      </Properties>
+      <Item class="Weld" referent="RBX43e0e159443c4976a86edc2d3bda105d">
+        <Properties>
+          <string name="Name">VisualWeld_n13</string>
+          <Ref name="Part0">RBX11348ad5f8594db69fec6262f7d57108</Ref>
+          <Ref name="Part1">RBXb1231267f0c246bc904841aa2934764d</Ref>
+          <CoordinateFrame name="C0">
+            <X>0</X>
+            <Y>-2.22044605e-16</Y>
+            <Z>2.77555756e-17</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <CoordinateFrame name="C1">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+            <R00>1</R00>
+            <R01>0</R01>
+            <R02>0</R02>
+            <R10>0</R10>
+            <R11>1</R11>
+            <R12>0</R12>
+            <R20>0</R20>
+            <R21>0</R21>
+            <R22>1</R22>
+          </CoordinateFrame>
+          <bool name="Enabled">true</bool>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="Humanoid" referent="RBXf6c9797e5dfb48d9ba1d6ca2e2c4e600">
+      <Properties>
+        <string name="Name">Humanoid</string>
+        <token name="RigType">0</token>
+        <float name="WalkSpeed">38</float>
+        <float name="HipHeight">0.821797006</float>
+        <float name="MaxHealth">100</float>
+        <float name="Health">100</float>
+        <bool name="AutoRotate">true</bool>
+        <bool name="RequiresNeck">false</bool>
+        <bool name="BreakJointsOnDeath">false</bool>
+        <token name="DisplayDistanceType">2</token>
+        <float name="JumpPower">50</float>
+        <bool name="UseJumpPower">true</bool>
+        <float name="JumpHeight">7.2</float>
+      </Properties>
+      <Item class="Animator" referent="RBXad6cd53cb55743c2abef980490c4679f">
+        <Properties>
+          <string name="Name">Animator</string>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="ModuleScript" referent="RBX4A1D5DFE3F134E5897BBD41334FDF177">
+      <Properties>
+        <string name="Name">SleepAnimator</string>
+        <ProtectedString name="Source">-- Shared sleep animation for a rigged chaser or an anchored shopkeeper.
+-- The complete model includes this ModuleScript, a Snore Sound and SetSleeping API.
+local RunService = game:GetService("RunService")
+local SleepAnimator = {}
+
+function SleepAnimator.Start(npc, rig)
+ local root = npc:FindFirstChild("HumanoidRootPart") or npc:FindFirstChild("SleepAnchor")
+ local head = npc:FindFirstChild("Head", true)
+ local humanoid = npc:FindFirstChildOfClass("Humanoid")
+ local sound = npc:FindFirstChild("Snore", true)
+ local api = npc:WaitForChild("SetSleeping")
+ local changed = npc:WaitForChild("SleepChanged")
+ assert(root and head and sound, "Sleep asset needs a root, head and Snore Sound")
+ local motors = rig and rig.motors
+ local baseC0 = rig and rig.baseC0
+ local sleeping, active = false, true
+ local saved
+ local elapsed, accumulator, breath = 0, 0, 0
+ local connections = {}
+ local rest, groups = {}, {}
+ local anchorFrame = root.CFrame
+ local function localPosition(part)
+  return anchorFrame:PointToObjectSpace(part.Position)
+ end
+ local lower = npc:FindFirstChild("LowerTorso", true)
+ local waistPivot = lower and localPosition(lower) or Vector3.zero
+ local neckPivot = localPosition(head) - Vector3.new(0, head.Size.Y * .45, 0)
+ local shoulders = {}
+ if not motors then
+  for _, part in ipairs(npc:GetDescendants()) do
+   if part:IsA("BasePart") and part ~= root then
+    rest[part] = anchorFrame:ToObjectSpace(part.CFrame)
+    local name = part.Name:lower()
+    local group = "Body"
+    if name == "head" or name:find("hair") or name:find("cap") or name:find("crown") or name:find("hat") then group = "Head"
+    elseif name:find("left") and (name:find("arm") or name:find("hand")) then group = "LeftArm"
+    elseif name:find("right") and (name:find("arm") or name:find("hand")) then group = "RightArm"
+    elseif name:find("leg") or name:find("foot") then group = "Legs" end
+    groups[part] = group
+   end
+  end
+  for _, side in ipairs({"Left", "Right"}) do
+   local arm = npc:FindFirstChild(side .. "UpperArm", true)
+   shoulders[side .. "Arm"] = arm and localPosition(arm) + Vector3.new(0, arm.Size.Y * .4, 0) or waistPivot
+  end
+ end
+ local billboard = Instance.new("BillboardGui")
+ billboard.Name = "SleepZzz"; billboard.Adornee = head
+ billboard.Size = UDim2.fromOffset(110, 65); billboard.StudsOffset = Vector3.new(0, head.Size.Y * .7 + .8, 0)
+ billboard.MaxDistance = 70; billboard.AlwaysOnTop = false; billboard.Enabled = false; billboard.Parent = head
+ local label = Instance.new("TextLabel")
+ label.Size = UDim2.fromScale(1, 1); label.BackgroundTransparency = 1
+ label.Font = Enum.Font.GothamBold; label.TextScaled = true; label.TextColor3 = Color3.fromRGB(183, 215, 255)
+ label.TextStrokeColor3 = Color3.fromRGB(34, 42, 69); label.TextStrokeTransparency = .35; label.Text = "Z z z"; label.Parent = billboard
+
+ local function number(name, default, low, high)
+  local value = npc:GetAttribute(name)
+  if typeof(value) ~= "number" or value ~= value then value = default end
+  return math.clamp(value, low, high)
+ end
+ local function syncSound()
+  local id = npc:GetAttribute("SnoreSoundId")
+  if typeof(id) == "string" and id ~= "" and sound.SoundId ~= id then sound.SoundId = id end
+  sound.Volume = number("SnoreVolume", .38, 0, 2)
+  sound.PlaybackSpeed = number("SnorePlaybackSpeed", 1, .45, 1.6)
+  sound.RollOffMinDistance = 5; sound.RollOffMaxDistance = number("SnoreDistance", 45, 8, 120)
+  sound.RollOffMode = Enum.RollOffMode.InverseTapered; sound.Looped = true
+  local audible = sleeping and npc:GetAttribute("SleepSoundEnabled") ~= false
+  if audible and not sound.Playing then sound:Play()
+  elseif not audible and sound.Playing then sound:Stop() end
+ end
+ local function restorePose()
+  if motors then
+   for name, motor in pairs(motors) do if motor.Parent then motor.C0 = baseC0[name] end end
+  else
+   for part, cf in pairs(rest) do if part.Parent then part.CFrame = root.CFrame * cf end end
+  end
+ end
+ local function setSleeping(value)
+  if sleeping == value then syncSound(); return end
+  sleeping = value
+  if sleeping then
+   elapsed = 0
+   saved = {anchored = root.Anchored, walkSpeed = humanoid and humanoid.WalkSpeed, autoRotate = humanoid and humanoid.AutoRotate}
+   if humanoid then humanoid:Move(Vector3.zero, false); humanoid.WalkSpeed = 0; humanoid.AutoRotate = false end
+   root.AssemblyLinearVelocity = Vector3.zero; root.AssemblyAngularVelocity = Vector3.zero; root.Anchored = true
+   if rig and rig.onSleep then rig.onSleep() end
+  else
+   restorePose()
+   if saved then
+    root.Anchored = saved.anchored
+    if humanoid then humanoid.WalkSpeed = saved.walkSpeed; humanoid.AutoRotate = saved.autoRotate end
+    if humanoid and not root.Anchored then pcall(function() root:SetNetworkOwner(nil) end) end
+   end
+   if rig and rig.onWake then rig.onWake() end
+  end
+  billboard.Enabled = sleeping and npc:GetAttribute("ShowSleepZzz") ~= false
+  syncSound()
+  npc:SetAttribute("SleepAnimationActive", sleeping)
+  changed:Fire(sleeping)
+ end
+ local function pivot(position, rotation)
+  return CFrame.new(position) * rotation * CFrame.new(-position)
+ end
+ local function animate()
+  local cycle = number("SleepCycle", 4.2, 2, 8)
+  local phase = elapsed * math.pi * 2 / cycle
+  breath = math.sin(phase)
+  local sway = math.sin(phase * .5) * .025
+  local nod = -.28 + breath * .045
+  if motors then
+   local rotations = {
+    RootJoint = CFrame.new(0, .025 * breath, 0) * CFrame.Angles(-.04 + breath * .012, 0, sway),
+    Neck = CFrame.Angles(nod, .015 * math.sin(phase * .5), -.1 + sway),
+    Waist = CFrame.Angles(-.035 + breath * .016, 0, sway),
+    RightShoulder = CFrame.Angles(.22 + breath * .018, -.08, -.13),
+    LeftShoulder = CFrame.Angles(.25 + breath * .018, .08, .13),
+    RightHip = CFrame.Angles(.025, 0, -.025), LeftHip = CFrame.Angles(-.025, 0, .025),
+   }
+   for name, rotation in pairs(rotations) do
+    local motor = motors[name]
+    if motor and motor.Parent then motor.C0 = baseC0[name] * rotation end
+   end
+  else
+   local body = pivot(waistPivot, CFrame.Angles(-.035 + breath * .012, 0, sway))
+   local neck = pivot(neckPivot, CFrame.Angles(nod, 0, -.1 + sway))
+   local arms = {
+    LeftArm = pivot(shoulders.LeftArm, CFrame.Angles(.23 + breath * .018, 0, .13)),
+    RightArm = pivot(shoulders.RightArm, CFrame.Angles(.23 + breath * .018, 0, -.13)),
+   }
+   for part, cf in pairs(rest) do
+    if part.Parent then
+     local group = groups[part]
+     local delta = group == "Legs" and CFrame.identity or body
+     if group == "Head" then delta *= neck elseif arms[group] then delta *= arms[group] end
+     part.CFrame = root.CFrame * delta * cf
+    end
+   end
+  end
+  label.Text = ({"Z", "Z z", "Z z z"})[math.floor(elapsed / .85) % 3 + 1]
+  label.TextTransparency = .12 + .14 * (breath + 1) / 2
+ end
+ api.OnInvoke = function(value)
+  if typeof(value) ~= "boolean" or not active then return false end
+  npc:SetAttribute("Sleeping", value)
+  return true
+ end
+ table.insert(connections, npc:GetAttributeChangedSignal("Sleeping"):Connect(function()setSleeping(npc:GetAttribute("Sleeping") == true)end))
+ for _, name in ipairs({"SnoreSoundId", "SnoreVolume", "SnorePlaybackSpeed", "SnoreDistance", "SleepSoundEnabled"}) do
+  table.insert(connections, npc:GetAttributeChangedSignal(name):Connect(syncSound))
+ end
+ table.insert(connections, npc:GetAttributeChangedSignal("ShowSleepZzz"):Connect(function()billboard.Enabled = sleeping and npc:GetAttribute("ShowSleepZzz") ~= false end))
+ local function stop()
+  if not active then return end
+  setSleeping(false); active = false
+  for _, connection in ipairs(connections) do connection:Disconnect() end
+  api.OnInvoke = function()return false end; sound:Stop(); billboard:Destroy()
+  npc:SetAttribute("SleepControllerReady", false)
+ end
+ table.insert(connections, RunService.Heartbeat:Connect(function(dt)
+  if not active then return end
+  if not npc:IsDescendantOf(workspace) or not root.Parent or (humanoid and humanoid.Health &lt;= 0) then stop(); return end
+  if not sleeping then return end
+  elapsed += dt; accumulator += dt
+  if accumulator &gt;= .05 then accumulator = 0; animate() end
+ end))
+ if humanoid then table.insert(connections, humanoid.Died:Connect(stop)) end
+ table.insert(connections, npc.Destroying:Connect(stop))
+ npc:SetAttribute("SleepControllerReady", true)
+ setSleeping(npc:GetAttribute("Sleeping") == true)
+ if sleeping then animate() end
+ return {Stop = stop}
+end
+return SleepAnimator
+</ProtectedString>
+      </Properties>
+    </Item>
+    <Item class="Script" referent="RBXDD9E936D0945459487F8346AF8B9E2E2">
+      <Properties>
+        <string name="Name">SleepSoundClient</string>
+        <ProtectedString name="Source">-- PlaybackSpeed is local to each listener, so apply the NPC's pitch attribute on clients.
+local npc = script.Parent
+local sound = npc:WaitForChild("Head"):WaitForChild("Snore")
+local function syncPitch()
+ local speed = npc:GetAttribute("SnorePlaybackSpeed")
+ if typeof(speed) ~= "number" or speed ~= speed then speed = 1 end
+ sound.PlaybackSpeed = math.clamp(speed, .45, 1.6)
+end
+syncPitch()
+local connection = npc:GetAttributeChangedSignal("SnorePlaybackSpeed"):Connect(syncPitch)
+script.Destroying:Connect(function()connection:Disconnect()end)
+</ProtectedString>
+        <bool name="Disabled">false</bool>
+        <token name="RunContext">2</token>
+      </Properties>
+    </Item>
+    <Item class="BindableFunction" referent="RBX90225BC6E6C04108B8AF173A2D780EB0">
+      <Properties>
+        <string name="Name">SetSleeping</string>
+      </Properties>
+    </Item>
+    <Item class="BindableEvent" referent="RBX17B72BE68B374B6FA7DE8A3B994043EC">
+      <Properties>
+        <string name="Name">SleepChanged</string>
+      </Properties>
+    </Item>
+    <Item class="Script" referent="RBXEBB7965494B64CBC9522DE709D5038E9">
+      <Properties>
+        <string name="Name">SleepAndSnore</string>
+        <ProtectedString name="Source">-- Animation/audio asset controller; connect sleeping/waking to your existing NPC logic.
+local npc = script.Parent
+local motors, baseC0 = {}, {}
+for _, joint in ipairs(npc:GetDescendants()) do
+ if joint:IsA("Motor6D") and joint.Part0 and joint.Part1 then
+  motors[joint.Name] = joint; baseC0[joint.Name] = joint.C0
+ end
+end
+local rig = next(motors) and {motors = motors, baseC0 = baseC0} or nil
+local controller = require(npc:WaitForChild("SleepAnimator")).Start(npc, rig)
+script.Destroying:Connect(controller.Stop)
+</ProtectedString>
+        <bool name="Disabled">false</bool>
+      </Properties>
+    </Item>
+  </Item>
+</roblox>

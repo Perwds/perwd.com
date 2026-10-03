@@ -63,6 +63,12 @@
       },
       "AssetPack": {
         "$path": "assets/Pack"
+      },
+      "SleepingChasers": {
+        "$path": "assets/Sleeping/Chasers"
+      },
+      "SleepingShopkeepers": {
+        "$path": "assets/Sleeping/Shopkeepers"
       }
     }
   }

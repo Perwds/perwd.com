@@ -1015,14 +1015,54 @@ function MapDecor.PackDecor(map)
 	end
 end
 
+-- Sleeping shopkeepers wake up when a player comes close and doze off again when everyone leaves.
+function MapDecor.ShopkeeperNaps(root)
+	local keepers = {}
+	for _, d in ipairs(root:GetDescendants()) do
+		if d:IsA("Model") and d:GetAttribute("NapKeeper") then
+			table.insert(keepers, d)
+		end
+	end
+	if #keepers == 0 then
+		return
+	end
+	local Players = game:GetService("Players")
+	task.spawn(function()
+		while true do
+			task.wait(0.5)
+			for _, npc in ipairs(keepers) do
+				if npc.Parent then
+					local pos = npc:GetPivot().Position
+					local near = false
+					for _, player in ipairs(Players:GetPlayers()) do
+						local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+						if r and (r.Position - pos).Magnitude < 20 then
+							near = true
+							break
+						end
+					end
+					if npc:GetAttribute("Sleeping") == near then
+						npc:SetAttribute("Sleeping", not near)
+					end
+				end
+			end
+		end
+	end)
+end
+
 function MapDecor.AddShopkeepers(root)
 	for _, stand in ipairs(root:GetDescendants()) do
 		local spot = stand:IsA("Model") and stand:FindFirstChild("KeeperSpot")
 		if spot and not stand:FindFirstChild("Shopkeeper") then
-			-- your asset-pack shopkeeper (ServerStorage > AssetPack > shopkeeper_sell / _shop / _trails / _rewards)
-			local pack = game:GetService("ServerStorage"):FindFirstChild("AssetPack")
+			-- your shopkeeper: the sleeping version (ServerStorage > SleepingShopkeepers, naps until someone
+			-- walks up) or the awake one (ServerStorage > AssetPack > shopkeeper_sell / _shop / _trails / _rewards)
+			local storage = game:GetService("ServerStorage")
 			local key = stand.Name:gsub("Stand$", ""):lower()
-			local art = pack and (pack:FindFirstChild("shopkeeper_" .. key) or pack:FindFirstChild("shopkeeper_rewards"))
+			local art
+			for _, folderName in ipairs({ "SleepingShopkeepers", "AssetPack" }) do
+				local f = storage:FindFirstChild(folderName)
+				art = art or (f and (f:FindFirstChild("shopkeeper_" .. key) or f:FindFirstChild("shopkeeper_rewards")))
+			end
 			if art then
 				local npc = art:Clone()
 				npc.Name = "Shopkeeper"
@@ -1040,6 +1080,10 @@ function MapDecor.AddShopkeepers(root)
 				npc:PivotTo(base)
 				local cf, size = npc:GetBoundingBox()
 				npc:PivotTo(npc:GetPivot() + Vector3.new(base.Position.X - cf.Position.X, base.Position.Y - (cf.Position.Y - size.Y / 2), base.Position.Z - cf.Position.Z))
+				if npc:FindFirstChild("SetSleeping") then
+					npc:SetAttribute("Sleeping", true)
+					npc:SetAttribute("NapKeeper", true)
+				end
 				npc.Parent = stand
 				continue
 			end

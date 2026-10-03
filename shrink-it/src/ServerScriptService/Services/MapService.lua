@@ -552,6 +552,7 @@ function MapService.Init(_registry)
 	-- it's only generated here if it's missing.
 	local map = existing or buildMap()
 	safe("Shopkeepers", MapDecor.AddShopkeepers, map)
+	safe("Shopkeeper naps", MapDecor.ShopkeeperNaps, map)
 	safe("Textures", MapService.ApplyTextures, map)
 	safe("Asset pack decor", MapDecor.PackDecor, map)
 	-- a map saved in the place file doesn't keep PrimaryPart links: restore them
