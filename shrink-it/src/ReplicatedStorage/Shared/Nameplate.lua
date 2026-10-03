@@ -56,6 +56,13 @@ Nameplate.Icons = {
 	sword = { "......kk", ".....kwk", "....kwsk", "k..kwsk.", "kkkwsk..", ".knkk...", "knkkk...", "kk......" },
 	coin = { "..kkkk..", ".kyyyyk.", "kywyyyok", "kyyyyyok", "kyyyyyok", "kyyyyook", ".kooook.", "..kkkk.." },
 	potion = { "..kkkk..", "...nn...", "..kssk..", ".kggggk.", "kgwggggk", "kggggddk", ".kggddk.", "..kkkk.." },
+	ghost = { "..kkkk..", ".kwwwwk.", "kwwwwwwk", "kwkwwkwk", "kwkwwkwk", "kwwwwwwk", "kwwwwwwk", "kwkwwkwk", "kk.kk.kk" },
+	cherry = { ".....kkk.", "....kgk..", "...kg.k..", "..k...k..", ".kkk.kkk.", "krwrkrwrk", "krrrkrrrk", "krrRkrrRk", ".kkk.kkk." },
+	moon = { "..kkk...", ".kyyk...", "kyyk....", "kyyk....", "kyyk....", "kyyyk.kk", ".kyyyyyk", "..kkkkk." },
+	sakura = { "...kk...", "..kmmk..", "kkkmmkkk", "kmmyymmk", "kmmyymmk", ".kmmmmk.", "kmmkkmmk", "kkk..kkk" },
+	snowflake = { "w..w..w", ".w.w.w.", "..www..", "wwwcwww", "..www..", ".w.w.w.", "w..w..w" },
+	computer = { "kkkkkkk", "kbbbbbk", "kbwbbbk", "kbbbbbk", "kkkkkkk", "..ksk..", ".kssskk", "kkkkkkk" },
+	cake = { "..o..o..", "..y..y..", "..k..k..", ".kmkkmk.", "kmmmmmmk", "kwwwwwwk", "kmmmmmmk", "kkkkkkkk" },
 }
 
 -- a square frame holding the icon as pixel runs (one frame per run of the same color)
@@ -241,6 +248,118 @@ function PATTERNS.Hearts(body, cfg, z)
 	end
 end
 
+-- frames named BlinkA / BlinkB take turns being shown (Blink = true plates)
+local function blinkPair(a, b)
+	a.Name = "BlinkA"
+	if b then
+		b.Name = "BlinkB"
+		b.Visible = false
+	end
+end
+
+function PATTERNS.Hazard(body, cfg, z)
+	local overlay = frame(body, { BackgroundColor3 = cfg.Accent, Size = UDim2.fromScale(1, 1), ZIndex = z })
+	local kps = {}
+	local bands = 9
+	for i = 0, bands - 1 do
+		local a = (i % 2 == 0) and 0 or 1
+		table.insert(kps, NumberSequenceKeypoint.new(i == 0 and 0 or i / bands + 0.001, a))
+		table.insert(kps, NumberSequenceKeypoint.new((i + 1) / bands, a))
+	end
+	local g = Instance.new("UIGradient")
+	g.Transparency = NumberSequence.new(kps)
+	g.Rotation = 20
+	g.Parent = overlay
+end
+
+function PATTERNS.Checker(body, _cfg, z)
+	local cols = 16
+	for row = 0, 1 do
+		for col = 0, cols - 1 do
+			if (row + col) % 2 == 0 then
+				local f = frame(body, { BackgroundColor3 = Color3.fromHSV((col / cols) % 1, 0.75, 1), Position = UDim2.fromScale(col / cols, row * 0.5), Size = UDim2.fromScale(1 / cols, 0.5), ZIndex = z })
+				f.Name = "Check"
+			end
+		end
+	end
+end
+
+function PATTERNS.Equalizer(body, _cfg, z)
+	local rng = Random.new(7)
+	for _, side in ipairs({ { 0.015, 1 }, { 0.985, -1 } }) do
+		for i = 0, 8 do
+			local x = side[1] + side[2] * i * 0.022
+			local color = Color3.fromHSV((i / 9 + (side[2] < 0 and 0.5 or 0)) % 1, 0.8, 1)
+			local h1, h2 = rng:NextNumber(0.25, 0.95), rng:NextNumber(0.25, 0.95)
+			local a = frame(body, { BackgroundColor3 = color, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(x, 1), Size = UDim2.fromScale(0.016, h1), ZIndex = z })
+			local b = frame(body, { BackgroundColor3 = color, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(x, 1), Size = UDim2.fromScale(0.016, h2), ZIndex = z })
+			blinkPair(a, b)
+		end
+	end
+end
+
+function PATTERNS.Skyline(body, cfg, z)
+	local rng = Random.new(11)
+	for _, range in ipairs({ { 0.0, 0.22 }, { 0.78, 1.0 } }) do
+		local x = range[1]
+		while x < range[2] do
+			local w = rng:NextNumber(0.025, 0.045)
+			local h = rng:NextNumber(0.4, 0.9)
+			local b = frame(body, { BackgroundColor3 = cfg.Accent, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(x, 1), Size = UDim2.fromScale(w, h), ZIndex = z })
+			for wy = 0.15, 0.8, 0.22 do
+				if rng:NextNumber() < 0.6 then
+					frame(b, { BackgroundColor3 = RGB(255, 225, 110), Position = UDim2.fromScale(0.3, wy), Size = UDim2.fromScale(0.35, 0.09), ZIndex = z + 1 })
+				end
+			end
+			x += w + 0.006
+		end
+	end
+end
+
+function PATTERNS.Drip(body, cfg, z)
+	frame(body, { BackgroundColor3 = cfg.Accent, Size = UDim2.fromScale(1, 0.2), ZIndex = z })
+	local rng = Random.new(5)
+	local x = 0.02
+	while x < 0.98 do
+		local len = rng:NextNumber(0.25, 0.75)
+		frame(body, { BackgroundColor3 = cfg.Accent, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(x, 0), Size = UDim2.fromScale(0.012, len), ZIndex = z })
+		dot(body, x, len, 0.15, cfg.Accent, 0, z)
+		x += rng:NextNumber(0.05, 0.11)
+	end
+end
+
+function PATTERNS.Glitter(body, cfg, z)
+	local rng = Random.new(3)
+	local second = cfg.Accent2 or Color3.new(1, 1, 1)
+	for i = 1, 60 do
+		local f = dot(body, rng:NextNumber(0, 1), rng:NextNumber(0, 1), rng:NextNumber(0.04, 0.1), i % 3 == 0 and second or cfg.Accent, rng:NextNumber(0, 0.5), z)
+		if i % 4 == 0 then
+			blinkPair(f)
+		end
+	end
+end
+
+function PATTERNS.Sparkle(body, cfg, z)
+	local spots = { { 0.03, 0.3, 0.5 }, { 0.08, 0.7, 0.35 }, { 0.14, 0.35, 0.3 }, { 0.86, 0.65, 0.3 }, { 0.92, 0.3, 0.35 }, { 0.97, 0.7, 0.5 } }
+	for i, sp in ipairs(spots) do
+		local a = glyph(body, "✦", sp[1], sp[2], sp[3], cfg.Accent, 0, z)
+		if i % 2 == 0 then
+			blinkPair(a)
+		end
+	end
+end
+
+function PATTERNS.Matrix(body, cfg, z)
+	local rng = Random.new(9)
+	for _ = 1, 34 do
+		local f = frame(body, { BackgroundColor3 = cfg.Accent, Position = UDim2.fromScale(rng:NextNumber(0, 1), rng:NextNumber(-0.3, 0.6)), Size = UDim2.fromScale(0.006, rng:NextNumber(0.3, 0.8)), ZIndex = z })
+		local g = Instance.new("UIGradient")
+		g.Rotation = 90
+		g.Transparency = NumberSequence.new(1, 0.1)
+		g.Parent = f
+	end
+end
+
 function PATTERNS.Rainbow(_body, _cfg, _z)
 	-- the bar itself is the rainbow (see Build)
 end
@@ -266,6 +385,16 @@ function Nameplate.Build(key, props)
 	local bc = Instance.new("UICorner")
 	bc.CornerRadius = UDim.new(0.3, 0)
 	bc.Parent = border
+	if cfg.BorderStyle == "Dashed" or cfg.BorderStyle == "Dotted" then
+		local dash = cfg.DashColor or Color3.new(1, 1, 1)
+		local dotted = cfg.BorderStyle == "Dotted"
+		local step = dotted and 0.022 or 0.04
+		for x = 0.035, 0.965, step do
+			for _, y in ipairs({ 0.065, 0.935 }) do
+				frame(border, { Name = "Dash", BackgroundColor3 = dash, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(x, y), Size = UDim2.fromScale(dotted and 0.008 or 0.022, 0.07), ZIndex = z + 1 })
+			end
+		end
+	end
 	if cfg.Rainbow then
 		border.BackgroundColor3 = Color3.new(1, 1, 1)
 		local g = Instance.new("UIGradient")
@@ -316,29 +445,35 @@ function Nameplate.Build(key, props)
 		if icon then
 			textLeft = 0.24
 		end
+		if cfg.IconBoth then
+			Nameplate.Icon(cfg.Icon, { Parent = outline, SizeConstraint = Enum.SizeConstraint.RelativeYY, Size = UDim2.fromScale(0.95, 0.95), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.fromScale(0.965, 0.5), ZIndex = z + 6 })
+		end
 	end
+	local textRight = cfg.IconBoth and 0.76 or 0.9
 	local label = Instance.new("TextLabel")
 	label.Name = "PlayerName"
 	label.BackgroundTransparency = 1
-	label.Font = FONT
+	label.Font = (cfg.Font and Enum.Font[cfg.Font]) or FONT
 	label.Text = props.Text or ""
 	label.TextScaled = true
 	label.TextColor3 = cfg.TextColor or Color3.new(1, 1, 1)
 	label.TextStrokeColor3 = OUTLINE
 	label.TextStrokeTransparency = 0
 	label.Position = UDim2.fromScale(textLeft, 0.22)
-	label.Size = UDim2.fromScale(0.9 - textLeft, 0.56)
+	label.Size = UDim2.fromScale(textRight - textLeft, 0.56)
 	label.ZIndex = z + 7
 	label.Parent = outline
 
-	if cfg.Rainbow or cfg.Shine then
+	if cfg.Rainbow or cfg.Shine or cfg.Blink then
 		CollectionService:AddTag(outline, "NameplateFX")
 	end
 	outline.Parent = props.Parent
 	return outline
 end
 
--- moves the rainbow frame + the shine (call every frame on the client)
+local blinkCache = setmetatable({}, { __mode = "k" })
+
+-- moves the rainbow frame + the shine + blinks (call every frame on the client)
 function Nameplate.Animate(plate, t)
 	local border = plate:FindFirstChild("Border")
 	local spin = border and border:FindFirstChild("RainbowSpin")
@@ -346,6 +481,26 @@ function Nameplate.Animate(plate, t)
 		spin.Rotation = (t * 120) % 360
 	end
 	local body = border and border:FindFirstChild("Body")
+	local cached = blinkCache[plate]
+	if cached == nil then
+		cached = {}
+		for _, d in ipairs(body and body:GetDescendants() or {}) do
+			if d.Name == "BlinkA" or d.Name == "BlinkB" then
+				table.insert(cached, d)
+			end
+		end
+		blinkCache[plate] = cached
+	end
+	if #cached > 0 then
+		local on = math.floor(t * 2.5) % 2 == 0
+		for _, d in ipairs(cached) do
+			if d.Name == "BlinkA" then
+				d.Visible = on
+			else
+				d.Visible = not on
+			end
+		end
+	end
 	local shine = body and body:FindFirstChild("Shine")
 	if shine then
 		local p = (t * 0.6 + (plate.AbsolutePosition.X % 7) * 0.1) % 2.4

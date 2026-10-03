@@ -8,7 +8,10 @@
 	Border   = frame color (Rainbow = true → animated rainbow frame)
 	Pattern  = "Dots" / "Bubbles" / "Scallop" / "Stripes" / "Diamonds" / "Fire" / "Bars" / "Stars" / "Hearts" / "Rainbow"
 	Accent   = color of the pattern
-	Icon     = a pixel icon on the left: heart, star, clover, gem, crown, bolt, flame, skull, sword, coin, potion
+	Icon     = a pixel icon on the left: heart, star, clover, gem, crown, bolt, flame, skull, sword, coin, potion,
+	           ghost, cherry, moon, sakura, snowflake, computer, cake  (IconBoth = true → on both ends)
+	Blinkie extras: Font = "Arcade" (pixel font) · BorderStyle = "Dashed" / "Dotted" (+ DashColor) · Blink = true
+	           more patterns: "Hazard", "Checker", "Equalizer", "Skyline", "Drip", "Glitter", "Sparkle", "Matrix"
 	Shine    = a white shine sweeps across it
 	Cost + Currency ("Coins" / "Gems") · Product = Developer Product key (Robux) · Req = unlock by a stat
 ]]
@@ -23,6 +26,9 @@ NameplateConfig.Order = {
 	"Classic", "Mint", "Bubblegum", "Ocean", "Sunset", "Jungle", "Candy", "Lava", "Frost", "Royal", "Toxic", "Galaxy",
 	"Heartbeat", "Thunder", "BossSlayer", "Reborn",
 	"Rainbow", "Champion", "Void",
+	-- blinkies (pixel font, dashed frames, some of them blink)
+	"Sweetheart", "Cherry", "Sakura", "SnowDay", "Spooky", "Slime", "Crimson", "Hazard", "NightCity", "Matrix",
+	"ComputerLove", "Party", "Stargazer", "Sparkling", "GlitterGold", "Nightcore", "Rave",
 }
 
 NameplateConfig.Plates = {
@@ -48,6 +54,30 @@ NameplateConfig.Plates = {
 	Champion = { Name = "Champion", Rarity = "Robux", Product = "PlateChampion", Colors = { RGB(255, 245, 170), RGB(235, 150, 20) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Diamonds", Accent = RGB(255, 250, 220), Icon = "crown", Shine = true },
 	Void = { Name = "Void", Rarity = "Robux", Product = "PlateVoid", Colors = { RGB(60, 25, 95), RGB(5, 5, 15) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Stars", Accent = RGB(200, 140, 255), Icon = "skull", Shine = true, TextColor = RGB(230, 200, 255) },
 }
+
+-- ── blinkies ──
+local function blinkie(t)
+	t.Font = t.Font or "Arcade"
+	return t
+end
+local P = NameplateConfig.Plates
+P.Sweetheart = blinkie({ Name = "Sweetheart", Rarity = "Uncommon", Cost = 50_000, Currency = "Coins", Colors = { RGB(255, 225, 240), RGB(255, 170, 210) }, Border = RGB(235, 110, 170), BorderStyle = "Dashed", DashColor = RGB(255, 255, 255), Pattern = "Hearts", Accent = RGB(255, 255, 255), Icon = "heart", IconBoth = true })
+P.Cherry = blinkie({ Name = "Cherry Kisses", Rarity = "Rare", Cost = 1_500_000, Currency = "Coins", Colors = { RGB(255, 255, 255), RGB(255, 225, 235) }, Border = RGB(200, 30, 60), BorderStyle = "Dotted", DashColor = RGB(255, 200, 215), Icon = "cherry", IconBoth = true, TextColor = RGB(255, 80, 120) })
+P.Sakura = blinkie({ Name = "Sakura", Rarity = "Rare", Cost = 6_000_000, Currency = "Coins", Colors = { RGB(255, 240, 248), RGB(250, 160, 200) }, Border = RGB(180, 70, 130), BorderStyle = "Dashed", DashColor = RGB(255, 225, 240), Pattern = "Bubbles", Accent = RGB(255, 205, 225), Icon = "sakura", IconBoth = true })
+P.SnowDay = blinkie({ Name = "Snow Day", Rarity = "Epic", Cost = 80_000_000, Currency = "Coins", Colors = { RGB(140, 200, 255), RGB(60, 130, 230) }, Border = RGB(255, 255, 255), BorderStyle = "Dotted", DashColor = RGB(60, 130, 230), Pattern = "Glitter", Accent = RGB(255, 255, 255), Accent2 = RGB(200, 235, 255), Icon = "snowflake", IconBoth = true })
+P.Spooky = blinkie({ Name = "Stay Spooky", Rarity = "Epic", Cost = 400_000_000, Currency = "Coins", Colors = { RGB(30, 25, 35), RGB(10, 8, 15) }, Border = RGB(25, 20, 30), BorderStyle = "Dashed", DashColor = RGB(255, 140, 30), Icon = "ghost", IconBoth = true, TextColor = RGB(255, 150, 40), Blink = true, Pattern = "Sparkle", Accent = RGB(255, 140, 30) })
+P.Slime = blinkie({ Name = "Slime", Rarity = "Legendary", Cost = 3_000_000_000, Currency = "Coins", Colors = { RGB(40, 70, 35), RGB(15, 30, 15) }, Border = RGB(10, 20, 10), Pattern = "Drip", Accent = RGB(130, 255, 60), TextColor = RGB(170, 255, 110) })
+P.Crimson = blinkie({ Name = "Crimson Drip", Rarity = "Legendary", Cost = 30_000_000_000, Currency = "Coins", Colors = { RGB(35, 10, 15), RGB(10, 0, 5) }, Border = RGB(120, 0, 15), Pattern = "Drip", Accent = RGB(210, 20, 40), Icon = "moon", TextColor = RGB(255, 70, 80) })
+P.Hazard = blinkie({ Name = "Under Construction", Rarity = "Mythic", Cost = 150_000_000_000, Currency = "Coins", Colors = { RGB(255, 225, 40), RGB(255, 205, 20) }, Border = RGB(20, 20, 20), Pattern = "Hazard", Accent = RGB(25, 25, 25) })
+P.NightCity = blinkie({ Name = "Night City", Rarity = "Mythic", Cost = 800_000_000_000, Currency = "Coins", Colors = { RGB(40, 45, 70), RGB(10, 12, 25) }, Border = RGB(255, 255, 255), BorderStyle = "Dotted", DashColor = RGB(20, 20, 30), Pattern = "Skyline", Accent = RGB(70, 75, 100), Icon = "heart" })
+P.Matrix = blinkie({ Name = "Matrix", Rarity = "Cosmic", Cost = 10_000_000_000_000, Currency = "Coins", Colors = { RGB(10, 25, 12), RGB(0, 5, 0) }, Border = RGB(40, 200, 70), BorderStyle = "Dashed", DashColor = RGB(10, 30, 10), Pattern = "Matrix", Accent = RGB(60, 255, 100), Icon = "computer", TextColor = RGB(120, 255, 140) })
+P.ComputerLove = blinkie({ Name = "I Love My Computer", Rarity = "Gems", Cost = 250, Currency = "Gems", Colors = { RGB(255, 255, 255), RGB(250, 235, 255) }, Border = RGB(150, 60, 220), BorderStyle = "Dashed", DashColor = RGB(255, 255, 255), Pattern = "Hearts", Accent = RGB(255, 120, 200), Icon = "computer", IconBoth = true, TextColor = RGB(220, 80, 200) })
+P.Party = blinkie({ Name = "Party Time", Rarity = "Gems", Cost = 450, Currency = "Gems", Colors = { RGB(255, 245, 250), RGB(255, 200, 230) }, Border = RGB(70, 140, 255), BorderStyle = "Dotted", DashColor = RGB(255, 230, 80), Pattern = "Glitter", Accent = RGB(255, 90, 160), Accent2 = RGB(80, 200, 255), Icon = "cake", IconBoth = true, Blink = true })
+P.Stargazer = blinkie({ Name = "Stargazer", Rarity = "Gems", Cost = 800, Currency = "Gems", Colors = { RGB(25, 20, 50), RGB(5, 5, 15) }, Border = RGB(120, 90, 255), BorderStyle = "Dotted", DashColor = RGB(255, 255, 255), Pattern = "Stars", Accent = RGB(255, 255, 255), Icon = "moon", IconBoth = true, Blink = true })
+P.Sparkling = blinkie({ Name = "Never Stop Sparkling", Rarity = "Gems", Cost = 1_200, Currency = "Gems", Colors = { RGB(255, 120, 200), RGB(235, 40, 150) }, Border = RGB(255, 255, 255), BorderStyle = "Dashed", DashColor = RGB(235, 40, 150), Pattern = "Sparkle", Accent = RGB(255, 255, 255), Blink = true })
+P.GlitterGold = blinkie({ Name = "Glitter Gold", Rarity = "Robux", Product = "PlateGlitter", Colors = { RGB(255, 235, 150), RGB(210, 160, 40) }, Border = RGB(120, 80, 10), Pattern = "Glitter", Accent = RGB(255, 250, 210), Accent2 = RGB(170, 120, 20), Icon = "crown", IconBoth = true, Blink = true, Shine = true })
+P.Nightcore = blinkie({ Name = "Nightcore", Rarity = "Robux", Product = "PlateNightcore", Colors = { RGB(25, 25, 35), RGB(10, 10, 15) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Equalizer", Blink = true, TextColor = RGB(255, 240, 120) })
+P.Rave = blinkie({ Name = "Rave", Rarity = "Robux", Product = "PlateRave", Colors = { RGB(0, 0, 0), RGB(0, 0, 0) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Checker", Icon = "star", IconBoth = true, Shine = true })
 
 -- card colors per rarity (menu)
 NameplateConfig.RarityColors = {

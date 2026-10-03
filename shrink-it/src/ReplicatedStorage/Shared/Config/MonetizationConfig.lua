@@ -92,6 +92,9 @@ MonetizationConfig.Products = {
 	PlateRainbow = { Id = 0, Name = "Rainbow Name Plate", Emoji = "", PriceLabel = "R$ 99", Handler = "Nameplate", Plate = "Rainbow", Hidden = true }, -- 🔧 REPLACE Id
 	PlateChampion = { Id = 0, Name = "Champion Name Plate", Emoji = "", PriceLabel = "R$ 199", Handler = "Nameplate", Plate = "Champion", Hidden = true }, -- 🔧 REPLACE Id
 	PlateVoid = { Id = 0, Name = "Void Name Plate", Emoji = "", PriceLabel = "R$ 299", Handler = "Nameplate", Plate = "Void", Hidden = true }, -- 🔧 REPLACE Id
+	PlateGlitter = { Id = 0, Name = "Glitter Gold Name Plate", Emoji = "", PriceLabel = "R$ 79", Handler = "Nameplate", Plate = "GlitterGold", Hidden = true }, -- 🔧 REPLACE Id
+	PlateNightcore = { Id = 0, Name = "Nightcore Name Plate", Emoji = "", PriceLabel = "R$ 149", Handler = "Nameplate", Plate = "Nightcore", Hidden = true }, -- 🔧 REPLACE Id
+	PlateRave = { Id = 0, Name = "Rave Name Plate", Emoji = "", PriceLabel = "R$ 249", Handler = "Nameplate", Plate = "Rave", Hidden = true }, -- 🔧 REPLACE Id
 
 	-- Infinite Pack paid tiles (repeatable). Price tier is picked by tile position.
 	PackTier1 = { Id = 0, Name = "Infinite Pack Tile", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 25", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id

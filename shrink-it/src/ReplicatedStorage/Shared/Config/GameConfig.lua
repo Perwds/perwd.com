@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v16.3 (name plates)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v16.4 (blinkie name plates, more cars)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 16 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────

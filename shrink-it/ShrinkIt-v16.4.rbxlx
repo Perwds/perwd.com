@@ -358,7 +358,7 @@ return EventConfig
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v16.3 (name plates)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v16.4 (blinkie name plates, more cars)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 16 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
@@ -689,6 +689,9 @@ MonetizationConfig.Products = {
 	PlateRainbow = { Id = 0, Name = "Rainbow Name Plate", Emoji = "", PriceLabel = "R$ 99", Handler = "Nameplate", Plate = "Rainbow", Hidden = true }, -- 🔧 REPLACE Id
 	PlateChampion = { Id = 0, Name = "Champion Name Plate", Emoji = "", PriceLabel = "R$ 199", Handler = "Nameplate", Plate = "Champion", Hidden = true }, -- 🔧 REPLACE Id
 	PlateVoid = { Id = 0, Name = "Void Name Plate", Emoji = "", PriceLabel = "R$ 299", Handler = "Nameplate", Plate = "Void", Hidden = true }, -- 🔧 REPLACE Id
+	PlateGlitter = { Id = 0, Name = "Glitter Gold Name Plate", Emoji = "", PriceLabel = "R$ 79", Handler = "Nameplate", Plate = "GlitterGold", Hidden = true }, -- 🔧 REPLACE Id
+	PlateNightcore = { Id = 0, Name = "Nightcore Name Plate", Emoji = "", PriceLabel = "R$ 149", Handler = "Nameplate", Plate = "Nightcore", Hidden = true }, -- 🔧 REPLACE Id
+	PlateRave = { Id = 0, Name = "Rave Name Plate", Emoji = "", PriceLabel = "R$ 249", Handler = "Nameplate", Plate = "Rave", Hidden = true }, -- 🔧 REPLACE Id
 
 	-- Infinite Pack paid tiles (repeatable). Price tier is picked by tile position.
 	PackTier1 = { Id = 0, Name = "Infinite Pack Tile", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 25", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
@@ -854,7 +857,10 @@ return MutationConfig
 	Border   = frame color (Rainbow = true → animated rainbow frame)
 	Pattern  = "Dots" / "Bubbles" / "Scallop" / "Stripes" / "Diamonds" / "Fire" / "Bars" / "Stars" / "Hearts" / "Rainbow"
 	Accent   = color of the pattern
-	Icon     = a pixel icon on the left: heart, star, clover, gem, crown, bolt, flame, skull, sword, coin, potion
+	Icon     = a pixel icon on the left: heart, star, clover, gem, crown, bolt, flame, skull, sword, coin, potion,
+	           ghost, cherry, moon, sakura, snowflake, computer, cake  (IconBoth = true → on both ends)
+	Blinkie extras: Font = "Arcade" (pixel font) · BorderStyle = "Dashed" / "Dotted" (+ DashColor) · Blink = true
+	           more patterns: "Hazard", "Checker", "Equalizer", "Skyline", "Drip", "Glitter", "Sparkle", "Matrix"
 	Shine    = a white shine sweeps across it
 	Cost + Currency ("Coins" / "Gems") · Product = Developer Product key (Robux) · Req = unlock by a stat
 ]]
@@ -869,6 +875,9 @@ NameplateConfig.Order = {
 	"Classic", "Mint", "Bubblegum", "Ocean", "Sunset", "Jungle", "Candy", "Lava", "Frost", "Royal", "Toxic", "Galaxy",
 	"Heartbeat", "Thunder", "BossSlayer", "Reborn",
 	"Rainbow", "Champion", "Void",
+	-- blinkies (pixel font, dashed frames, some of them blink)
+	"Sweetheart", "Cherry", "Sakura", "SnowDay", "Spooky", "Slime", "Crimson", "Hazard", "NightCity", "Matrix",
+	"ComputerLove", "Party", "Stargazer", "Sparkling", "GlitterGold", "Nightcore", "Rave",
 }
 
 NameplateConfig.Plates = {
@@ -894,6 +903,30 @@ NameplateConfig.Plates = {
 	Champion = { Name = "Champion", Rarity = "Robux", Product = "PlateChampion", Colors = { RGB(255, 245, 170), RGB(235, 150, 20) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Diamonds", Accent = RGB(255, 250, 220), Icon = "crown", Shine = true },
 	Void = { Name = "Void", Rarity = "Robux", Product = "PlateVoid", Colors = { RGB(60, 25, 95), RGB(5, 5, 15) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Stars", Accent = RGB(200, 140, 255), Icon = "skull", Shine = true, TextColor = RGB(230, 200, 255) },
 }
+
+-- ── blinkies ──
+local function blinkie(t)
+	t.Font = t.Font or "Arcade"
+	return t
+end
+local P = NameplateConfig.Plates
+P.Sweetheart = blinkie({ Name = "Sweetheart", Rarity = "Uncommon", Cost = 50_000, Currency = "Coins", Colors = { RGB(255, 225, 240), RGB(255, 170, 210) }, Border = RGB(235, 110, 170), BorderStyle = "Dashed", DashColor = RGB(255, 255, 255), Pattern = "Hearts", Accent = RGB(255, 255, 255), Icon = "heart", IconBoth = true })
+P.Cherry = blinkie({ Name = "Cherry Kisses", Rarity = "Rare", Cost = 1_500_000, Currency = "Coins", Colors = { RGB(255, 255, 255), RGB(255, 225, 235) }, Border = RGB(200, 30, 60), BorderStyle = "Dotted", DashColor = RGB(255, 200, 215), Icon = "cherry", IconBoth = true, TextColor = RGB(255, 80, 120) })
+P.Sakura = blinkie({ Name = "Sakura", Rarity = "Rare", Cost = 6_000_000, Currency = "Coins", Colors = { RGB(255, 240, 248), RGB(250, 160, 200) }, Border = RGB(180, 70, 130), BorderStyle = "Dashed", DashColor = RGB(255, 225, 240), Pattern = "Bubbles", Accent = RGB(255, 205, 225), Icon = "sakura", IconBoth = true })
+P.SnowDay = blinkie({ Name = "Snow Day", Rarity = "Epic", Cost = 80_000_000, Currency = "Coins", Colors = { RGB(140, 200, 255), RGB(60, 130, 230) }, Border = RGB(255, 255, 255), BorderStyle = "Dotted", DashColor = RGB(60, 130, 230), Pattern = "Glitter", Accent = RGB(255, 255, 255), Accent2 = RGB(200, 235, 255), Icon = "snowflake", IconBoth = true })
+P.Spooky = blinkie({ Name = "Stay Spooky", Rarity = "Epic", Cost = 400_000_000, Currency = "Coins", Colors = { RGB(30, 25, 35), RGB(10, 8, 15) }, Border = RGB(25, 20, 30), BorderStyle = "Dashed", DashColor = RGB(255, 140, 30), Icon = "ghost", IconBoth = true, TextColor = RGB(255, 150, 40), Blink = true, Pattern = "Sparkle", Accent = RGB(255, 140, 30) })
+P.Slime = blinkie({ Name = "Slime", Rarity = "Legendary", Cost = 3_000_000_000, Currency = "Coins", Colors = { RGB(40, 70, 35), RGB(15, 30, 15) }, Border = RGB(10, 20, 10), Pattern = "Drip", Accent = RGB(130, 255, 60), TextColor = RGB(170, 255, 110) })
+P.Crimson = blinkie({ Name = "Crimson Drip", Rarity = "Legendary", Cost = 30_000_000_000, Currency = "Coins", Colors = { RGB(35, 10, 15), RGB(10, 0, 5) }, Border = RGB(120, 0, 15), Pattern = "Drip", Accent = RGB(210, 20, 40), Icon = "moon", TextColor = RGB(255, 70, 80) })
+P.Hazard = blinkie({ Name = "Under Construction", Rarity = "Mythic", Cost = 150_000_000_000, Currency = "Coins", Colors = { RGB(255, 225, 40), RGB(255, 205, 20) }, Border = RGB(20, 20, 20), Pattern = "Hazard", Accent = RGB(25, 25, 25) })
+P.NightCity = blinkie({ Name = "Night City", Rarity = "Mythic", Cost = 800_000_000_000, Currency = "Coins", Colors = { RGB(40, 45, 70), RGB(10, 12, 25) }, Border = RGB(255, 255, 255), BorderStyle = "Dotted", DashColor = RGB(20, 20, 30), Pattern = "Skyline", Accent = RGB(70, 75, 100), Icon = "heart" })
+P.Matrix = blinkie({ Name = "Matrix", Rarity = "Cosmic", Cost = 10_000_000_000_000, Currency = "Coins", Colors = { RGB(10, 25, 12), RGB(0, 5, 0) }, Border = RGB(40, 200, 70), BorderStyle = "Dashed", DashColor = RGB(10, 30, 10), Pattern = "Matrix", Accent = RGB(60, 255, 100), Icon = "computer", TextColor = RGB(120, 255, 140) })
+P.ComputerLove = blinkie({ Name = "I Love My Computer", Rarity = "Gems", Cost = 250, Currency = "Gems", Colors = { RGB(255, 255, 255), RGB(250, 235, 255) }, Border = RGB(150, 60, 220), BorderStyle = "Dashed", DashColor = RGB(255, 255, 255), Pattern = "Hearts", Accent = RGB(255, 120, 200), Icon = "computer", IconBoth = true, TextColor = RGB(220, 80, 200) })
+P.Party = blinkie({ Name = "Party Time", Rarity = "Gems", Cost = 450, Currency = "Gems", Colors = { RGB(255, 245, 250), RGB(255, 200, 230) }, Border = RGB(70, 140, 255), BorderStyle = "Dotted", DashColor = RGB(255, 230, 80), Pattern = "Glitter", Accent = RGB(255, 90, 160), Accent2 = RGB(80, 200, 255), Icon = "cake", IconBoth = true, Blink = true })
+P.Stargazer = blinkie({ Name = "Stargazer", Rarity = "Gems", Cost = 800, Currency = "Gems", Colors = { RGB(25, 20, 50), RGB(5, 5, 15) }, Border = RGB(120, 90, 255), BorderStyle = "Dotted", DashColor = RGB(255, 255, 255), Pattern = "Stars", Accent = RGB(255, 255, 255), Icon = "moon", IconBoth = true, Blink = true })
+P.Sparkling = blinkie({ Name = "Never Stop Sparkling", Rarity = "Gems", Cost = 1_200, Currency = "Gems", Colors = { RGB(255, 120, 200), RGB(235, 40, 150) }, Border = RGB(255, 255, 255), BorderStyle = "Dashed", DashColor = RGB(235, 40, 150), Pattern = "Sparkle", Accent = RGB(255, 255, 255), Blink = true })
+P.GlitterGold = blinkie({ Name = "Glitter Gold", Rarity = "Robux", Product = "PlateGlitter", Colors = { RGB(255, 235, 150), RGB(210, 160, 40) }, Border = RGB(120, 80, 10), Pattern = "Glitter", Accent = RGB(255, 250, 210), Accent2 = RGB(170, 120, 20), Icon = "crown", IconBoth = true, Blink = true, Shine = true })
+P.Nightcore = blinkie({ Name = "Nightcore", Rarity = "Robux", Product = "PlateNightcore", Colors = { RGB(25, 25, 35), RGB(10, 10, 15) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Equalizer", Blink = true, TextColor = RGB(255, 240, 120) })
+P.Rave = blinkie({ Name = "Rave", Rarity = "Robux", Product = "PlateRave", Colors = { RGB(0, 0, 0), RGB(0, 0, 0) }, Border = RGB(255, 255, 255), Rainbow = true, Pattern = "Checker", Icon = "star", IconBoth = true, Shine = true })
 
 -- card colors per rarity (menu)
 NameplateConfig.RarityColors = {
@@ -2125,6 +2158,13 @@ Nameplate.Icons = {
 	sword = { "......kk", ".....kwk", "....kwsk", "k..kwsk.", "kkkwsk..", ".knkk...", "knkkk...", "kk......" },
 	coin = { "..kkkk..", ".kyyyyk.", "kywyyyok", "kyyyyyok", "kyyyyyok", "kyyyyook", ".kooook.", "..kkkk.." },
 	potion = { "..kkkk..", "...nn...", "..kssk..", ".kggggk.", "kgwggggk", "kggggddk", ".kggddk.", "..kkkk.." },
+	ghost = { "..kkkk..", ".kwwwwk.", "kwwwwwwk", "kwkwwkwk", "kwkwwkwk", "kwwwwwwk", "kwwwwwwk", "kwkwwkwk", "kk.kk.kk" },
+	cherry = { ".....kkk.", "....kgk..", "...kg.k..", "..k...k..", ".kkk.kkk.", "krwrkrwrk", "krrrkrrrk", "krrRkrrRk", ".kkk.kkk." },
+	moon = { "..kkk...", ".kyyk...", "kyyk....", "kyyk....", "kyyk....", "kyyyk.kk", ".kyyyyyk", "..kkkkk." },
+	sakura = { "...kk...", "..kmmk..", "kkkmmkkk", "kmmyymmk", "kmmyymmk", ".kmmmmk.", "kmmkkmmk", "kkk..kkk" },
+	snowflake = { "w..w..w", ".w.w.w.", "..www..", "wwwcwww", "..www..", ".w.w.w.", "w..w..w" },
+	computer = { "kkkkkkk", "kbbbbbk", "kbwbbbk", "kbbbbbk", "kkkkkkk", "..ksk..", ".kssskk", "kkkkkkk" },
+	cake = { "..o..o..", "..y..y..", "..k..k..", ".kmkkmk.", "kmmmmmmk", "kwwwwwwk", "kmmmmmmk", "kkkkkkkk" },
 }
 
 -- a square frame holding the icon as pixel runs (one frame per run of the same color)
@@ -2310,6 +2350,118 @@ function PATTERNS.Hearts(body, cfg, z)
 	end
 end
 
+-- frames named BlinkA / BlinkB take turns being shown (Blink = true plates)
+local function blinkPair(a, b)
+	a.Name = "BlinkA"
+	if b then
+		b.Name = "BlinkB"
+		b.Visible = false
+	end
+end
+
+function PATTERNS.Hazard(body, cfg, z)
+	local overlay = frame(body, { BackgroundColor3 = cfg.Accent, Size = UDim2.fromScale(1, 1), ZIndex = z })
+	local kps = {}
+	local bands = 9
+	for i = 0, bands - 1 do
+		local a = (i % 2 == 0) and 0 or 1
+		table.insert(kps, NumberSequenceKeypoint.new(i == 0 and 0 or i / bands + 0.001, a))
+		table.insert(kps, NumberSequenceKeypoint.new((i + 1) / bands, a))
+	end
+	local g = Instance.new("UIGradient")
+	g.Transparency = NumberSequence.new(kps)
+	g.Rotation = 20
+	g.Parent = overlay
+end
+
+function PATTERNS.Checker(body, _cfg, z)
+	local cols = 16
+	for row = 0, 1 do
+		for col = 0, cols - 1 do
+			if (row + col) % 2 == 0 then
+				local f = frame(body, { BackgroundColor3 = Color3.fromHSV((col / cols) % 1, 0.75, 1), Position = UDim2.fromScale(col / cols, row * 0.5), Size = UDim2.fromScale(1 / cols, 0.5), ZIndex = z })
+				f.Name = "Check"
+			end
+		end
+	end
+end
+
+function PATTERNS.Equalizer(body, _cfg, z)
+	local rng = Random.new(7)
+	for _, side in ipairs({ { 0.015, 1 }, { 0.985, -1 } }) do
+		for i = 0, 8 do
+			local x = side[1] + side[2] * i * 0.022
+			local color = Color3.fromHSV((i / 9 + (side[2] < 0 and 0.5 or 0)) % 1, 0.8, 1)
+			local h1, h2 = rng:NextNumber(0.25, 0.95), rng:NextNumber(0.25, 0.95)
+			local a = frame(body, { BackgroundColor3 = color, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(x, 1), Size = UDim2.fromScale(0.016, h1), ZIndex = z })
+			local b = frame(body, { BackgroundColor3 = color, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(x, 1), Size = UDim2.fromScale(0.016, h2), ZIndex = z })
+			blinkPair(a, b)
+		end
+	end
+end
+
+function PATTERNS.Skyline(body, cfg, z)
+	local rng = Random.new(11)
+	for _, range in ipairs({ { 0.0, 0.22 }, { 0.78, 1.0 } }) do
+		local x = range[1]
+		while x < range[2] do
+			local w = rng:NextNumber(0.025, 0.045)
+			local h = rng:NextNumber(0.4, 0.9)
+			local b = frame(body, { BackgroundColor3 = cfg.Accent, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(x, 1), Size = UDim2.fromScale(w, h), ZIndex = z })
+			for wy = 0.15, 0.8, 0.22 do
+				if rng:NextNumber() < 0.6 then
+					frame(b, { BackgroundColor3 = RGB(255, 225, 110), Position = UDim2.fromScale(0.3, wy), Size = UDim2.fromScale(0.35, 0.09), ZIndex = z + 1 })
+				end
+			end
+			x += w + 0.006
+		end
+	end
+end
+
+function PATTERNS.Drip(body, cfg, z)
+	frame(body, { BackgroundColor3 = cfg.Accent, Size = UDim2.fromScale(1, 0.2), ZIndex = z })
+	local rng = Random.new(5)
+	local x = 0.02
+	while x < 0.98 do
+		local len = rng:NextNumber(0.25, 0.75)
+		frame(body, { BackgroundColor3 = cfg.Accent, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(x, 0), Size = UDim2.fromScale(0.012, len), ZIndex = z })
+		dot(body, x, len, 0.15, cfg.Accent, 0, z)
+		x += rng:NextNumber(0.05, 0.11)
+	end
+end
+
+function PATTERNS.Glitter(body, cfg, z)
+	local rng = Random.new(3)
+	local second = cfg.Accent2 or Color3.new(1, 1, 1)
+	for i = 1, 60 do
+		local f = dot(body, rng:NextNumber(0, 1), rng:NextNumber(0, 1), rng:NextNumber(0.04, 0.1), i % 3 == 0 and second or cfg.Accent, rng:NextNumber(0, 0.5), z)
+		if i % 4 == 0 then
+			blinkPair(f)
+		end
+	end
+end
+
+function PATTERNS.Sparkle(body, cfg, z)
+	local spots = { { 0.03, 0.3, 0.5 }, { 0.08, 0.7, 0.35 }, { 0.14, 0.35, 0.3 }, { 0.86, 0.65, 0.3 }, { 0.92, 0.3, 0.35 }, { 0.97, 0.7, 0.5 } }
+	for i, sp in ipairs(spots) do
+		local a = glyph(body, "✦", sp[1], sp[2], sp[3], cfg.Accent, 0, z)
+		if i % 2 == 0 then
+			blinkPair(a)
+		end
+	end
+end
+
+function PATTERNS.Matrix(body, cfg, z)
+	local rng = Random.new(9)
+	for _ = 1, 34 do
+		local f = frame(body, { BackgroundColor3 = cfg.Accent, Position = UDim2.fromScale(rng:NextNumber(0, 1), rng:NextNumber(-0.3, 0.6)), Size = UDim2.fromScale(0.006, rng:NextNumber(0.3, 0.8)), ZIndex = z })
+		local g = Instance.new("UIGradient")
+		g.Rotation = 90
+		g.Transparency = NumberSequence.new(1, 0.1)
+		g.Parent = f
+	end
+end
+
 function PATTERNS.Rainbow(_body, _cfg, _z)
 	-- the bar itself is the rainbow (see Build)
 end
@@ -2335,6 +2487,16 @@ function Nameplate.Build(key, props)
 	local bc = Instance.new("UICorner")
 	bc.CornerRadius = UDim.new(0.3, 0)
 	bc.Parent = border
+	if cfg.BorderStyle == "Dashed" or cfg.BorderStyle == "Dotted" then
+		local dash = cfg.DashColor or Color3.new(1, 1, 1)
+		local dotted = cfg.BorderStyle == "Dotted"
+		local step = dotted and 0.022 or 0.04
+		for x = 0.035, 0.965, step do
+			for _, y in ipairs({ 0.065, 0.935 }) do
+				frame(border, { Name = "Dash", BackgroundColor3 = dash, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(x, y), Size = UDim2.fromScale(dotted and 0.008 or 0.022, 0.07), ZIndex = z + 1 })
+			end
+		end
+	end
 	if cfg.Rainbow then
 		border.BackgroundColor3 = Color3.new(1, 1, 1)
 		local g = Instance.new("UIGradient")
@@ -2385,29 +2547,35 @@ function Nameplate.Build(key, props)
 		if icon then
 			textLeft = 0.24
 		end
+		if cfg.IconBoth then
+			Nameplate.Icon(cfg.Icon, { Parent = outline, SizeConstraint = Enum.SizeConstraint.RelativeYY, Size = UDim2.fromScale(0.95, 0.95), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.fromScale(0.965, 0.5), ZIndex = z + 6 })
+		end
 	end
+	local textRight = cfg.IconBoth and 0.76 or 0.9
 	local label = Instance.new("TextLabel")
 	label.Name = "PlayerName"
 	label.BackgroundTransparency = 1
-	label.Font = FONT
+	label.Font = (cfg.Font and Enum.Font[cfg.Font]) or FONT
 	label.Text = props.Text or ""
 	label.TextScaled = true
 	label.TextColor3 = cfg.TextColor or Color3.new(1, 1, 1)
 	label.TextStrokeColor3 = OUTLINE
 	label.TextStrokeTransparency = 0
 	label.Position = UDim2.fromScale(textLeft, 0.22)
-	label.Size = UDim2.fromScale(0.9 - textLeft, 0.56)
+	label.Size = UDim2.fromScale(textRight - textLeft, 0.56)
 	label.ZIndex = z + 7
 	label.Parent = outline
 
-	if cfg.Rainbow or cfg.Shine then
+	if cfg.Rainbow or cfg.Shine or cfg.Blink then
 		CollectionService:AddTag(outline, "NameplateFX")
 	end
 	outline.Parent = props.Parent
 	return outline
 end
 
--- moves the rainbow frame + the shine (call every frame on the client)
+local blinkCache = setmetatable({}, { __mode = "k" })
+
+-- moves the rainbow frame + the shine + blinks (call every frame on the client)
 function Nameplate.Animate(plate, t)
 	local border = plate:FindFirstChild("Border")
 	local spin = border and border:FindFirstChild("RainbowSpin")
@@ -2415,6 +2583,26 @@ function Nameplate.Animate(plate, t)
 		spin.Rotation = (t * 120) % 360
 	end
 	local body = border and border:FindFirstChild("Body")
+	local cached = blinkCache[plate]
+	if cached == nil then
+		cached = {}
+		for _, d in ipairs(body and body:GetDescendants() or {}) do
+			if d.Name == "BlinkA" or d.Name == "BlinkB" then
+				table.insert(cached, d)
+			end
+		end
+		blinkCache[plate] = cached
+	end
+	if #cached > 0 then
+		local on = math.floor(t * 2.5) % 2 == 0
+		for _, d in ipairs(cached) do
+			if d.Name == "BlinkA" then
+				d.Visible = on
+			else
+				d.Visible = not on
+			end
+		end
+	end
 	local shine = body and body:FindFirstChild("Shine")
 	if shine then
 		local p = (t * 0.6 + (plate.AbsolutePosition.X % 7) * 0.1) % 2.4
@@ -68865,6 +69053,7 @@ end
 --   MobileShop · a cart parked next to the SHOP stand in the base
 --   Flowers    · a pack of flowers: each piece is scattered in the base and the green zones
 --   Cars       · a pack of cars: each piece is parked along the edges of the city zones
+--                (more packs: Cars2, Cars3, ... are mixed in)
 -- Everything is resized to fit, so the import scale doesn't matter. Missing models are skipped.
 local function customModel(name)
 	local ss = game:GetService("ServerStorage")
@@ -68982,8 +69171,21 @@ function MapDecor.CustomDecor(map)
 	end
 
 	-- cars parked along the edges of the city zones, nose-to-tail with the wall
-	local carPack = customModel("Cars")
-	local cars = carPack and packPieces(carPack) or {}
+	-- every pack named Cars, Cars2, Cars3... is used
+	local cars = {}
+	local ss = game:GetService("ServerStorage")
+	for _, holder in ipairs({ ss:FindFirstChild("CustomModels"), ss }) do
+		for _, pack in ipairs(holder and holder:GetChildren() or {}) do
+			if pack.Name:match("^Cars%d*$") then
+				for _, piece in ipairs(packPieces(pack)) do
+					table.insert(cars, piece)
+				end
+			end
+		end
+		if #cars > 0 then
+			break
+		end
+	end
 	if #cars > 0 then
 		local n = 0
 		for _, zone in ipairs(zones and zones:GetChildren() or {}) do

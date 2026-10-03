@@ -1184,6 +1184,7 @@ end
 --   MobileShop · a cart parked next to the SHOP stand in the base
 --   Flowers    · a pack of flowers: each piece is scattered in the base and the green zones
 --   Cars       · a pack of cars: each piece is parked along the edges of the city zones
+--                (more packs: Cars2, Cars3, ... are mixed in)
 -- Everything is resized to fit, so the import scale doesn't matter. Missing models are skipped.
 local function customModel(name)
 	local ss = game:GetService("ServerStorage")
@@ -1301,8 +1302,21 @@ function MapDecor.CustomDecor(map)
 	end
 
 	-- cars parked along the edges of the city zones, nose-to-tail with the wall
-	local carPack = customModel("Cars")
-	local cars = carPack and packPieces(carPack) or {}
+	-- every pack named Cars, Cars2, Cars3... is used
+	local cars = {}
+	local ss = game:GetService("ServerStorage")
+	for _, holder in ipairs({ ss:FindFirstChild("CustomModels"), ss }) do
+		for _, pack in ipairs(holder and holder:GetChildren() or {}) do
+			if pack.Name:match("^Cars%d*$") then
+				for _, piece in ipairs(packPieces(pack)) do
+					table.insert(cars, piece)
+				end
+			end
+		end
+		if #cars > 0 then
+			break
+		end
+	end
 	if #cars > 0 then
 		local n = 0
 		for _, zone in ipairs(zones and zones:GetChildren() or {}) do
