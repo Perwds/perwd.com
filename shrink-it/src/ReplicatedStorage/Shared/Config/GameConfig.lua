@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v16 (smaller base, new bat & trap, crate events)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v16.1 (custom bear trap support)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 16 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────

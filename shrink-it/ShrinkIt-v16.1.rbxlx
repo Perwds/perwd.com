@@ -358,7 +358,7 @@ return EventConfig
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v16 (smaller base, new bat & trap, crate events)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v16.1 (custom bear trap support)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 16 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
@@ -71251,6 +71251,46 @@ local function bearTrap(parent, center, size, open)
 	return plate, jaws
 end
 
+-- YOUR bear trap model (ServerStorage > BearTrap, imported in Studio) replaces the built-in one.
+-- It's scaled to fit, its bottom sits on the ground; a quick squash plays when it snaps.
+local function customTrap(parent, center, size)
+	local template = game:GetService("ServerStorage"):FindFirstChild("BearTrap")
+	if not template then
+		return nil
+	end
+	local model = template:Clone()
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("LuaSourceContainer") then
+			d:Destroy()
+		elseif d:IsA("BasePart") then
+			d.CanCollide = false
+			d.Massless = true
+		end
+	end
+	if model:IsA("BasePart") then
+		local wrap = Instance.new("Model")
+		model.Parent = wrap
+		wrap.PrimaryPart = model
+		model = wrap
+	end
+	local ext = model:GetExtentsSize()
+	local biggest = math.max(ext.X, ext.Z)
+	if biggest > 0 then
+		model:ScaleTo(model:GetScale() * (3.4 * size / biggest))
+	end
+	model:PivotTo(center)
+	local cf, box = model:GetBoundingBox()
+	model:PivotTo(model:GetPivot() + (center.Position - Vector3.new(cf.Position.X, cf.Position.Y - box.Y / 2, cf.Position.Z)))
+	model.Parent = parent
+	local biggestPart, vol = nil, -1
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") and d.Size.X * d.Size.Y * d.Size.Z > vol then
+			biggestPart, vol = d, d.Size.X * d.Size.Y * d.Size.Z
+		end
+	end
+	return biggestPart, {}, model
+end
+
 local function makeTrapTool()
 	local tool = Instance.new("Tool")
 	tool.Name = "Trap"
@@ -71261,9 +71301,14 @@ local function makeTrapTool()
 	-- a closed trap carried in front of the hand
 	local holder = Instance.new("Model")
 	holder.Parent = tool
-	bearTrap(holder, CFrame.new(0, 1.1, 0) * CFrame.Angles(math.rad(90), 0, 0), 0.55, false)
+	if not customTrap(holder, CFrame.new(0, 1.1, 0) * CFrame.Angles(math.rad(90), 0, 0), 0.55) then
+		bearTrap(holder, CFrame.new(0, 1.1, 0) * CFrame.Angles(math.rad(90), 0, 0), 0.55, false)
+	end
 	for _, d in ipairs(holder:GetDescendants()) do
 		if d:IsA("BasePart") then
+			d.Anchored = false
+			d.CanCollide = false
+			d.Massless = true
 			weld(handle, d)
 		end
 	end
@@ -71428,6 +71473,18 @@ end
 local activeTraps = {} -- { Model, Owner, Center, Jaws, Sprung, Expires }
 
 local function snap(trap)
+	if trap.Custom then
+		-- your model: a quick squash "SNAP"
+		local start = trap.Custom:GetScale()
+		pcall(function()
+			trap.Custom:ScaleTo(start * 0.8)
+			task.wait(0.08)
+			trap.Custom:ScaleTo(start * 1.05)
+			task.wait(0.06)
+			trap.Custom:ScaleTo(start)
+		end)
+		return
+	end
 	-- jaws close up around the victim's legs
 	for step = 1, 4 do
 		for side, jaw in pairs(trap.Jaws) do
@@ -71473,7 +71530,10 @@ function PvPService.PlaceTrap(player)
 	model.Name = "Trap"
 	model:SetAttribute("OwnerUserId", player.UserId)
 	local center = CFrame.new(ground + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, math.random() * math.pi, 0)
-	local plate, jaws = bearTrap(model, center, 1, true)
+	local plate, jaws, custom = customTrap(model, center, 1)
+	if not plate then
+		plate, jaws = bearTrap(model, center, 1, true)
+	end
 	for _, d in ipairs(model:GetDescendants()) do
 		if d:IsA("BasePart") then
 			d.Anchored = true
@@ -71484,7 +71544,7 @@ function PvPService.PlaceTrap(player)
 	model.PrimaryPart = plate
 	model.Parent = Svc.Map.LiveObjects
 	table.insert(list, model)
-	table.insert(activeTraps, { Model = model, Owner = player, Center = center, Jaws = jaws, Sprung = false, Expires = now + cfg.TrapLifetime })
+	table.insert(activeTraps, { Model = model, Owner = player, Center = center, Jaws = jaws, Custom = custom, Sprung = false, Expires = now + cfg.TrapLifetime })
 	Svc.Net.Sound("Trap", player)
 	Svc.Net.Notify(player, "Trap set!", "info")
 end
