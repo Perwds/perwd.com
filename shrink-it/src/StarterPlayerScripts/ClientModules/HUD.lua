@@ -275,7 +275,7 @@ function HUD.Splash(text, color)
 	splashLabel.TextColor3 = color or Color3.new(1, 1, 1)
 	splashLabel.TextTransparency = 0
 	splashLabel.Visible = true
-	UIKit.Pop(splashLabel, 1.8)
+	UIKit.Pop(splashLabel, 1.15)
 	task.delay(1.6, function()
 		if token ~= splashToken then
 			return
@@ -410,22 +410,22 @@ local function buildTopBits()
 	UIKit.AutoScale(toastHolder)
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = toastHolder })
 
-	announceFrame = UIKit.Card({ Name = "Announcement", Size = UDim2.fromOffset(900, 74), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -120), Colors = UIKit.Colors.Yellow, Parent = screen, StrokeThickness = 5, CornerRadius = 22 })
+	announceFrame = UIKit.Card({ Name = "Announcement", Size = UDim2.fromOffset(560, 40), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -120), Colors = UIKit.Colors.Yellow, Parent = screen, StrokeThickness = 3, CornerRadius = 14 })
 	announceFrame.Visible = false
 	announceFrame.ZIndex = 80
 	UIKit.AutoScale(announceFrame)
-	announceLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -30, 1, -14), Position = UDim2.fromOffset(15, 7), ZIndex = 81, StrokeThickness = 3.5, Parent = announceFrame })
+	announceLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -24, 1, -10), Position = UDim2.fromOffset(12, 5), ZIndex = 81, StrokeThickness = 2.5, Parent = announceFrame })
 
 	eventFrame = UIKit.Card({ Name = "EventBanner", Size = UDim2.fromOffset(460, 46), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), Colors = UIKit.Colors.Dark, Parent = screen, CornerRadius = 23 })
 	UIKit.AutoScale(eventFrame)
 	eventLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = eventFrame })
 
-	carryFrame = UIKit.Card({ Name = "CarryBanner", Size = UDim2.fromOffset(640, 54), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 64), Colors = UIKit.Colors.Orange, Parent = screen, CornerRadius = 27 })
+	carryFrame = UIKit.Card({ Name = "CarryBanner", Size = UDim2.fromOffset(420, 34), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 64), Colors = UIKit.Colors.Orange, Parent = screen, CornerRadius = 27 })
 	carryFrame.Visible = false
 	UIKit.AutoScale(carryFrame)
 	carryLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 3, Parent = carryFrame })
 
-	splashLabel = UIKit.Label({ Name = "Splash", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.38), Size = UDim2.fromOffset(900, 110), StrokeThickness = 6, ZIndex = 120, Parent = screen })
+	splashLabel = UIKit.Label({ Name = "Splash", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.3), Size = UDim2.fromOffset(420, 38), StrokeThickness = 3, ZIndex = 120, Parent = screen })
 	splashLabel.Visible = false
 	UIKit.AutoScale(splashLabel)
 
@@ -499,7 +499,7 @@ local function buildRayBits()
 	UIKit.Corner(dot, UDim.new(1, 0))
 	UIKit.Stroke(dot, 2, UIKit.Outline, true)
 
-	tooBig = UIKit.Create("CanvasGroup", { Name = "TooBig", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(320, 110), Visible = false, ZIndex = 95, Parent = screen })
+	tooBig = UIKit.Create("CanvasGroup", { Name = "TooBig", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(200, 64), Visible = false, ZIndex = 95, Parent = screen })
 	UIKit.Label({ Text = "TOO BIG!", TextColor3 = Color3.fromRGB(255, 70, 70), StrokeThickness = 5, Size = UDim2.new(1, 0, 0.65, 0), Parent = tooBig })
 	tooBigSub = UIKit.Label({ Name = "Sub", Text = "", Size = UDim2.new(1, 0, 0.32, 0), Position = UDim2.fromScale(0, 0.66), StrokeThickness = 3, Parent = tooBig })
 end

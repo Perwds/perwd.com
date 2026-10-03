@@ -355,7 +355,6 @@ end
 local function onCarryFX(kind, p)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if kind == "Caught" then
-		HUD.Splash(p.Emoji .. " CAUGHT!", Color3.fromRGB(255, 70, 70))
 		shakeCamera(0.6, 6)
 		playSoundAt(root and root.Position or Vector3.zero, GameConfig.Sounds.TooBig, 0.8)
 		if root then
@@ -363,12 +362,10 @@ local function onCarryFX(kind, p)
 			root.AssemblyLinearVelocity = Vector3.new(0, 45, -55)
 		end
 	elseif kind == "Placed" then
-		HUD.Splash("PLACED! " .. Format.Clock(p.Seconds), Color3.fromRGB(255, 220, 90))
 		if root then
 			playSoundAt(root.Position, GameConfig.Sounds.Pop, 0.5)
 		end
 	elseif kind == "Deposit" then
-		HUD.Splash("DELIVERED! +" .. Format.Coins(p.Income) .. "/s", Color3.fromRGB(120, 255, 120))
 		if root then
 			burst(root.Position, Color3.fromRGB(255, 220, 60), 60, 1.6)
 			burst(root.Position, Color3.fromRGB(120, 255, 140), 40, 1.2)
@@ -388,7 +385,7 @@ local function onBoxOpened(pedestal, owner, itemName, variantName, income)
 		playSoundAt(pos, GameConfig.Sounds.Pop, 0.9)
 	end
 	if owner == player then
-		HUD.Splash("🎉 " .. itemName .. "!  +" .. Format.Coins(income) .. "/s", variant.Color or Color3.fromRGB(120, 255, 140))
+		HUD.Splash(itemName .. "  +" .. Format.Coins(income) .. "/s", variant.Color or Color3.fromRGB(120, 255, 140))
 		playSoundAt(base and base.Position or Vector3.zero, GameConfig.Sounds.Reward, 0.6)
 	end
 end
@@ -774,9 +771,6 @@ end
 local function onChaserFX(kind, p)
 	if kind == "Chase" then
 		Audio.Play("Alarm", 0.6)
-		if (p.Rage or 0) > 0 then
-			HUD.Splash(string.rep("😡", p.Rage) .. " " .. p.Name .. " is ENRAGED!", Color3.fromRGB(255, 70, 70))
-		end
 	end
 end
 

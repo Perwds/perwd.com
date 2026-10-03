@@ -1,7 +1,7 @@
 --[[
 	📍 LOCATION: ServerScriptService > Services > CarryService (ModuleScript)
 
-	Everything you carry (the top thing in your HANDS, the rest on your back):
+	Everything you carry goes into ONE tool in your backpack/hotbar (equip it to hold the top thing):
 	  • BOXES you shrank in the zones ({ Kind = "Box", Box = { R, T, V } }).
 	  • OBJECTS you picked up from a pedestal ({ Kind = "Item", U = uid }). These are shown at their
 	    REAL size (GameConfig.HoldBaseSize x the object's size), on pedestals they all look the same size.
@@ -107,8 +107,6 @@ local function buildVisual(entry)
 	return model
 end
 
-local HOLD_ANIM = "rbxassetid://507768375" -- default R15 "holding a tool" pose (arm out)
-
 local function weldAll(model, anchor)
 	for _, d in ipairs(model:GetDescendants()) do
 		if d:IsA("BasePart") then
@@ -125,77 +123,92 @@ local function weldAll(model, anchor)
 	end
 end
 
-local function setHoldPose(player, c, on)
+-- Everything you carry lives in ONE tool in your backpack/hotbar ("Rare Box  x3"). Equip it to hold
+-- the top thing in your hand (at its real size).
+local function lootTool(player)
+	for _, holder in ipairs({ player.Character, player:FindFirstChildOfClass("Backpack") }) do
+		if holder then
+			for _, t in ipairs(holder:GetChildren()) do
+				if t:IsA("Tool") and t:GetAttribute("LootTool") then
+					return t
+				end
+			end
+		end
+	end
+	return nil
+end
+
+local function entryName(entry)
+	if entry.Kind == "Item" then
+		return Formulas.ItemName({ Id = entry.Id, V = entry.V, Z = entry.Z })
+	end
+	return Formulas.BoxName(entry.Box)
+end
+
+-- equip = put it in your hand right away (picking an object up in your base)
+local function restack(player, c, equip)
+	local tool = lootTool(player)
+	if #c.Items == 0 then
+		if tool then
+			tool:Destroy()
+		end
+		return
+	end
+	local backpack = player:FindFirstChildOfClass("Backpack")
+	if not tool then
+		if not backpack then
+			return
+		end
+		tool = Instance.new("Tool")
+		tool:SetAttribute("LootTool", true)
+		tool.CanBeDropped = false
+		tool.RequiresHandle = true
+		tool.ToolTip = "What you're carrying: bring it to your plot!"
+		local handle = Instance.new("Part")
+		handle.Name = "Handle"
+		handle.Size = Vector3.new(0.6, 0.6, 0.6)
+		handle.Transparency = 1
+		handle.CanCollide = false
+		handle.CanQuery = false
+		handle.Massless = true
+		handle.CFrame = CFrame.new()
+		handle.Parent = tool
+		tool.Parent = backpack
+	end
+	local top = c.Items[#c.Items]
+	tool.Name = entryName(top) .. (#c.Items > 1 and ("  x" .. #c.Items) or "")
+	-- the top thing, in front of your hand
+	local key = top.Kind == "Item" and ("I" .. tostring(top.U)) or ("B" .. tostring(top.Box.R) .. tostring(top.Box.V) .. tostring(top.Box.Z) .. tostring(top.Box.T))
+	if tool:GetAttribute("ShowKey") ~= key then
+		local old = tool:FindFirstChild("Shown")
+		if old then
+			old:Destroy()
+		end
+		local ok, model = pcall(buildVisual, top)
+		if ok and model then
+			model.Name = "Shown"
+			local handle = tool:FindFirstChild("Handle")
+			local _, size = model:GetBoundingBox()
+			model:PivotTo(handle.CFrame * CFrame.new(0, size.Y / 2 - 0.8, -(size.Z / 2 + 0.5)))
+			weldAll(model, handle)
+			model.Parent = tool
+		elseif not ok then
+			warn("[CarryService] can't show carried " .. tostring(top.Id or top.Kind) .. ": " .. tostring(model))
+		end
+		tool:SetAttribute("ShowKey", key)
+	end
 	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-	if on and hum and not (c.HoldTrack and c.HoldTrack.IsPlaying) then
-		pcall(function()
-			local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
-			local anim = Instance.new("Animation")
-			anim.AnimationId = HOLD_ANIM
-			c.HoldTrack = animator:LoadAnimation(anim)
-			c.HoldTrack.Priority = Enum.AnimationPriority.Action
-			c.HoldTrack.Looped = true
-			c.HoldTrack:Play(0.15)
-		end)
-	elseif not on and c.HoldTrack then
-		pcall(function()
-			c.HoldTrack:Stop(0.2)
-		end)
-		c.HoldTrack = nil
+	if equip and hum and tool.Parent ~= player.Character then
+		hum:EquipTool(tool)
 	end
 end
 
--- The top thing is held in your HANDS in front of you (at its real size); the rest ride on your back.
-local function restack(player, c)
-	local character = player.Character
-	local root = character and character:FindFirstChild("HumanoidRootPart")
-	local back = character and (character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")) or root
-	local y = 0
-	for i, entry in ipairs(c.Items) do
-		if entry.Model then
-			entry.Model:Destroy()
-			entry.Model = nil
+local function clearVisuals(c, player)
+	if player then
+		local tool = lootTool(player)
+		if tool then
+			tool:Destroy()
 		end
-		local okBuild, built = false, nil
-		if root then
-			okBuild, built = pcall(buildVisual, entry)
-			if not okBuild then
-				warn("[CarryService] can't show carried " .. tostring(entry.Id or entry.Kind) .. ": " .. tostring(built))
-			end
-		end
-		if okBuild and built then
-			local model = built
-			model.Name = "Carried"
-			if i == #c.Items then
-				-- in your hands: bottom at waist height, just in front of your chest
-				local _, size = model:GetBoundingBox()
-				model:PivotTo(root.CFrame * CFrame.new(0, -0.6 + size.Y / 2, -(size.Z / 2 + 1.4)))
-				weldAll(model, root)
-			else
-				-- small copies stacked on your back like a backpack
-				local _, size0 = model:GetBoundingBox()
-				local scale = math.min(1, 1.8 / math.max(size0.X, size0.Y, size0.Z))
-				pcall(function()
-					model:ScaleTo(model:GetScale() * scale)
-				end)
-				local _, size = model:GetBoundingBox()
-				model:PivotTo(back.CFrame * CFrame.new(0, -0.4 + y + size.Y / 2, 0.6 + size.Z / 2))
-				y += size.Y + 0.1
-				weldAll(model, back)
-			end
-			model.Parent = character
-			entry.Model = model
-		end
-	end
-	setHoldPose(player, c, #c.Items > 0)
-end
-
-local function clearVisuals(c)
-	if c.HoldTrack then
-		pcall(function()
-			c.HoldTrack:Stop(0.2)
-		end)
-		c.HoldTrack = nil
 	end
 	for _, entry in ipairs(c.Items) do
 		if entry.Model then
@@ -206,45 +219,43 @@ local function clearVisuals(c)
 end
 
 -- ── chaser NPCs ─────────────────────────────────────────────────────
-local function billboard(model, name, text, color, offset)
-	local head = model:FindFirstChild("Head") or model.PrimaryPart
-	if not head then
+-- chasers make sounds instead of talking
+local function chaserSound(model, key, looped)
+	local id = ChaserConfig.Sounds[key]
+	local root = model and (model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart)
+	if not id or id == "" or not root then
 		return nil
 	end
-	local old = head:FindFirstChild(name)
-	if old then
-		old:Destroy()
-	end
-	local gui = Instance.new("BillboardGui")
-	gui.Name = name
-	gui.Size = UDim2.fromOffset(text and #text > 20 and 360 or 220, 50)
-	gui.StudsOffset = Vector3.new(0, offset, 0)
-	gui.AlwaysOnTop = true
-	gui.MaxDistance = 250
-	gui.Parent = head
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.FredokaOne
-	label.TextScaled = true
-	label.TextColor3 = color
-	label.Text = text
-	label.Parent = gui
-	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 3
-	stroke.Parent = label
-	return gui
-end
-
-local function say(model, text, seconds)
-	local gui = billboard(model, "Bubble", text, Color3.fromRGB(255, 255, 255), 5.5)
-	if gui and seconds then
-		task.delay(seconds, function()
-			if gui.Parent then
-				gui:Destroy()
-			end
+	local sound = Instance.new("Sound")
+	sound.Name = "Chaser" .. key
+	sound.SoundId = id
+	sound.Volume = ChaserConfig.Sounds.Volume or 0.8
+	sound.Looped = looped == true
+	sound.RollOffMaxDistance = 90
+	sound.Parent = root
+	sound:Play()
+	if not looped then
+		task.delay(4, function()
+			sound:Destroy()
 		end)
 	end
+	return sound
+end
+
+-- footsteps only while it's actually running
+local function updateSteps(ch)
+	local steps = ch.Root and ch.Root:FindFirstChild("ChaserFootsteps")
+	if steps then
+		local moving = (ch.Root.AssemblyLinearVelocity * Vector3.new(1, 0, 1)).Magnitude > 3
+		if steps.Playing ~= moving then
+			steps.Playing = moving
+		end
+		steps.PlaybackSpeed = math.clamp(ch.Humanoid.WalkSpeed / 40, 0.9, 1.8)
+	end
+end
+
+local function say(model, _text, _seconds)
+	chaserSound(model, "Catch")
 end
 
 local function fallbackRig(cfg)
@@ -294,6 +305,9 @@ local function buildChaser(tier)
 	local scripted = custom and custom:FindFirstChild("RunAndAttack", true) ~= nil
 	if custom then
 		model = custom:Clone()
+		pcall(function()
+			model:ScaleTo(model:GetScale() * (ChaserConfig.ModelScale or 1))
+		end)
 	else
 		local desc = Instance.new("HumanoidDescription")
 		desc.HeadColor = cfg.Skin
@@ -497,8 +511,7 @@ local function setRage(player, ch, rage)
 		end)
 	end
 	if rage > 0 then
-		say(ch.Model, string.rep("😡", rage) .. " GIVE THAT BACK!!", 3)
-		billboard(ch.Model, "Rage", string.rep("💢", rage), Color3.fromRGB(255, 60, 60), 7.5)
+		chaserSound(ch.Model, "Rage")
 		local fire = ch.Root:FindFirstChild("RageFire") or Instance.new("Fire")
 		fire.Name = "RageFire"
 		fire.Size = 2 + rage
@@ -536,6 +549,7 @@ end
 -- Grab a box → it WAKES UP and the chase starts from where it was sleeping. When nobody is being
 -- chased by it any more (and it walked home), it goes back to sleep.
 local sleepers = {} -- [tier] = { Model, Ground, Awake, IdleSince }
+local speedSign -- defined with the sleepers below
 
 local function setShown(model, shown)
 	for _, d in ipairs(model:GetDescendants()) do
@@ -612,16 +626,16 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 		track:Play(0.1, 1, 1 + rage * 0.15)
 		TRACKS[model] = track
 	end)
+	chaserSound(model, "Footsteps", true)
 	if rage > 0 then
-		say(model, string.rep("😡", rage) .. " GIVE THAT BACK!!", 3)
-		billboard(model, "Rage", string.rep("💢", rage), Color3.fromRGB(255, 60, 60), 7.5)
+		chaserSound(model, "Rage")
 		local fire = Instance.new("Fire")
 		fire.Size = 2 + rage
 		fire.Heat = 0
 		fire.Color = Color3.fromRGB(255, 60, 40)
 		fire.Parent = root
 	else
-		say(model, "❗ " .. cfg.Shout, 3)
+		chaserSound(model, "Wake")
 	end
 	c.Chaser = { Model = model, Humanoid = hum, Root = root, Tier = tier, Cfg = cfg, Home = spawnPos, Rage = rage, Track = TRACKS[model], Scripted = model:FindFirstChild("TargetOverride") ~= nil, Target = model:FindFirstChild("TargetOverride"), StartAt = os.clock() + (rage > 0 and 0.2 or ChaserConfig.HeadStart) }
 	TRACKS[model] = nil
@@ -725,7 +739,7 @@ function CarryService.Hold(player, item)
 		return false
 	end
 	table.insert(c.Items, { Kind = "Item", U = item.U, Id = item.Id, V = item.V, Z = item.Z })
-	restack(player, c)
+	restack(player, c, true) -- straight into your hand
 	Svc.Data.MarkDirty(player)
 	return true
 end
@@ -781,7 +795,7 @@ function CarryService.DropAll(player, reason)
 			table.insert(boxes, e.Box)
 		end
 	end
-	clearVisuals(c)
+	clearVisuals(c, player)
 	c.Items = {} -- held objects simply go back to your pocket (they're still yours)
 	local onGround = where and (reason == "caught" or reason == "died" or reason == "dropped") and not Svc.Map.IsInBase(where)
 	if onGround then
@@ -854,7 +868,7 @@ function CarryService.OnPlayerLoaded(player)
 	player.CharacterAdded:Connect(function(character)
 		local c = carrying[player]
 		if c then
-			clearVisuals(c)
+			clearVisuals(c, player)
 			c.Items = {}
 			despawnChaser(c, nil)
 		end
@@ -870,6 +884,55 @@ function CarryService.OnPlayerRemoving(player)
 	carrying[player] = nil
 end
 
+-- Little orange sign next to each sleeper: how fast you should be to outrun it.
+speedSign = function(tier, ground, side)
+	local cfg = ChaserConfig.Get(tier)
+	local speed = math.ceil(cfg.Speed * (ChaserConfig.RecommendedSpeedMargin or 1.1))
+	local sign = Instance.new("Model")
+	sign.Name = "SpeedSign"
+	local wood = Color3.fromRGB(235, 140, 40)
+	local function block(name, size, cf)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Size = size
+		p.CFrame = cf
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanQuery = false
+		p.Color = wood
+		p.Material = Enum.Material.Plastic
+		p.TopSurface = Enum.SurfaceType.Studs
+		p.Parent = sign
+		return p
+	end
+	-- a few studs toward the zone entrance from the sleeper, facing the middle of the zone
+	local base = CFrame.new(ground + Vector3.new(-side * 7, 0, -9)) * CFrame.Angles(0, side < 0 and -math.pi / 2 or math.pi / 2, 0)
+	block("Post", Vector3.new(0.8, 3, 0.8), base * CFrame.new(0, 1.5, 0))
+	local board = block("Board", Vector3.new(5.5, 2.4, 0.6), base * CFrame.new(0, 3.9, 0))
+	for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
+		local gui = Instance.new("SurfaceGui")
+		gui.Face = face
+		gui.LightInfluence = 0
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 40
+		gui.Parent = board
+		local label = Instance.new("TextLabel")
+		label.BackgroundTransparency = 1
+		label.Size = UDim2.fromScale(0.92, 0.86)
+		label.Position = UDim2.fromScale(0.04, 0.07)
+		label.Font = Enum.Font.FredokaOne
+		label.TextScaled = true
+		label.TextColor3 = Color3.fromRGB(230, 30, 30)
+		label.Text = speed .. " speed\nrecommended"
+		label.Parent = gui
+		local stroke = Instance.new("UIStroke")
+		stroke.Thickness = 2
+		stroke.Color = Color3.fromRGB(255, 255, 255)
+		stroke.Parent = label
+	end
+	sign.Parent = Svc.Map.ChaserFolder
+end
+
 -- A sleeping copy of each zone's owner so you can see who you're about to rob.
 local function spawnSleepers()
 	local folder = ServerStorage:FindFirstChild("SleepingChasers")
@@ -881,6 +944,9 @@ local function spawnSleepers()
 		if template then
 			-- your sleeping character (breathing, nodding, snoring); standing on the ground, facing the middle
 			local model = template:Clone()
+			pcall(function()
+				model:ScaleTo(model:GetScale() * (ChaserConfig.ModelScale or 1))
+			end)
 			model.Name = ChaserConfig.Get(tier).Name .. " (asleep)"
 			model:SetAttribute("Sleeping", true)
 			local root = model:FindFirstChild("HumanoidRootPart") or model.PrimaryPart
@@ -901,6 +967,7 @@ local function spawnSleepers()
 			model:PivotTo(model:GetPivot() + Vector3.new(0, ground.Y - (cf.Position.Y - size.Y / 2), 0))
 			model.Parent = Svc.Map.ChaserFolder
 			sleepers[tier] = { Model = model, Ground = ground, Awake = false }
+			speedSign(tier, ground, side)
 		else
 			local ok, model = pcall(buildChaser, tier)
 			if ok and model then
@@ -918,7 +985,6 @@ local function spawnSleepers()
 				-- lying on its back, head toward the corridor center
 				model:PivotTo(CFrame.new(pos + Vector3.new(0, size.Z / 2 + 0.3, 0)) * CFrame.Angles(math.rad(-90), math.rad(side * 90), 0))
 				model.Parent = Svc.Map.ChaserFolder
-				say(model, "💤", nil)
 			end
 		end
 	end
@@ -970,6 +1036,7 @@ function CarryService.Start()
 				end
 				if c.Chaser then
 					local ch = c.Chaser
+					updateSteps(ch)
 					if not ch.Model.Parent or not alive or CarryService.CountBoxes(player) == 0 then
 						despawnChaser(c, nil)
 					elseif Svc.Map.IsInBase(root.Position) then
@@ -1029,6 +1096,7 @@ function CarryService.Start()
 			-- chasers walking home after a catch
 			for i = #returning, 1, -1 do
 				local ch = returning[i]
+				updateSteps(ch)
 				if not ch.Model.Parent then
 					table.remove(returning, i)
 				elseif os.clock() >= ch.ReturnUntil then

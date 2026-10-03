@@ -143,7 +143,7 @@ MapDecor.FloorStyle = {
 	[1] = { Material = Enum.Material.Plastic, Color = RGB(105, 215, 50) }, -- Backyard
 	[2] = { Material = Enum.Material.Plastic, Color = RGB(120, 222, 70) }, -- Neighborhood
 	[3] = { Material = Enum.Material.Plastic, Color = RGB(165, 168, 178) }, -- Downtown
-	[4] = { Material = Enum.Material.Plastic, Color = RGB(236, 214, 160) }, -- Harbor
+	[4] = { Material = Enum.Material.Plastic, Color = RGB(45, 95, 205) }, -- Harbor (water, with sand islands)
 	[5] = { Material = Enum.Material.Plastic, Color = RGB(245, 205, 110) }, -- Desert
 	[6] = { Material = Enum.Material.Plastic, Color = RGB(60, 160, 60) }, -- Jungle
 	[7] = { Material = Enum.Material.Plastic, Color = RGB(120, 125, 160) }, -- Skyline
@@ -621,6 +621,149 @@ local function landmark(decor, tier, pos, side)
 	end
 end
 
+-- ── floor details (flat, never in the way): islands, ponds, lava, road lines ... ─────────────────
+local function flat(parent, size, x, z, angle, color, material, y)
+	local p = deco(parent, Vector3.new(size.X, 0.12, size.Y), CFrame.new(x, y or 0.07, z) * CFrame.Angles(0, angle or 0, 0), color, material or Enum.Material.Plastic)
+	p.CanQuery = false
+	return p
+end
+
+local function disc(parent, d, x, z, color, material, y)
+	local p = deco(parent, Vector3.new(0.12, d, d), CFrame.new(x, y or 0.08, z) * CFrame.Angles(0, 0, math.rad(90)), color, material or Enum.Material.Plastic, Enum.PartType.Cylinder)
+	p.CanQuery = false
+	return p
+end
+
+-- an angular "island" made of a few rotated slabs (the Steal-an-Egg look)
+local function blob(parent, x, z, r, color, material, y)
+	local rng = Random.new(math.floor(x * 7 + z * 13))
+	for k = 1, 4 do
+		local a = rng:NextNumber(0, math.pi)
+		flat(parent, Vector2.new(r * rng:NextNumber(1.4, 2.1), r * rng:NextNumber(0.8, 1.3)), x + rng:NextNumber(-r, r) * 0.35, z + rng:NextNumber(-r, r) * 0.35, a, color, material, (y or 0.07) + k * 0.002)
+	end
+end
+
+local function zigzag(parent, x, z, len, color, material, y)
+	local rng = Random.new(math.floor(x * 3 + z * 5))
+	local px, pz = x, z
+	local a = rng:NextNumber(0, math.pi * 2)
+	for _ = 1, 5 do
+		a += rng:NextNumber(-0.9, 0.9)
+		local seg = len / 5
+		local nx, nz = px + math.cos(a) * seg, pz + math.sin(a) * seg
+		flat(parent, Vector2.new(seg + 0.4, 0.45), (px + nx) / 2, (pz + nz) / 2, -a, color, material, y)
+		if rng:NextNumber() < 0.5 then -- a little branch
+			local b = a + rng:NextNumber(-1.4, 1.4)
+			flat(parent, Vector2.new(seg * 0.6, 0.3), nx + math.cos(b) * seg * 0.3, nz + math.sin(b) * seg * 0.3, -b, color, material, y)
+		end
+		px, pz = nx, nz
+	end
+end
+
+function MapDecor.FloorDetails(zoneModel, tier, z0, depth, width)
+	local f = folder(zoneModel, "FloorDecor")
+	local rng = Random.new(tier * 101)
+	local hw = width / 2
+	local function rz(a, b)
+		return z0 + depth * rng:NextNumber(a or 0.06, b or 0.94)
+	end
+	local function rx(edgeGap)
+		return rng:NextNumber(-hw + (edgeGap or 12), hw - (edgeGap or 12))
+	end
+	if tier == 1 then
+		for _ = 1, 7 do
+			blob(f, rx(), rz(), rng:NextNumber(5, 9), RGB(135, 232, 75))
+		end
+		for _ = 1, 18 do
+			local x, z = rx(8), rz()
+			local c = ({ RGB(255, 120, 200), RGB(255, 230, 80), RGB(255, 255, 255) })[rng:NextInteger(1, 3)]
+			for k = 0, 3 do
+				flat(f, Vector2.new(0.7, 0.7), x + math.cos(k * math.pi / 2) * 0.55, z + math.sin(k * math.pi / 2) * 0.55, 0, c, nil, 0.1)
+			end
+			flat(f, Vector2.new(0.5, 0.5), x, z, 0, RGB(255, 200, 40), nil, 0.11)
+		end
+	elseif tier == 2 then
+		for _, side in ipairs({ -1, 1 }) do -- stepping-stone paths
+			for z = z0 + 6, z0 + depth - 6, 7 do
+				flat(f, Vector2.new(4, 4), side * hw * 0.3 + math.sin(z * 0.08) * 6, z, rng:NextNumber(-0.3, 0.3), RGB(200, 200, 205))
+			end
+		end
+	elseif tier == 3 then
+		for z = z0 + 4, z0 + depth - 6, 12 do -- dashed center line
+			flat(f, Vector2.new(0.8, 6), 0, z, 0, RGB(255, 210, 40))
+		end
+		for _, frac in ipairs({ 0.3, 0.7 }) do -- crosswalks
+			for x = -hw + 20, hw - 20, 5 do
+				flat(f, Vector2.new(2.6, 9), x, z0 + depth * frac, 0, RGB(245, 245, 245))
+			end
+		end
+		for _ = 1, 6 do
+			disc(f, 3, rx(), rz(), RGB(90, 92, 100))
+		end
+	elseif tier == 4 then
+		for k = 1, 7 do -- sand islands on the water
+			local side = k % 2 == 0 and 1 or -1
+			blob(f, side * rng:NextNumber(hw * 0.35, hw * 0.7), z0 + depth * (k - 0.5) / 7, rng:NextNumber(9, 15), RGB(236, 214, 160))
+		end
+		for _ = 1, 30 do -- ripples
+			flat(f, Vector2.new(rng:NextNumber(3, 7), 0.35), rx(6), rz(), 0, RGB(110, 160, 240), nil, 0.065)
+		end
+	elseif tier == 5 then
+		for _ = 1, 8 do
+			blob(f, rx(), rz(), rng:NextNumber(7, 12), RGB(228, 182, 92))
+		end
+		for _ = 1, 8 do
+			zigzag(f, rx(), rz(), rng:NextNumber(10, 18), RGB(170, 120, 60), nil, 0.09)
+		end
+	elseif tier == 6 then
+		for _ = 1, 6 do -- ponds with lily pads
+			local x, z = rx(18), rz()
+			blob(f, x, z, rng:NextNumber(6, 9), RGB(70, 150, 230), Enum.Material.Glass)
+			for _ = 1, 4 do
+				disc(f, rng:NextNumber(1.4, 2.2), x + rng:NextNumber(-5, 5), z + rng:NextNumber(-4, 4), RGB(60, 190, 70), nil, 0.12)
+			end
+			flat(f, Vector2.new(0.8, 0.8), x + 2, z + 1, 0.6, RGB(255, 120, 210), nil, 0.16)
+		end
+	elseif tier == 7 then
+		for x = -hw + 20, hw - 20, 20 do -- big floor tiles
+			flat(f, Vector2.new(0.4, depth), x, z0 + depth / 2, 0, RGB(150, 155, 190))
+		end
+		for z = z0 + 20, z0 + depth - 10, 20 do
+			flat(f, Vector2.new(width, 0.4), 0, z, 0, RGB(150, 155, 190))
+		end
+		for _, side in ipairs({ -1, 1 }) do -- neon edge lines
+			flat(f, Vector2.new(0.8, depth), side * (hw - 2), z0 + depth / 2, 0, RGB(80, 230, 255), Enum.Material.Neon, 0.09)
+		end
+	elseif tier == 8 then
+		for _, side in ipairs({ -1, 1 }) do -- lava rivers along the walls
+			flat(f, Vector2.new(9, depth - 8), side * (hw - 14), z0 + depth / 2, 0, RGB(255, 120, 30), Enum.Material.Neon)
+			flat(f, Vector2.new(11, depth - 6), side * (hw - 14), z0 + depth / 2, 0, RGB(60, 40, 40), nil, 0.05)
+		end
+		for _ = 1, 9 do -- glowing cracks
+			zigzag(f, rng:NextNumber(-hw * 0.5, hw * 0.5), rz(), rng:NextNumber(12, 22), RGB(255, 200, 60), Enum.Material.Neon, 0.09)
+		end
+	elseif tier == 9 then
+		for _ = 1, 7 do
+			blob(f, rx(), rz(), rng:NextNumber(6, 11), RGB(175, 220, 255), Enum.Material.Ice)
+		end
+		for _ = 1, 10 do
+			local p = deco(f, Vector3.new(rng:NextNumber(4, 7), 1.6, rng:NextNumber(4, 7)), CFrame.new(rx(10), 0.2, rz()), RGB(255, 255, 255), Enum.Material.Snow, Enum.PartType.Ball)
+			p.CanQuery = false
+		end
+	elseif tier == 10 then
+		for _ = 1, 8 do -- craters
+			local x, z, d = rx(), rz(), rng:NextNumber(7, 13)
+			disc(f, d + 2, x, z, RGB(80, 65, 125))
+			disc(f, d, x, z, RGB(35, 25, 65), nil, 0.1)
+		end
+		for _, side in ipairs({ -1, 1 }) do
+			for z = z0 + 10, z0 + depth - 10, 14 do -- glowing runway lights
+				flat(f, Vector2.new(1.2, 3), side * (hw * 0.25), z, 0, RGB(200, 120, 255), Enum.Material.Neon, 0.09)
+			end
+		end
+	end
+end
+
 function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 	local decor = folder(zoneModel, "Decor")
 	local kinds = EDGE_PROPS[tier] or EDGE_PROPS[1]
@@ -648,6 +791,7 @@ function MapDecor.Zone(zoneModel, tier, z0, depth, width)
 			pcall(wallPiece, decor, tier, s, s * (width / 2 - 0.1), 9 + math.random(-1, 2), z + (s > 0 and 12 or 0))
 		end
 	end
+	pcall(MapDecor.FloorDetails, zoneModel, tier, z0, depth, width)
 	-- landmarks against the walls
 	pcall(landmark, decor, tier, Vector3.new(-(edge - 4), 0, z0 + depth * 0.35), -1)
 	pcall(landmark, decor, tier, Vector3.new(edge - 4, 0, z0 + depth * 0.72), 1)
@@ -898,18 +1042,21 @@ end
 -- Each zone: its environment kit on the left edge, its landmark on the right edge and a few props
 -- along both sides (the middle stays clear for the boxes). Old decor in the way is removed.
 MapDecor.PACK_ZONES = {
-	[1] = { Kit = "zone_1_environment_kit", Landmark = "doghouse", Props = { "bush", "flower_pot", "hay_bale", "flower_patch", "bench", "sunflower", "wooden_sign", "mailbox", "fire_hydrant", "traffic_cone" } },
-	[2] = { Kit = "zone_2_environment_kit", Landmark = "swing_set", Props = { "bush", "flower_pot", "bench", "mailbox", "trash_can", "fire_hydrant", "garden_lamp" } },
-	[3] = { Kit = "zone_3_environment_kit", Landmark = "bus_stop_shelter", Props = { "bench", "trash_can", "fire_hydrant", "traffic_cone", "street_lamp", "tyre" } },
-	[4] = { Kit = "zone_4_environment_kit", Landmark = "rowboat", Props = { "tyre", "crate", "barrel", "barrel_stack", "anchor", "rock" } },
-	[5] = { Kit = "zone_5_environment_kit", Landmark = "covered_wagon", Props = { "rock", "cactus", "skull", "bones", "torch", "hay" } },
-	[6] = { Kit = "zone_6_environment_kit", Landmark = "giant_jungle_tree", Props = { "bush", "torch", "fern", "palm_tree", "rock_cluster" } },
-	[7] = { Kit = "zone_7_environment_kit", Landmark = "shrink_billboard", Props = { "bench", "traffic_cone", "crate", "skyline_lamp", "satellite_dish" } },
-	[8] = { Kit = "zone_8_environment_kit", Landmark = "large_lava_pool", Props = { "rock", "skull", "torch", "small_lava_pool" } },
-	[9] = { Kit = "zone_9_environment_kit", Landmark = "snowmen_ski_rack", Props = { "pine_tree", "snowy_rock", "snowman", "ice_spike" } },
-	[10] = { Kit = "zone_10_environment_kit", Landmark = "crashed_rocket", Props = { "satellite_dish", "purple_crystal", "moon_rock", "meteor" } },
+	[1] = { Walls = { "ivy" }, Kit = "zone_1_environment_kit", Landmark = "doghouse", Props = { "bush", "flower_pot", "hay_bale", "flower_patch", "bench", "sunflower", "wooden_sign", "mailbox", "fire_hydrant", "traffic_cone" } },
+	[2] = { Walls = { "wall_lamp" }, Kit = "zone_2_environment_kit", Landmark = "swing_set", Props = { "bush", "flower_pot", "bench", "mailbox", "trash_can", "fire_hydrant", "garden_lamp" } },
+	[3] = { Walls = { "wall_lamp" }, Kit = "zone_3_environment_kit", Landmark = "bus_stop_shelter", Props = { "bench", "trash_can", "fire_hydrant", "traffic_cone", "street_lamp", "tyre" } },
+	[4] = { Walls = { "life_ring" }, Kit = "zone_4_environment_kit", Landmark = "rowboat", Props = { "tyre", "crate", "barrel", "barrel_stack", "anchor", "rock" } },
+	[5] = { Walls = { "wall_torch" }, Kit = "zone_5_environment_kit", Landmark = "covered_wagon", Props = { "rock", "cactus", "skull", "bones", "torch", "hay" } },
+	[6] = { Walls = { "ivy" }, Kit = "zone_6_environment_kit", Landmark = "giant_jungle_tree", Props = { "bush", "torch", "fern", "palm_tree", "rock_cluster" } },
+	[7] = { Walls = { "neon_strip", "neon_wall_lamp" }, Kit = "zone_7_environment_kit", Landmark = "shrink_billboard", Props = { "bench", "traffic_cone", "crate", "skyline_lamp", "satellite_dish" } },
+	[8] = { Walls = { "wall_torch", "lava_cracks" }, Kit = "zone_8_environment_kit", Landmark = "large_lava_pool", Props = { "rock", "skull", "torch", "small_lava_pool" } },
+	[9] = { Walls = { "icicles" }, Kit = "zone_9_environment_kit", Landmark = "snowmen_ski_rack", Props = { "pine_tree", "snowy_rock", "snowman", "ice_spike" } },
+	[10] = { Walls = { "glowing_panel", "wall_stars" }, Kit = "zone_10_environment_kit", Landmark = "crashed_rocket", Props = { "satellite_dish", "purple_crystal", "moon_rock", "meteor" } },
 }
 local PACK_RENAMES = { trash_can = "TrashBin", ufo = "UFO", moon = "TheMoon" }
+-- how high the bottom of each wall piece sits (studs above the floor); icicles hang from the top
+local WALL_BOTTOM = { ivy = 0.2, lava_cracks = 0.5, neon_strip = 14, wall_stars = 18, glowing_panel = 6, life_ring = 7, wall_lamp = 9, neon_wall_lamp = 9, wall_torch = 8 }
+local WALL_TOP = 40
 
 local function packArt(name)
 	local pack = game:GetService("ServerStorage"):FindFirstChild("AssetPack")
@@ -1010,6 +1157,22 @@ function MapDecor.PackDecor(map)
 					break
 				end
 				put(name, i % 2 == 0 and -1 or 1, 0.1 + (i - 1) * 0.14)
+			end
+			-- wall pieces hung along both walls
+			local k = 0
+			for z = z0 + 16, z0 + d - 10, 22 do
+				for _, side in ipairs({ -1, 1 }) do
+					k += 1
+					local name = cfg.Walls[(k % #cfg.Walls) + 1]
+					local model = packArt(name)
+					if model then
+						local yaw = side < 0 and -math.pi / 2 or math.pi / 2
+						local hx = placeArt(model, folder, 0, groundY, z, yaw)
+						local _, size = model:GetBoundingBox()
+						local bottom = name == "icicles" and (WALL_TOP - size.Y - 0.5) or (WALL_BOTTOM[name] or 8)
+						placeArt(model, folder, side * (w / 2 - hx - 0.05), groundY + bottom, z + (side > 0 and 11 or 0), yaw)
+					end
+				end
 			end
 		end
 	end

@@ -8,8 +8,8 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v13.1 (sleeping chasers & shopkeepers)" -- shown bottom-right in game so you can tell which build you are running
-GameConfig.MapVersion = 13 -- bump when the generated map layout changes; older generated maps get rebuilt
+GameConfig.Version = "v14 (loot in hotbar, floor & wall deco)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.MapVersion = 14 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
 GameConfig.DataStoreName = "ShrinkIt_PlayerData_v1" -- change the suffix to wipe all data
