@@ -617,8 +617,8 @@ local function treadmillLock()
 	gui.ResetOnSpawn = false
 	gui.Parent = player:WaitForChild("PlayerGui")
 	local hint = Instance.new("TextLabel")
-	hint.AnchorPoint = Vector2.new(0.5, 1)
-	hint.Position = UDim2.new(0.5, 0, 1, -190)
+	hint.AnchorPoint = Vector2.new(0.5, 0)
+	hint.Position = UDim2.new(0.5, 0, 0.2, 0) -- upper middle: clear of the bottom bar
 	hint.Size = UDim2.fromOffset(420, 34)
 	hint.BackgroundTransparency = 1
 	hint.Font = Enum.Font.FredokaOne

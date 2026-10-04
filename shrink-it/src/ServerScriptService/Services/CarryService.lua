@@ -400,8 +400,10 @@ local function buildChaser(tier)
 		model:SetAttribute("AttackRange", 2)
 		model:SetAttribute("AttackCooldown", 0.6)
 		model:SetAttribute("DetectionRadius", 5)
-		model:SetAttribute("LoseTargetRadius", 500)
-		model:SetAttribute("HomeLeash", 1000)
+		-- never give up mid-chase: the far zones are up to ~2000 studs from the base
+		-- (the controller's own limits were raised in the chaser models to allow this)
+		model:SetAttribute("LoseTargetRadius", 5000)
+		model:SetAttribute("HomeLeash", 5000)
 		model:SetAttribute("ChaseSpeed", cfg.Speed)
 		model:SetAttribute("ChaseEnabled", false)
 		local override = Instance.new("ObjectValue")
@@ -793,7 +795,7 @@ end
 function CarryService.Add(player, box, fromPos)
 	local c = getState(player)
 	table.insert(c.Items, { Kind = "Box", Box = box })
-	restack(player, c)
+	restack(player, c, true) -- you hold the box in your hands right away
 	chaseIfNeeded(player, c, Svc.Map.GetAreaAt(fromPos) or box.T, fromPos)
 	Svc.Data.MarkDirty(player)
 end
@@ -938,7 +940,7 @@ function CarryService.GiveBox(player, box)
 		return false
 	end
 	table.insert(c.Items, { Kind = "Box", Box = box })
-	restack(player, c)
+	restack(player, c, true)
 	Svc.Data.MarkDirty(player)
 	return true
 end
@@ -1159,7 +1161,13 @@ function CarryService.Start()
 						else
 							-- stuck watchdog: not getting anywhere for a while → nudge, then hop behind you
 							local now = os.clock()
-							if not ch.LastProgressAt or (ch.LastPos and (ch.Root.Position - ch.LastPos).Magnitude > 4) then
+							-- "progress" = actually chasing AND moving (walking back home doesn't count)
+							local state = ch.Scripted and ch.Model:GetAttribute("CurrentState")
+							local chasing = not ch.Scripted or state == "Chase" or state == "Attack"
+							if chasing and (not ch.LastProgressAt or (ch.LastPos and (ch.Root.Position - ch.LastPos).Magnitude > 4)) then
+								ch.LastProgressAt = now
+								ch.LastPos = ch.Root.Position
+							elseif not ch.LastProgressAt then
 								ch.LastProgressAt = now
 								ch.LastPos = ch.Root.Position
 							elseif now - ch.LastProgressAt > 1.5 then

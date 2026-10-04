@@ -1358,8 +1358,8 @@ end
 local function targetIsInLeash(character)
 	local targetHumanoid, targetRoot = targetParts(character)
 	if not targetHumanoid then return nil end
-	local loseRadius = numberAttribute("LoseTargetRadius", 120, 10, 500)
-	local leash = numberAttribute("HomeLeash", 160, 10, 1000)
+	local loseRadius = numberAttribute("LoseTargetRadius", 120, 10, 100000)
+	local leash = numberAttribute("HomeLeash", 160, 10, 100000)
 	if (targetRoot.Position - root.Position).Magnitude &gt; loseRadius
 		or (targetRoot.Position - home).Magnitude &gt; leash then return nil end
 	return targetHumanoid, targetRoot

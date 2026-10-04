@@ -413,7 +413,7 @@ local function buildCurrencies()
 		Name = "BottomBar",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -8),
+		Position = UDim2.new(0.5, 0, 1, -76), -- above Roblox's tool hotbar (Shrink Ray / Trap / Bat)
 		Size = UDim2.fromOffset(860, 176),
 		Parent = screen,
 	})
@@ -984,7 +984,7 @@ function HUD.Init()
 		Colors = UIKit.Colors.Green,
 		Size = UDim2.fromOffset(260, 72),
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -290),
+		Position = UDim2.new(0.5, 0, 1, -380),
 		Parent = screen,
 		OnClick = function()
 			placeOnGround(false)
@@ -1008,7 +1008,7 @@ function HUD.Init()
 		Colors = UIKit.Colors.Red,
 		Size = UDim2.fromOffset(220, 66),
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -210),
+		Position = UDim2.new(0.5, 0, 1, -300),
 		Parent = screen,
 		OnClick = function()
 			HUD.Result(State.Action("DropCarry"))

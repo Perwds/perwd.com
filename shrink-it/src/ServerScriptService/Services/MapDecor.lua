@@ -900,37 +900,87 @@ function MapDecor.Stand(parent, name, label, colors, worldPos, menu, propFn, yaw
 	m.Name = name
 	m.Parent = parent
 	local pos = Vector3.zero -- built at the origin, then scaled up and moved into place
-	local ring = deco(m, Vector3.new(0.3, 22, 22), CFrame.new(pos + Vector3.new(0, 0.12, 0)) * CFrame.Angles(0, 0, math.rad(90)), colors[1], Enum.Material.Neon, Enum.PartType.Cylinder)
-	ring.Transparency = 0.6
-	local counter = part(m, Vector3.new(12, 3.4, 4), CFrame.new(pos + Vector3.new(0, 1.7, 2)), RGB(170, 115, 70), Enum.Material.WoodPlanks)
-	part(m, Vector3.new(12.6, 0.4, 4.6), CFrame.new(pos + Vector3.new(0, 3.6, 2)), RGB(250, 248, 240), Enum.Material.Marble)
-	for _, x in ipairs({ -5.8, 5.8 }) do
-		for _, z in ipairs({ -2.6, 3.6 }) do
-			part(m, Vector3.new(0.6, 9.4, 0.6), CFrame.new(pos + Vector3.new(x, 4.7, z)), RGB(240, 240, 245), Enum.Material.SmoothPlastic)
+	local WOOD = RGB(150, 98, 58)
+	local WOOD_DARK = RGB(105, 66, 38)
+	local TRIM = colors[1]
+	local LIGHT = colors[2]:Lerp(RGB(255, 255, 255), 0.35)
+	-- raised wooden deck with a step at the front, and a round rug in the stand's color
+	part(m, Vector3.new(15, 0.8, 11), CFrame.new(pos + Vector3.new(0, 0.4, 0)), WOOD_DARK, Enum.Material.WoodPlanks)
+	part(m, Vector3.new(15.4, 0.25, 11.4), CFrame.new(pos + Vector3.new(0, 0.9, 0)), TRIM, Enum.Material.SmoothPlastic)
+	part(m, Vector3.new(9, 0.4, 2), CFrame.new(pos + Vector3.new(0, 0.2, 6.4)), WOOD, Enum.Material.WoodPlanks)
+	local ring = deco(m, Vector3.new(0.2, 15, 15), CFrame.new(pos + Vector3.new(0, 0.08, 9)) * CFrame.Angles(0, 0, math.rad(90)), TRIM, Enum.Material.Fabric, Enum.PartType.Cylinder)
+	deco(m, Vector3.new(0.22, 12.5, 12.5), CFrame.new(pos + Vector3.new(0, 0.1, 9)) * CFrame.Angles(0, 0, math.rad(90)), LIGHT, Enum.Material.Fabric, Enum.PartType.Cylinder)
+
+	-- back wall with three stocked shelves
+	part(m, Vector3.new(13.4, 8.6, 0.6), CFrame.new(pos + Vector3.new(0, 5.2, -4.8)), WOOD, Enum.Material.WoodPlanks)
+	for i, y in ipairs({ 3.2, 5.4, 7.6 }) do
+		part(m, Vector3.new(12.6, 0.3, 1.4), CFrame.new(pos + Vector3.new(0, y, -4.1)), WOOD_DARK, Enum.Material.Wood)
+		for k = 0, 6 do
+			local hue = (k * 0.13 + i * 0.21) % 1
+			local item = deco(m, Vector3.new(0.9, 0.9 + (k % 3) * 0.25, 0.9), CFrame.new(pos + Vector3.new(-5.4 + k * 1.8, y + 0.6 + (k % 3) * 0.12, -4.1)), Color3.fromHSV(hue, 0.55, 1), (k % 2 == 0) and Enum.Material.SmoothPlastic or Enum.Material.Glass, (k % 3 == 1) and Enum.PartType.Cylinder or Enum.PartType.Block)
+			if k % 3 == 1 then
+				item.CFrame = item.CFrame * CFrame.Angles(0, 0, math.rad(90))
+			end
 		end
 	end
-	local stripes = 8
+
+	-- the counter: wood with a colored front board carrying the stand's name
+	local counter = part(m, Vector3.new(12, 3.4, 3.2), CFrame.new(pos + Vector3.new(0, 2.6, 2.4)), WOOD, Enum.Material.WoodPlanks)
+	part(m, Vector3.new(12.8, 0.45, 3.8), CFrame.new(pos + Vector3.new(0, 4.5, 2.4)), RGB(250, 246, 236), Enum.Material.Marble)
+	local board = part(m, Vector3.new(8, 2, 0.3), CFrame.new(pos + Vector3.new(0, 2.6, 4.1)), TRIM, Enum.Material.SmoothPlastic)
+	part(m, Vector3.new(8.5, 2.5, 0.2), CFrame.new(pos + Vector3.new(0, 2.6, 4.0)), WOOD_DARK, Enum.Material.Wood)
+	screenText(board, Enum.NormalId.Front, label, RGB(255, 255, 255), 30)
+
+	-- thick posts with colored bands
+	for _, x in ipairs({ -6.6, 6.6 }) do
+		for _, z in ipairs({ -4.6, 4.2 }) do
+			part(m, Vector3.new(0.9, 10.2, 0.9), CFrame.new(pos + Vector3.new(x, 5.9, z)), WOOD_DARK, Enum.Material.Wood)
+			for _, y in ipairs({ 2.2, 8.8 }) do
+				part(m, Vector3.new(1.05, 0.35, 1.05), CFrame.new(pos + Vector3.new(x, y, z)), TRIM, Enum.Material.SmoothPlastic)
+			end
+		end
+	end
+
+	-- sloped striped roof that hangs out over the front, scalloped edge, a ridge and two flags
+	local stripes = 9
 	for i = 0, stripes - 1 do
-		local x = -6.6 + (i + 0.5) * (13.2 / stripes)
-		part(m, Vector3.new(13.2 / stripes, 0.35, 8), CFrame.new(pos + Vector3.new(x, 9.7, 0.5)) * CFrame.Angles(math.rad(-14), 0, 0), (i % 2 == 0) and colors[1] or RGB(255, 255, 255), Enum.Material.Fabric)
+		local x = -7.4 + (i + 0.5) * (14.8 / stripes)
+		local stripeColor = (i % 2 == 0) and TRIM or RGB(255, 255, 255)
+		part(m, Vector3.new(14.8 / stripes, 0.35, 11), CFrame.new(pos + Vector3.new(x, 11.4, 0.6)) * CFrame.Angles(math.rad(-16), 0, 0), stripeColor, Enum.Material.Fabric)
+		-- scallop: a thin round flap facing forward (cylinder axis along Z)
+		deco(m, Vector3.new(0.3, 1.5, 1.5), CFrame.new(pos + Vector3.new(x, 9.75, 6.05)) * CFrame.Angles(0, math.rad(90), 0), stripeColor, Enum.Material.Fabric, Enum.PartType.Cylinder)
 	end
-	for i = 0, stripes - 1 do -- scalloped front edge
-		local x = -6.6 + (i + 0.5) * (13.2 / stripes)
-		deco(m, Vector3.new(0.3, 1.2, 1.2), CFrame.new(pos + Vector3.new(x, 8.6, 4.5)) * CFrame.Angles(0, 0, math.rad(90)), (i % 2 == 0) and colors[1] or RGB(255, 255, 255), Enum.Material.Fabric, Enum.PartType.Cylinder)
+	part(m, Vector3.new(15.2, 0.6, 0.6), CFrame.new(pos + Vector3.new(0, 12.95, -4.6)), WOOD_DARK, Enum.Material.Wood)
+	for _, x in ipairs({ -6.8, 6.8 }) do
+		part(m, Vector3.new(0.15, 3, 0.15), CFrame.new(pos + Vector3.new(x, 14.6, -4.6)), RGB(60, 60, 70), Enum.Material.Metal)
+		local flag = Instance.new("WedgePart")
+		flag.Anchored = true
+		flag.CanCollide = false
+		flag.Size = Vector3.new(0.1, 1.2, 1.8)
+		flag.CFrame = CFrame.new(pos + Vector3.new(x, 15.4, -3.75)) * CFrame.Angles(0, 0, 0)
+		flag.Color = LIGHT
+		flag.Material = Enum.Material.Fabric
+		flag.Parent = m
 	end
+
 	if propFn then
-		propFn(m, pos + Vector3.new(0, 3.8, 2))
+		propFn(m, pos + Vector3.new(0, 4.7, 2.4))
 	end
-	-- hanging lanterns on the front posts
-	for _, x in ipairs({ -5.8, 5.8 }) do
-		part(m, Vector3.new(0.12, 1.4, 0.12), CFrame.new(pos + Vector3.new(x, 8.3, 4.2)), RGB(40, 40, 45), Enum.Material.Metal)
-		local lantern = deco(m, Vector3.new(0.9, 1.1, 0.9), CFrame.new(pos + Vector3.new(x, 7.3, 4.2)), RGB(255, 210, 120), Enum.Material.Neon)
+	-- hanging lanterns under the roof edge
+	for _, x in ipairs({ -5, 5 }) do
+		part(m, Vector3.new(0.12, 1.2, 0.12), CFrame.new(pos + Vector3.new(x, 9.2, 5)), RGB(40, 40, 45), Enum.Material.Metal)
+		local lantern = deco(m, Vector3.new(0.9, 1.1, 0.9), CFrame.new(pos + Vector3.new(x, 8.2, 5)), RGB(255, 210, 120), Enum.Material.Neon)
 		local light = Instance.new("PointLight")
 		light.Color = RGB(255, 210, 140)
-		light.Range = 12
-		light.Brightness = 1.2
+		light.Range = 14
+		light.Brightness = 1.4
 		light.Parent = lantern
 	end
+	-- props beside the stand: a barrel, a crate stack and a potted plant
+	deco(m, Vector3.new(2.2, 1.8, 1.8), CFrame.new(pos + Vector3.new(-8.6, 1.1, 2.6)) * CFrame.Angles(0, 0, math.rad(90)), WOOD, Enum.Material.Wood, Enum.PartType.Cylinder)
+	part(m, Vector3.new(1.8, 1.8, 1.8), CFrame.new(pos + Vector3.new(8.6, 0.9, 2.2)), RGB(190, 140, 80), Enum.Material.WoodPlanks)
+	part(m, Vector3.new(1.4, 1.4, 1.4), CFrame.new(pos + Vector3.new(8.5, 2.5, 2.2)) * CFrame.Angles(0, math.rad(20), 0), RGB(200, 150, 90), Enum.Material.WoodPlanks)
+	deco(m, Vector3.new(1.2, 1.2, 1.2), CFrame.new(pos + Vector3.new(-8.6, 2.6, 2.6)), TRIM, Enum.Material.SmoothPlastic, Enum.PartType.Ball)
 	-- sparkles drifting up from the glowing ring
 	local sparkle = Instance.new("ParticleEmitter")
 	sparkle.Texture = "rbxasset://textures/particles/sparkles_main.dds"
@@ -943,11 +993,11 @@ function MapDecor.Stand(parent, name, label, colors, worldPos, menu, propFn, yaw
 	sparkle.Size = NumberSequence.new(0.5, 0)
 	sparkle.Parent = ring
 	-- shopkeeper behind the counter (added by MapDecor.AddShopkeepers, so it also works on a saved map)
-	local spot = deco(m, Vector3.new(1, 1, 1), CFrame.new(pos + Vector3.new(0, 0.5, -1)) * CFrame.Angles(0, math.pi, 0), colors[1])
+	local spot = deco(m, Vector3.new(1, 1, 1), CFrame.new(pos + Vector3.new(0, 1.5, -1.5)) * CFrame.Angles(0, math.pi, 0), colors[1])
 	spot.Name = "KeeperSpot"
 	spot.Transparency = 1
 	m:SetAttribute("KeeperColor", colors[1])
-	floatingTitle(counter, label, { colors[2]:Lerp(RGB(255, 255, 255), 0.25), colors[1] }, 15)
+	floatingTitle(counter, label, { colors[2]:Lerp(RGB(255, 255, 255), 0.25), colors[1] }, 19)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Open"
 	prompt.ObjectText = label
@@ -1545,7 +1595,7 @@ function MapDecor.Base(base, width, depth, plotCFrames)
 	end
 	-- bushes + flower pots around the stands, flower beds by the gate
 	for _, p in pairs(S) do
-		for _, dz in ipairs({ -13, 13 }) do
+		for _, dz in ipairs({ -15, 15 }) do
 			pcall(extraProp, decor, "flowerpot", p + Vector3.new(0, 0, dz))
 		end
 	end

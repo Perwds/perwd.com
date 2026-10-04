@@ -1,9 +1,10 @@
 --[[
 	📍 LOCATION: StarterPlayer > StarterPlayerScripts > ClientModules > Menus > InventoryMenu (ModuleScript)
 
-	Inventory: every item you own as a card (3D preview, name in its variant color, rarity, size,
-	weight, income). Placed items (earning in your plot) get a green PLACED badge.
-	Tabs: All / Placed / Pocket, a search box, and pages. Per item: Place / Unplace + Sell.
+	Inventory: what you own, as cards (3D preview, name in its variant color, rarity, size, weight,
+	income). Identical items stack into one card ("x25"). Placed ones (earning in your plot) get a
+	green "PLACED" badge with how many. Tabs: All / Placed / Pocket, a search box, and pages.
+	Per card: Place / Unplace one + Sell one.
 	Top: Place Best, Sell Unplaced, and a shortcut to the old Plot & Raids page.
 ]]
 
@@ -24,7 +25,7 @@ local State = require(Modules.State)
 local InventoryMenu = {}
 
 local RGB = Color3.fromRGB
-local PER_PAGE = 15
+local PER_PAGE = 20
 local GREEN = RGB(90, 230, 110)
 
 function InventoryMenu.Build(ctx)
@@ -75,8 +76,10 @@ function InventoryMenu.Build(ctx)
 	end)
 
 	-- ── grid + pager ─────────────────────────────────────────────────
-	local grid = UIKit.Create("Frame", { BackgroundTransparency = 1, Position = UDim2.fromOffset(0, 118), Size = UDim2.new(1, 0, 1, -172), ZIndex = 54, Parent = content })
+	local grid = UIKit.Scroll({ Size = UDim2.new(1, 0, 1, -172), Position = UDim2.fromOffset(0, 118), Parent = content })
+	grid.ZIndex = 54
 	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(190, 246), CellPadding = UDim2.fromOffset(12, 12), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = grid })
+	UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 8), Parent = grid })
 	local emptyLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, 0, 0, 40), Position = UDim2.fromOffset(0, 220), StrokeThickness = 3, ZIndex = 55, Parent = content })
 	local pager = UIKit.Create("Frame", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), Size = UDim2.fromOffset(420, 48), ZIndex = 55, Parent = content })
 	local pageLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -220, 1, -8), Position = UDim2.fromOffset(110, 4), StrokeThickness = 3, ZIndex = 56, Parent = pager })
@@ -89,12 +92,20 @@ function InventoryMenu.Build(ctx)
 		render(true)
 	end })
 
-	local function card(item, order, placed, mult)
+	-- stack = { Item (first), Count, Placed = {uids}, Pocket = {uids} }
+	local function card(stack, order, mult)
+		local item = stack.Item
+		local placed = #stack.Placed > 0
 		local def = ObjectConfig.Get(item.Id)
 		local rarity = RarityConfig.GetRarity(def and def.Rarity)
 		local variant = RarityConfig.GetVariant(item.V)
 		local mutation = item.M and MutationConfig.Get(item.M)
 		local accent = rarity.Color or RGB(200, 200, 210)
+		-- very dark rarity colors (Secret) would be unreadable on the dark card
+		local textAccent = accent
+		if accent.R + accent.G + accent.B < 0.9 then
+			textAccent = RGB(225, 225, 235)
+		end
 		local c = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), LayoutOrder = order, ZIndex = 55, Parent = grid })
 		UIKit.Corner(c, 12)
 		UIKit.Stroke(c, 4, placed and RGB(40, 150, 60) or accent:Lerp(Color3.new(0, 0, 0), 0.45), true)
@@ -104,10 +115,16 @@ function InventoryMenu.Build(ctx)
 		UIKit.Corner(box, 10)
 		UIKit.ModelPreview({ Id = item.Id, Variant = item.V, Size = UDim2.fromScale(1, 1), ZIndex = 57, Parent = box })
 		if placed then
-			local badge = UIKit.Create("Frame", { BackgroundColor3 = GREEN, Position = UDim2.fromOffset(6, 6), Size = UDim2.fromOffset(76, 22), ZIndex = 58, Parent = box })
+			local badge = UIKit.Create("Frame", { BackgroundColor3 = GREEN, Position = UDim2.fromOffset(6, 6), Size = UDim2.fromOffset(stack.Count > 1 and 96 or 76, 22), ZIndex = 58, Parent = box })
 			UIKit.Corner(badge, 6)
 			UIKit.Stroke(badge, 2, UIKit.Outline, true)
-			UIKit.Label({ Text = "PLACED", Size = UDim2.new(1, -6, 1, -4), Position = UDim2.fromOffset(3, 2), StrokeThickness = 2, ZIndex = 59, Parent = badge })
+			UIKit.Label({ Text = stack.Count > 1 and (#stack.Placed .. " PLACED") or "PLACED", Size = UDim2.new(1, -6, 1, -4), Position = UDim2.fromOffset(3, 2), StrokeThickness = 2, ZIndex = 59, Parent = badge })
+		end
+		if stack.Count > 1 then
+			local count = UIKit.Create("Frame", { BackgroundColor3 = RGB(255, 210, 60), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 6, 1, -6), Size = UDim2.fromOffset(52, 24), ZIndex = 58, Parent = box })
+			UIKit.Corner(count, 6)
+			UIKit.Stroke(count, 2, UIKit.Outline, true)
+			UIKit.Label({ Text = "x" .. stack.Count, Size = UDim2.new(1, -6, 1, -4), Position = UDim2.fromOffset(3, 2), StrokeThickness = 2, ZIndex = 59, Parent = count })
 		end
 		if mutation then
 			local tag = UIKit.Create("Frame", { BackgroundColor3 = mutation.Color or RGB(255, 255, 255), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(70, 22), ZIndex = 58, Parent = box })
@@ -119,19 +136,26 @@ function InventoryMenu.Build(ctx)
 		-- text
 		local name = UIKit.Label({ Text = Formulas.ItemName(item), Size = UDim2.new(1, -16, 0, 26), Position = UDim2.fromOffset(8, 118), StrokeThickness = 2.5, ZIndex = 56, Parent = c })
 		name.TextColor3 = variant.Color or Color3.new(1, 1, 1)
-		UIKit.Label({ Text = (def and def.Rarity or "?") .. "  ·  size x" .. string.format("%.1f", item.Z or 1), Size = UDim2.new(1, -16, 0, 20), Position = UDim2.fromOffset(8, 144), TextColor3 = accent, StrokeThickness = 2, ZIndex = 56, Parent = c })
+		UIKit.Label({ Text = (def and def.Rarity or "?") .. "  ·  size x" .. string.format("%.1f", item.Z or 1), Size = UDim2.new(1, -16, 0, 20), Position = UDim2.fromOffset(8, 144), TextColor3 = textAccent, StrokeThickness = 2, ZIndex = 56, Parent = c })
 		UIKit.Label({ Text = "+" .. Format.Coins(Formulas.ItemBaseIncome(item) * mult) .. "/s", Size = UDim2.new(1, -16, 0, 22), Position = UDim2.fromOffset(8, 164), TextColor3 = RGB(150, 255, 130), StrokeThickness = 2.5, ZIndex = 56, Parent = c })
 		-- buttons
 		local exclusive = def and def.Exclusive
 		local wide = UDim2.new(exclusive and 1 or 0.62, exclusive and -16 or -12, 0, 44)
-		UIKit.Button({ Text = placed and "Unplace" or "Place", Colors = placed and UIKit.Colors.Red or UIKit.Colors.Green, Size = wide, Position = UDim2.new(0, 8, 1, -52), CornerRadius = 8, ZIndex = 57, Parent = c, OnClick = function()
-			ctx.HUD.Result(State.Action(placed and "UnplaceItem" or "PlaceItem", item.U))
+		-- Place while some are still in your pocket, otherwise Unplace
+		local canPlace = #stack.Pocket > 0
+		UIKit.Button({ Text = canPlace and "Place" or "Unplace", Colors = canPlace and UIKit.Colors.Green or UIKit.Colors.Red, Size = wide, Position = UDim2.new(0, 8, 1, -52), CornerRadius = 8, ZIndex = 57, Parent = c, OnClick = function()
+			if canPlace then
+				ctx.HUD.Result(State.Action("PlaceItem", stack.Pocket[1]))
+			else
+				ctx.HUD.Result(State.Action("UnplaceItem", stack.Placed[1]))
+			end
 		end })
 		if not exclusive then
 			local value = Formulas.ItemBaseIncome(item) * mult * GameConfig.SellSeconds
 			UIKit.Button({ Text = "Sell", Colors = UIKit.Colors.Yellow, Size = UDim2.new(0.38, -8, 0, 44), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 1, -52), CornerRadius = 8, ZIndex = 57, Parent = c, OnClick = function()
-				UIKit.Confirm(ctx.Screen, "Sell?", "Sell " .. Formulas.ItemName(item) .. " for " .. Format.Coins(value) .. "?", function()
-					ctx.HUD.Result(State.Action("SellItem", item.U))
+				local uid = stack.Pocket[1] or stack.Placed[1]
+				UIKit.Confirm(ctx.Screen, "Sell?", "Sell 1 " .. Formulas.ItemName(item) .. " for " .. Format.Coins(value) .. "?", function()
+					ctx.HUD.Result(State.Action("SellItem", uid))
 				end)
 			end })
 		end
@@ -156,15 +180,27 @@ function InventoryMenu.Build(ctx)
 			UIKit.SetButtonColors(t.Button, name == filter and UIKit.Colors.Blue or UIKit.Colors.Gray)
 		end
 		-- what to show
-		local list = {}
+		-- identical items stack into one card
+		local stacks, byKey = {}, {}
 		for _, item in ipairs(Formulas.SortItems(data.Items)) do
-			local placed = placedSet[item.U] == true
-			local keep = filter == "All" or (filter == "Placed" and placed) or (filter == "Pocket" and not placed)
+			local k = table.concat({ item.Id, item.V or "", item.M or "", string.format("%.2f", item.Z or 1), item.S and "S" or "" }, "|")
+			local st = byKey[k]
+			if not st then
+				st = { Item = item, Count = 0, Placed = {}, Pocket = {} }
+				byKey[k] = st
+				table.insert(stacks, st)
+			end
+			st.Count += 1
+			table.insert(placedSet[item.U] and st.Placed or st.Pocket, item.U)
+		end
+		local list = {}
+		for _, st in ipairs(stacks) do
+			local keep = filter == "All" or (filter == "Placed" and #st.Placed > 0) or (filter == "Pocket" and #st.Pocket > 0)
 			if keep and query ~= "" then
-				keep = string.find(string.lower(Formulas.ItemName(item)), query, 1, true) ~= nil
+				keep = string.find(string.lower(Formulas.ItemName(st.Item)), query, 1, true) ~= nil
 			end
 			if keep then
-				table.insert(list, item)
+				table.insert(list, st)
 			end
 		end
 		local pages = math.max(1, math.ceil(#list / PER_PAGE))
@@ -179,8 +215,11 @@ function InventoryMenu.Build(ctx)
 				ch:Destroy()
 			end
 		end
+		if force then
+			grid.CanvasPosition = Vector2.zero
+		end
 		for i = (page - 1) * PER_PAGE + 1, math.min(#list, page * PER_PAGE) do
-			card(list[i], i, placedSet[list[i].U] == true, mult)
+			card(list[i], i, mult)
 		end
 		pageLabel.Text = "Page " .. page .. " / " .. pages
 		pager.Visible = pages > 1
