@@ -15,6 +15,9 @@ local ObjectConfig = require(Shared.Config.ObjectConfig)
 local RarityConfig = require(Shared.Config.RarityConfig)
 local MutationConfig = require(Shared.Config.MutationConfig)
 local EventConfig = require(Shared.Config.EventConfig)
+local MonetizationConfig = require(Shared.Config.MonetizationConfig)
+local UpgradeConfig = require(Shared.Config.UpgradeConfig)
+local TierConfig = require(Shared.Config.TierConfig)
 
 local AdminService = {}
 local Svc
@@ -52,6 +55,12 @@ local function admin(fn)
 	end
 end
 
+-- who an admin action is for: the chosen player (by UserId) if they're in the server, else the admin
+local function targetOf(admin, userId)
+	local target = type(userId) == "number" and Players:GetPlayerByUserId(userId)
+	return target or admin
+end
+
 local function topUp(player)
 	local data = Svc.Data.Get(player)
 	if data and (data.Coins or 0) < INFINITE then
@@ -82,7 +91,8 @@ function AdminService.Start()
 		return { ok = true, msg = on and "Infinite Cash ON" or "Infinite Cash OFF" }
 	end))
 
-	Svc.Net.Handle("AdminGive", admin(function(player, kind, amount)
+	Svc.Net.Handle("AdminGive", admin(function(adminPlayer, kind, amount, userId)
+		local player = targetOf(adminPlayer, userId)
 		amount = tonumber(amount)
 		if not amount or amount ~= amount or amount <= 0 then
 			return { ok = false }
@@ -101,10 +111,11 @@ function AdminService.Start()
 		else
 			return { ok = false }
 		end
-		return { ok = true, msg = "+" .. amount .. " " .. kind }
+		return { ok = true, msg = "+" .. amount .. " " .. kind .. (player ~= adminPlayer and (" to " .. player.DisplayName) or "") }
 	end))
 
-	Svc.Net.Handle("AdminSpawnItem", admin(function(player, id, variant, mutation, size, count)
+	Svc.Net.Handle("AdminSpawnItem", admin(function(adminPlayer, id, variant, mutation, size, count, userId)
+		local player = targetOf(adminPlayer, userId)
 		if type(id) ~= "string" or not ObjectConfig.Get(id) then
 			return { ok = false, msg = "Unknown item" }
 		end
@@ -122,7 +133,100 @@ function AdminService.Start()
 			pcall(Svc.Museum.Recompute, player)
 		end
 		Svc.Data.MarkDirty(player)
-		return { ok = last ~= nil, msg = last and ("Spawned " .. count .. "x " .. (ObjectConfig.Get(id).Name or id)) or "Couldn't spawn (pocket full?)" }
+		return { ok = last ~= nil, msg = last and ("Spawned " .. count .. "x " .. (ObjectConfig.Get(id).Name or id) .. (player ~= adminPlayer and (" for " .. player.DisplayName) or "")) or "Couldn't spawn (pocket full?)" }
+	end))
+
+	-- give a gamepass for free (kept forever, like a gift)
+	Svc.Net.Handle("AdminGrantPass", admin(function(adminPlayer, passKey, userId)
+		local player = targetOf(adminPlayer, userId)
+		if type(passKey) ~= "string" or not MonetizationConfig.GamePasses[passKey] then
+			return { ok = false }
+		end
+		local data = Svc.Data.Get(player)
+		local s = Svc.Session.Get(player)
+		if not data or not s then
+			return { ok = false }
+		end
+		data.GiftedPasses[passKey] = true
+		s.Passes[passKey] = true
+		Svc.Monetization.ApplyMovement(player)
+		Svc.Museum.Recompute(player)
+		Svc.Data.MarkDirty(player)
+		return { ok = true, msg = MonetizationConfig.GamePasses[passKey].Name .. " given to " .. player.DisplayName }
+	end))
+
+	-- every upgrade to max
+	Svc.Net.Handle("AdminMaxUpgrades", admin(function(adminPlayer, userId)
+		local player = targetOf(adminPlayer, userId)
+		local data = Svc.Data.Get(player)
+		if not data then
+			return { ok = false }
+		end
+		for id, u in pairs(UpgradeConfig.Upgrades) do
+			if u.MaxLevel then
+				data.Upgrades[id] = u.MaxLevel
+			end
+		end
+		Svc.Museum.Recompute(player)
+		Svc.Economy.UpdateIncome(player)
+		Svc.Monetization.ApplyMovement(player)
+		Svc.Data.MarkDirty(player)
+		return { ok = true, msg = "Maxed every upgrade for " .. player.DisplayName }
+	end))
+
+	-- clear every unplaced item
+	Svc.Net.Handle("AdminClearPocket", admin(function(adminPlayer, userId)
+		local player = targetOf(adminPlayer, userId)
+		local data = Svc.Data.Get(player)
+		if not data then
+			return { ok = false }
+		end
+		local placed = {}
+		for _, slot in pairs(data.Slots) do
+			if slot.U then
+				placed[slot.U] = true
+			end
+		end
+		local kept = {}
+		for _, item in ipairs(data.Items) do
+			if placed[item.U] then
+				table.insert(kept, item)
+			end
+		end
+		local removed = #data.Items - #kept
+		data.Items = kept
+		Svc.Museum.Recompute(player)
+		Svc.Data.MarkDirty(player)
+		return { ok = true, msg = "Removed " .. removed .. " unplaced items" }
+	end))
+
+	-- teleport yourself to a zone (or to a player)
+	Svc.Net.Handle("AdminTeleport", admin(function(player, dest)
+		local character = player.Character
+		if not character then
+			return { ok = false }
+		end
+		if type(dest) == "number" and TierConfig.Tiers[dest] then
+			local cf = Svc.Map.ZoneStartCFrame(dest)
+			if cf then
+				character:PivotTo(cf)
+				return { ok = true }
+			end
+		elseif type(dest) == "string" then
+			local other = Players:GetPlayerByUserId(tonumber(dest) or 0)
+			local root = other and other.Character and other.Character:FindFirstChild("HumanoidRootPart")
+			if root then
+				character:PivotTo(root.CFrame * CFrame.new(0, 0, 5))
+				return { ok = true }
+			end
+		end
+		return { ok = false }
+	end))
+
+	-- chasers can't catch you
+	Svc.Net.Handle("AdminGod", admin(function(player, on)
+		player:SetAttribute("AdminGod", on == true or nil)
+		return { ok = true, msg = on and "Chasers can't catch you now" or "God mode off" }
 	end))
 
 	Svc.Net.Handle("AdminSummonBoss", admin(function()

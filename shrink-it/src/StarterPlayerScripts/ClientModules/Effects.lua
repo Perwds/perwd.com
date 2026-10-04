@@ -852,11 +852,12 @@ local function setupChat()
 	task.spawn(function()
 		local channels = TextChatService:WaitForChild("TextChannels", 20)
 		local global = channels and channels:WaitForChild("Global", 20)
+		local server = channels and channels:WaitForChild("Server", 20)
 		if not global then
 			return
 		end
 		pcall(function()
-			TextChatService.ChatInputBarConfiguration.TargetTextChannel = global
+			TextChatService.ChatInputBarConfiguration.TargetTextChannel = server or global -- Server is the default tab
 		end)
 		Remotes.Event("GlobalChat").OnClientEvent:Connect(function(name, text)
 			pcall(function()
@@ -913,6 +914,91 @@ local function settingsLoop()
 	end
 end
 
+-- floating owner badge over every plot: avatar headshot + "Your Plot" / "Name's Plot"
+local function plotBadges()
+	local map = workspace:WaitForChild("ShrinkItMap", 60)
+	local plots = map and map:WaitForChild("Plots", 30)
+	if not plots then
+		return
+	end
+	local badges = {}
+	local function badgeFor(plot)
+		local building = plot:FindFirstChild("MuseumBuilding")
+		local anchor = building and (building.PrimaryPart or building:FindFirstChild("Body")) or plot:FindFirstChild("Floor")
+		if not anchor then
+			return nil
+		end
+		local gui = Instance.new("BillboardGui")
+		gui.Name = "OwnerBadge"
+		gui.Size = UDim2.fromOffset(240, 150)
+		gui.StudsOffsetWorldSpace = Vector3.new(0, 26, 0)
+		gui.MaxDistance = 300
+		gui.LightInfluence = 0
+		gui.Adornee = anchor
+		gui.Parent = player:WaitForChild("PlayerGui")
+		local ring = Instance.new("Frame")
+		ring.AnchorPoint = Vector2.new(0.5, 0)
+		ring.Position = UDim2.fromScale(0.5, 0)
+		ring.Size = UDim2.fromOffset(96, 96)
+		ring.BackgroundColor3 = Color3.fromRGB(30, 28, 40)
+		ring.Parent = gui
+		local rc = Instance.new("UICorner")
+		rc.CornerRadius = UDim.new(1, 0)
+		rc.Parent = ring
+		local rs = Instance.new("UIStroke")
+		rs.Thickness = 4
+		rs.Parent = ring
+		local head = Instance.new("ImageLabel")
+		head.BackgroundTransparency = 1
+		head.Size = UDim2.new(1, -8, 1, -8)
+		head.Position = UDim2.fromOffset(4, 4)
+		head.Parent = ring
+		local hc = Instance.new("UICorner")
+		hc.CornerRadius = UDim.new(1, 0)
+		hc.Parent = head
+		local label = Instance.new("TextLabel")
+		label.BackgroundTransparency = 1
+		label.Position = UDim2.fromOffset(0, 100)
+		label.Size = UDim2.new(1, 0, 0, 40)
+		label.Font = Enum.Font.FredokaOne
+		label.TextScaled = true
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.Parent = gui
+		local ls = Instance.new("UIStroke")
+		ls.Thickness = 3
+		ls.Parent = label
+		return { Gui = gui, Head = head, Label = label, Stroke = rs, Owner = nil }
+	end
+	while true do
+		for _, plot in ipairs(plots:GetChildren()) do
+			local b = badges[plot]
+			if b == nil then
+				b = badgeFor(plot) or false
+				badges[plot] = b
+			end
+			if b then
+				local owner = plot:GetAttribute("OwnerUserId") or 0
+				if owner ~= b.Owner then
+					b.Owner = owner
+					b.Gui.Enabled = owner ~= 0
+					local who = owner ~= 0 and Players:GetPlayerByUserId(owner)
+					if owner == player.UserId then
+						b.Label.Text = "Your Plot"
+						b.Stroke.Color = Color3.fromRGB(90, 255, 120)
+					elseif who then
+						b.Label.Text = who.DisplayName .. "'s Plot"
+						b.Stroke.Color = Color3.fromRGB(255, 80, 80)
+					end
+					if owner ~= 0 then
+						b.Head.Image = string.format("rbxthumb://type=AvatarHeadShot&id=%d&w=150&h=150", owner)
+					end
+				end
+			end
+		end
+		task.wait(1)
+	end
+end
+
 function Effects.Init()
 	Audio.Init()
 	task.spawn(watchBoxes)
@@ -937,6 +1023,7 @@ function Effects.Init()
 	CollectionService:GetInstanceAddedSignal("VIPDoor"):Connect(refreshGates)
 
 	task.spawn(floaterLoop)
+	task.spawn(plotBadges)
 
 	-- per-frame: rainbow cycling + other players' beams
 	local acc = 0

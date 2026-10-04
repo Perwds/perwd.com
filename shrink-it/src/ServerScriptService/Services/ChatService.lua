@@ -2,8 +2,8 @@
 	📍 LOCATION: ServerScriptService > Services > ChatService (ModuleScript)
 
 	Three chat tabs (TextChatService channels):
-	  🌍 Global  – everyone in this server, AND every other server (filtered, via MessagingService).
-	  📍 Here    – only players within GameConfig.Chat.HereRadius studs of you.
+	  💬 Server  – everyone in this server (the default tab).
+	  🌍 Global  – everyone in this server AND every other server (filtered, via MessagingService).
 	  👥 Friends – only you and your Roblox friends in this server.
 	The default Roblox channels are turned off in default.project.json (CreateDefaultTextChannels = false)
 	so these three are the only tabs. All text goes through Roblox's filtering.
@@ -118,25 +118,21 @@ function ChatService.Start()
 		tabs.Enabled = true
 	end)
 
+	local server = makeChannel("Server")
 	local global = makeChannel("Global")
-	local here = makeChannel("Here")
 	local friendsChannel = makeChannel("Friends")
+	-- (old saved places may still have the "Here" channel: remove it)
+	local oldHere = channelsFolder():FindFirstChild("Here")
+	if oldHere then
+		oldHere:Destroy()
+	end
 
 	global.ShouldDeliverCallback = function(message, _target)
 		publishGlobal(message)
 		return true
 	end
-	here.ShouldDeliverCallback = function(message, target)
-		local a, b = playerOf(message.TextSource), playerOf(target)
-		if not a or not b then
-			return false
-		end
-		if a == b then
-			return true
-		end
-		local ra = a.Character and a.Character:FindFirstChild("HumanoidRootPart")
-		local rb = b.Character and b.Character:FindFirstChild("HumanoidRootPart")
-		return ra ~= nil and rb ~= nil and (ra.Position - rb.Position).Magnitude <= GameConfig.Chat.HereRadius
+	server.ShouldDeliverCallback = function(_message, _target)
+		return true
 	end
 	friendsChannel.ShouldDeliverCallback = function(message, target)
 		local a, b = playerOf(message.TextSource), playerOf(target)

@@ -20,6 +20,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local MonetizationConfig = require(Shared.Config.MonetizationConfig)
+local Remotes = require(Shared.Remotes)
 local Formulas = require(Shared.Formulas)
 
 local MonetizationService = {}
@@ -87,6 +88,11 @@ function MonetizationService.OnPlayerLoaded(player)
 	while pending > 0 and os.clock() - start < 10 do
 		task.wait(0.1)
 	end
+	-- gamepasses other players gifted you
+	local data = Svc.Data.Get(player)
+	for key in pairs(data and data.GiftedPasses or {}) do
+		s.Passes[key] = true
+	end
 	applyPassEffects(player)
 	player.CharacterAdded:Connect(function()
 		task.defer(applyPassEffects, player)
@@ -149,6 +155,11 @@ local productHandlers = {
 	Nameplate = function(player, _data, key)
 		Svc.Cosmetic.GrantPlate(player, MonetizationConfig.Products[key].Plate)
 	end,
+	GiftPass = function(player, data, key)
+		local passKey = MonetizationConfig.Products[key].Pass
+		data.GiftedPasses[passKey] = true
+		grantPass(player, passKey)
+	end,
 	InfinitePack = function(player, _data, key)
 		Svc.InfinitePack.OnPurchased(player, key)
 	end,
@@ -187,6 +198,9 @@ local function grantProduct(player, data, key)
 	end
 end
 
+-- buyer → { UserId, Key, Until }: set by the Gift menu right before the purchase prompt
+local pendingGifts = setmetatable({}, { __mode = "k" })
+
 local function processReceipt(info)
 	local player = Players:GetPlayerByUserId(info.PlayerId)
 	if not player then
@@ -212,7 +226,20 @@ local function processReceipt(info)
 		return Enum.ProductPurchaseDecision.NotProcessedYet
 	end
 
-	local ok, err = pcall(grantProduct, player, data, key)
+	-- a gift? (the buyer picked someone in the Gift menu right before this purchase)
+	local recipient, recipientData = player, data
+	local gift = pendingGifts[player]
+	if gift and gift.Key == key and os.clock() < gift.Until then
+		pendingGifts[player] = nil
+		local target = Players:GetPlayerByUserId(gift.UserId)
+		local targetData = target and Svc.Data.Get(target)
+		if target and targetData then
+			recipient, recipientData = target, targetData
+		else
+			Svc.Net.Notify(player, "They left the server, so the gift went to you!", "info")
+		end
+	end
+	local ok, err = pcall(grantProduct, recipient, recipientData, key)
 	if not ok then
 		warn("[Monetization] Grant failed for " .. key .. ": " .. tostring(err))
 		return Enum.ProductPurchaseDecision.NotProcessedYet
@@ -225,7 +252,18 @@ local function processReceipt(info)
 		data.Receipts[oldest] = nil
 	end
 	Svc.Data.MarkDirty(player)
-	Svc.Net.Notify(player, "Thanks for your purchase!", "success")
+	Remotes.Event("Confetti"):FireClient(player)
+	local productName = MonetizationConfig.Products[key].Name or key
+	if recipient ~= player then
+		Svc.Data.MarkDirty(recipient)
+		Svc.Data.Save(recipient)
+		Remotes.Event("Confetti"):FireClient(recipient)
+		Svc.Net.Notify(player, "You gifted " .. productName .. " to " .. recipient.DisplayName .. "!", "success")
+		Svc.Net.Notify(recipient, player.DisplayName .. " gifted you " .. productName .. "!", "success")
+		Svc.Net.Announce(player.DisplayName .. " gifted " .. recipient.DisplayName .. " " .. productName .. "!", Color3.fromRGB(255, 120, 200))
+	else
+		Svc.Net.Notify(player, "Thanks for your purchase!", "success")
+	end
 
 	if Svc.Data.Save(player) then
 		return Enum.ProductPurchaseDecision.PurchaseGranted
@@ -255,9 +293,30 @@ function MonetizationService.Start()
 		for key, pass in pairs(MonetizationConfig.GamePasses) do
 			if pass.Id == passId then
 				grantPass(player, key)
-				Svc.Net.Notify(player, "Unlocked " .. pass.Name .. "! 🎉", "success")
+				Remotes.Event("Confetti"):FireClient(player)
+				Svc.Net.Notify(player, "Unlocked " .. pass.Name .. "!", "success")
 			end
 		end
+	end)
+
+	-- Gift menu: buy a product for another player in this server
+	Svc.Net.Handle("GiftProduct", function(player, userId, key)
+		local product = type(key) == "string" and MonetizationConfig.Products[key]
+		if not product or not table.find(MonetizationConfig.GiftOrder, key) then
+			return { ok = false, msg = "That can't be gifted." }
+		end
+		local target = type(userId) == "number" and Players:GetPlayerByUserId(userId)
+		if not target or target == player then
+			return { ok = false, msg = "Pick another player in this server." }
+		end
+		if product.Handler == "GiftPass" then
+			local passKey = product.Pass
+			if Svc.Session.HasPass(target, passKey) then
+				return { ok = false, msg = target.DisplayName .. " already has that!" }
+			end
+		end
+		pendingGifts[player] = { UserId = target.UserId, Key = key, Until = os.clock() + 300 }
+		return MonetizationService.PromptProduct(player, key)
 	end)
 
 	Svc.Net.Handle("PromptPass", function(player, key)

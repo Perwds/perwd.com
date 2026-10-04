@@ -432,6 +432,16 @@ function Nameplate.Build(key, props)
 		g.Name = "RainbowSpin"
 		g.Color = RAINBOW
 		g.Parent = border
+	else
+		-- bevelled metal look: bright top edge, darker bottom edge
+		local bevel = Instance.new("UIGradient")
+		bevel.Rotation = 90
+		bevel.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1):Lerp(cfg.Border, 0.35)),
+			ColorSequenceKeypoint.new(0.45, Color3.new(1, 1, 1)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 150)),
+		})
+		bevel.Parent = border
 	end
 
 	local body = frame(border, { Name = "Body", BackgroundColor3 = Color3.new(1, 1, 1), Position = UDim2.fromScale(0.012, 0.13), Size = UDim2.fromScale(0.976, 0.74), ClipsDescendants = true, ZIndex = z + 2 })
@@ -468,11 +478,44 @@ function Nameplate.Build(key, props)
 	if pattern then
 		pattern(body, cfg, z + 3)
 	end
-	if cfg.Shine then
-		local shine = frame(body, { Name = "Shine", BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.35, Size = UDim2.fromScale(0.07, 1), Position = UDim2.fromScale(-0.2, 0), ZIndex = z + 4 })
+	-- glossy top half + soft shadow along the bottom (makes every plate look raised)
+	local gloss = frame(body, { Name = "Gloss", BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.45, Size = UDim2.fromScale(1, 0.48), ZIndex = z + 4 })
+	local gg = Instance.new("UIGradient")
+	gg.Rotation = 90
+	gg.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(1, 1) })
+	gg.Parent = gloss
+	local shade = frame(body, { Name = "Shade", BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.55, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.fromScale(1, 0.35), ZIndex = z + 4 })
+	local sg2 = Instance.new("UIGradient")
+	sg2.Rotation = -90
+	sg2.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+	sg2.Parent = shade
+	do
+		-- every plate gets a shine sweep (brighter on the fancy ones)
+		local shine = frame(body, { Name = "Shine", BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = cfg.Shine and 0.35 or 0.65, Size = UDim2.fromScale(cfg.Shine and 0.07 or 0.05, 1), Position = UDim2.fromScale(-0.2, 0), ZIndex = z + 4 })
 		local sg = Instance.new("UIGradient")
 		sg.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 1) })
 		sg.Parent = shine
+	end
+
+	-- small crest gem sitting on the top edge, in the plate's own color
+	do
+		local gemColor = cfg.Rainbow and RGB(255, 120, 230) or (cfg.Accent or cfg.Border):Lerp(Color3.new(1, 1, 1), 0.15)
+		local gem = frame(outline, { Name = "Crest", BackgroundColor3 = gemColor, SizeConstraint = Enum.SizeConstraint.RelativeYY, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.04), Size = UDim2.fromScale(0.3, 0.3), Rotation = 45, ZIndex = z + 8 })
+		local gc = Instance.new("UICorner")
+		gc.CornerRadius = UDim.new(0.2, 0)
+		gc.Parent = gem
+		local gs = Instance.new("UIStroke")
+		gs.Color = OUTLINE
+		gs.Thickness = 2
+		gs.Parent = gem
+		local ggrad = Instance.new("UIGradient")
+		ggrad.Rotation = 45
+		ggrad.Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(150, 150, 150))
+		ggrad.Parent = gem
+		local spark = frame(gem, { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.2, Position = UDim2.fromScale(0.2, 0.2), Size = UDim2.fromScale(0.25, 0.25), ZIndex = z + 9 })
+		local sc = Instance.new("UICorner")
+		sc.CornerRadius = UDim.new(1, 0)
+		sc.Parent = spark
 	end
 
 	local textLeft = 0.05
@@ -499,10 +542,24 @@ function Nameplate.Build(key, props)
 	label.Size = UDim2.fromScale(textRight - textLeft, 0.56)
 	label.ZIndex = z + 7
 	label.Parent = outline
-
-	if cfg.Rainbow or cfg.Shine or cfg.Blink then
-		CollectionService:AddTag(outline, "NameplateFX")
+	-- drop shadow behind the name
+	local shadow = label:Clone()
+	shadow.Name = "NameShadow"
+	shadow.TextColor3 = Color3.new(0, 0, 0)
+	shadow.TextTransparency = 0.45
+	shadow.TextStrokeTransparency = 1
+	shadow.Position = label.Position + UDim2.fromScale(0.004, 0.05)
+	shadow.ZIndex = z + 6
+	shadow.Parent = outline
+	if not cfg.TextColor then
+		-- white on top fading into a light tint of the plate's color at the bottom
+		local tint = Instance.new("UIGradient")
+		tint.Rotation = 90
+		tint.Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(1, 1, 1):Lerp(cfg.Colors[#cfg.Colors], 0.35))
+		tint.Parent = label
 	end
+
+	CollectionService:AddTag(outline, "NameplateFX") -- every plate has at least the shine sweep
 	outline.Parent = props.Parent
 	return outline
 end

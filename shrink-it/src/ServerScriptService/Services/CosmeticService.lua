@@ -329,7 +329,7 @@ function CosmeticService.Start()
 	end)
 
 	-- ⚙️ Settings menu (volumes 0..1, toggles true/false)
-	local SETTINGS = { Sfx = "number", Ambient = "number", Music = "number", ShowTrails = "boolean", LowGraphics = "boolean" }
+	local SETTINGS = { Sfx = "number", Ambient = "number", Music = "number", ShowTrails = "boolean", LowGraphics = "boolean", AutoRebirth = "boolean" }
 	Svc.Net.Handle("SetSetting", function(player, key, value)
 		local data = Svc.Data.Get(player)
 		local kind = type(key) == "string" and SETTINGS[key]

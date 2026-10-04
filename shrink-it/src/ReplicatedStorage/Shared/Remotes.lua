@@ -28,6 +28,7 @@ local EVENTS = {
 	"PvPFX", -- bat hits / traps / steals
 	"GlobalChat", -- cross-server "Global" chat lines
 	"ChaserFX", -- chaser shouts / rage changes
+	"Confetti", -- a Robux purchase went through: confetti on screen
 	-- client → server
 	"ChargeStart",
 	"ChargeCancel",

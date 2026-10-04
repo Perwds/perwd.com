@@ -145,6 +145,56 @@ function HUD.Announce(text, color)
 	nextAnnouncement()
 end
 
+-- ── confetti (after a Robux purchase) ─────────────────────────────────
+local CONFETTI_COLORS = {
+	Color3.fromRGB(255, 80, 120), Color3.fromRGB(255, 200, 40), Color3.fromRGB(80, 200, 255),
+	Color3.fromRGB(140, 255, 90), Color3.fromRGB(190, 110, 255), Color3.fromRGB(255, 140, 40),
+}
+function HUD.Confetti()
+	if not screen then
+		return
+	end
+	local layer = UIKit.Create("Frame", { Name = "Confetti", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 200, Parent = screen })
+	local view = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720)
+	local pieces = {}
+	-- two cannons in the bottom corners + a burst from the middle
+	for i = 1, 130 do
+		local fromLeft = i % 3 == 0
+		local fromRight = i % 3 == 1
+		local x = fromLeft and 0 or fromRight and view.X or view.X / 2
+		local y = fromLeft and view.Y or fromRight and view.Y or view.Y * 0.45
+		local angle = fromLeft and math.rad(math.random(-80, -40)) or fromRight and math.rad(math.random(-140, -100)) or math.rad(math.random(0, 360))
+		local speed = fromLeft and math.random(900, 1500) or fromRight and math.random(900, 1500) or math.random(300, 800)
+		local w, h = math.random(8, 14), math.random(12, 22)
+		local f = UIKit.Create("Frame", { BackgroundColor3 = CONFETTI_COLORS[math.random(#CONFETTI_COLORS)], BorderSizePixel = 0, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(w, h), Position = UDim2.fromOffset(x, y), ZIndex = 200, Parent = layer })
+		table.insert(pieces, { F = f, X = x, Y = y, VX = math.cos(angle) * speed, VY = math.sin(angle) * speed, Spin = math.random(-720, 720), Flip = math.random() * 6 })
+	end
+	-- a soft white puff in the middle
+	local puff = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.45), Size = UDim2.fromOffset(40, 40), ZIndex = 199, Parent = layer })
+	UIKit.Corner(puff, UDim.new(1, 0))
+	UIKit.Tween(puff, 0.6, { Size = UDim2.fromOffset(420, 420), BackgroundTransparency = 1 })
+	UIKit.PlaySound("Reward", 0.6)
+	local t0 = os.clock()
+	local conn
+	conn = game:GetService("RunService").RenderStepped:Connect(function(dt)
+		local t = os.clock() - t0
+		for _, p in ipairs(pieces) do
+			p.VY += 1400 * dt -- gravity
+			p.VX *= (1 - 1.6 * dt) -- air drag
+			p.VY = math.min(p.VY, 420) -- flutter down slowly
+			p.X += p.VX * dt
+			p.Y += p.VY * dt
+			p.F.Position = UDim2.fromOffset(p.X + math.sin(t * 6 + p.Flip) * 10, p.Y)
+			p.F.Rotation += p.Spin * dt
+			p.F.BackgroundTransparency = math.clamp((t - 2.6) / 1.2, 0, 1)
+		end
+		if t > 4 then
+			conn:Disconnect()
+			layer:Destroy()
+		end
+	end)
+end
+
 -- ── menus ─────────────────────────────────────────────────────────────
 -- Opens a menu (never toggles it closed). Used by the stands.
 function HUD.ShowMenu(name)
@@ -303,9 +353,10 @@ local LEFT_BUTTONS = {
 	{ Menu = "Shop", Label = "Shop", Emoji = "🛒", Colors = UIKit.Colors.Yellow },
 	{ Menu = "Index", Label = "Index", Emoji = "📖", Colors = UIKit.Colors.Blue },
 	{ Menu = "Rebirth", Label = "Rebirth", Emoji = "♻️", Colors = UIKit.Colors.Green },
-	{ Menu = "Museum", Label = "Museum", Emoji = "🏛️", Colors = UIKit.Colors.Orange },
+	{ Menu = "Inventory", Label = "Inventory", Emoji = "🎒", Colors = UIKit.Colors.Orange },
 	{ Menu = "Upgrades", Label = "Upgrades", Emoji = "⚡", Colors = UIKit.Colors.Cyan },
 	{ Menu = "Nameplates", Label = "Custom", Emoji = "🎨", Colors = UIKit.Colors.Red },
+	{ Menu = "Gifting", Label = "Gift", Emoji = "💝", Colors = UIKit.Colors.Pink },
 }
 
 local currencyLabels = {}
@@ -354,6 +405,8 @@ local function buildLeftStack()
 end
 
 local speedFill
+local speedTarget -- latest { Walk, Training, Rate } from the server
+local speedShown -- what the bar currently shows (eases toward speedTarget.Walk)
 -- Bottom-center stats: gems | big coins | tokens, a studded speed bar, and three quick buttons.
 local function buildCurrencies()
 	local holder = UIKit.Create("Frame", {
@@ -408,6 +461,28 @@ local function buildCurrencies()
 	UIKit.Button({ Name = "GetCoins", Text = "+ Coins", Colors = UIKit.Colors.Red, Size = UDim2.fromOffset(210, 54), CornerRadius = 8, Parent = quick, OnClick = function()
 		HUD.OpenMenu("Shop")
 	end })
+
+	-- smooth speed: every change (training ticks, upgrades) eases in instead of jumping
+	local lastText
+	game:GetService("RunService").RenderStepped:Connect(function(dt)
+		local target = speedTarget
+		if not target then
+			return
+		end
+		local goal = target.Walk
+		speedShown = speedShown or goal
+		speedShown += (goal - speedShown) * math.min(1, dt * 3)
+		if math.abs(goal - speedShown) < 0.001 then
+			speedShown = goal
+		end
+		speedFill.Size = UDim2.fromScale(math.clamp(speedShown % 1, 0.02, 1), 1)
+		local text = string.format("Speed %.1f", speedShown) .. (target.Training and string.format("   +%s pts/s", Format.Abbrev(target.Rate or 0)) or "   Train on your treadmill!")
+		if text ~= lastText then
+			lastText = text
+			speedLabel.Text = text
+			speedLabel.TextColor3 = target.Training and Color3.fromRGB(190, 255, 170) or Color3.new(1, 1, 1)
+		end
+	end)
 end
 
 local lastShown = {}
@@ -573,7 +648,9 @@ local function boostChip(order, text, colors)
 	UIKit.Label({ Text = text, Size = UDim2.new(1, -16, 1, -8), Position = UDim2.fromOffset(8, 4), StrokeThickness = 2.5, Parent = chip })
 end
 
+local refreshOpening -- (defined further down, next to the list it fills)
 local function refreshTimers()
+	refreshOpening()
 	-- event banner
 	local now = State.Now()
 	local ev = State.Event
@@ -636,11 +713,8 @@ local function refreshTimers()
 	-- speed (trained on the treadmill)
 	local speed = data and data.Speed
 	if speed and speedLabel then
-		speedLabel.Text = string.format("Speed %d", math.floor(speed.Walk)) .. (speed.Training and string.format("   +%s pts/s", Format.Abbrev(speed.Rate)) or "   Train on your treadmill!")
-		speedLabel.TextColor3 = speed.Training and Color3.fromRGB(190, 255, 170) or Color3.new(1, 1, 1)
-		if speedFill then
-			speedFill.Size = UDim2.fromScale(math.clamp(speed.Walk % 1, 0.03, 1), 1)
-		end
+		-- the bar/number glide toward this every frame (see the RenderStepped below)
+		speedTarget = speed
 	end
 	-- raid banner
 	if data and data.ActiveRaid then
@@ -651,6 +725,78 @@ local function refreshTimers()
 		raidLabel.Text = "⚠️ " .. data.BeingRaidedBy .. " is raiding you! (you lose nothing)"
 	else
 		raidFrame.Visible = false
+	end
+end
+
+-- ── boxes opening in your plot (bottom-left list with timers) ───────────────
+local openingFrame, openingList, openingTitle
+local openingRows = {}
+local function buildOpening()
+	openingFrame = UIKit.Create("Frame", { Name = "Opening", BackgroundColor3 = Color3.new(1, 1, 1), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -14), Size = UDim2.fromOffset(300, 64), Visible = false, Parent = screen })
+	UIKit.AutoScale(openingFrame)
+	UIKit.Corner(openingFrame, 12)
+	UIKit.Stroke(openingFrame, 5, UIKit.Stone.Edge, true)
+	UIKit.Gradient(openingFrame, { UIKit.Stone.Light, UIKit.Stone.Dark }, 90)
+	openingTitle = UIKit.Label({ Text = "Opening", Size = UDim2.new(1, -110, 0, 30), Position = UDim2.fromOffset(12, 6), TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 3, Parent = openingFrame })
+	UIKit.Button({ Text = "Open All", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(96, 32), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 5), CornerRadius = 8, Parent = openingFrame, OnClick = function()
+		HUD.Result(State.Action("PromptProduct", "OpenAllBoxes"))
+	end })
+	openingList = UIKit.Create("Frame", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 42), Size = UDim2.new(1, -16, 1, -48), Parent = openingFrame })
+	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, Parent = openingList })
+end
+
+local RarityConfig = require(Shared.Config.RarityConfig)
+refreshOpening = function()
+	if not openingFrame then
+		return
+	end
+	local data = State.Data
+	local boxes = {}
+	for key, slot in pairs(data and data.Slots or {}) do
+		if type(slot) == "table" and slot.Box and slot.Box.ReadyAt then
+			table.insert(boxes, { Key = key, Box = slot.Box })
+		end
+	end
+	table.sort(boxes, function(a, b)
+		return a.Box.ReadyAt < b.Box.ReadyAt
+	end)
+	openingFrame.Visible = #boxes > 0
+	if #boxes == 0 then
+		return
+	end
+	local now = State.Now()
+	local shown = math.min(#boxes, 6)
+	openingTitle.Text = "Opening (" .. #boxes .. ")"
+	openingFrame.Size = UDim2.fromOffset(300, 52 + shown * 40)
+	for i = 1, math.max(shown, #openingRows) do
+		local row = openingRows[i]
+		local entry = boxes[i]
+		if i <= shown then
+			if not row then
+				local f = UIKit.Create("Frame", { BackgroundColor3 = Color3.fromRGB(40, 42, 54), Size = UDim2.new(1, 0, 0, 34), LayoutOrder = i, Parent = openingList })
+				UIKit.Corner(f, 8)
+				local fill = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.25, Size = UDim2.fromScale(0, 1), Parent = f })
+				UIKit.Corner(fill, 8)
+				local label = UIKit.Label({ Text = "", Size = UDim2.new(1, -86, 1, -8), Position = UDim2.fromOffset(8, 4), TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 2.5, ZIndex = 3, Parent = f })
+				local timer = UIKit.Label({ Text = "", Size = UDim2.new(0, 76, 1, -8), Position = UDim2.new(1, -82, 0, 4), TextXAlignment = Enum.TextXAlignment.Right, StrokeThickness = 2.5, ZIndex = 3, Parent = f })
+				row = { Frame = f, Fill = fill, Label = label, Timer = timer }
+				openingRows[i] = row
+			end
+			local box = entry.Box
+			local rarity = box.R or "Common"
+			local color = (RarityConfig.Rarities[rarity] or RarityConfig.Rarities.Common).Color
+			local start = box.StartAt or (box.ReadyAt - 60)
+			local left = math.max(0, box.ReadyAt - now)
+			local done = left <= 0
+			row.Frame.Visible = true
+			row.Fill.BackgroundColor3 = color
+			row.Fill.Size = UDim2.fromScale(math.clamp((now - start) / math.max(1, box.ReadyAt - start), 0.03, 1), 1)
+			row.Label.Text = rarity .. " Box" .. (box.T and ("  ·  Zone " .. box.T) or "")
+			row.Timer.Text = done and "READY!" or Format.Clock(left)
+			row.Timer.TextColor3 = done and Color3.fromRGB(140, 255, 120) or Color3.new(1, 1, 1)
+		elseif row then
+			row.Frame.Visible = false
+		end
 	end
 end
 
@@ -672,6 +818,7 @@ function HUD.Init()
 	})
 	buildLeftStack()
 	buildCurrencies()
+	buildOpening()
 	-- build version, bottom-right (tells you which file you're running)
 	UIKit.Label({ Name = "Version", Text = "Shrink It! " .. require(Shared.Config.GameConfig).Version, TextColor3 = Color3.fromRGB(255, 255, 255), StrokeThickness = 1.5, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -10, 1, -6), Size = UDim2.fromOffset(260, 18), Parent = screen })
 	buildTopBits()
@@ -681,7 +828,7 @@ function HUD.Init()
 	local ctx = { Screen = screen, HUD = HUD }
 	local menuFolder = Modules:WaitForChild("Menus")
 	local menuDefs = table.clone(LEFT_BUTTONS)
-	for _, extra in ipairs({ "Sell", "Fuse", "Trails", "Treadmills", "Settings", "Lab", "Admin" }) do -- opened from the stands / top bar
+	for _, extra in ipairs({ "Museum", "Sell", "Fuse", "Trails", "Treadmills", "Settings", "Lab", "Admin" }) do -- opened from the stands / top bar
 		table.insert(menuDefs, { Menu = extra })
 	end
 	for _, def in ipairs(menuDefs) do
@@ -873,6 +1020,7 @@ function HUD.Init()
 	-- remotes
 	Remotes.Event("Notify").OnClientEvent:Connect(HUD.Notify)
 	Remotes.Event("Announce").OnClientEvent:Connect(HUD.Announce)
+	Remotes.Event("Confetti").OnClientEvent:Connect(HUD.Confetti)
 	Remotes.Event("Popup").OnClientEvent:Connect(onPopup)
 	Remotes.Event("TooBig").OnClientEvent:Connect(function(need)
 		HUD.ShowTooBig(need)

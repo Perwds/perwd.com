@@ -1152,9 +1152,9 @@ function CarryService.Start()
 						end
 						-- caught = close on the ground plane (big chasers stand taller, so a 3D distance
 						-- check used to miss even when they were touching you)
-						local reach = ChaserConfig.CatchDistance * math.max(1, ch.Cfg.Scale) * (ChaserConfig.ModelScale or 1)
+						local reach = ChaserConfig.CatchDistance * math.max(1, ch.Cfg.Scale) * (1 + ((ChaserConfig.ModelScale or 1) - 1) * 0.5)
 						local flat = (ch.Root.Position - root.Position) * Vector3.new(1, 0, 1)
-						if flat.Magnitude <= reach and math.abs(ch.Root.Position.Y - root.Position.Y) < 12 then
+						if flat.Magnitude <= reach and math.abs(ch.Root.Position.Y - root.Position.Y) < 12 and not player:GetAttribute("AdminGod") then
 							CarryService.DropAll(player, "caught")
 						else
 							-- stuck watchdog: not getting anywhere for a while → nudge, then hop behind you

@@ -14,7 +14,7 @@ local MonetizationConfig = {}
 MonetizationConfig.PassOrder = {
 	"Carry2x", "Carry5x", "CarryInfinite", "DoubleCoins", "DoubleLuck", "VIP", "AutoShrink", "InstantCharge",
 	"ExtraPedestals", "FastBoxes", "BigSizes", "GoldenRay", "CosmicHunter", "LongRange", "Teleport", "OfflineEarnings",
-	"DoubleSpeed", "SpeedBoots", "RainbowRay", "RaidShield",
+	"DoubleSpeed", "SpeedBoots", "AutoRebirth", "RainbowRay", "RaidShield",
 }
 
 -- ── GAMEPASSES (one-time) ─────────────────────────────────────────────
@@ -38,6 +38,7 @@ MonetizationConfig.GamePasses = {
 	DoubleSpeed = { Id = 0, Name = "2x Speed", Emoji = "⚡", Image = "rbxassetid://0", PriceLabel = "R$ 249", Description = "Double your trained speed AND train twice as fast." }, -- 🔧 REPLACE Id
 	SpeedBoots = { Id = 0, Name = "Speed Boots", Emoji = "👟", Image = "rbxassetid://0", PriceLabel = "R$ 79", Description = "+8 run speed. Outrun every chaser!" }, -- 🔧 REPLACE Id
 	RainbowRay = { Id = 0, Name = "Rainbow Ray Beam", Emoji = "🌈", Image = "rbxassetid://0", PriceLabel = "R$ 99", Description = "Rainbow ray beam + rainbow trail (cosmetic)." }, -- 🔧 REPLACE Id
+	AutoRebirth = { Id = 0, Name = "Auto Rebirth", Emoji = "🔁", Image = "rbxassetid://0", PriceLabel = "R$ 349", Description = "Rebirths for you automatically whenever you can afford it (toggle in Settings)." }, -- 🔧 REPLACE Id
 	RaidShield = { Id = 0, Name = "Raid Shield", Emoji = "🛡️", Image = "rbxassetid://0", PriceLabel = "R$ 149", Description = "3x longer raid protection, 2x revenge rewards." }, -- 🔧 REPLACE Id
 }
 
@@ -96,6 +97,15 @@ MonetizationConfig.Products = {
 	PlateNightcore = { Id = 0, Name = "Nightcore Name Plate", Emoji = "", PriceLabel = "R$ 149", Handler = "Nameplate", Plate = "Nightcore", Hidden = true }, -- 🔧 REPLACE Id
 	PlateCustom = { Id = 0, Name = "Custom Color Name Plate", Emoji = "", PriceLabel = "R$ 149", Handler = "Nameplate", Plate = "Custom", Hidden = true }, -- 🔧 REPLACE Id
 	PlateRave = { Id = 0, Name = "Rave Name Plate", Emoji = "", PriceLabel = "R$ 249", Handler = "Nameplate", Plate = "Rave", Hidden = true }, -- 🔧 REPLACE Id
+
+	-- Gift versions of gamepasses (a gamepass can't be bought for someone else, so these Developer
+	-- Products unlock the pass for whoever receives the gift). Hidden from the Shop list.
+	GiftPass_DoubleCoins = { Id = 0, Name = "Gift: 2x Coins", Emoji = "", PriceLabel = "R$ 199", Handler = "GiftPass", Pass = "DoubleCoins", Hidden = true }, -- 🔧 REPLACE Id
+	GiftPass_DoubleSpeed = { Id = 0, Name = "Gift: 2x Speed", Emoji = "", PriceLabel = "R$ 249", Handler = "GiftPass", Pass = "DoubleSpeed", Hidden = true }, -- 🔧 REPLACE Id
+	GiftPass_DoubleLuck = { Id = 0, Name = "Gift: 2x Luck", Emoji = "", PriceLabel = "R$ 249", Handler = "GiftPass", Pass = "DoubleLuck", Hidden = true }, -- 🔧 REPLACE Id
+	GiftPass_VIP = { Id = 0, Name = "Gift: VIP", Emoji = "", PriceLabel = "R$ 399", Handler = "GiftPass", Pass = "VIP", Hidden = true }, -- 🔧 REPLACE Id
+	GiftPass_Carry2x = { Id = 0, Name = "Gift: 2x Carry", Emoji = "", PriceLabel = "R$ 199", Handler = "GiftPass", Pass = "Carry2x", Hidden = true }, -- 🔧 REPLACE Id
+	GiftPass_AutoRebirth = { Id = 0, Name = "Gift: Auto Rebirth", Emoji = "", PriceLabel = "R$ 349", Handler = "GiftPass", Pass = "AutoRebirth", Hidden = true }, -- 🔧 REPLACE Id
 
 	-- Infinite Pack paid tiles (repeatable). Price tier is picked by tile position.
 	PackTier1 = { Id = 0, Name = "Infinite Pack Tile", Emoji = "🎟️", Image = "rbxassetid://0", PriceLabel = "R$ 25", Handler = "InfinitePack", Hidden = true }, -- 🔧 REPLACE Id
@@ -178,5 +188,13 @@ function MonetizationConfig.ProductKeyById(productId)
 	end
 	return nil
 end
+
+-- ── Gifting (Gift menu): what can be bought for another player in the server ──
+-- Each entry is a Developer Product key. Gamepasses are gifted through their GiftPass_ product.
+MonetizationConfig.GiftOrder = {
+	"GiftPass_VIP", "GiftPass_DoubleCoins", "GiftPass_DoubleSpeed", "GiftPass_DoubleLuck", "GiftPass_Carry2x", "GiftPass_AutoRebirth",
+	"RoyalCrate", "RoyalCrate3", "LimitedBox", "CoinsSmall", "CoinsMedium", "CoinsLarge", "GemsSmall", "GemsMedium",
+	"PlateRainbow", "PlateChampion", "PlateCustom",
+}
 
 return MonetizationConfig

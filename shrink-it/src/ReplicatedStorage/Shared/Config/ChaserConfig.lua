@@ -30,7 +30,7 @@ ChaserConfig.RageSpeed = 8
 ChaserConfig.MaxRage = 5
 ChaserConfig.RageCooldown = 90
 ChaserConfig.RunAnimation = "rbxassetid://913376220" -- Roblox default R15 run
-ChaserConfig.ModelScale = 1.35 -- your asset-pack chasers (and their sleeping copies) are scaled up by this
+ChaserConfig.ModelScale = 1.8 -- your asset-pack chasers (and their sleeping copies) are scaled up by this
 
 -- Chasers don't talk, they make SOUNDS. Built-in Roblox sounds by default; 🔧 paste your own
 -- "rbxassetid://..." (growls, grunts...) to change them.

@@ -76,6 +76,25 @@ function RebirthService.Start()
 		return { ok = ok, msg = msg }
 	end)
 
+	-- Auto Rebirth gamepass: rebirths for you as soon as you can afford it (never while carrying
+	-- boxes, so a run home isn't wiped). Toggle: Settings > Auto Rebirth.
+	task.spawn(function()
+		while true do
+			task.wait(5)
+			for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+				local data = Svc.Data.Get(player)
+				if data and Svc.Session.HasPass(player, "AutoRebirth") and data.Settings.AutoRebirth ~= false
+					and not Svc.Carry.IsCarrying(player) and not Svc.Raid.IsInRaid(player)
+					and data.Coins >= Formulas.RebirthCost(data.Rebirths) then
+					local ok = RebirthService.DoRebirth(player, false)
+					if ok then
+						Svc.Net.Notify(player, "Auto Rebirth! You are now Rebirth " .. data.Rebirths, "success")
+					end
+				end
+			end
+		end
+	end)
+
 	Svc.Net.Handle("BuyInstantRebirth", function(player)
 		return Svc.Monetization.PromptProduct(player, "InstantRebirth")
 	end)

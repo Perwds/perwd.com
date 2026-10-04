@@ -436,10 +436,11 @@ end
 
 -- ── Screen-size scaling ───────────────────────────────────────────────
 local scaled = {}
+UIKit.UIScale = 0.82 -- overall size of the whole UI (smaller = more of the game visible)
 local function screenScale()
 	local camera = workspace.CurrentCamera
 	local y = camera and camera.ViewportSize.Y or 900
-	return math.clamp(y / 950, 0.5, 1.25)
+	return math.clamp(y / 950, 0.45, 1.15) * UIKit.UIScale
 end
 UIKit.ScreenScale = screenScale
 
@@ -720,6 +721,7 @@ function UIKit.Halftone(frame, color, fromRight)
 	return holder
 end
 
+UIKit.OpenPanels = {} -- every panel ever built (used to close the others when one opens)
 -- Open/close behaviour shared by both panel styles.
 function UIKit._FinishPanel(holder, content, anim, panel)
 	local frame = holder:FindFirstChild("Panel")
@@ -731,12 +733,19 @@ function UIKit._FinishPanel(holder, content, anim, panel)
 	panel.Content = content
 	panel.OnOpen = openEvent.Event
 	panel.OnClose = closeEvent.Event
+	table.insert(UIKit.OpenPanels, panel)
 	function panel.IsOpen()
 		return isOpen
 	end
 	function panel.Open()
 		if isOpen then
 			return
+		end
+		-- only one menu at a time: opening this one closes every other open menu
+		for _, other in ipairs(UIKit.OpenPanels) do
+			if other ~= panel and other.IsOpen() then
+				other.Close()
+			end
 		end
 		isOpen = true
 		holder.Visible = true

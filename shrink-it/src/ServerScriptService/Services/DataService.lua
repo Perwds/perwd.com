@@ -44,7 +44,7 @@ local TEMPLATE = {
 	Potions = { Luck = 0, Income = 0 }, -- os.time() expiry
 	Daily = { LastDay = 0, Streak = 0 },
 	InfinitePack = { Season = 0, Claimed = 0, Credits = {} },
-	Settings = { RaidEnabled = false, AutoShrink = false, Music = 0.5, Sfx = 0.8, Ambient = 0.5, ShowTrails = true, LowGraphics = false, HideOthersBoxes = false },
+	Settings = { RaidEnabled = false, AutoShrink = false, Music = 0.5, Sfx = 0.8, Ambient = 0.5, ShowTrails = true, LowGraphics = false, HideOthersBoxes = false, AutoRebirth = true },
 	Raid = { ShieldUntil = 0, LastRaid = 0, LastToggle = 0, Revenge = {} }, -- Revenge[userIdString] = expiry
 	RaySkins = { Default = true },
 	Samples = 0, -- boss / Lab currency
@@ -56,6 +56,7 @@ local TEMPLATE = {
 	Nameplates = {}, -- [plateKey] = true
 	EquippedPlate = "Classic",
 	PlateColor = { 255, 120, 40 }, -- Custom Color plate (R, G, B)
+	GiftedPasses = {}, -- [passKey] = true (gamepasses someone gifted you)
 	TreadmillSkins = {}, -- [skinKey] = true (TreadmillConfig)
 	EquippedTreadmill = "", -- "" = the look for your Treadmill upgrade tier
 	RedeemedCodes = {},

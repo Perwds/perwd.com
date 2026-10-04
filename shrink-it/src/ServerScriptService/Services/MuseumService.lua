@@ -859,6 +859,55 @@ function MuseumService.Start()
 		return { ok = true, msg = placed > 0 and ("Equipped your best " .. placed .. " object" .. (placed == 1 and "" or "s") .. "!") or "Nothing to equip yet!" }
 	end)
 
+	-- Inventory: put one item from your pocket into your plot (first free spot) / take it back out
+	Svc.Net.Handle("PlaceItem", function(player, uid)
+		local data = Svc.Data.Get(player)
+		local s = Svc.Session.Get(player)
+		if not data or not s or type(uid) ~= "number" or not Svc.Session.Throttle(player, "placeitem", 0.25) then
+			return { ok = false }
+		end
+		local item
+		for _, it in ipairs(data.Items) do
+			if it.U == uid then
+				item = it
+			end
+		end
+		if not item then
+			return { ok = false, msg = "You don't have that item." }
+		end
+		if Svc.Carry.IsHolding(player, uid) then
+			return { ok = false, msg = "You're holding that one!" }
+		end
+		for _, slot in pairs(data.Slots) do
+			if slot.U == uid then
+				return { ok = false, msg = "It's already in your plot." }
+			end
+		end
+		for i = 1, s.PedestalCount or 0 do
+			if not data.Slots[tostring(i)] then
+				data.Slots[tostring(i)] = { U = uid }
+				MuseumService.Recompute(player)
+				return { ok = true, msg = "Placed " .. Formulas.ItemName(item) .. "!" }
+			end
+		end
+		return { ok = false, msg = "Your plot is full! Unplace something or upgrade Museum Size." }
+	end)
+
+	Svc.Net.Handle("UnplaceItem", function(player, uid)
+		local data = Svc.Data.Get(player)
+		if not data or type(uid) ~= "number" or not Svc.Session.Throttle(player, "placeitem", 0.25) then
+			return { ok = false }
+		end
+		for key, slot in pairs(data.Slots) do
+			if slot.U == uid then
+				data.Slots[key] = nil
+				MuseumService.Recompute(player)
+				return { ok = true }
+			end
+		end
+		return { ok = false, msg = "That item isn't in your plot." }
+	end)
+
 	-- PLACE ANYWHERE (F key / Place button): puts what you carry exactly where you aim (or in front of you),
 	-- anywhere on your plot's floor except inside the museum building.
 	Svc.Net.Handle("PlaceGround", function(player, target)

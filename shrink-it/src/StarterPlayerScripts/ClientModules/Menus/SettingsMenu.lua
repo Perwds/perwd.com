@@ -20,11 +20,12 @@ local ROWS = {
 	{ Key = "Music", Label = "Music", Kind = "Volume" },
 	{ Key = "ShowTrails", Label = "Other players' trails", Kind = "Toggle" },
 	{ Key = "LowGraphics", Label = "Low graphics (faster)", Kind = "Toggle" },
+	{ Key = "AutoRebirth", Label = "Auto Rebirth (gamepass)", Kind = "Toggle" },
 	{ Key = "AutoShrink", Label = "Auto Shrink (gamepass)", Kind = "Toggle" },
 }
 
 function SettingsMenu.Build(ctx)
-	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Settings", Style = "Header", Colors = { RGB(150, 160, 190), RGB(80, 90, 120) }, Size = UDim2.fromOffset(720, 560) })
+	local panel = UIKit.Panel({ Parent = ctx.Screen, Title = "Settings", Style = "Header", Colors = { RGB(150, 160, 190), RGB(80, 90, 120) }, Size = UDim2.fromOffset(720, 640) })
 	local content = panel.Content
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = content })
 

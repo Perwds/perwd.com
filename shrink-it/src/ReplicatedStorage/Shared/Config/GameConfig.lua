@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v18.1 (your 20 treadmills: tiers + skins)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v19 (inventory, gifting, admin tabs, auto rebirth, chats, confetti)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 18 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
@@ -25,6 +25,10 @@ GameConfig.DisplayMaxSize = 2.9 -- studs; displayed objects are scaled to fit th
 -- Admin panel: ONLY these accounts get it (checked on the server by username / UserId — display
 -- names are NOT used because anyone can set any display name).
 GameConfig.Admins = { Names = { "huskey08", "mulvadbase" }, UserIds = {} }
+
+-- fewer boxes in the zones: only this share of each zone's spawn spots get a box, and they come back slower
+GameConfig.BoxSpawnFraction = 0.5
+GameConfig.RespawnTimeMult = 1.4
 
 GameConfig.PlotCount = 6
 GameConfig.MaxPlayers = 6 -- one museum plot per player, all in one fair row. ALSO set Max Players = 6 in Game Settings (see README)

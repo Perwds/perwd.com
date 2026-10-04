@@ -369,7 +369,7 @@ end
 local function retire(model, info, delaySeconds)
 	info.Gone = true
 	active[model] = nil
-	local respawn = TierConfig.Tiers[info.Tier] and TierConfig.Tiers[info.Tier].RespawnTime or 30
+	local respawn = (TierConfig.Tiers[info.Tier] and TierConfig.Tiers[info.Tier].RespawnTime or 30) * (GameConfig.RespawnTimeMult or 1)
 	respawn *= Svc.Event.RespawnMult(info.Tier)
 	if info.Point and info.Point.Model == model then
 		info.Point.Model = nil
@@ -567,10 +567,17 @@ end
 
 function SpawnService.Start()
 	task.spawn(nightLoop)
+	-- only part of each zone's spawn spots get a box (GameConfig.BoxSpawnFraction), spread out evenly
+	local fraction = GameConfig.BoxSpawnFraction or 1
 	for tier, area in pairs(Svc.Map.Areas) do
-		for _, part in ipairs(area.SpawnPoints) do
-			local pt = { Part = part, Tier = tier, Model = nil, RespawnAt = 0 }
-			table.insert(points, pt)
+		local list = area.SpawnPoints
+		local keep = math.max(3, math.ceil(#list * fraction))
+		local step = #list / keep
+		for k = 0, keep - 1 do
+			local part = list[math.floor(k * step) + 1]
+			if part then
+				table.insert(points, { Part = part, Tier = tier, Model = nil, RespawnAt = 0 })
+			end
 		end
 	end
 	for _, pt in ipairs(points) do
