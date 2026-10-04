@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v18 (stone UI, loading screen, chaser fixes, boss at map end)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v18.1 (your 20 treadmills: tiers + skins)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 18 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────

@@ -230,6 +230,10 @@ function NameplatesMenu.Build(ctx)
 		ctx.HUD.OpenMenu("Trails")
 	end })
 	back.ZIndex = 70
+	local treadmillsButton = UIKit.Button({ Text = "TREADMILLS", Colors = UIKit.Colors.Orange, Size = UDim2.fromOffset(190, 52), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -276, 0, 42), CornerRadius = 6, ZIndex = 70, Parent = content.Parent, OnClick = function()
+		ctx.HUD.OpenMenu("Treadmills")
+	end })
+	treadmillsButton.ZIndex = 70
 
 	-- big preview of the equipped plate
 	local previewHolder = UIKit.Create("Frame", { BackgroundColor3 = RGB(30, 32, 48), Size = UDim2.new(1, 0, 0, 110), ZIndex = 52, Parent = content })

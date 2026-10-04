@@ -9,6 +9,9 @@
       },
       "ShrinkableTemplates": {
         "$path": "assets/ShrinkableTemplates"
+      },
+      "TreadmillModels": {
+        "$path": "assets/Treadmills"
       }
     },
     "ServerScriptService": {

@@ -12,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local MonetizationConfig = require(Shared.Config.MonetizationConfig)
 local NameplateConfig = require(Shared.Config.NameplateConfig)
+local TreadmillConfig = require(Shared.Config.TreadmillConfig)
 local Nameplate = require(Shared.Nameplate)
 local Format = require(Shared.Format)
 
@@ -263,6 +264,40 @@ function CosmeticService.Start()
 			return { ok = false, msg = "Need " .. need }
 		end
 		CosmeticService.GrantPlate(player, key)
+		return { ok = true }
+	end)
+
+	-- treadmill skins (Gems), shown on your plot by SpeedService
+	Svc.Net.Handle("BuyTreadmillSkin", function(player, key)
+		local data = Svc.Data.Get(player)
+		local cfg = type(key) == "string" and TreadmillConfig.Skins[key]
+		if not data or not cfg then
+			return { ok = false }
+		end
+		if data.TreadmillSkins[key] then
+			return { ok = false, msg = "You already own this treadmill!" }
+		end
+		if not Svc.Economy.Spend(player, "Gems", cfg.Cost) then
+			return { ok = false, msg = "Need " .. cfg.Cost .. " Gems" }
+		end
+		data.TreadmillSkins[key] = true
+		data.EquippedTreadmill = key
+		Svc.Data.MarkDirty(player)
+		return { ok = true, msg = cfg.Name .. " treadmill unlocked!" }
+	end)
+	Svc.Net.Handle("EquipTreadmillSkin", function(player, key)
+		local data = Svc.Data.Get(player)
+		if not data then
+			return { ok = false }
+		end
+		if key == "" or key == nil then
+			data.EquippedTreadmill = ""
+		elseif type(key) == "string" and TreadmillConfig.Skins[key] and data.TreadmillSkins[key] then
+			data.EquippedTreadmill = key
+		else
+			return { ok = false, msg = "You don't own that treadmill!" }
+		end
+		Svc.Data.MarkDirty(player)
 		return { ok = true }
 	end)
 

@@ -56,6 +56,8 @@ local TEMPLATE = {
 	Nameplates = {}, -- [plateKey] = true
 	EquippedPlate = "Classic",
 	PlateColor = { 255, 120, 40 }, -- Custom Color plate (R, G, B)
+	TreadmillSkins = {}, -- [skinKey] = true (TreadmillConfig)
+	EquippedTreadmill = "", -- "" = the look for your Treadmill upgrade tier
 	RedeemedCodes = {},
 	VipFountainAt = 0,
 	Receipts = {}, -- [purchaseId] = os.time()

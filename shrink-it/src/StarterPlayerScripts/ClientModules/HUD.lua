@@ -681,7 +681,7 @@ function HUD.Init()
 	local ctx = { Screen = screen, HUD = HUD }
 	local menuFolder = Modules:WaitForChild("Menus")
 	local menuDefs = table.clone(LEFT_BUTTONS)
-	for _, extra in ipairs({ "Sell", "Fuse", "Trails", "Settings", "Lab", "Admin" }) do -- opened from the stands / top bar
+	for _, extra in ipairs({ "Sell", "Fuse", "Trails", "Treadmills", "Settings", "Lab", "Admin" }) do -- opened from the stands / top bar
 		table.insert(menuDefs, { Menu = extra })
 	end
 	for _, def in ipairs(menuDefs) do
