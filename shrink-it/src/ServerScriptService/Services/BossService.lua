@@ -2,7 +2,7 @@
 	📍 LOCATION: ServerScriptService > Services > BossService (ModuleScript)
 
 	DR. GROW'S ROBOT (every GameConfig.Boss.Every seconds):
-	  • A warning, then a giant robot lands in the base arena. Its pilot, Dr. Grow, has a GROWTH ray:
+	  • A warning, then a giant robot lands at the far end of the map (back of the last zone). Its pilot, Dr. Grow, has a GROWTH ray:
 	    it zaps players, who get big and slow for a few seconds.
 	  • Everyone shrinks it down together with their Shrink Rays (hold on the robot, like a box).
 	    The robot visibly shrinks as it loses HP.
@@ -34,6 +34,21 @@ end
 
 local function cfg()
 	return GameConfig.Boss
+end
+
+-- the boss lands at the far END of the map (the back of the last zone), not in the base
+local function arenaPos()
+	local areas = Svc.Map and Svc.Map.Areas
+	local last = nil
+	for _, area in pairs(areas or {}) do
+		if not last or (area.EndZ or 0) > (last.EndZ or 0) then
+			last = area
+		end
+	end
+	if last and last.EndZ then
+		return Vector3.new(0, cfg().Arena.Y, last.EndZ - 70)
+	end
+	return cfg().Arena
 end
 
 -- ── the robot ────────────────────────────────────────────────────────
@@ -127,7 +142,7 @@ local function shoot()
 	if not boss then
 		return
 	end
-	local arena = cfg().Arena
+	local arena = arenaPos()
 	local targets = {}
 	for _, player in ipairs(Players:GetPlayers()) do
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
@@ -242,7 +257,7 @@ function BossService.Hit(player, target, root, stats)
 	pcall(function()
 		boss.Model:ScaleTo(0.45 + 0.55 * frac)
 		local cf2, size2 = boss.Model:GetBoundingBox()
-		boss.Model:PivotTo(boss.Model:GetPivot() + Vector3.new(0, cfg().Arena.Y - (cf2.Position.Y - size2.Y / 2), 0))
+		boss.Model:PivotTo(boss.Model:GetPivot() + Vector3.new(0, arenaPos().Y - (cf2.Position.Y - size2.Y / 2), 0))
 	end)
 	Svc.Net.Sound("Pop", nil, cf.Position)
 	setStatus()
@@ -256,7 +271,7 @@ function BossService.IsActive()
 end
 
 local function arrive()
-	local arena = cfg().Arena
+	local arena = arenaPos()
 	local model, body, muzzle = buildRobot()
 	local count = math.max(1, #Players:GetPlayers())
 	local hp = cfg().BaseHP + cfg().HPPerPlayer * count
@@ -289,7 +304,7 @@ end
 local function loop()
 	task.wait(cfg().FirstAfter)
 	while true do
-		Svc.Net.Announce("Dr. Grow is coming to the base in " .. cfg().Warning .. " seconds!", Color3.fromRGB(110, 255, 90))
+		Svc.Net.Announce("Dr. Grow is landing at the END of the map in " .. cfg().Warning .. " seconds!", Color3.fromRGB(110, 255, 90))
 		for i = cfg().Warning, 1, -1 do
 			workspace:SetAttribute("BossIn", i)
 			task.wait(1)

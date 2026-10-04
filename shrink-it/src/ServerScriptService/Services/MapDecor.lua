@@ -965,7 +965,7 @@ end
 
 -- ── the Fuse Machine (a big blue machine with a glowing "?" screen) ───
 
-function MapDecor.FuseMachine(parent, worldPos)
+function MapDecor.FuseMachine(parent, worldPos, yaw)
 	local m = Instance.new("Model")
 	m.Name = "FuseStand"
 	m.Parent = parent
@@ -1032,7 +1032,7 @@ function MapDecor.FuseMachine(parent, worldPos)
 	prompt:SetAttribute("OpensMenu", "Fuse")
 	prompt.Parent = screen
 	m.WorldPivot = CFrame.new()
-	m:PivotTo(CFrame.new(worldPos))
+	m:PivotTo(CFrame.new(worldPos) * CFrame.Angles(0, yaw or 0, 0))
 	return m
 end
 
@@ -1516,7 +1516,7 @@ function MapDecor.Base(base, width, depth, plotCFrames)
 	-- two neat columns of shops down the middle aisle, all facing the center path
 	MapDecor.Stand(stands, "SellStand", "SELL", { RGB(230, 30, 30), RGB(255, 70, 60) }, S.Sell, "Sell", coinStack, math.pi / 2)
 	MapDecor.Stand(stands, "LabStand", "LAB", { RGB(40, 170, 80), RGB(120, 255, 120) }, S.Lab, "Lab", nil, math.pi / 2)
-	MapDecor.FuseMachine(stands, S.Fuse)
+	MapDecor.FuseMachine(stands, S.Fuse, math.pi / 2) -- screen faces the middle path
 	MapDecor.Stand(stands, "ShopStand", "SHOP", { RGB(245, 170, 20), RGB(255, 225, 70) }, S.Shop, "Shop", giftBox, -math.pi / 2)
 	MapDecor.Stand(stands, "TrailsStand", "TRAILS", { RGB(190, 50, 240), RGB(240, 120, 255) }, S.Trails, "Trails", trailSwirl, -math.pi / 2)
 

@@ -19,7 +19,7 @@ local State = require(Modules.State)
 
 local AdminMenu = {}
 
-local RGB = Color3.fromRGB
+local _RGB = Color3.fromRGB
 
 function AdminMenu.Build(ctx)
 	local check = State.Action("AdminCheck")
@@ -31,7 +31,7 @@ function AdminMenu.Build(ctx)
 	local content = panel.Content
 
 	-- opener button (top right, under the top bar)
-	local opener = UIKit.Button({ Text = "ADMIN", Colors = UIKit.Colors.Red, Size = UDim2.fromOffset(120, 46), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 70), CornerRadius = 10, Parent = ctx.Screen, OnClick = function()
+	local opener = UIKit.Button({ Text = "ADMIN", Colors = UIKit.Colors.Red, Size = UDim2.fromOffset(120, 46), AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(0, 236, 0, 10), CornerRadius = 10, Parent = ctx.Screen, OnClick = function()
 		ctx.HUD.OpenMenu("Admin")
 	end })
 	UIKit.AutoScale(opener)

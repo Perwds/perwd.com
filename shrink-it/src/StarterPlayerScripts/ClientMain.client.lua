@@ -17,4 +17,5 @@ HUD.Init()
 Effects.Init()
 RayController.Init()
 
+game:GetService("Players").LocalPlayer:SetAttribute("ClientReady", true) -- the loading screen waits for this
 print("[ShrinkIt] Client ready")

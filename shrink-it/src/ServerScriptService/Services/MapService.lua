@@ -212,11 +212,11 @@ local function buildPlot(parent, id, cframe)
 		light.Parent = bulb
 	end
 
-	-- 🏃 treadmill lying along the front of the plot, beside the entrance (out of the aisle's way)
+	-- 🏃 treadmill in front of the plot, beside the entrance path (SPEED console faces you as you run)
 	local treadmill = Instance.new("Model")
 	treadmill.Name = "Treadmill"
 	treadmill.Parent = plot
-	local tcf = local_(floor, hw - 14, 0, hd + 5) * CFrame.Angles(0, math.rad(90), 0)
+	local tcf = local_(floor, hw - 12, 0, hd + 8) -- points straight out into the aisle, beside the path
 	part({ Name = "Frame", Size = Vector3.new(7, 1, 12), CFrame = tcf * CFrame.new(0, 0.5, 0), Color = Color3.fromRGB(50, 52, 64), Material = Enum.Material.Plastic, Parent = treadmill })
 	part({ Name = "Belt", Size = Vector3.new(5.4, 0.3, 11), CFrame = tcf * CFrame.new(0, 1.15, 0), Color = Color3.fromRGB(30, 30, 36), Material = Enum.Material.Fabric, Parent = treadmill })
 	for _, sx in ipairs({ -1, 1 }) do
@@ -269,10 +269,18 @@ local function buildMap()
 	spawn.CFrame = CFrame.new(0, 0.5, -30)
 	spawn.Duration = 0
 	spawn.Neutral = true
-	spawn.Color = Color3.fromRGB(90, 200, 255)
-	spawn.Material = Enum.Material.Neon
-	spawn.Transparency = 0.3
+	spawn.Color = Color3.fromRGB(235, 245, 255)
+	spawn.Material = Enum.Material.SmoothPlastic
+	spawn.Transparency = 0
 	spawn.Parent = base
+	local spawnDecal = Instance.new("Decal") -- the classic spawn emblem on top
+	spawnDecal.Texture = "rbxasset://textures/SpawnLocation.png"
+	spawnDecal.Face = Enum.NormalId.Top
+	spawnDecal.Color3 = Color3.fromRGB(60, 170, 255)
+	spawnDecal.Parent = spawn
+	-- round cobblestone plaza under the spawn + a glowing ring around the pad
+	part({ Name = "SpawnPlaza", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, 30, 30), CFrame = CFrame.new(0, 0.1, -30) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(200, 195, 185), Material = Enum.Material.Cobblestone, CanCollide = false, Parent = base })
+	part({ Name = "SpawnRing", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.35, 17, 17), CFrame = CFrame.new(0, 0.14, -30) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(90, 200, 255), Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Parent = base })
 
 	-- small VIP lounge tucked in the back-right corner (keeps the middle of the base open)
 	local vip = Vector3.new(0, 0, -238) -- back of the aisle, between the two plot rows
@@ -507,6 +515,11 @@ function MapService.ApplyTextures(map)
 	local g = TextureConfig.Ground
 	if base and base:FindFirstChild("Floor") and TextureConfig.Has(g.Base.Id) then
 		texture(base.Floor, g.Base.Id, g.Base.Tile)
+	elseif base and base:FindFirstChild("Floor") then
+		-- no uploaded ground texture yet: use Roblox's built-in grass so the base isn't flat plastic
+		base.Floor.Material = Enum.Material.Grass
+		base.Floor.TopSurface = Enum.SurfaceType.Smooth
+		base.Floor.Color = Color3.fromRGB(96, 196, 64)
 	end
 	local zones = map:FindFirstChild("Zones")
 	for _, zone in ipairs(zones and zones:GetChildren() or {}) do

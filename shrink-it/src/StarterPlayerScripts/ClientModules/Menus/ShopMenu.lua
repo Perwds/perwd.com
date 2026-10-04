@@ -108,8 +108,17 @@ function ShopMenu.Build(ctx)
 	local function banner(parent, size, colors, opts)
 		opts = opts or {}
 		local f = UIKit.Create("Frame", { BackgroundColor3 = WHITE, Size = size, Position = opts.Position or UDim2.new(), LayoutOrder = opts.LayoutOrder or 0, ZIndex = opts.ZIndex or 1, ClipsDescendants = true, Parent = parent })
-		UIKit.Corner(f, opts.Radius or 16)
-		local stroke = UIKit.Stroke(f, opts.Stroke or 4, UIKit.Outline, true)
+		UIKit.Corner(f, opts.Radius or 12)
+		-- thick border in a darker shade of the card's own color (like the reference shop cards)
+		local last
+		if typeof(colors) == "ColorSequence" then
+			local kps = colors.Keypoints
+			last = kps and kps[#kps] and kps[#kps].Value
+		elseif type(colors) == "table" then
+			last = colors[#colors]
+		end
+		last = last or RGB(60, 60, 70)
+		local stroke = UIKit.Stroke(f, opts.Stroke or 5, last:Lerp(Color3.new(0, 0, 0), 0.5), true)
 		local g = UIKit.Create("UIGradient", { Color = typeof(colors) == "ColorSequence" and colors or seq(colors), Rotation = opts.Rotation or 25, Parent = f })
 		if opts.Move == "slide" then
 			anim(function(t)
@@ -127,10 +136,15 @@ function ShopMenu.Build(ctx)
 				sg.Rotation = (t * 120) % 360
 			end)
 		end
-		-- faint diagonal stripes like the header
-		for i = 0, 3 do
-			UIKit.Create("Frame", { BackgroundColor3 = WHITE, BackgroundTransparency = 0.9, BorderSizePixel = 0, Size = UDim2.new(0, 34, 2, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.55 + i * 0.09, 0, 0.5, 0), Rotation = 25, ZIndex = 2, Parent = f })
+		-- comic halftone dots + a soft light burst in the middle
+		local dots = UIKit.Halftone(f, WHITE, true)
+		dots.ZIndex = 2
+		for _, d in ipairs(dots:GetChildren()) do
+			d.ZIndex = 2
 		end
+		local burst = UIKit.Create("Frame", { BackgroundColor3 = WHITE, BackgroundTransparency = 0.8, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.8, 1.6), ZIndex = 2, Parent = f })
+		UIKit.Corner(burst, UDim.new(1, 0))
+		UIKit.Create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0.4), NumberSequenceKeypoint.new(1, 1) }), Parent = burst })
 		if opts.Shine ~= false then
 			shine(f, opts.ShineEvery)
 		end
@@ -170,14 +184,18 @@ function ShopMenu.Build(ctx)
 		return button, label
 	end
 
+	-- striped gradient section bar ("Gamepasses", "Currency"...) that gently pulses
 	local function sectionHeader(name, color)
-		local holder = UIKit.Create("Frame", { Name = "Section_" .. name, BackgroundTransparency = 1, Size = UDim2.new(1, -20, 0, 64), LayoutOrder = nextOrder(), Parent = page })
-		local l = text(holder, "-- " .. name:upper() .. " --", UDim2.fromScale(1, 1), nil, color, 5)
-		local g = UIKit.Create("UIGradient", { Color = seq({ color:Lerp(WHITE, 0.45), color, color:Lerp(Color3.new(0, 0, 0), 0.15) }), Rotation = 90, Parent = l })
-		local scale = UIKit.Create("UIScale", { Parent = l })
+		local holder = UIKit.Create("Frame", { Name = "Section_" .. name, BackgroundTransparency = 1, Size = UDim2.new(1, -16, 0, 66), LayoutOrder = nextOrder(), Parent = page })
+		local bar = UIKit.StripeBar({ Text = name .. "!", Colors = { color:Lerp(WHITE, 0.3), color:Lerp(Color3.new(0, 0, 0), 0.12) }, Size = UDim2.fromScale(1, 1), ZIndex = 3, Parent = holder })
+		local scale = UIKit.Create("UIScale", { Parent = bar })
+		local stripes = bar:FindFirstChildWhichIsA("Frame")
+		local g = stripes and stripes:FindFirstChildOfClass("UIGradient")
 		anim(function(t)
-			scale.Scale = 1 + math.sin(t * 1.6) * 0.025
-			g.Offset = Vector2.new(0, math.sin(t * 2) * 0.1)
+			scale.Scale = 1 + math.sin(t * 1.6) * 0.012
+			if g then
+				g.Offset = Vector2.new((t * 0.08) % 0.222, 0)
+			end
 		end)
 		return holder
 	end

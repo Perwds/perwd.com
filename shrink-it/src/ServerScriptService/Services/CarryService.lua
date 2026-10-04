@@ -395,7 +395,10 @@ local function buildChaser(tier)
 		-- pathfinding). We steer it with its attributes: only the thief is chased, no damage
 		-- (getting caught = dropping your boxes, handled here).
 		model:SetAttribute("AttackDamage", 0)
-		model:SetAttribute("AttackRange", ChaserConfig.CatchDistance)
+		-- tiny attack range: inside it the controller stands still waiting for its attack cooldown,
+		-- so a big range made chasers freeze next to you without ever catching you
+		model:SetAttribute("AttackRange", 2)
+		model:SetAttribute("AttackCooldown", 0.6)
 		model:SetAttribute("DetectionRadius", 5)
 		model:SetAttribute("LoseTargetRadius", 500)
 		model:SetAttribute("HomeLeash", 1000)
@@ -644,6 +647,52 @@ local function spawnChaser(player, c, tier, fromPos, rage)
 		TRACKS[model] = track
 	end)
 	chaserSound(model, "Footsteps", true)
+	-- make the chaser easy to spot: red outline (seen through walls), red glow, bobbing "!" tag
+	local outline = Instance.new("Highlight")
+	outline.Name = "ChaserOutline"
+	outline.FillColor = Color3.fromRGB(255, 40, 40)
+	outline.FillTransparency = 0.82
+	outline.OutlineColor = Color3.fromRGB(255, 60, 60)
+	outline.OutlineTransparency = 0
+	outline.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+	outline.Parent = model
+	local glow = Instance.new("PointLight")
+	glow.Name = "ChaserGlow"
+	glow.Color = Color3.fromRGB(255, 60, 50)
+	glow.Brightness = 3
+	glow.Range = 18
+	glow.Parent = root
+	local tag = Instance.new("BillboardGui")
+	tag.Name = "ChaserTag"
+	tag.Size = UDim2.fromOffset(140, 56)
+	tag.StudsOffsetWorldSpace = Vector3.new(0, size.Y / 2 + 2.5, 0)
+	tag.AlwaysOnTop = true
+	tag.MaxDistance = 250
+	tag.LightInfluence = 0
+	tag.Parent = root
+	local mark = Instance.new("TextLabel")
+	mark.BackgroundTransparency = 1
+	mark.Size = UDim2.fromScale(1, 0.62)
+	mark.Font = Enum.Font.FredokaOne
+	mark.TextScaled = true
+	mark.Text = "!"
+	mark.TextColor3 = Color3.fromRGB(255, 70, 60)
+	mark.Parent = tag
+	local markStroke = Instance.new("UIStroke")
+	markStroke.Thickness = 3
+	markStroke.Parent = mark
+	local nameLabel = Instance.new("TextLabel")
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.Position = UDim2.fromScale(0, 0.62)
+	nameLabel.Size = UDim2.fromScale(1, 0.38)
+	nameLabel.Font = Enum.Font.FredokaOne
+	nameLabel.TextScaled = true
+	nameLabel.Text = cfg.Name
+	nameLabel.TextColor3 = Color3.new(1, 1, 1)
+	nameLabel.Parent = tag
+	local nameStroke = Instance.new("UIStroke")
+	nameStroke.Thickness = 2
+	nameStroke.Parent = nameLabel
 	if rage > 0 then
 		chaserSound(model, "Rage")
 		local fire = Instance.new("Fire")
@@ -1101,9 +1150,29 @@ function CarryService.Start()
 								ch.Humanoid.Jump = true
 							end
 						end
-						local reach = ChaserConfig.CatchDistance * math.max(1, ch.Cfg.Scale)
-						if (ch.Root.Position - root.Position).Magnitude <= reach then
+						-- caught = close on the ground plane (big chasers stand taller, so a 3D distance
+						-- check used to miss even when they were touching you)
+						local reach = ChaserConfig.CatchDistance * math.max(1, ch.Cfg.Scale) * (ChaserConfig.ModelScale or 1)
+						local flat = (ch.Root.Position - root.Position) * Vector3.new(1, 0, 1)
+						if flat.Magnitude <= reach and math.abs(ch.Root.Position.Y - root.Position.Y) < 12 then
 							CarryService.DropAll(player, "caught")
+						else
+							-- stuck watchdog: not getting anywhere for a while → nudge, then hop behind you
+							local now = os.clock()
+							if not ch.LastProgressAt or (ch.LastPos and (ch.Root.Position - ch.LastPos).Magnitude > 4) then
+								ch.LastProgressAt = now
+								ch.LastPos = ch.Root.Position
+							elseif now - ch.LastProgressAt > 1.5 then
+								ch.Humanoid.Jump = true
+								ch.Humanoid:MoveTo(root.Position)
+								if now - ch.LastProgressAt > 3.5 then
+									local back = root.Position - (root.CFrame.LookVector * Vector3.new(1, 0, 1)).Unit * 28
+									local _, size = ch.Model:GetBoundingBox()
+									ch.Model:PivotTo(CFrame.lookAt(back + Vector3.new(0, size.Y / 2, 0), Vector3.new(root.Position.X, back.Y + size.Y / 2, root.Position.Z)))
+									ch.LastProgressAt = now
+									ch.LastPos = ch.Root.Position
+								end
+							end
 						end
 					end
 				end

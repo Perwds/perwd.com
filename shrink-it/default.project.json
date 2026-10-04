@@ -73,6 +73,12 @@
       "CustomModels": {
         "$className": "Folder"
       }
+    },
+    "ReplicatedFirst": {
+      "$className": "ReplicatedFirst",
+      "LoadingScreen": {
+        "$path": "src/ReplicatedFirst/LoadingScreen.client.lua"
+      }
     }
   }
 }

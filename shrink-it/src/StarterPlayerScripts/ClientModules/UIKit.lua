@@ -15,7 +15,7 @@ local GameConfig = require(Shared.Config.GameConfig)
 local UIKit = {}
 
 UIKit.Font = Enum.Font.FredokaOne
-UIKit.Outline = Color3.fromRGB(24, 44, 78) -- navy outline (clean blue simulator style)
+UIKit.Outline = Color3.fromRGB(30, 28, 40) -- dark outline (chunky cartoon style)
 -- panel theme: bright sky-blue panels, deeper blue inner cards, red square X
 UIKit.Theme = {
 	Body = { Color3.fromRGB(100, 205, 248), Color3.fromRGB(62, 172, 232) },
@@ -531,15 +531,13 @@ task.spawn(function()
 end)
 
 function UIKit.Panel(props)
-	local size = props.Size or UDim2.fromOffset(760, 520)
-	if props.Style ~= "Header" then
-		size = size + UDim2.fromOffset(0, 22) -- room for the title bar inside the panel
-	end
+	-- every menu uses the same chunky STONE frame (gems in the corners, stone title plaque, red X)
+	local size = (props.Size or UDim2.fromOffset(760, 520)) + UDim2.fromOffset(40, 40)
 	local holder = UIKit.Create("Frame", {
 		Name = (props.Name or props.Title or "Panel") .. "Holder",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.52),
+		Position = UDim2.fromScale(0.5, 0.53),
 		Size = size,
 		Visible = false,
 		ZIndex = 50,
@@ -557,38 +555,19 @@ function UIKit.Panel(props)
 	})
 	local anim = UIKit.Create("UIScale", { Name = "AnimScale", Scale = 1, Parent = frame })
 	local panel = {}
-	if props.Style == "Header" then
-		return UIKit._HeaderPanel(props, holder, frame, anim, panel)
-	end
-	UIKit.Corner(frame, 14)
-	UIKit.Stroke(frame, 6, UIKit.Outline, true)
-	UIKit.Gradient(frame, UIKit.Theme.Body, 90)
-	UIKit.Studs(frame, props.Animated == true, 14, false)
-
-	-- title bar across the top (white title, icon, red square X)
-	local titleBar = UIKit.Create("Frame", {
-		Name = "Title",
-		BackgroundColor3 = Color3.new(1, 1, 1),
-		Size = UDim2.new(1, 0, 0, 62),
-		ZIndex = 60,
-		Parent = frame,
-	})
-	UIKit.Corner(titleBar, 14)
-	UIKit.Stroke(titleBar, 5, UIKit.Outline, true)
-	UIKit.Gradient(titleBar, UIKit.Theme.Header, 90)
-	local iconHolder = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.fromOffset(50, 50), Position = UDim2.fromOffset(14, 6), ZIndex = 62, Parent = titleBar })
-	UIKit.Icon({ Icon = { Emoji = props.Emoji or "⭐", Image = props.Image }, Size = UDim2.fromScale(1, 1), ZIndex = 63, Parent = iconHolder })
-	UIKit.Label({ Text = props.Title or "", Size = UDim2.new(1, -160, 1, -14), Position = UDim2.fromOffset(72, 7), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 61, StrokeThickness = 3.5, Parent = titleBar })
+	UIKit.StoneFrame(frame, { Seed = #(props.Title or "") * 7 + 3 })
+	-- (no stud grid inside: the stone frame is busy enough, and it saves thousands of UI objects)
+	UIKit.TitlePlaque(frame, props.Title or "", props.Emoji)
 
 	UIKit.Button({
 		Name = "Close",
 		Text = "X",
 		Colors = UIKit.Colors.Red,
-		Size = UDim2.fromOffset(46, 46),
-		AnchorPoint = Vector2.new(1, 0.5),
-		Position = UDim2.new(1, -10, 0, 31),
-		ZIndex = 70,
-		CornerRadius = 8,
+		Size = UDim2.fromOffset(54, 54),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(1, -10, 0, 10),
+		ZIndex = 72,
+		CornerRadius = 12,
 		Parent = frame,
 		OnClick = function()
 			panel.Close()
@@ -598,13 +577,147 @@ function UIKit.Panel(props)
 	local content = UIKit.Create("Frame", {
 		Name = "Content",
 		BackgroundTransparency = 1,
-		Position = UDim2.fromOffset(22, 70),
-		Size = UDim2.new(1, -44, 1, -88),
+		Position = UDim2.fromOffset(36, 52),
+		Size = UDim2.new(1, -72, 1, -88),
 		ZIndex = 51,
 		Parent = frame,
 	})
-
 	return UIKit._FinishPanel(holder, content, anim, panel)
+end
+
+-- ── stone frame pieces (shared by panels, the shop, announcements) ─────────
+UIKit.Stone = {
+	Light = Color3.fromRGB(150, 150, 160),
+	Mid = Color3.fromRGB(112, 112, 124),
+	Dark = Color3.fromRGB(78, 78, 90),
+	Edge = Color3.fromRGB(34, 34, 44),
+	Inner = Color3.fromRGB(48, 50, 62),
+}
+UIKit.GemColors = {
+	Color3.fromRGB(60, 220, 160), -- emerald
+	Color3.fromRGB(255, 160, 40), -- amber
+	Color3.fromRGB(170, 100, 255), -- amethyst
+	Color3.fromRGB(80, 160, 255), -- sapphire
+	Color3.fromRGB(255, 80, 120), -- ruby
+}
+
+-- a faceted gem (diamond shape with a shine), centered on pos
+function UIKit.Gem(parent, color, size, pos, zIndex, rotation)
+	local z = zIndex or 70
+	local holder = UIKit.Create("Frame", { Name = "Gem", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5), Position = pos, Size = UDim2.fromOffset(size, size), Rotation = rotation or 0, ZIndex = z, Parent = parent })
+	local body = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.72, 0.72), Rotation = 45, ZIndex = z, Parent = holder })
+	UIKit.Corner(body, math.max(3, size // 8))
+	UIKit.Stroke(body, math.max(2, size // 16), UIKit.Outline, true)
+	UIKit.Create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, color:Lerp(Color3.new(1, 1, 1), 0.55)), ColorSequenceKeypoint.new(0.5, color), ColorSequenceKeypoint.new(1, color:Lerp(Color3.new(0, 0, 0), 0.35)) }), Rotation = 45, Parent = body })
+	local facet = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.65, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.42, 0.42), Rotation = 45, ZIndex = z, Parent = holder })
+	UIKit.Corner(facet, 3)
+	local shine = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.1, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.36, 0.34), Size = UDim2.fromScale(0.14, 0.14), ZIndex = z, Parent = holder })
+	UIKit.Corner(shine, UDim.new(1, 0))
+	return holder
+end
+
+-- grey stone border made of chunky rocks + a dark inner panel; returns the inner frame
+function UIKit.StoneFrame(frame, opts)
+	opts = opts or {}
+	local S = UIKit.Stone
+	frame.BackgroundColor3 = Color3.new(1, 1, 1)
+	UIKit.Corner(frame, 20)
+	UIKit.Stroke(frame, 6, S.Edge, true)
+	UIKit.Gradient(frame, { S.Light, S.Dark }, 90)
+	local rng = Random.new(opts.Seed or 7)
+	local z = frame.ZIndex
+	-- rocks around the edge (drawn over the border band)
+	local rocks = UIKit.Create("Frame", { Name = "Rocks", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = z, Parent = frame })
+	local function rock(x, y, w, h)
+		local r = UIKit.Create("Frame", { BackgroundColor3 = S.Mid:Lerp(rng:NextNumber() < 0.5 and S.Light or S.Dark, rng:NextNumber(0.1, 0.6)), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, y, 0), Size = UDim2.fromOffset(w, h), Rotation = rng:NextNumber(-6, 6), ZIndex = z, Parent = rocks })
+		UIKit.Corner(r, 9)
+		UIKit.Stroke(r, 3, S.Edge, true)
+		local top = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.82, BorderSizePixel = 0, Size = UDim2.new(1, -8, 0.35, 0), Position = UDim2.fromOffset(4, 3), ZIndex = z, Parent = r })
+		UIKit.Corner(top, 6)
+	end
+	local edge = 0.012
+	for i = 0, 13 do
+		local x = (i + 0.5) / 14
+		rock(x, edge + 0.01, rng:NextInteger(54, 82), rng:NextInteger(22, 30))
+		rock(x, 1 - edge - 0.01, rng:NextInteger(54, 82), rng:NextInteger(22, 30))
+	end
+	for i = 0, 7 do
+		local y = (i + 0.5) / 8
+		rock(edge + 0.006, y, rng:NextInteger(22, 30), rng:NextInteger(50, 74))
+		rock(1 - edge - 0.006, y, rng:NextInteger(22, 30), rng:NextInteger(50, 74))
+	end
+	-- dark inner panel
+	local inner = UIKit.Create("Frame", { Name = "Inner", BackgroundColor3 = Color3.new(1, 1, 1), Position = UDim2.fromOffset(22, 22), Size = UDim2.new(1, -44, 1, -44), ZIndex = z + 1, Parent = frame })
+	UIKit.Corner(inner, 12)
+	UIKit.Stroke(inner, 4, S.Edge, true)
+	UIKit.Gradient(inner, { S.Inner:Lerp(Color3.new(1, 1, 1), 0.06), S.Inner:Lerp(Color3.new(0, 0, 0), 0.15) }, 90)
+	-- gems wedged into the frame
+	local G = UIKit.GemColors
+	UIKit.Gem(frame, G[1], 46, UDim2.new(0, 34, 0, 26), z + 20, -12)
+	UIKit.Gem(frame, G[1], 22, UDim2.new(0, 64, 0, 18), z + 20, 10)
+	UIKit.Gem(frame, G[2], 54, UDim2.new(0, 6, 0.62, 0), z + 20, -18)
+	UIKit.Gem(frame, G[2], 20, UDim2.new(0, 14, 0.4, 0), z + 20, 8)
+	UIKit.Gem(frame, G[3], 56, UDim2.new(1, -4, 0.7, 0), z + 20, 15)
+	UIKit.Gem(frame, G[3], 22, UDim2.new(1, -14, 0.45, 0), z + 20, -10)
+	UIKit.Gem(frame, G[4], 34, UDim2.new(0.25, 0, 1, -8), z + 20, 20)
+	UIKit.Gem(frame, G[4], 30, UDim2.new(0.75, 0, 1, -8), z + 20, -14)
+	return inner
+end
+
+-- stone plaque with the title, sitting on the top edge of a panel
+function UIKit.TitlePlaque(frame, title, emoji)
+	local S = UIKit.Stone
+	local width = math.max(260, #title * 26 + (emoji and 120 or 80))
+	local plaque = UIKit.Create("Frame", { Name = "Title", BackgroundColor3 = Color3.new(1, 1, 1), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 8), Size = UDim2.fromOffset(width, 66), ZIndex = 74, Parent = frame })
+	UIKit.Corner(plaque, 14)
+	UIKit.Stroke(plaque, 5, S.Edge, true)
+	UIKit.Gradient(plaque, { S.Light:Lerp(Color3.new(1, 1, 1), 0.1), S.Dark }, 90)
+	local bevel = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.8, Size = UDim2.new(1, -16, 0.4, 0), Position = UDim2.fromOffset(8, 5), ZIndex = 74, Parent = plaque })
+	UIKit.Corner(bevel, 8)
+	local left = 18
+	if emoji then
+		UIKit.Icon({ Icon = { Emoji = emoji }, Size = UDim2.fromOffset(46, 46), Position = UDim2.fromOffset(16, 10), ZIndex = 76, Parent = plaque })
+		left = 70
+	end
+	UIKit.Label({ Text = title, Size = UDim2.new(1, -(left + 18), 1, -14), Position = UDim2.fromOffset(left, 7), ZIndex = 76, StrokeThickness = 4, Parent = plaque })
+	return plaque
+end
+
+-- gradient bar with wide diagonal stripes and a big outlined title (shop section headers)
+function UIKit.StripeBar(props)
+	local colors = props.Colors or UIKit.Colors.Orange
+	local bar = UIKit.Create("Frame", { Name = props.Name or "StripeBar", BackgroundColor3 = Color3.new(1, 1, 1), Size = props.Size or UDim2.new(1, 0, 0, 62), Position = props.Position or UDim2.new(), LayoutOrder = props.LayoutOrder or 0, ZIndex = props.ZIndex or 3, ClipsDescendants = true, Parent = props.Parent })
+	UIKit.Corner(bar, 10)
+	UIKit.Stroke(bar, 4, colors[2]:Lerp(Color3.new(0, 0, 0), 0.45), true)
+	UIKit.Gradient(bar, { colors[1], colors[2] }, 90)
+	local stripes = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromScale(1, 1), ZIndex = bar.ZIndex, Parent = bar })
+	local kps = {}
+	local bands = 9
+	for i = 0, bands - 1 do
+		local a = (i % 2 == 0) and 0.8 or 1
+		table.insert(kps, NumberSequenceKeypoint.new(i == 0 and 0 or i / bands + 0.001, a))
+		table.insert(kps, NumberSequenceKeypoint.new((i + 1) / bands, a))
+	end
+	UIKit.Create("UIGradient", { Transparency = NumberSequence.new(kps), Rotation = 25, Parent = stripes })
+	local label = UIKit.Label({ Text = props.Text or "", Size = UDim2.new(1, -24, 1, -10), Position = UDim2.fromOffset(12, 4), ZIndex = bar.ZIndex + 1, StrokeThickness = 4, Parent = bar })
+	label.TextColor3 = Color3.new(1, 1, 1)
+	UIKit.Create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 230), colors[1]:Lerp(Color3.new(1, 1, 1), 0.5)), Rotation = 90, Parent = label })
+	return bar, label
+end
+
+-- comic-book halftone dots fading in from one side (cards)
+function UIKit.Halftone(frame, color, fromRight)
+	local holder = UIKit.Create("Frame", { Name = "Halftone", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = frame.ZIndex, ClipsDescendants = true, Parent = frame })
+	local cols, rows = 7, 3
+	for cx = 0, cols - 1 do
+		local t = cx / (cols - 1)
+		local s = 0.05 + (fromRight == false and (1 - t) or t) * 0.11
+		for cy = 0, rows - 1 do
+			local d = UIKit.Create("Frame", { BackgroundColor3 = color or Color3.new(1, 1, 1), BackgroundTransparency = 0.78, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale((cx + 0.5 + (cy % 2) * 0.5) / cols, (cy + 0.5) / rows), Size = UDim2.fromScale(s, s), SizeConstraint = Enum.SizeConstraint.RelativeYY, ZIndex = frame.ZIndex, Parent = holder })
+			UIKit.Corner(d, UDim.new(1, 0))
+		end
+	end
+	return holder
 end
 
 -- Open/close behaviour shared by both panel styles.
@@ -654,75 +767,11 @@ function UIKit._FinishPanel(holder, content, anim, panel)
 	return panel
 end
 
--- "Shop" style panel: dark studded body + full-width striped header bar + square red X.
--- (Used by the Trail Shop, Fuse Machine, Sell and Shop menus.)
-UIKit.PanelBody = Color3.fromRGB(62, 172, 232)
-UIKit.PanelCard = UIKit.Theme.Card
-function UIKit._HeaderPanel(props, holder, frame, anim, panel)
-	frame.BackgroundColor3 = Color3.new(1, 1, 1)
-	UIKit.Gradient(frame, UIKit.Theme.Body, 90)
-	UIKit.Corner(frame, 14)
-	UIKit.Stroke(frame, 6, UIKit.Outline, true)
-	-- faint stud pattern on the body
-	UIKit.Studs(frame, props.Animated == true, 14, false)
-	local headerH = props.HeaderHeight or 70
-	local header = UIKit.Create("Frame", {
-		Name = "Header",
-		BackgroundColor3 = Color3.new(1, 1, 1),
-		ClipsDescendants = true,
-		Size = UDim2.new(1, 0, 0, headerH),
-		ZIndex = 60,
-		Parent = frame,
-	})
-	UIKit.Corner(header, 10)
-	UIKit.Stroke(header, 5, UIKit.Outline, true)
-	UIKit.Gradient(header, UIKit.Theme.Header, 90)
-	for i = 0, 3 do -- diagonal shine stripes
-		local stripe = UIKit.Create("Frame", {
-			BackgroundColor3 = Color3.new(1, 1, 1),
-			BackgroundTransparency = 0.8,
-			BorderSizePixel = 0,
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = UDim2.new(0.55 + i * 0.07, 0, 0.5, 0),
-			Size = UDim2.new(0, i % 2 == 0 and 26 or 12, 2.4, 0),
-			Rotation = 35,
-			ZIndex = 60,
-			Parent = header,
-		})
-		stripe.Name = "Stripe"
-	end
-	UIKit.Label({
-		Text = props.Title or "",
-		Size = UDim2.new(0.6, 0, 1, -18),
-		Position = UDim2.fromOffset(28, 9),
-		TextXAlignment = Enum.TextXAlignment.Left,
-		ZIndex = 62,
-		StrokeThickness = 4,
-		Parent = header,
-	})
-	UIKit.Button({
-		Name = "Close",
-		Text = "X",
-		Colors = UIKit.Colors.Red,
-		Size = UDim2.fromOffset(headerH - 24, headerH - 24),
-		AnchorPoint = Vector2.new(1, 0.5),
-		Position = UDim2.new(1, -12, 0, headerH / 2),
-		ZIndex = 70,
-		CornerRadius = 4,
-		Parent = frame,
-		OnClick = function()
-			panel.Close()
-		end,
-	})
-	local content = UIKit.Create("Frame", {
-		Name = "Content",
-		BackgroundTransparency = 1,
-		Position = UDim2.fromOffset(16, headerH + 12),
-		Size = UDim2.new(1, -32, 1, -headerH - 26),
-		ZIndex = 51,
-		Parent = frame,
-	})
-	return UIKit._FinishPanel(holder, content, anim, panel)
+-- (kept for old callers: every panel is the stone style now)
+UIKit.PanelBody = UIKit.Stone.Inner
+UIKit.PanelCard = Color3.fromRGB(66, 70, 88)
+function UIKit._HeaderPanel(props)
+	return UIKit.Panel(props)
 end
 
 -- Big chunky label with a thick black outline (the "Steal an Egg" look).

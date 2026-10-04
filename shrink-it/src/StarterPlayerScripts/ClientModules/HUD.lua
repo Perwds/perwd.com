@@ -62,9 +62,10 @@ function HUD.Notify(text, kind)
 		return
 	end
 	local colors = KIND_COLORS[kind] or KIND_COLORS.info
-	local toast = UIKit.Card({ Size = UDim2.fromOffset(math.clamp(#text * 13 + 60, 260, 720), 46), Colors = colors, Parent = toastHolder, CornerRadius = 14 })
+	local toast, label = UIKit.StripeBar({ Text = text, Colors = colors, Size = UDim2.fromOffset(math.clamp(#text * 13 + 70, 280, 720), 48), Parent = toastHolder, ZIndex = 85 })
 	toast.LayoutOrder = -math.floor(os.clock() * 100)
-	local label = UIKit.Label({ Text = text, Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = toast })
+	label.Size = UDim2.new(1, -24, 1, -14)
+	label.Position = UDim2.fromOffset(12, 7)
 	local entry = { Toast = toast, Label = label, Count = 1, Until = os.clock() + 3.2 }
 	recentToasts[text] = entry
 	UIKit.Pop(toast, 0.6)
@@ -118,14 +119,21 @@ local function nextAnnouncement()
 	announcing = true
 	local a = table.remove(announceQueue, 1)
 	local c = a.Color or Color3.fromRGB(255, 210, 60)
-	UIKit.SetButtonColors(announceFrame, { c:Lerp(Color3.new(1, 1, 1), 0.35), c })
+	local bar = announceFrame:FindFirstChild("Bar")
+	if bar then
+		UIKit.SetButtonColors(bar, { c:Lerp(Color3.new(1, 1, 1), 0.35), c })
+		local stroke = bar:FindFirstChildOfClass("UIStroke")
+		if stroke then
+			stroke.Color = c:Lerp(Color3.new(0, 0, 0), 0.5)
+		end
+	end
 	announceLabel.Text = a.Text
 	announceFrame.Visible = true
-	announceFrame.Position = UDim2.new(0.5, 0, 0, -120)
-	UIKit.Tween(announceFrame, 0.45, { Position = UDim2.new(0.5, 0, 0, 118) }, Enum.EasingStyle.Back)
+	announceFrame.Position = UDim2.new(0.5, 0, 0, -140)
+	UIKit.Tween(announceFrame, 0.45, { Position = UDim2.new(0.5, 0, 0, 150) }, Enum.EasingStyle.Back)
 	UIKit.PlaySound("Reward", 0.35)
 	task.delay(4.5, function()
-		local t = UIKit.Tween(announceFrame, 0.3, { Position = UDim2.new(0.5, 0, 0, -120) }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+		local t = UIKit.Tween(announceFrame, 0.3, { Position = UDim2.new(0.5, 0, 0, -140) }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
 		t.Completed:Wait()
 		announceFrame.Visible = false
 		announcing = false
@@ -307,74 +315,99 @@ local boostHolder
 local raidFrame, raidLabel
 
 -- Wide "pill" buttons: a big icon that pops out of the left edge + a bold label.
--- Grid of round icon buttons with a label under each (clean simulator style), left side of the screen.
+-- Big icon buttons with a label under each (no button background), down the left side.
 local function buildLeftStack()
-	local CELL_W, BTN, LABEL_H, GAP, COLS = 92, 74, 24, 10, 2
+	local CELL_W, ICON, LABEL_H, GAP, COLS = 96, 78, 26, 6, 2
 	local rows = math.ceil(#LEFT_BUTTONS / COLS)
 	local stack = UIKit.Create("Frame", {
 		Name = "LeftStack",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 18, 0.47, 0),
-		Size = UDim2.fromOffset(COLS * CELL_W + (COLS - 1) * GAP, rows * (BTN + LABEL_H) + (rows - 1) * GAP),
+		Position = UDim2.new(0, 12, 0.45, 0),
+		Size = UDim2.fromOffset(COLS * CELL_W + (COLS - 1) * GAP, rows * (ICON + LABEL_H) + (rows - 1) * GAP),
 		Parent = screen,
 	})
 	UIKit.AutoScale(stack)
-	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(CELL_W, BTN + LABEL_H), CellPadding = UDim2.fromOffset(GAP, GAP), SortOrder = Enum.SortOrder.LayoutOrder, Parent = stack })
+	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(CELL_W, ICON + LABEL_H), CellPadding = UDim2.fromOffset(GAP, GAP), SortOrder = Enum.SortOrder.LayoutOrder, Parent = stack })
 	for i, def in ipairs(LEFT_BUTTONS) do
-		local cell = UIKit.Create("Frame", { Name = def.Menu, BackgroundTransparency = 1, LayoutOrder = i, Parent = stack })
-		local button = UIKit.Button({
-			Name = "Button",
-			Text = "",
-			Colors = def.Colors,
-			Size = UDim2.fromOffset(BTN, BTN),
-			AnchorPoint = Vector2.new(0.5, 0),
-			Position = UDim2.new(0.5, 0, 0, 0),
-			CornerRadius = 22,
-			StrokeThickness = 4,
-			Parent = cell,
-			OnClick = function()
-				HUD.OpenMenu(def.Menu)
-			end,
-		})
-		-- white inner circle holding the icon
-		local bubble = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.15, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.48), Size = UDim2.fromScale(0.72, 0.72), ZIndex = 4, Parent = button })
-		UIKit.Corner(bubble, UDim.new(1, 0))
-		UIKit.Icon({ Icon = { Emoji = def.Emoji }, Size = UDim2.fromScale(0.78, 0.78), Position = UDim2.fromScale(0.11, 0.11), ZIndex = 5, Parent = bubble })
-		UIKit.Label({ Text = def.Label, Size = UDim2.new(1, 8, 0, LABEL_H), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, BTN + 1), ZIndex = 4, StrokeThickness = 3, Parent = cell })
-		badgeSetters[def.Menu] = UIKit.Badge(button)
+		local button = UIKit.Create("TextButton", { Name = def.Menu, Text = "", AutoButtonColor = false, BackgroundTransparency = 1, LayoutOrder = i, Parent = stack })
+		-- soft colored glow behind the icon
+		local glow = UIKit.Create("Frame", { BackgroundColor3 = def.Colors[1], BackgroundTransparency = 0.55, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, ICON / 2), Size = UDim2.fromOffset(ICON - 10, ICON - 10), ZIndex = 1, Parent = button })
+		UIKit.Corner(glow, UDim.new(1, 0))
+		UIKit.Create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) }), Rotation = 90, Parent = glow })
+		local iconHolder = UIKit.Create("Frame", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Size = UDim2.fromOffset(ICON, ICON), ZIndex = 3, Parent = button })
+		UIKit.Icon({ Icon = { Emoji = def.Emoji }, Size = UDim2.fromScale(1, 1), ZIndex = 3, Parent = iconHolder })
+		UIKit.Label({ Text = def.Label, Size = UDim2.new(1, 10, 0, LABEL_H), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, ICON - 4), ZIndex = 4, StrokeThickness = 3.5, Parent = button })
+		UIKit.Bouncy(button, 1.12)
+		button.MouseEnter:Connect(function()
+			UIKit.Tween(iconHolder, 0.15, { Rotation = -8 })
+		end)
+		button.MouseLeave:Connect(function()
+			UIKit.Tween(iconHolder, 0.2, { Rotation = 0 })
+		end)
+		button.Activated:Connect(function()
+			UIKit.PlaySound("Click", 0.4)
+			HUD.OpenMenu(def.Menu)
+		end)
+		badgeSetters[def.Menu] = UIKit.Badge(iconHolder)
 	end
 end
 
+local speedFill
+-- Bottom-center stats: gems | big coins | tokens, a studded speed bar, and three quick buttons.
 local function buildCurrencies()
-	local touchOnly = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 	local holder = UIKit.Create("Frame", {
-		Name = "Currencies",
+		Name = "BottomBar",
 		BackgroundTransparency = 1,
-		AnchorPoint = Vector2.new(0, 1),
-		Position = touchOnly and UDim2.new(0, 120, 1, -14) or UDim2.new(0, 14, 1, -14),
-		Size = UDim2.fromOffset(380, 186),
+		AnchorPoint = Vector2.new(0.5, 1),
+		Position = UDim2.new(0.5, 0, 1, -8),
+		Size = UDim2.fromOffset(860, 176),
 		Parent = screen,
 	})
 	UIKit.AutoScale(holder)
-	local rows = {
-		{ Key = "Tokens", Emoji = "♻️", Color = Color3.fromRGB(140, 255, 170), Y = 0 },
-		{ Key = "Gems", Emoji = "💎", Color = Color3.fromRGB(120, 220, 255), Y = 58 },
-		{ Key = "Coins", Emoji = "💵", Color = Color3.fromRGB(255, 220, 70), Y = 116 },
-	}
-	for _, r in ipairs(rows) do
-		local big = r.Key == "Coins"
-		local size = big and 68 or 52
-		local icon = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(size, size), Position = UDim2.fromOffset(0, r.Y + (big and 0 or 2)), Parent = holder })
-		UIKit.Corner(icon, UDim.new(1, 0))
-		UIKit.Stroke(icon, 3.5, UIKit.Outline, true)
-		UIKit.Gradient(icon, { r.Color:Lerp(Color3.new(1, 1, 1), 0.4), r.Color })
-		UIKit.Icon({ Icon = { Emoji = r.Emoji }, Size = UDim2.new(1, -10, 1, -10), Position = UDim2.fromOffset(5, 5), ZIndex = 2, Parent = icon })
-		local label = UIKit.Label({ Text = "0", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = r.Color, StrokeThickness = 4, Size = UDim2.fromOffset(300, big and 60 or 46), Position = UDim2.fromOffset(size + 10, r.Y + (big and 0 or 4)), Parent = holder })
-		currencyLabels[r.Key] = label
+	-- stats row
+	local function stat(key, emoji, color, x, anchorX, width, height)
+		local box = UIKit.Create("Frame", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(anchorX, 0), Position = UDim2.new(x, 0, 0, 52 - height), Size = UDim2.fromOffset(width, height), Parent = holder })
+		UIKit.Icon({ Icon = { Emoji = emoji }, Size = UDim2.fromOffset(height, height), ZIndex = 2, Parent = box })
+		local label = UIKit.Label({ Text = "0", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.new(1, 1, 1), StrokeThickness = 4, Size = UDim2.new(1, -(height + 6), 1, 0), Position = UDim2.fromOffset(height + 6, 0), ZIndex = 2, Parent = box })
+		UIKit.Create("UIGradient", { Color = ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), 0.45), color), Rotation = 90, Parent = label })
+		currencyLabels[key] = label
+		return box
 	end
-	incomeLabel = UIKit.Label({ Text = "+$0/s", TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(160, 255, 140), StrokeThickness = 3, Size = UDim2.fromOffset(240, 30), Position = UDim2.fromOffset(80, 176), Parent = holder })
-	holder.Size = UDim2.fromOffset(380, 206)
+	stat("Gems", "💎", Color3.fromRGB(110, 210, 255), 0.02, 0, 220, 42)
+	stat("Coins", "💵", Color3.fromRGB(255, 200, 40), 0.5, 0.5, 360, 54)
+	stat("Tokens", "♻️", Color3.fromRGB(240, 100, 220), 0.98, 1, 200, 42)
+	incomeLabel = UIKit.Label({ Text = "+$0/s", TextColor3 = Color3.fromRGB(140, 255, 120), StrokeThickness = 3, AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(300, 26), Position = UDim2.new(0.5, 0, 0, -2), Parent = holder })
+
+	-- studded yellow speed bar (fills toward the next speed point while you train)
+	local bar = UIKit.Create("Frame", { Name = "SpeedBar", BackgroundColor3 = Color3.new(1, 1, 1), Position = UDim2.fromOffset(0, 58), Size = UDim2.new(1, 0, 0, 58), ClipsDescendants = true, Parent = holder })
+	UIKit.Corner(bar, 8)
+	UIKit.Stroke(bar, 5, UIKit.Outline, true)
+	UIKit.Gradient(bar, { Color3.fromRGB(150, 110, 40), Color3.fromRGB(110, 70, 20) }, 90)
+	speedFill = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromScale(0.3, 1), ZIndex = 2, Parent = bar })
+	UIKit.Gradient(speedFill, { Color3.fromRGB(255, 235, 70), Color3.fromRGB(255, 175, 20) }, 90)
+	local studs = UIKit.Create("Frame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 3, Parent = bar })
+	UIKit.Create("UIGridLayout", { CellSize = UDim2.fromOffset(16, 16), CellPadding = UDim2.fromOffset(22, 6), Parent = studs })
+	UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingTop = UDim.new(0, 9), Parent = studs })
+	for _ = 1, 44 do
+		local stud = UIKit.Create("Frame", { BackgroundTransparency = 1, ZIndex = 3, Parent = studs })
+		UIKit.Corner(stud, 3)
+		UIKit.Create("UIStroke", { Thickness = 2, Color = Color3.new(0, 0, 0), Transparency = 0.8, Parent = stud })
+	end
+	speedLabel = UIKit.Label({ Name = "Speed", Text = "Speed", TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 4, Size = UDim2.new(0.6, 0, 1, -10), Position = UDim2.fromOffset(18, 5), ZIndex = 5, Parent = bar })
+
+	-- quick buttons under the bar
+	local quick = UIKit.Create("Frame", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 122), Size = UDim2.fromOffset(700, 54), Parent = holder })
+	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim.new(0, 18), Parent = quick })
+	UIKit.Button({ Name = "EquipBest", Text = "Equip Best", Colors = UIKit.Colors.Yellow, Size = UDim2.fromOffset(210, 54), CornerRadius = 8, Parent = quick, OnClick = function()
+		HUD.Result(State.Action("EquipBest"))
+	end })
+	UIKit.Button({ Name = "Home", Text = "My Plot", Colors = UIKit.Colors.Orange, Size = UDim2.fromOffset(210, 54), CornerRadius = 8, Parent = quick, OnClick = function()
+		HUD.Result(State.Action("TeleportMuseum"))
+	end })
+	UIKit.Button({ Name = "GetCoins", Text = "+ Coins", Colors = UIKit.Colors.Red, Size = UDim2.fromOffset(210, 54), CornerRadius = 8, Parent = quick, OnClick = function()
+		HUD.OpenMenu("Shop")
+	end })
 end
 
 local lastShown = {}
@@ -405,13 +438,25 @@ local function buildTopBits()
 	UIKit.AutoScale(toastHolder)
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Parent = toastHolder })
 
-	announceFrame = UIKit.Card({ Name = "Announcement", Size = UDim2.fromOffset(560, 40), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -120), Colors = UIKit.Colors.Yellow, Parent = screen, StrokeThickness = 3, CornerRadius = 14 })
+	announceFrame = UIKit.Create("Frame", { Name = "Announcement", BackgroundTransparency = 1, Size = UDim2.fromOffset(760, 70), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -140), ZIndex = 80, Parent = screen })
 	announceFrame.Visible = false
-	announceFrame.ZIndex = 80
 	UIKit.AutoScale(announceFrame)
-	announceLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -24, 1, -10), Position = UDim2.fromOffset(12, 5), ZIndex = 81, StrokeThickness = 2.5, Parent = announceFrame })
+	local bannerBar
+	bannerBar, announceLabel = UIKit.StripeBar({ Text = "", Colors = UIKit.Colors.Yellow, Size = UDim2.new(1, -60, 1, 0), Position = UDim2.fromOffset(30, 0), ZIndex = 81, Parent = announceFrame })
+	bannerBar.Name = "Bar"
+	announceLabel.Size = UDim2.new(1, -40, 1, -16)
+	announceLabel.Position = UDim2.fromOffset(20, 8)
+	UIKit.Gem(announceFrame, UIKit.GemColors[3], 64, UDim2.new(0, 22, 0.5, 0), 90, -15)
+	UIKit.Gem(announceFrame, UIKit.GemColors[2], 64, UDim2.new(1, -22, 0.5, 0), 90, 15)
+	local announceScale = UIKit.Create("UIScale", { Parent = announceFrame })
+	announceFrame:GetPropertyChangedSignal("Visible"):Connect(function()
+		if announceFrame.Visible then
+			announceScale.Scale = 0.6
+			UIKit.Tween(announceScale, 0.5, { Scale = 1 }, Enum.EasingStyle.Back)
+		end
+	end)
 
-	eventFrame = UIKit.Card({ Name = "EventBanner", Size = UDim2.fromOffset(460, 46), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), Colors = UIKit.Colors.Dark, Parent = screen, CornerRadius = 23 })
+	eventFrame = UIKit.Card({ Name = "EventBanner", Size = UDim2.fromOffset(480, 48), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), Colors = { UIKit.Stone.Light, UIKit.Stone.Dark }, Parent = screen, CornerRadius = 12, StrokeThickness = 5 })
 	UIKit.AutoScale(eventFrame)
 	eventLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = eventFrame })
 
@@ -462,7 +507,7 @@ local function buildTopBits()
 	end)
 
 	-- 📍 which area you're in (top-right)
-	local areaPill = UIKit.Card({ Name = "AreaPill", Size = UDim2.fromOffset(250, 44), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 12), Colors = UIKit.Colors.Dark, Parent = screen, CornerRadius = 22 })
+	local areaPill = UIKit.Card({ Name = "AreaPill", Size = UDim2.fromOffset(260, 46), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 12), Colors = { UIKit.Stone.Light, UIKit.Stone.Dark }, Parent = screen, CornerRadius = 12, StrokeThickness = 5 })
 	UIKit.AutoScale(areaPill)
 	local areaLabel = UIKit.Label({ Text = "Safe Zone", Size = UDim2.new(1, -20, 1, -10), Position = UDim2.fromOffset(10, 5), StrokeThickness = 2.5, Parent = areaPill })
 	local lastArea
@@ -540,7 +585,7 @@ local function refreshTimers()
 		else
 			local nextCfg = EventConfig.Events[ev.Next]
 			eventLabel.Text = "Next: " .. nextCfg.Name .. " in " .. Format.Clock(ev.NextAt - now)
-			UIKit.SetButtonColors(eventFrame, UIKit.Colors.Dark)
+			UIKit.SetButtonColors(eventFrame, { UIKit.Stone.Light, UIKit.Stone.Dark })
 		end
 	end
 	-- boosts
@@ -591,8 +636,11 @@ local function refreshTimers()
 	-- speed (trained on the treadmill)
 	local speed = data and data.Speed
 	if speed and speedLabel then
-		speedLabel.Text = string.format("%.1f speed", speed.Walk) .. (speed.Training and string.format("  (+%s pts/s)", Format.Abbrev(speed.Rate)) or "")
-		speedLabel.TextColor3 = speed.Training and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(150, 220, 255)
+		speedLabel.Text = string.format("Speed %d", math.floor(speed.Walk)) .. (speed.Training and string.format("   +%s pts/s", Format.Abbrev(speed.Rate)) or "   Train on your treadmill!")
+		speedLabel.TextColor3 = speed.Training and Color3.fromRGB(190, 255, 170) or Color3.new(1, 1, 1)
+		if speedFill then
+			speedFill.Size = UDim2.fromScale(math.clamp(speed.Walk % 1, 0.03, 1), 1)
+		end
 	end
 	-- raid banner
 	if data and data.ActiveRaid then
@@ -665,8 +713,8 @@ function HUD.Init()
 	local settingsButton = UIKit.Button({
 		Name = "SettingsButton",
 		Text = "⚙️",
-		Colors = UIKit.Colors.Dark,
-		Size = UDim2.fromOffset(52, 52),
+		Colors = { Color3.fromRGB(150, 150, 165), Color3.fromRGB(90, 90, 105) },
+		Size = UDim2.fromOffset(56, 56),
 		AnchorPoint = Vector2.new(0, 0),
 		Position = UDim2.new(0, 168, 0, 6),
 		CornerRadius = 26,
@@ -677,24 +725,71 @@ function HUD.Init()
 	})
 	UIKit.AutoScale(settingsButton)
 
-	-- right side: Equip Best / Home
+	-- right side: FREE REWARDS gift + gamepass offer cards (hidden once you own them)
 	local right = UIKit.Create("Frame", {
 		Name = "RightStack",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(1, 0.5),
-		Position = UDim2.new(1, -18, 0.5, 30),
-		Size = UDim2.fromOffset(190, 3 * 70),
+		Position = UDim2.new(1, -14, 0.5, 10),
+		Size = UDim2.fromOffset(230, 470),
 		Parent = screen,
 	})
 	UIKit.AutoScale(right)
-	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 10), HorizontalAlignment = Enum.HorizontalAlignment.Right, SortOrder = Enum.SortOrder.LayoutOrder, Parent = right })
-	UIKit.Button({ Name = "EquipBest", Text = "Equip Best", Colors = UIKit.Colors.Yellow, Size = UDim2.fromOffset(190, 60), LayoutOrder = 1, CornerRadius = 18, Parent = right, OnClick = function()
-		HUD.Result(State.Action("EquipBest"))
-	end })
-	UIKit.Button({ Name = "Home", Text = "My Plot", Colors = UIKit.Colors.Blue, Size = UDim2.fromOffset(190, 60), LayoutOrder = 2, CornerRadius = 18, Parent = right, OnClick = function()
-		HUD.Result(State.Action("TeleportMuseum"))
-	end })
-	speedLabel = UIKit.Label({ Name = "Speed", Text = "", TextXAlignment = Enum.TextXAlignment.Right, StrokeThickness = 3, Size = UDim2.fromOffset(190, 40), LayoutOrder = 3, Parent = right })
+	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 12), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = right })
+	local gift = UIKit.Create("TextButton", { Name = "FreeRewards", Text = "", AutoButtonColor = false, BackgroundTransparency = 1, Size = UDim2.fromOffset(150, 132), LayoutOrder = 0, Parent = right })
+	local giftIcon = UIKit.Create("Frame", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Size = UDim2.fromOffset(92, 92), Parent = gift })
+	UIKit.Icon({ Icon = { Emoji = "🎁" }, Size = UDim2.fromScale(1, 1), ZIndex = 2, Parent = giftIcon })
+	UIKit.Label({ Text = "FREE REWARDS!", Size = UDim2.new(1, 20, 0, 34), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 92), StrokeThickness = 4, ZIndex = 3, Parent = gift })
+	badgeSetters.Gifts = badgeSetters.Gifts or UIKit.Badge(giftIcon)
+	UIKit.Bouncy(gift, 1.1)
+	gift.Activated:Connect(function()
+		UIKit.PlaySound("Click", 0.4)
+		HUD.OpenMenu("Gifts")
+	end)
+	task.spawn(function()
+		while gift.Parent do
+			UIKit.Tween(giftIcon, 0.6, { Rotation = 8 }, Enum.EasingStyle.Sine)
+			task.wait(0.6)
+			UIKit.Tween(giftIcon, 0.6, { Rotation = -8 }, Enum.EasingStyle.Sine)
+			task.wait(0.6)
+		end
+	end)
+	local MonetizationConfig = require(Shared.Config.MonetizationConfig)
+	local Prices = require(Modules.Prices)
+	local offers = {}
+	for i, key in ipairs({ "DoubleSpeed", "DoubleCoins", "SpeedBoots" }) do
+		local pass = MonetizationConfig.GamePasses[key]
+		if pass then
+			local card = UIKit.Create("TextButton", { Name = "Offer_" .. key, Text = "", AutoButtonColor = false, BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(220, 92), LayoutOrder = i, Parent = right })
+			UIKit.Corner(card, 12)
+			UIKit.Stroke(card, 5, Color3.fromRGB(150, 90, 0), true)
+			UIKit.Gradient(card, { Color3.fromRGB(255, 240, 90), Color3.fromRGB(255, 185, 20) }, 90)
+			UIKit.Halftone(card, Color3.fromRGB(255, 255, 255), true)
+			UIKit.Icon({ Icon = { Emoji = pass.Emoji }, Size = UDim2.fromOffset(64, 64), Position = UDim2.fromOffset(-14, -16), ZIndex = 3, Parent = card })
+			UIKit.Label({ Text = pass.Name, Size = UDim2.new(1, -60, 0, 38), Position = UDim2.fromOffset(52, 8), StrokeThickness = 3.5, ZIndex = 3, Parent = card })
+			local price = UIKit.Label({ Text = "", RichText = true, Size = UDim2.new(1, -16, 0, 34), Position = UDim2.fromOffset(8, 50), StrokeThickness = 3.5, ZIndex = 3, Parent = card })
+			local function setPrice()
+				local p = Prices.Get(Enum.InfoType.GamePass, pass.Id, pass.PriceLabel)
+				price.Text = 'Only <font color="#FF5CF0">' .. tostring(p):gsub("^R%$%s*", "") .. ' R$</font>!'
+			end
+			setPrice()
+			Prices.OnUpdated(setPrice)
+			UIKit.Bouncy(card, 1.06)
+			card.Activated:Connect(function()
+				UIKit.PlaySound("Click", 0.4)
+				HUD.Result(State.Action("PromptPass", key))
+			end)
+			offers[key] = card
+		end
+	end
+	task.spawn(function()
+		while right.Parent do
+			for key, card in pairs(offers) do
+				card.Visible = not State.HasPass(key)
+			end
+			task.wait(2)
+		end
+	end)
 
 	-- Place button (in your plot while carrying) + F key: puts it down ANYWHERE in your plot.
 	-- Keyboard/mouse: where your mouse points (a green ring shows the spot). Touch/button: right in front of you.
@@ -742,7 +837,7 @@ function HUD.Init()
 		Colors = UIKit.Colors.Green,
 		Size = UDim2.fromOffset(260, 72),
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -100),
+		Position = UDim2.new(0.5, 0, 1, -290),
 		Parent = screen,
 		OnClick = function()
 			placeOnGround(false)
@@ -766,7 +861,7 @@ function HUD.Init()
 		Colors = UIKit.Colors.Red,
 		Size = UDim2.fromOffset(220, 66),
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -24),
+		Position = UDim2.new(0.5, 0, 1, -210),
 		Parent = screen,
 		OnClick = function()
 			HUD.Result(State.Action("DropCarry"))

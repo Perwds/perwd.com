@@ -143,6 +143,20 @@ function ModelFactory.Create(id)
 	local def = ObjectConfig.Get(id) or { Name = id }
 	local shared = ReplicatedStorage:FindFirstChild("ShrinkableTemplates")
 	local template = (shared and shared:FindFirstChild(id)) or ModelFactory.TemplatesFolder():FindFirstChild(id)
+	-- a template with nothing visible in it (e.g. a broken import) would make the item invisible:
+	-- skip it and use the built-in model instead
+	if template then
+		local visible = template:IsA("BasePart") and template.Transparency < 0.95
+		for _, d in ipairs(template:GetDescendants()) do
+			if visible then
+				break
+			end
+			visible = d:IsA("BasePart") and d.Transparency < 0.95
+		end
+		if not visible then
+			template = nil
+		end
+	end
 	local model
 	if template then
 		model = template:Clone()
