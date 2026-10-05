@@ -516,10 +516,39 @@ function MapService.ApplyTextures(map)
 	if base and base:FindFirstChild("Floor") and TextureConfig.Has(g.Base.Id) then
 		texture(base.Floor, g.Base.Id, g.Base.Tile)
 	elseif base and base:FindFirstChild("Floor") then
-		-- no uploaded ground texture yet: use Roblox's built-in grass so the base isn't flat plastic
-		base.Floor.Material = Enum.Material.Grass
-		base.Floor.TopSurface = Enum.SurfaceType.Smooth
-		base.Floor.Color = Color3.fromRGB(96, 196, 64)
+		-- lime studded plastic with a lighter checkerboard of studded tiles (classic brick look)
+		local floor = base.Floor
+		floor.Material = Enum.Material.Plastic
+		floor.TopSurface = Enum.SurfaceType.Studs
+		floor.Color = Color3.fromRGB(138, 222, 34)
+		if not base:FindFirstChild("Checker") then
+			local checker = Instance.new("Folder")
+			checker.Name = "Checker"
+			checker.Parent = base
+			local TILE = 12
+			local top = floor.Position.Y + floor.Size.Y / 2
+			local x0 = floor.Position.X - floor.Size.X / 2
+			local z0 = floor.Position.Z - floor.Size.Z / 2
+			for ix = 0, math.floor(floor.Size.X / TILE) - 1 do
+				for iz = 0, math.floor(floor.Size.Z / TILE) - 1 do
+					if (ix + iz) % 2 == 0 then
+						local tile = Instance.new("Part")
+						tile.Name = "Tile"
+						tile.Anchored = true
+						tile.CanCollide = false
+						tile.CanQuery = false
+						tile.CanTouch = false
+						tile.Size = Vector3.new(TILE, 0.1, TILE)
+						tile.CFrame = CFrame.new(x0 + (ix + 0.5) * TILE, top + 0.05, z0 + (iz + 0.5) * TILE)
+						tile.Color = Color3.fromRGB(165, 238, 60)
+						tile.Material = Enum.Material.Plastic
+						tile.TopSurface = Enum.SurfaceType.Studs
+						tile.BottomSurface = Enum.SurfaceType.Smooth
+						tile.Parent = checker
+					end
+				end
+			end
+		end
 	end
 	local zones = map:FindFirstChild("Zones")
 	for _, zone in ipairs(zones and zones:GetChildren() or {}) do

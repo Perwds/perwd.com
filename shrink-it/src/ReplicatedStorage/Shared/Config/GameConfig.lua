@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v19.1 (chasers never give up, hold boxes, new stands, inventory stacks)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v19.2 (lime studded checker ground)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 18 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
