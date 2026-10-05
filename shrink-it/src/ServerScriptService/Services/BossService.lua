@@ -284,7 +284,7 @@ local function arrive()
 		model:PivotTo(CFrame.new(arena + Vector3.new(0, standY + 160 * (1 - i / 20), 0)))
 		task.wait(0.04)
 	end
-	Svc.Net.Sound("Alarm", nil, arena)
+	Svc.Net.Sound("Boss", nil, arena)
 	setStatus()
 	Svc.Net.Announce("Dr. Grow's robot has landed! Everyone zap it with your Shrink Ray!", Color3.fromRGB(110, 255, 90))
 	local nextShot = os.clock() + cfg().ShotEvery

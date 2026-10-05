@@ -155,6 +155,10 @@ local productHandlers = {
 	Nameplate = function(player, _data, key)
 		Svc.Cosmetic.GrantPlate(player, MonetizationConfig.Products[key].Plate)
 	end,
+	StarterPack = function(player, data)
+		data.StarterPackBought = true
+		Svc.Net.Announce(player.DisplayName .. " grabbed the Starter Pack!", Color3.fromRGB(90, 200, 255))
+	end,
 	GiftPass = function(player, data, key)
 		local passKey = MonetizationConfig.Products[key].Pass
 		data.GiftedPasses[passKey] = true
@@ -278,6 +282,10 @@ function MonetizationService.PromptProduct(player, key)
 	end
 	if product.Id == 0 then
 		return { ok = false, msg = "Coming soon! (Product ID not set yet)" }
+	end
+	local data = Svc.Data.Get(player)
+	if product.OneTime and key == "StarterPack" and data and data.StarterPackBought then
+		return { ok = false, msg = "You already have the Starter Pack!" }
 	end
 	MarketplaceService:PromptProductPurchase(player, product.Id)
 	return { ok = true }

@@ -181,6 +181,11 @@ function CosmeticService.GrantPlate(player, key)
 end
 
 function CosmeticService.OnPlayerLoaded(player)
+	-- players who already own things don't need the tutorial
+	local data = Svc.Data.Get(player)
+	if data and not data.TutorialDone and (#data.Items > 0 or next(data.Slots) ~= nil) then
+		data.TutorialDone = true
+	end
 	player.CharacterAdded:Connect(function(character)
 		character:WaitForChild("HumanoidRootPart", 10)
 		CosmeticService.ApplyTrail(player)
@@ -265,6 +270,17 @@ function CosmeticService.Start()
 		end
 		CosmeticService.GrantPlate(player, key)
 		return { ok = true }
+	end)
+
+	Svc.Net.Handle("FinishTutorial", function(player)
+		local data = Svc.Data.Get(player)
+		if data and not data.TutorialDone then
+			data.TutorialDone = true
+			Svc.Economy.AddCoins(player, 500)
+			Svc.Data.MarkDirty(player)
+			return { ok = true, msg = "Tutorial complete! +$500" }
+		end
+		return { ok = false }
 	end)
 
 	-- treadmill skins (Gems), shown on your plot by SpeedService

@@ -189,7 +189,7 @@ local function playShrink(model, shooter, variantName, isCopy)
 		conn:Disconnect()
 		value:Destroy()
 		local pos = targetPos()
-		playSoundAt(pos, GameConfig.Sounds.Pop, 0.8)
+		playSoundAt(pos, GameConfig.Sounds.Shrink, 0.8)
 		burst(pos, color, 40, 1)
 		if isCopy or shooter == player then
 			subject:Destroy() -- server removes the real one; hide locally right away
@@ -357,20 +357,20 @@ local function onCarryFX(kind, p)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if kind == "Caught" then
 		shakeCamera(0.6, 6)
-		playSoundAt(root and root.Position or Vector3.zero, GameConfig.Sounds.TooBig, 0.8)
+		playSoundAt(root and root.Position or Vector3.zero, GameConfig.Sounds.Caught, 0.8)
 		if root then
 			-- knocked back toward the base (client owns its own character physics)
 			root.AssemblyLinearVelocity = Vector3.new(0, 45, -55)
 		end
 	elseif kind == "Placed" then
 		if root then
-			playSoundAt(root.Position, GameConfig.Sounds.Pop, 0.5)
+			playSoundAt(root.Position, GameConfig.Sounds.Place, 0.6)
 		end
 	elseif kind == "Deposit" then
 		if root then
 			burst(root.Position, Color3.fromRGB(255, 220, 60), 60, 1.6)
 			burst(root.Position, Color3.fromRGB(120, 255, 140), 40, 1.2)
-			playSoundAt(root.Position, GameConfig.Sounds.Reward, 0.7)
+			playSoundAt(root.Position, GameConfig.Sounds.Coin, 0.7)
 		end
 	end
 end
@@ -383,11 +383,12 @@ local function onBoxOpened(pedestal, owner, itemName, variantName, income)
 		local pos = base.Position + Vector3.new(0, 4, 0)
 		burst(pos, variant.Color or Color3.fromRGB(255, 220, 80), 70, 1.6)
 		burst(pos, Color3.fromRGB(255, 255, 255), 30, 1)
-		playSoundAt(pos, GameConfig.Sounds.Pop, 0.9)
+		playSoundAt(pos, GameConfig.Sounds.Open, 0.9)
 	end
 	if owner == player then
 		HUD.Splash(itemName .. "  +" .. Format.Coins(income) .. "/s", variant.Color or Color3.fromRGB(120, 255, 140))
-		playSoundAt(base and base.Position or Vector3.zero, GameConfig.Sounds.Reward, 0.6)
+		local rare = (variant.Order or 0) >= 3
+		playSoundAt(base and base.Position or Vector3.zero, rare and GameConfig.Sounds.Rare or GameConfig.Sounds.Reward, 0.6)
 	end
 end
 
@@ -504,6 +505,44 @@ local function guideArrows()
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local carrying = data and data.Carry and data.Carry.Count > 0
 		local target
+		local tutorial = data and data.TutorialDone == false
+		-- tutorial: no box yet → arrows to the nearest crate (yellow); carrying → home (red)
+		if tutorial and root and not carrying then
+			local best, bestD = nil, math.huge
+			for _, box in ipairs(CollectionService:GetTagged("Shrinkable")) do
+				if box:IsA("Model") and box.Name == "MysteryBox" and box.Parent and not box:GetAttribute("Taken") then
+					local reserved = box:GetAttribute("ReservedFor")
+					if not reserved or reserved == player.UserId then
+						local d = (box:GetPivot().Position - root.Position).Magnitude
+						if d < bestD then
+							best, bestD = box, d
+						end
+					end
+				end
+			end
+			target = best and best:GetPivot().Position
+			if best then
+				HUD.SetTutorial(bestD < 40 and "Step 2/3: Hold your Shrink Ray on the crate to shrink it and grab it!" or "Step 1/3: Follow the yellow arrows to a crate!")
+			else
+				HUD.SetTutorial("Step 1/3: Head into the zone through the gate to find crates!")
+			end
+		elseif tutorial and carrying then
+			HUD.SetTutorial(data.Carry.AtPlot and "Step 3/3: Press F (or Place) to put it down in your plot!" or "Step 3/3: Follow the red arrows back to YOUR plot!")
+			Effects._tutorialCarried = true
+		elseif tutorial and Effects._tutorialCarried and not carrying and not Effects._tutorialSent then
+			Effects._tutorialSent = true
+			HUD.SetTutorial(nil)
+			HUD.Result(State.Action("FinishTutorial"))
+		elseif not tutorial then
+			HUD.SetTutorial(nil)
+		end
+		local arrowColor = (tutorial and not carrying) and Color3.fromRGB(255, 215, 40) or Color3.fromRGB(255, 50, 50)
+		if arrowParts[1][1].Color ~= arrowColor then
+			for i = 1, ARROW_COUNT do
+				arrowParts[i][1].Color = arrowColor
+				arrowParts[i][2].Color = arrowColor
+			end
+		end
 		if carrying and root and data.PlotId then
 			local map = workspace:FindFirstChild("ShrinkItMap")
 			local plot = map and map:FindFirstChild("Plots") and map.Plots:FindFirstChild("Plot_" .. data.PlotId)

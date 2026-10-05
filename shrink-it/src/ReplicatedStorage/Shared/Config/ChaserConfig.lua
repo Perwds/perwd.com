@@ -30,15 +30,22 @@ ChaserConfig.RageSpeed = 8
 ChaserConfig.MaxRage = 5
 ChaserConfig.RageCooldown = 90
 ChaserConfig.RunAnimation = "rbxassetid://913376220" -- Roblox default R15 run
-ChaserConfig.ModelScale = 1.8 -- your asset-pack chasers (and their sleeping copies) are scaled up by this
+ChaserConfig.ModelScale = 1.8
+-- each zone's chaser walks around its zone (true) instead of sleeping in a corner (false)
+ChaserConfig.Patrol = true -- your asset-pack chasers (and their sleeping copies) are scaled up by this
 
 -- Chasers don't talk, they make SOUNDS. Built-in Roblox sounds by default; 🔧 paste your own
 -- "rbxassetid://..." (growls, grunts...) to change them.
+-- Uses the Shrink It! sound pack (Config/SoundIds) once uploaded.
+local SoundIds = require(script.Parent:WaitForChild("SoundIds"))
+local function pick(custom, fallback)
+	return (custom and custom ~= "") and custom or fallback
+end
 ChaserConfig.Sounds = {
-	Wake = "rbxasset://sounds/action_get_up.mp3", -- woken up / starts chasing
-	Footsteps = "rbxasset://sounds/action_footsteps_plastic.mp3", -- loops while it runs
-	Catch = "rbxasset://sounds/hit.wav", -- got you
-	Rage = "rbxasset://sounds/bass.wav", -- gets angrier
+	Wake = pick(SoundIds.Alarm, "rbxasset://sounds/action_get_up.mp3"), -- woken up / starts chasing
+	Footsteps = pick(SoundIds.Footstep, "rbxasset://sounds/action_footsteps_plastic.mp3"), -- loops while it runs
+	Catch = pick(SoundIds.Caught, "rbxasset://sounds/hit.wav"), -- got you
+	Rage = pick(SoundIds.Boss, "rbxasset://sounds/bass.wav"), -- gets angrier
 	Volume = 0.8,
 }
 ChaserConfig.RecommendedSpeedMargin = 1.1 -- the sign next to each sleeper shows chaser speed x this

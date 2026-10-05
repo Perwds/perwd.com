@@ -95,9 +95,11 @@ function HUD.Notify(text, kind)
 		end
 	end)
 	if kind == "error" then
-		UIKit.PlaySound("TooBig", 0.25)
+		UIKit.PlaySound("Error", 0.3)
 	elseif kind == "success" then
-		UIKit.PlaySound("Reward", 0.3)
+		UIKit.PlaySound("Coin", 0.35)
+	else
+		UIKit.PlaySound("Notify", 0.3)
 	end
 end
 
@@ -131,7 +133,7 @@ local function nextAnnouncement()
 	announceFrame.Visible = true
 	announceFrame.Position = UDim2.new(0.5, 0, 0, -140)
 	UIKit.Tween(announceFrame, 0.45, { Position = UDim2.new(0.5, 0, 0, 150) }, Enum.EasingStyle.Back)
-	UIKit.PlaySound("Reward", 0.35)
+	UIKit.PlaySound("Rare", 0.4)
 	task.delay(4.5, function()
 		local t = UIKit.Tween(announceFrame, 0.3, { Position = UDim2.new(0.5, 0, 0, -140) }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
 		t.Completed:Wait()
@@ -143,6 +145,27 @@ end
 function HUD.Announce(text, color)
 	table.insert(announceQueue, { Text = text, Color = color })
 	nextAnnouncement()
+end
+
+-- ── tutorial card (top middle) ───────────────────────────────────────────
+local tutorialCard, tutorialLabel
+function HUD.SetTutorial(text)
+	if not screen then
+		return
+	end
+	if not tutorialCard then
+		tutorialCard = UIKit.Create("Frame", { Name = "Tutorial", BackgroundColor3 = Color3.new(1, 1, 1), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 76), Size = UDim2.fromOffset(620, 54), Visible = false, ZIndex = 90, Parent = screen })
+		UIKit.AutoScale(tutorialCard)
+		UIKit.Corner(tutorialCard, 12)
+		UIKit.Stroke(tutorialCard, 5, Color3.fromRGB(120, 80, 0), true)
+		UIKit.Gradient(tutorialCard, { Color3.fromRGB(255, 235, 90), Color3.fromRGB(255, 180, 30) }, 90)
+		tutorialLabel = UIKit.Label({ Text = "", Size = UDim2.new(1, -24, 1, -14), Position = UDim2.fromOffset(12, 7), StrokeThickness = 3, ZIndex = 91, Parent = tutorialCard })
+	end
+	if text and text ~= tutorialLabel.Text then
+		tutorialLabel.Text = text
+		UIKit.Pop(tutorialCard, 1.08)
+	end
+	tutorialCard.Visible = text ~= nil
 end
 
 -- ── confetti (after a Robux purchase) ─────────────────────────────────
@@ -173,7 +196,7 @@ function HUD.Confetti()
 	local puff = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.45), Size = UDim2.fromOffset(40, 40), ZIndex = 199, Parent = layer })
 	UIKit.Corner(puff, UDim.new(1, 0))
 	UIKit.Tween(puff, 0.6, { Size = UDim2.fromOffset(420, 420), BackgroundTransparency = 1 })
-	UIKit.PlaySound("Reward", 0.6)
+	UIKit.PlaySound("Purchase", 0.7)
 	local t0 = os.clock()
 	local conn
 	conn = game:GetService("RunService").RenderStepped:Connect(function(dt)
@@ -248,6 +271,7 @@ local function onPopup(kind, p)
 	elseif kind == "Offline" then
 		popup("Welcome Back!", "😴", { "+" .. Format.Coins(p.Amount), "Earned while offline for " .. Format.Time(p.Seconds) }, UIKit.Colors.Blue)
 	elseif kind == "Rebirth" then
+		UIKit.PlaySound("LevelUp", 0.6)
 		popup("REBIRTH " .. p.Rebirths .. "!", "♻️", { "x" .. string.format("%.1f", p.Multiplier) .. " income forever!", "+" .. p.Gems .. " Gems  •  +" .. p.Tokens .. " Rebirth Tokens" }, UIKit.Colors.Green)
 	elseif kind == "Crate" then
 		popup("Royal Crate!", "👑", { "You got a " .. p.Name .. "!", "It's in your pocket — press Equip Best!" }, UIKit.Colors.Yellow)
@@ -878,11 +902,67 @@ function HUD.Init()
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(1, 0.5),
 		Position = UDim2.new(1, -14, 0.5, 10),
-		Size = UDim2.fromOffset(230, 470),
+		Size = UDim2.fromOffset(230, 700),
 		Parent = screen,
 	})
 	UIKit.AutoScale(right)
 	UIKit.Create("UIListLayout", { Padding = UDim.new(0, 12), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = right })
+	local MonetizationConfig = require(Shared.Config.MonetizationConfig)
+	local Prices = require(Modules.Prices)
+	-- STARTER PACK badge (round, glowing) + its popup; disappears once bought
+	local starter = UIKit.Create("TextButton", { Name = "StarterPack", Text = "", AutoButtonColor = false, BackgroundTransparency = 1, Size = UDim2.fromOffset(190, 196), LayoutOrder = -1, Parent = right })
+	local disc = UIKit.Create("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Size = UDim2.fromOffset(120, 120), Parent = starter })
+	UIKit.Corner(disc, UDim.new(1, 0))
+	UIKit.Stroke(disc, 5, Color3.fromRGB(20, 50, 120), true)
+	UIKit.Gradient(disc, { Color3.fromRGB(120, 220, 255), Color3.fromRGB(30, 110, 230) }, 90)
+	local discGlow = UIKit.Create("Frame", { BackgroundColor3 = Color3.fromRGB(150, 230, 255), BackgroundTransparency = 0.6, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.25, 1.25), ZIndex = 0, Parent = disc })
+	UIKit.Corner(discGlow, UDim.new(1, 0))
+	UIKit.Icon({ Icon = { Emoji = "🐱" }, Size = UDim2.fromScale(0.62, 0.62), Position = UDim2.fromScale(0.19, 0.06), ZIndex = 3, Parent = disc })
+	UIKit.Icon({ Icon = { Emoji = "🧪" }, Size = UDim2.fromScale(0.36, 0.36), Position = UDim2.fromScale(0.04, 0.58), ZIndex = 4, Parent = disc })
+	UIKit.Icon({ Icon = { Emoji = "⚡" }, Size = UDim2.fromScale(0.36, 0.36), Position = UDim2.fromScale(0.6, 0.58), ZIndex = 4, Parent = disc })
+	UIKit.Label({ Text = "STARTER PACK!", Size = UDim2.new(1, 20, 0, 36), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 120), StrokeThickness = 4, ZIndex = 4, Parent = starter })
+	local starterPrice = UIKit.Label({ Text = "", RichText = true, Size = UDim2.new(1, 0, 0, 34), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 156), StrokeThickness = 4, ZIndex = 4, Parent = starter })
+	UIKit.Bouncy(starter, 1.08)
+	local starterPanel = UIKit.Panel({ Parent = screen, Title = "Starter Pack", Emoji = "🎒", Size = UDim2.fromOffset(640, 470) })
+	local spContent = starterPanel.Content
+	UIKit.Label({ Text = "One-time deal for new players!", Size = UDim2.new(1, 0, 0, 34), StrokeThickness = 3, Parent = spContent })
+	local lines = {
+		{ "💵", "1 hour of coins" }, { "💎", "300 Gems" }, { "🍀", "2x Luck potion (30 min)" },
+		{ "💰", "2x Income potion (30 min)" }, { "🧸", "Golden Huge Teddy (exclusive)" },
+	}
+	for i, l in ipairs(lines) do
+		local row = UIKit.Create("Frame", { BackgroundColor3 = UIKit.PanelCard, Size = UDim2.new(1, 0, 0, 48), Position = UDim2.fromOffset(0, 40 + (i - 1) * 54), ZIndex = 52, Parent = spContent })
+		UIKit.Corner(row, 10)
+		UIKit.Icon({ Icon = { Emoji = l[1] }, Size = UDim2.fromOffset(40, 40), Position = UDim2.fromOffset(8, 4), ZIndex = 53, Parent = row })
+		UIKit.Label({ Text = l[2], Size = UDim2.new(1, -70, 1, -12), Position = UDim2.fromOffset(60, 6), TextXAlignment = Enum.TextXAlignment.Left, StrokeThickness = 2.5, ZIndex = 53, Parent = row })
+	end
+	local _, buyLabel = UIKit.Button({ Text = "", Colors = UIKit.Colors.Green, Size = UDim2.fromOffset(300, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), CornerRadius = 12, ZIndex = 55, Parent = spContent, OnClick = function()
+		HUD.Result(State.Action("PromptProduct", "StarterPack"))
+	end })
+	local function setStarterPrice()
+		local p = MonetizationConfig.Products.StarterPack
+		local price = tostring(Prices.Get(Enum.InfoType.Product, p.Id, p.PriceLabel)):gsub("^R%$%s*", "")
+		starterPrice.Text = 'ONLY <font color="#7CFF5A">' .. price .. " R$</font>"
+		buyLabel.Text = "Buy for " .. price .. " R$"
+	end
+	setStarterPrice()
+	Prices.OnUpdated(setStarterPrice)
+	starter.Activated:Connect(function()
+		UIKit.PlaySound("Click", 0.4)
+		starterPanel.Open()
+	end)
+	task.spawn(function()
+		while starter.Parent do
+			local bought = State.Data and State.Data.StarterPackBought
+			starter.Visible = not bought
+			if bought and starterPanel.IsOpen() then
+				starterPanel.Close()
+			end
+			discGlow.Size = UDim2.fromScale(1.2 + math.sin(os.clock() * 3) * 0.06, 1.2 + math.sin(os.clock() * 3) * 0.06)
+			task.wait(0.1)
+		end
+	end)
+
 	local gift = UIKit.Create("TextButton", { Name = "FreeRewards", Text = "", AutoButtonColor = false, BackgroundTransparency = 1, Size = UDim2.fromOffset(150, 132), LayoutOrder = 0, Parent = right })
 	local giftIcon = UIKit.Create("Frame", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Size = UDim2.fromOffset(92, 92), Parent = gift })
 	UIKit.Icon({ Icon = { Emoji = "🎁" }, Size = UDim2.fromScale(1, 1), ZIndex = 2, Parent = giftIcon })
@@ -901,8 +981,6 @@ function HUD.Init()
 			task.wait(0.6)
 		end
 	end)
-	local MonetizationConfig = require(Shared.Config.MonetizationConfig)
-	local Prices = require(Modules.Prices)
 	local offers = {}
 	for i, key in ipairs({ "DoubleSpeed", "DoubleCoins", "SpeedBoots" }) do
 		local pass = MonetizationConfig.GamePasses[key]
@@ -929,12 +1007,22 @@ function HUD.Init()
 			offers[key] = card
 		end
 	end
+	-- only ONE offer card at a time (cleaner screen): rotates through the passes you don't own yet
+	local OFFER_ORDER = { "DoubleSpeed", "DoubleCoins", "SpeedBoots" }
 	task.spawn(function()
+		local index = 0
 		while right.Parent do
-			for key, card in pairs(offers) do
-				card.Visible = not State.HasPass(key)
+			local open = {}
+			for _, key in ipairs(OFFER_ORDER) do
+				if offers[key] and not State.HasPass(key) then
+					table.insert(open, key)
+				end
 			end
-			task.wait(2)
+			index = (#open > 0) and (index % #open + 1) or 0
+			for key, card in pairs(offers) do
+				card.Visible = open[index] == key
+			end
+			task.wait(8)
 		end
 	end)
 

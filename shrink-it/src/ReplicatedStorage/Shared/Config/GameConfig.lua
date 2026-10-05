@@ -8,7 +8,7 @@
 local GameConfig = {}
 
 GameConfig.GameName = "Shrink It!"
-GameConfig.Version = "v19.2 (lime studded checker ground)" -- shown bottom-right in game so you can tell which build you are running
+GameConfig.Version = "v20 (sounds, tutorial, starter pack, patrols)" -- shown bottom-right in game so you can tell which build you are running
 GameConfig.MapVersion = 18 -- bump when the generated map layout changes; older generated maps get rebuilt
 
 -- ── DataStore / saving ────────────────────────────────────────────────
@@ -219,8 +219,11 @@ GameConfig.LeaderboardRefresh = 120
 GameConfig.LeaderboardSize = 10
 
 -- ── Sounds ───────────────────────────────────────────────────────────
--- Sound effects use Roblox's BUILT-IN sounds (work right away). 🔧 REPLACE with your own ids if you like.
-GameConfig.Sounds = {
+-- Shrink It! has its OWN sound pack (assets/Sounds/*.ogg, made by tools/sounds/make_sounds.py).
+-- Upload them once (Studio → Asset Manager → Bulk Import, or tools/sounds/upload.py with an
+-- Open Cloud key) and paste the ids into CustomSounds. Any name left "" uses the built-in fallback.
+GameConfig.CustomSounds = require(script.Parent:WaitForChild("SoundIds"))
+local BUILTIN_SOUNDS = {
 	Pop = "rbxasset://sounds/electronicpingshort.wav",
 	Charge = "rbxasset://sounds/swoosh.wav",
 	Click = "rbxasset://sounds/button.wav",
@@ -235,7 +238,21 @@ GameConfig.Sounds = {
 	Open = "rbxasset://sounds/electronicpingshort.wav",
 	Footstep = "rbxasset://sounds/action_footsteps_plastic.mp3",
 	Alarm = "rbxasset://sounds/electronicpingshort.wav",
+	Coin = "rbxasset://sounds/electronicpingshort.wav",
+	Purchase = "rbxasset://sounds/victory.wav",
+	Place = "rbxasset://sounds/clickfast.wav",
+	Rare = "rbxasset://sounds/victory.wav",
+	Shrink = "rbxasset://sounds/swoosh.wav",
+	Error = "rbxasset://sounds/uuhhh.mp3",
+	Notify = "rbxasset://sounds/electronicpingshort.wav",
+	LevelUp = "rbxasset://sounds/victory.wav",
+	Boss = "rbxasset://sounds/collide.wav",
 }
+GameConfig.Sounds = {}
+for name, fallback in pairs(BUILTIN_SOUNDS) do
+	local id = GameConfig.CustomSounds[name]
+	GameConfig.Sounds[name] = (id and id ~= "") and id or fallback
+end
 -- Ambient (environment) loops per area. Roblox's own ambience sounds are in the Creator Store
 -- (Toolbox → Audio, creator "Roblox": search "birds", "wind", "city", "ocean", ...). 🔧 Paste ids here.
 -- Empty = no loop for that area. "Base" plays in the safe zone.

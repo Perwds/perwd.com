@@ -98,6 +98,15 @@ MonetizationConfig.Products = {
 	PlateCustom = { Id = 0, Name = "Custom Color Name Plate", Emoji = "", PriceLabel = "R$ 149", Handler = "Nameplate", Plate = "Custom", Hidden = true }, -- 🔧 REPLACE Id
 	PlateRave = { Id = 0, Name = "Rave Name Plate", Emoji = "", PriceLabel = "R$ 249", Handler = "Nameplate", Plate = "Rave", Hidden = true }, -- 🔧 REPLACE Id
 
+	-- STARTER PACK: one-time, cheap, shown as the round badge on the right of the screen
+	StarterPack = { Id = 0, Name = "Starter Pack", Emoji = "🎒", PriceLabel = "R$ 9", Handler = "StarterPack", Hidden = true, OneTime = true, Grant = { Type = "Bundle", Rewards = {
+		{ Type = "CoinsMinutes", Minutes = 60, Floor = 10_000 },
+		{ Type = "Gems", Amount = 300 },
+		{ Type = "LuckPotion", Minutes = 30 },
+		{ Type = "IncomePotion", Minutes = 30 },
+		{ Type = "Object", Id = "HugeTeddy", Variant = "Golden" },
+	} } }, -- 🔧 REPLACE Id
+
 	-- Gift versions of gamepasses (a gamepass can't be bought for someone else, so these Developer
 	-- Products unlock the pass for whoever receives the gift). Hidden from the Shop list.
 	GiftPass_DoubleCoins = { Id = 0, Name = "Gift: 2x Coins", Emoji = "", PriceLabel = "R$ 199", Handler = "GiftPass", Pass = "DoubleCoins", Hidden = true }, -- 🔧 REPLACE Id

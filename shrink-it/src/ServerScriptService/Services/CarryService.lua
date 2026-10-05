@@ -28,6 +28,9 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local GameConfig = require(Shared.Config.GameConfig)
 local ChaserConfig = require(Shared.Config.ChaserConfig)
 local Formulas = require(Shared.Formulas)
+local Format = require(Shared.Format)
+local ObjectConfig = require(Shared.Config.ObjectConfig)
+local RarityConfig = require(Shared.Config.RarityConfig)
 local Remotes = require(Shared.Remotes)
 local ModelFactory = require(ServerScriptService.Services.ModelFactory)
 
@@ -157,6 +160,56 @@ function CarryService.SpeedFactor(player)
 	return math.max(GameConfig.CarrySlowMin, 1 - slow)
 end
 
+-- Billboard over the thing in your hand: name, rarity, income (like Steal a Brainrot).
+local function heldBillboard(handle, top, height)
+	local old = handle:FindFirstChild("HeldInfo")
+	if old then
+		old:Destroy()
+	end
+	local rarityName, color, line3
+	local variant = RarityConfig.GetVariant(top.Kind == "Item" and top.V or top.Box.V)
+	if top.Kind == "Item" then
+		local def = ObjectConfig.Get(top.Id)
+		rarityName = def and def.Rarity or "Common"
+		line3 = "$" .. Format.Coins(Formulas.ItemBaseIncome(top)) .. "/s"
+	else
+		rarityName = Formulas.BoxRarity(top.Box)
+		line3 = "Bring it home to open!"
+	end
+	local rarity = RarityConfig.GetRarity(rarityName)
+	color = rarity.Color or Color3.new(1, 1, 1)
+	if rarityName == "Secret" then
+		color = Color3.fromRGB(255, 255, 255)
+	end
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "HeldInfo"
+	gui.Size = UDim2.fromOffset(220, 78)
+	gui.StudsOffsetWorldSpace = Vector3.new(0, height + 1.5, 0)
+	gui.AlwaysOnTop = true
+	gui.MaxDistance = 120
+	gui.LightInfluence = 0
+	gui.Parent = handle
+	local function line(text, y, h, textColor, font)
+		local l = Instance.new("TextLabel")
+		l.BackgroundTransparency = 1
+		l.Size = UDim2.new(1, 0, h, 0)
+		l.Position = UDim2.fromScale(0, y)
+		l.Font = font or Enum.Font.FredokaOne
+		l.TextScaled = true
+		l.Text = text
+		l.TextColor3 = textColor
+		l.Parent = gui
+		local st = Instance.new("UIStroke")
+		st.Thickness = 2.5
+		st.Color = Color3.fromRGB(20, 16, 30)
+		st.Parent = l
+		return l
+	end
+	line(entryName(top), 0, 0.38, Color3.new(1, 1, 1))
+	line(variant.Prefix .. rarityName, 0.38, 0.3, color, Enum.Font.GothamBlack)
+	line(line3, 0.68, 0.32, Color3.fromRGB(120, 255, 110))
+end
+
 -- equip = put it in your hand right away (picking an object up in your base)
 local function restack(player, c, equip)
 	task.defer(function()
@@ -209,6 +262,7 @@ local function restack(player, c, equip)
 			model:PivotTo(handle.CFrame * CFrame.new(0, size.Y / 2 - 0.8, -(size.Z / 2 + 0.5)))
 			weldAll(model, handle)
 			model.Parent = tool
+			pcall(heldBillboard, handle, top, size.Y)
 		elseif not ok then
 			warn("[CarryService] can't show carried " .. tostring(top.Id or top.Kind) .. ": " .. tostring(model))
 		end
@@ -598,6 +652,17 @@ local function wakeSleeper(tier)
 	end
 	sl.Awake = true
 	sl.IdleSince = nil
+	if sl.Patrol then
+		-- the patroller hands over to the real chaser: park it out of sight until the chase is over
+		local root = sl.Model:FindFirstChild("HumanoidRootPart") or sl.Model.PrimaryPart
+		if root then
+			sl.Ground = Vector3.new(root.Position.X, sl.Ground.Y, root.Position.Z)
+			root.Anchored = true
+		end
+		sl.Model:SetAttribute("ChaseEnabled", false)
+		sl.Model:PivotTo(sl.Model:GetPivot() + Vector3.new(0, -400, 0))
+		return
+	end
 	sl.Model:SetAttribute("Sleeping", false) -- stops the snoring / Zzz
 	setShown(sl.Model, false) -- the running chaser takes its place
 end
@@ -608,6 +673,17 @@ local function sleepAgain(tier)
 		return
 	end
 	sl.Awake = false
+	if sl.Patrol then
+		-- back on patrol where the chase started
+		local _, size = sl.Model:GetBoundingBox()
+		sl.Model:PivotTo(CFrame.new(sl.Ground + Vector3.new(0, size.Y / 2, 0)))
+		local root = sl.Model:FindFirstChild("HumanoidRootPart") or sl.Model.PrimaryPart
+		if root then
+			root.Anchored = false
+		end
+		sl.NextMoveAt = os.clock() + 1
+		return
+	end
 	setShown(sl.Model, true)
 	sl.Model:SetAttribute("Sleeping", true)
 end
@@ -1023,6 +1099,94 @@ speedSign = function(tier, ground, side)
 end
 
 -- A sleeping copy of each zone's owner so you can see who you're about to rob.
+-- a patroller walks to random spots in its zone (steered with an invisible "waypoint" dummy)
+local function patrolMarker(sl)
+	if sl.Marker and sl.Marker.Parent then
+		return sl.Marker
+	end
+	local marker = Instance.new("Model")
+	marker.Name = "PatrolPoint"
+	local p = Instance.new("Part")
+	p.Name = "HumanoidRootPart"
+	p.Size = Vector3.new(1, 1, 1)
+	p.Transparency = 1
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanQuery = false
+	p.CanTouch = false
+	p.Parent = marker
+	local h = Instance.new("Humanoid")
+	h.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+	h.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
+	h.Parent = marker
+	marker.PrimaryPart = p
+	marker.Parent = Svc.Map.ChaserFolder
+	sl.Marker = marker
+	return marker
+end
+
+local function spawnPatroller(tier, area, ground)
+	local ok, model, hum, cfg = pcall(buildChaser, tier)
+	if not ok or not model then
+		return false
+	end
+	model.Name = cfg.Name .. " (patrolling)"
+	local _, size = model:GetBoundingBox()
+	model:PivotTo(CFrame.new(ground + Vector3.new(0, size.Y / 2, 0)))
+	model:SetAttribute("HomePosition", ground)
+	model:SetAttribute("AttackRange", 2)
+	model.Parent = Svc.Map.ChaserFolder
+	hum.WalkSpeed = math.clamp(cfg.Speed * 0.3, 10, 20)
+	pcall(function()
+		local root = model:FindFirstChild("HumanoidRootPart")
+		root:SetNetworkOwner(nil)
+	end)
+	local f = area.Floor
+	sleepers[tier] = {
+		Model = model, Ground = ground, Awake = false, Patrol = true, Cfg = cfg,
+		MinX = f.Position.X - f.Size.X / 2 + 30, MaxX = f.Position.X + f.Size.X / 2 - 30,
+		MinZ = f.Position.Z - f.Size.Z / 2 + 25, MaxZ = f.Position.Z + f.Size.Z / 2 - 25,
+		Y = f.Position.Y + f.Size.Y / 2, NextMoveAt = os.clock() + math.random() * 3,
+	}
+	chaserSound(model, "Footsteps", true)
+	return true
+end
+
+local function patrolStep(sl)
+	if sl.Awake or not sl.Model.Parent then
+		return
+	end
+	local root = sl.Model:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return
+	end
+	sl.Ground = Vector3.new(root.Position.X, sl.Y, root.Position.Z)
+	local marker = patrolMarker(sl)
+	local override = sl.Model:FindFirstChild("TargetOverride")
+	local now = os.clock()
+	local arrived = sl.Goal and (Vector3.new(root.Position.X, 0, root.Position.Z) - Vector3.new(sl.Goal.X, 0, sl.Goal.Z)).Magnitude < 7
+	if arrived and not sl.Resting then
+		-- look around for a moment
+		sl.Resting = true
+		sl.NextMoveAt = now + 1.5 + math.random() * 2.5
+		sl.Model:SetAttribute("ChaseEnabled", false)
+	elseif now >= (sl.NextMoveAt or 0) and (sl.Resting or not sl.Goal or now - (sl.GoalAt or 0) > 14) then
+		sl.Resting = false
+		sl.Goal = Vector3.new(math.random() * (sl.MaxX - sl.MinX) + sl.MinX, sl.Y + 2, math.random() * (sl.MaxZ - sl.MinZ) + sl.MinZ)
+		sl.GoalAt = now
+		marker:PivotTo(CFrame.new(sl.Goal))
+		if override then
+			override.Value = marker
+		end
+		sl.Model:SetAttribute("ChaseSpeed", math.clamp(sl.Cfg.Speed * 0.3, 10, 20))
+		sl.Model:SetAttribute("ChaseEnabled", true)
+	end
+	local steps = root:FindFirstChild("ChaserFootsteps")
+	if steps then
+		steps.Playing = (root.AssemblyLinearVelocity * Vector3.new(1, 0, 1)).Magnitude > 3
+	end
+end
+
 local function spawnSleepers()
 	local folder = ServerStorage:FindFirstChild("SleepingChasers")
 	for tier, area in pairs(Svc.Map.Areas) do
@@ -1030,7 +1194,9 @@ local function spawnSleepers()
 		local side = (tier % 2 == 0) and 1 or -1
 		local ground = Vector3.new(side * (f.Size.X / 2 - 40), f.Position.Y + f.Size.Y / 2, f.Position.Z)
 		local template = folder and folder:FindFirstChild("Tier" .. tier)
-		if template then
+		if ChaserConfig.Patrol ~= false and spawnPatroller(tier, area, ground) then
+			speedSign(tier, ground, side)
+		elseif template then
 			-- your sleeping character (breathing, nodding, snoring); standing on the ground, facing the middle
 			local model = template:Clone()
 			pcall(function()
@@ -1082,6 +1248,20 @@ end
 
 function CarryService.Start()
 	task.spawn(spawnSleepers)
+	-- patrolling chasers pick a new spot to walk to every few seconds
+	task.spawn(function()
+		while true do
+			task.wait(0.5)
+			for _, sl in pairs(sleepers) do
+				if sl.Patrol then
+					local ok, err = pcall(patrolStep, sl)
+					if not ok then
+						warn("[CarryService] patrol: " .. tostring(err))
+					end
+				end
+			end
+		end
+	end)
 	Svc.Net.Handle("DropCarry", function(player)
 		if not CarryService.IsCarrying(player) then
 			return { ok = false }

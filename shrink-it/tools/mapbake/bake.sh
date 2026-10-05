@@ -10,7 +10,7 @@ python3 - "$HERE" "$P" <<'PY'
 import sys
 here, p = sys.argv[1], sys.argv[2]
 body = ''
-for k in ['GameConfig', 'TierConfig', 'ObjectConfig', 'RarityConfig', 'ChaserConfig']:
+for k in ['SoundIds', 'GameConfig', 'TierConfig', 'ObjectConfig', 'RarityConfig', 'ChaserConfig']:
     body += 'MODULES["%s"] = function(script)\n%s\nend\n\n' % (k, open(p + '/src/ReplicatedStorage/Shared/Config/%s.lua' % k).read())
 for k in ['MapDecor', 'MapService']:
     body += 'MODULES["%s"] = function(script)\n%s\nend\n\n' % (k, open(p + '/src/ServerScriptService/Services/%s.lua' % k).read())
@@ -18,7 +18,7 @@ run = '''
 local RS = game:GetService("ReplicatedStorage")
 local Shared = folderUnder(RS, "Shared")
 local Config = folderUnder(Shared, "Config")
-for _, n in ipairs({"GameConfig","TierConfig","ObjectConfig","RarityConfig","ChaserConfig"}) do mountModule(Config, n) end
+for _, n in ipairs({"SoundIds","GameConfig","TierConfig","ObjectConfig","RarityConfig","ChaserConfig"}) do mountModule(Config, n) end
 local Services = folderUnder(game:GetService("ServerScriptService"), "Services")
 mountModule(Services, "MapDecor")
 local MapServiceMod = mountModule(Services, "MapService")

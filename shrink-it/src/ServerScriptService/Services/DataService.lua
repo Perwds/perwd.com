@@ -57,6 +57,8 @@ local TEMPLATE = {
 	EquippedPlate = "Classic",
 	PlateColor = { 255, 120, 40 }, -- Custom Color plate (R, G, B)
 	GiftedPasses = {}, -- [passKey] = true (gamepasses someone gifted you)
+	StarterPackBought = false,
+	TutorialDone = false, -- first-run tutorial (arrows to a crate, then home)
 	TreadmillSkins = {}, -- [skinKey] = true (TreadmillConfig)
 	EquippedTreadmill = "", -- "" = the look for your Treadmill upgrade tier
 	RedeemedCodes = {},
