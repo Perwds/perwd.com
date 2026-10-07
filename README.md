@@ -177,11 +177,30 @@ Use `./gradlew build -PwithoutPlugin` to build without the plugin if `repo.paper
 | `orange-hooks` | Dependency-free runtime hooks that patched game code calls |
 | `examples/example-mod` | A sample mod |
 
+## Tested on real servers
+
+Every push runs [`ci/server_test.py`](ci/server_test.py) in GitHub Actions against the newest
+**Paper on Java 21** (1.21.x), **Paper on Java 25** (26.x) and **Purpur on Java 25**. It boots
+each server through `orange.jar` twice and checks that:
+
+- the server starts, the branding patch applies to the real `MinecraftServer`, and the plugin
+  enables;
+- `/orange status`, `/orange ping` and `/orange pregen` work (pregen generates 441 chunks);
+- the optimizer tunes the configs the server generated, and lists any key that doesn't exist;
+- compact object headers are on with Java 25;
+- nothing logs an Orange error.
+
+It also prints the real configs, `javap` signatures and Vineflower-decompiled source of
+optimization candidates, so patches are written against the code the server actually runs.
+
 ## Roadmap
 
-- **Vanilla-exact code optimizations:** Lithium-style patches through the agent (faster
-  collisions, hoppers, block entity ticking, POI lookups, entity tracking) that produce the
-  same results as vanilla, gated per Minecraft version and checked against vanilla behaviour.
+- **Vanilla-exact code optimizations, only where they pay off.** Reading the decompiled
+  Paper 26.2 source showed it already contains the main Lithium-style optimizations for
+  explosions (block-resistance caches, precomputed rays), hoppers (cached slots, full/empty
+  shortcuts, event skipping) and furnaces (idle furnaces do almost no work). Orange only adds
+  a patch where profiling a real server shows a hot spot Paper hasn't covered, and each one has
+  to pass the server test above.
 - **Orange server (Paper fork):** built-in source patches (faster entity tracking, async
   pathfinding and more) using Paper's `paperweight` toolchain, with this launcher and plugin as
   its front end.
