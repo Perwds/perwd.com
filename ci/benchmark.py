@@ -26,17 +26,57 @@ MOBS = ["minecraft:cow", "minecraft:cow", "minecraft:sheep", "minecraft:chicken"
 
 def modrinth_jar(project, game_version, dest_dir):
     """Newest Paper/Bukkit build of a Modrinth project, preferring one tagged for this MC version."""
-    base = f"https://api.modrinth.com/v2/project/{project}/version"
-    loaders = urllib.parse.quote(json.dumps(["paper", "bukkit", "spigot"]))
-    for query in (f"?loaders={loaders}&game_versions={urllib.parse.quote(json.dumps([game_version]))}",
-                  f"?loaders={loaders}"):
-        versions = get_json(base + query)
-        if versions:
-            file = next((f for f in versions[0]["files"] if f.get("primary")), versions[0]["files"][0])
-            print(f"{project}: {versions[0]['version_number']} ({file['filename']})")
-            download(file["url"], os.path.join(dest_dir, file["filename"]))
-            return file["filename"]
-    raise SystemExit(f"no Paper build of {project} on Modrinth")
+    base = f"https://api.modrinth.com/v2/project/{project}"
+    try:
+        info = get_json(base)
+        print(f"{project} on Modrinth: loaders={info.get('loaders')} newest versions={info.get('game_versions', [])[-3:]}")
+        loaders = urllib.parse.quote(json.dumps(["paper", "bukkit", "spigot", "purpur", "folia"]))
+        for query in (f"?loaders={loaders}&game_versions={urllib.parse.quote(json.dumps([game_version]))}",
+                      f"?loaders={loaders}"):
+            versions = get_json(f"{base}/version{query}")
+            if versions:
+                file = next((f for f in versions[0]["files"] if f.get("primary")), versions[0]["files"][0])
+                print(f"{project}: {versions[0]['version_number']} ({file['filename']}) from Modrinth")
+                download(file["url"], os.path.join(dest_dir, file["filename"]))
+                return file["filename"]
+    except Exception as e:
+        print(f"{project}: Modrinth lookup failed: {e!r}")
+    return None
+
+
+def spark_jar(game_version, dest_dir):
+    name = modrinth_jar("spark", game_version, dest_dir)
+    if name:
+        return name
+    # spark's own build server (the source of the downloads on spark.lucko.me).
+    try:
+        build = get_json("https://ci.lucko.me/job/spark/lastSuccessfulBuild/api/json")
+        for artifact in build["artifacts"]:
+            if re.search(r"spark-.*-(paper|bukkit)\.jar$", artifact["fileName"]):
+                url = f"https://ci.lucko.me/job/spark/lastSuccessfulBuild/artifact/{artifact['relativePath']}"
+                print(f"spark: {artifact['fileName']} from ci.lucko.me")
+                download(url, os.path.join(dest_dir, artifact["fileName"]))
+                return artifact["fileName"]
+    except Exception as e:
+        print(f"spark: ci.lucko.me lookup failed: {e!r}")
+    print("spark: no standalone jar found; using the spark that Paper ships built in")
+    return None
+
+
+def tab_jar(game_version, dest_dir):
+    name = modrinth_jar("tab-was-taken", game_version, dest_dir)
+    if name:
+        return name
+    try:
+        release = get_json("https://api.github.com/repos/NEZNAMY/TAB/releases/latest")
+        for asset in release["assets"]:
+            if asset["name"].endswith(".jar"):
+                print(f"TAB: {asset['name']} from GitHub releases ({release['tag_name']})")
+                download(asset["browser_download_url"], os.path.join(dest_dir, asset["name"]))
+                return asset["name"]
+    except Exception as e:
+        print(f"TAB: GitHub releases lookup failed: {e!r}")
+    raise SystemExit("could not download TAB")
 
 
 def spawn_commands():
@@ -123,7 +163,8 @@ def main():
     os.makedirs(downloads)
     paper = fetch_paper(downloads)
     mc_version = re.match(r"paper-(.+)-\d+\.jar", paper).group(1)
-    plugins = [modrinth_jar("spark", mc_version, downloads), modrinth_jar("tab-was-taken", mc_version, downloads)]
+    plugins = [p for p in (spark_jar(mc_version, downloads), tab_jar(mc_version, downloads)) if p]
+    print(f"Plugins for both servers: {plugins} (spark is built into Paper if it isn't listed)")
 
     runs = []
     # 1. Plain Paper, started the way most people start it.
