@@ -1,5 +1,6 @@
 package com.perwd.orange.launcher;
 
+import com.perwd.orange.optimizer.PingTolerance;
 import com.perwd.orange.optimizer.Profile;
 import java.io.IOException;
 import java.io.Reader;
@@ -20,6 +21,7 @@ public record OrangeConfig(
         String memory,
         String gc,
         Profile profile,
+        PingTolerance pingTolerance,
         boolean installPlugin,
         boolean agent,
         boolean autoRestart,
@@ -54,6 +56,14 @@ public record OrangeConfig(
             #   off        = don't touch my configs
             optimization-profile: vanilla
 
+            # How forgiving the server is towards players with high or unstable ping:
+            #   normal = vanilla thresholds (on Purpur-based servers, also a keepalive that stops
+            #            "Timed out" kicks on lossy connections)
+            #   high   = also fewer "moved too quickly/wrongly" rubber-band snaps, and packet bursts after
+            #            lag spikes aren't treated as spam. Slightly relaxes the server's own movement
+            #            checks; anti-cheat plugins are unaffected.
+            ping-tolerance: normal
+
             # Copy the Orange plugin (TPS governor, entity limiter, /orange) into plugins/.
             install-plugin: true
 
@@ -84,6 +94,7 @@ public record OrangeConfig(
                 string(map, "memory", "auto"),
                 string(map, "gc", "auto").toLowerCase(Locale.ROOT),
                 Profile.parse(string(map, "optimization-profile", "vanilla")),
+                PingTolerance.parse(string(map, "ping-tolerance", "normal")),
                 bool(map, "install-plugin", true),
                 bool(map, "agent", true),
                 bool(map, "auto-restart", false),

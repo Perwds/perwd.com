@@ -14,18 +14,22 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Applies a {@link Profile} to the server's config files once per file per profile, backing up
+ * Applies a {@link Profile} and {@link PingTolerance} to the server's config files once per file per profile, backing up
  * the original first. After that, the user's own edits win.
  */
 public final class ConfigOptimizer {
     private final Path home;
-    private final Profile profile;
+    private final String id;
+    private final Map<String, Map<String, String>> settings;
     private final Path stateFile;
     private final boolean dryRun;
 
-    public ConfigOptimizer(Path home, Profile profile, boolean dryRun) {
+    public ConfigOptimizer(Path home, Profile profile, PingTolerance ping, boolean dryRun) {
         this.home = home;
-        this.profile = profile;
+        this.id = profile.id() + "+ping-" + ping.id();
+        this.settings = new java.util.LinkedHashMap<>(profile.settings());
+        ping.settings().forEach((file, values) ->
+                settings.computeIfAbsent(file, k -> new java.util.LinkedHashMap<>()).putAll(values));
         this.dryRun = dryRun;
         this.stateFile = home.resolve(".orange").resolve("optimizer-state.properties");
     }
@@ -33,10 +37,10 @@ public final class ConfigOptimizer {
     public void run() throws IOException {
         Properties state = loadState();
         int pending = 0;
-        for (Map.Entry<String, Map<String, String>> entry : profile.settings().entrySet()) {
+        for (Map.Entry<String, Map<String, String>> entry : settings.entrySet()) {
             String name = entry.getKey();
             Path file = home.resolve(name);
-            if (profile.id().equals(state.getProperty(name))) {
+            if (id.equals(state.getProperty(name))) {
                 continue;
             }
             if (Files.notExists(file)) {
@@ -52,9 +56,9 @@ public final class ConfigOptimizer {
                 Files.write(file, result.lines(), StandardCharsets.UTF_8);
             }
             int skipped = entry.getValue().size() - result.changed() - result.unchanged();
-            Log.info((dryRun ? "Would tune " : "Tuned ") + name + " (" + profile.id() + "): " + result.changed() + " changed, "
+            Log.info((dryRun ? "Would tune " : "Tuned ") + name + " (" + id + "): " + result.changed() + " changed, "
                     + result.unchanged() + " already optimal" + (skipped > 0 ? ", " + skipped + " not present in this version" : ""));
-            state.setProperty(name, profile.id());
+            state.setProperty(name, id);
         }
         if (!dryRun) {
             saveState(state);

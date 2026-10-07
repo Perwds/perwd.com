@@ -16,9 +16,9 @@ java -jar orange.jar
 
 | Layer | What you get |
 |---|---|
-| **Launcher** (`orange.jar`) | Starts your server with tuned JVM flags: [Aikar's G1 flags](https://docs.papermc.io/paper/aikars-flags) or generational ZGC, picked for your heap size. Sizes the heap from your RAM (container-aware), sets `-Xms = -Xmx`, adds the SIMD Vector API for Pufferfish-based forks, optionally restarts after crashes, and shuts the server down cleanly on Ctrl+C or SIGTERM. |
+| **Launcher** (`orange.jar`) | Starts your server with tuned JVM flags: [Aikar's G1 flags](https://docs.papermc.io/paper/aikars-flags) or generational ZGC, picked for your heap size. On Java 25+ it adds compact object headers (a smaller heap and less GC work), and transparent huge pages when the kernel supports them. Sizes the heap from your RAM (container-aware), sets `-Xms = -Xmx`, adds the SIMD Vector API for Pufferfish-based forks, optionally restarts after crashes, and shuts the server down cleanly on Ctrl+C or SIGTERM. |
 | **Config optimizer** | Edits `server.properties`, `bukkit.yml`, `spigot.yml`, `config/paper-global.yml`, `config/paper-world-defaults.yml`, `purpur.yml` and `pufferfish.yml` for the profile you pick (below). It keeps comments, backs every file up to `.orange/backups/`, only changes keys that already exist, and applies each profile **once** so your later edits stick. |
-| **Orange plugin** (auto-installed) | **`/orange pregen <world> <radius>`**: generates the world ahead of time. Chunk generation is the biggest single source of lag, and pre-generating changes nothing about the world. It spirals out from spawn and pauses while the server is busy. **TPS governor**: lowers *view* distance while MSPT is above 45 and puts it back when the server recovers. **`/orange status`**: TPS, MSPT, memory, chunks and entities per world. The entity limiter and the simulation-distance governor change gameplay, so they're **off by default**. |
+| **Orange plugin** (auto-installed) | **`/orange pregen <world> <radius>`**: generates the world ahead of time. Chunk generation is the biggest single source of lag, and pre-generating changes nothing about the world. It spirals out from spawn and pauses while the server is busy. **TPS governor**: lowers *view* distance while MSPT is above 45 and puts it back when the server recovers. **High-ping helper**: tracks every player's ping and jitter (`/orange ping`). When a player's ping stays above 250 ms, it sends them fewer chunks so their connection has room for movement and combat updates. It restores them when their ping recovers, and the world simulates exactly as before. **`/orange status`**: TPS, MSPT, memory, chunks and entities per world. The entity limiter and the simulation-distance governor change gameplay, so they're **off by default**. |
 | **Orange mods** (agent) | Fabric-style bytecode patches (ASM) loaded from `orange-mods/`, on any server software. Also brands the server as `Orange (Paper)` in the server list and F3. |
 
 ### Profiles
@@ -42,6 +42,21 @@ Set `optimization-profile` in `orange.yml`:
   mobs from spawners have no AI, armor stands don't tick, Purpur villager lobotomizing,
   Pufferfish DAB, view distance 7 / simulation distance 4.
 - **`off`**: leave my configs alone.
+
+### High-ping players
+
+Set `ping-tolerance` in `orange.yml`:
+
+- **`normal`** (default): vanilla thresholds. On Purpur-based servers it also turns on the
+  alternate keepalive (one ping per second, timeout only after 30 s of silence), which stops
+  "Timed out" kicks on lossy Wi-Fi and mobile connections.
+- **`high`**: also raises the "moved too quickly/wrongly" thresholds, so laggy players get far
+  fewer rubber-band snaps, and doubles Paper's packet limit so the burst of packets that
+  arrives after a lag spike isn't kicked as spam. This relaxes the server's own movement
+  checks a little. Anti-cheat plugins still run their own.
+
+The biggest ping win isn't software, though: host the server close to your players, and keep it
+at 20 TPS. Every millisecond a tick runs over 50 ms adds to *everyone's* ping.
 
 > **The honest trade-off:** most of what config tuning can do (activation range, spawn caps,
 > merge radius) works by *changing* the game. `vanilla` refuses all of that, so its speed comes
@@ -94,6 +109,7 @@ server-jar: auto                 # or a file name
 memory: auto                     # e.g. 8G
 gc: auto                         # auto | g1 | zgc
 optimization-profile: vanilla    # vanilla | balanced | aggressive | off
+ping-tolerance: normal           # normal | high
 install-plugin: true
 agent: true
 auto-restart: false

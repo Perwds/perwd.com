@@ -1,7 +1,6 @@
 package com.perwd.orange.launcher;
 
 import com.perwd.orange.optimizer.ConfigOptimizer;
-import com.perwd.orange.optimizer.Profile;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +41,12 @@ public final class OrangeLauncher {
         String gc = JvmFlags.resolveGc(config.gc(), heapMb);
 
         Log.info("Orange " + version() + " | server: " + serverJar.getFileName() + " (" + type.displayName() + ")"
-                + " | heap: " + heapMb + " MB | gc: " + gc + " | profile: " + config.profile().id());
+                + " | heap: " + heapMb + " MB | gc: " + gc + " | profile: " + config.profile().id()
+                + " | ping tolerance: " + config.pingTolerance().id());
+
+        if (Runtime.version().feature() < 25) {
+            Log.info("Tip: run Orange on Java 25 (LTS) or newer to enable compact object headers (smaller heap, faster GC).");
+        }
 
         if (config.installPlugin() && type.runsBukkitPlugins() && !dryRun) {
             if (type.family() == ServerType.Family.FOLIA) {
@@ -51,9 +55,7 @@ public final class OrangeLauncher {
                 PluginInstaller.install(home);
             }
         }
-        if (config.profile() != Profile.OFF) {
-            new ConfigOptimizer(home, config.profile(), dryRun).run();
-        }
+        new ConfigOptimizer(home, config.profile(), config.pingTolerance(), dryRun).run();
 
         List<String> command = new ArrayList<>();
         command.add(javaBinary());

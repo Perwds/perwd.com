@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 
 final class OrangeCommand implements TabExecutor {
     private static final String P = ChatColor.GOLD + "[Orange] " + ChatColor.RESET;
@@ -26,9 +27,43 @@ final class OrangeCommand implements TabExecutor {
                 sender.sendMessage(P + "Config reloaded.");
             }
             case "pregen" -> pregen(sender, label, args);
-            default -> sender.sendMessage(P + "Usage: /" + label + " <status|reload|pregen>");
+            case "ping" -> ping(sender, args);
+            default -> sender.sendMessage(P + "Usage: /" + label + " <status|ping|pregen|reload>");
         }
         return true;
+    }
+
+    private void ping(CommandSender sender, String[] args) {
+        PingManager pings = plugin.pingManager();
+        List<Player> players;
+        if (args.length >= 2) {
+            Player target = Bukkit.getPlayerExact(args[1]);
+            if (target == null) {
+                sender.sendMessage(P + "No player named " + args[1] + " is online.");
+                return;
+            }
+            players = List.of(target);
+        } else {
+            players = pings.playersByPing();
+        }
+        if (players.isEmpty()) {
+            sender.sendMessage(P + "Nobody is online.");
+            return;
+        }
+        sender.sendMessage(P + "Ping (average / jitter), worst first:");
+        int shown = 0;
+        for (Player p : players) {
+            if (shown++ == 15) {
+                sender.sendMessage(ChatColor.GRAY + "  ... and " + (players.size() - 15) + " more");
+                break;
+            }
+            PingManager.Stats s = pings.stats(p);
+            double avg = s.average < 0 ? p.getPing() : s.average;
+            ChatColor c = avg < 100 ? ChatColor.GREEN : avg < 200 ? ChatColor.YELLOW : ChatColor.RED;
+            sender.sendMessage(ChatColor.GRAY + "  " + p.getName() + ": " + c + Math.round(avg) + " ms"
+                    + ChatColor.GRAY + " / ±" + Math.round(s.jitter) + " ms"
+                    + (s.reduced() ? ChatColor.GOLD + " (sending fewer chunks)" : ""));
+        }
     }
 
     private void pregen(CommandSender sender, String label, String[] args) {
@@ -88,6 +123,9 @@ final class OrangeCommand implements TabExecutor {
         EntityLimiter l = plugin.entityLimiter();
         sender.sendMessage(P + "Entity limiter: " + (l.enabled() ? "on, " + l.blocked() + " spawns blocked" : "off"));
         sender.sendMessage(P + "Pre-generation: " + plugin.pregenerator().status());
+        PingManager pings = plugin.pingManager();
+        sender.sendMessage(P + "High-ping helper: " + (pings.adaptive()
+                ? "on, " + pings.reducedCount() + " player(s) on reduced send distance" : "off"));
     }
 
     private static String color(double tps) {
@@ -98,12 +136,15 @@ final class OrangeCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return filter(List.of("status", "reload", "pregen"), args[0]);
+            return filter(List.of("status", "ping", "pregen", "reload"), args[0]);
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("pregen")) {
             List<String> options = new java.util.ArrayList<>(List.of("stop", "status"));
             Bukkit.getWorlds().forEach(w -> options.add(w.getName()));
             return filter(options, args[1]);
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("ping")) {
+            return filter(Bukkit.getOnlinePlayers().stream().map(Player::getName).toList(), args[1]);
         }
         return List.of();
     }

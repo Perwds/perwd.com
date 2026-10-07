@@ -1,6 +1,9 @@
 package com.perwd.orange.launcher;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +64,16 @@ final class JvmFlags {
             }
         } else {
             flags.addAll(aikarG1(heapMb));
+            // JEP 519: 8-byte object headers instead of 12. Minecraft allocates millions of small
+            // objects (BlockPos, Vec3, ...), so this shrinks the live heap and improves cache hits.
+            if (Runtime.version().feature() >= 25) {
+                flags.add("-XX:+UseCompactObjectHeaders");
+            }
+        }
+        // Huge pages cut TLB misses when the GC walks a multi-GB heap. Only when the kernel allows it,
+        // so the JVM never prints a warning about it.
+        if (transparentHugePagesAvailable()) {
+            flags.add("-XX:+UseTransparentHugePages");
         }
         flags.add("-XX:+AlwaysPreTouch");
         flags.add("-XX:+DisableExplicitGC");
@@ -93,6 +106,15 @@ final class JvmFlags {
                 "-XX:MaxTenuringThreshold=1",
                 "-Dusing.aikars.flags=https://mcflags.emc.gs",
                 "-Daikars.new.flags=true");
+    }
+
+    static boolean transparentHugePagesAvailable() {
+        try {
+            String mode = Files.readString(Path.of("/sys/kernel/mm/transparent_hugepage/enabled"));
+            return mode.contains("[always]") || mode.contains("[madvise]");
+        } catch (IOException | SecurityException e) {
+            return false;
+        }
     }
 
     private static long totalMemoryBytes() {

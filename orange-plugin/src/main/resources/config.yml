@@ -47,3 +47,16 @@ pregen:
   parallel-chunks: 16
   # Pause while the server is busier than this (milliseconds per tick).
   pause-above-mspt: 40.0
+
+# Help for players on slow or far-away connections. Nothing here changes game mechanics.
+ping:
+  # When a player's ping stays above high-ping-ms, send them fewer chunks (they see a bit less
+  # far) so their connection has room for movement and combat updates. Restored once their
+  # ping drops below recover-ping-ms. The world still simulates normally. Needs Paper.
+  adaptive-send-distance:
+    enabled: true
+    high-ping-ms: 250
+    recover-ping-ms: 180
+    send-distance: 6
+    # Minimum time between changes for one player, so it doesn't flip back and forth.
+    hold-seconds: 30

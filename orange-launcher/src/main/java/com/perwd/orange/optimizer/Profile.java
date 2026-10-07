@@ -133,8 +133,6 @@ public enum Profile {
         Map<String, String> pufferfish = file(out, "pufferfish.yml");
         pufferfish.put("dab.enabled", "false");
         pufferfish.put("inactive-goal-selector-throttle", "false");
-        Map<String, String> purpur = file(out, "purpur.yml");
-        purpur.put("settings.use-alternate-keepalive", "true"); // network only
     }
 
     private static void balanced(Map<String, Map<String, String>> out) {
@@ -192,7 +190,6 @@ public enum Profile {
         paper.put("tick-rates.container-update", "1");
 
         Map<String, String> purpur = file(out, "purpur.yml");
-        purpur.put("settings.use-alternate-keepalive", "true");
         purpur.put("world-settings.default.mobs.dolphin.disable-treasure-searching", "true");
     }
 
