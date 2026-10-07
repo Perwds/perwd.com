@@ -44,6 +44,15 @@ final class JvmFlags {
         }
     }
 
+    /** A plain non-negative whole number from orange.yml. */
+    static long parseNonNegative(String value) {
+        try {
+            return Math.max(0, Long.parseLong(value.trim()));
+        } catch (NumberFormatException e) {
+            throw new LauncherException("Expected a number in orange.yml, got '" + value + "'.");
+        }
+    }
+
     static String resolveGc(String gc, long heapMb) {
         return switch (gc) {
             case "g1", "zgc" -> gc;

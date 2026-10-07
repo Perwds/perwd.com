@@ -91,6 +91,9 @@ public final class OrangeLauncher {
             command.add("-javaagent:" + selfJar);
             command.add("-Dorange.home=" + home);
         }
+        if (type == ServerType.ORANGE) {
+            command.add("-Dorange.tnt.budgetMs=" + config.tntTickBudgetMs());
+        }
         command.addAll(config.extraJvmArgs());
         if (direct != null) {
             command.add("-cp");

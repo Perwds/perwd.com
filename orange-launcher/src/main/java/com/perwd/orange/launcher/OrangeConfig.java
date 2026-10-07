@@ -29,6 +29,7 @@ public record OrangeConfig(
         String agent,
         boolean autoRestart,
         boolean fastStartup,
+        int tntTickBudgetMs,
         List<String> serverArgs,
         List<String> extraJvmArgs) {
 
@@ -96,6 +97,11 @@ public record OrangeConfig(
             # Restart the server automatically if it crashes (exit code other than 0).
             auto-restart: false
 
+            # Orange server only: the most time TNT explosions may take per tick (ms). TNT over the
+            # budget waits for the next tick, so even 1,000 TNT can't lag the server; the blast just
+            # ripples out over a few seconds. 0 = off (only Spigot's max-tnt-per-tick count applies).
+            tnt-tick-budget-ms: 20
+
             # Faster starts for Paper-based servers: launch the unpacked server directly (skipping
             # Paperclip's re-hashing of every library) and keep a JVM class cache between runs
             # (the AOT cache on Java 25+, AppCDS on older Java). The first start records the cache.
@@ -130,6 +136,7 @@ public record OrangeConfig(
                 string(map, "agent", "auto").toLowerCase(Locale.ROOT),
                 bool(map, "auto-restart", false),
                 bool(map, "fast-startup", true),
+                (int) JvmFlags.parseNonNegative(string(map, "tnt-tick-budget-ms", "20")),
                 list(map, "server-args", List.of("nogui")),
                 list(map, "extra-jvm-args", List.of()));
     }

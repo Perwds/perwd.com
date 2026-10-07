@@ -1,0 +1,20 @@
+--- a/net/minecraft/world/entity/item/PrimedTnt.java
++++ b/net/minecraft/world/entity/item/PrimedTnt.java
+@@ -100,6 +100,7 @@
+     @Override
+     public void tick() {
+         if (this.level().spigotConfig.maxTntTicksPerTick > 0 && ++this.level().spigotConfig.currentPrimedTnt > this.level().spigotConfig.maxTntTicksPerTick) { return; } // Spigot
++        if (!com.perwd.orange.server.TntBudget.allow(this.level().getServer().getTickCount())) { return; } // Orange - TNT time budget: wait a tick instead of lagging
+         this.handlePortal();
+         this.applyGravity();
+         this.move(MoverType.SELF, this.getDeltaMovement());
+@@ -121,7 +122,9 @@
+             // CraftBukkit start - Need to reverse the order of the explosion and the entity death so we have a location for the event
+             //this.discard();
+             if (!this.level().isClientSide()) {
++                long orangeStart = System.nanoTime(); // Orange - TNT time budget
+                 this.explode();
++                com.perwd.orange.server.TntBudget.spent(System.nanoTime() - orangeStart); // Orange - TNT time budget
+             }
+             this.discard(EntityRemoveEvent.Cause.EXPLODE); // CraftBukkit - add Bukkit remove cause
+             // CraftBukkit end
