@@ -11,6 +11,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import time
 
@@ -49,6 +50,16 @@ def edit(path, replacements):
     open(path, "w").write(text)
 
 
+def server_pid():
+    """PID of the server JVM (orange.jar's child process)."""
+    out = subprocess.run(["pgrep", "-f", "versions/.*orange-1"], capture_output=True, text=True).stdout.split()
+    return out[0] if out else None
+
+
+def jfr(pid, *args):
+    return subprocess.run(["jcmd", pid, *args], capture_output=True, text=True).stdout
+
+
 def measure(run_dir, label):
     s = boot_and_stop(run_dir, label)
     s.send("forceload add -32 -32 31 31")
@@ -65,7 +76,14 @@ def measure(run_dir, label):
     time.sleep(3)
     summon_out = "".join(s.lines[mark:])
     mark2 = len(s.lines)
-    time.sleep(7 + 5)  # rest of the fuse (15 s) plus 5 s of blast and aftermath
+    pid = server_pid()
+    time.sleep(6)
+    if pid:  # Flight Recorder profile of just the blast
+        jfr(pid, "JFR.start", "name=blast", "settings=profile")
+    time.sleep(1 + 5)  # rest of the fuse (15 s) plus 5 s of blast and aftermath
+    recording = os.path.join(run_dir, "blast.jfr")
+    if pid:
+        jfr(pid, "JFR.stop", "name=blast", f"filename={recording}")
     s.send("spark tps")  # 10 s window: blast only
     time.sleep(3)
     s.send("execute if entity @e[type=minecraft:item]")
@@ -74,6 +92,24 @@ def measure(run_dir, label):
     time.sleep(2)
     out = "".join(s.lines[mark2:])
     s.stop()
+    if os.path.exists(recording):
+        for view in ("hot-methods", "allocation-by-class"):
+            report = subprocess.run(["jfr", "view", "--width", "220", view, recording], capture_output=True, text=True)
+            print(f"::group::{label}: jfr {view}\n{report.stdout[:12000]}{report.stderr[:2000]}\n::endgroup::", flush=True)
+        # Hot call paths on the server thread: top frames' callers, to see where explosions spend time.
+        stacks = subprocess.run(["jfr", "print", "--events", "jdk.ExecutionSample", "--stack-depth", "12", recording],
+                                capture_output=True, text=True).stdout
+        counts = {}
+        for sample in stacks.split("jdk.ExecutionSample")[1:]:
+            if "Server thread" not in sample:
+                continue
+            frames = re.findall(r"^\s+([\w.$<>]+)\(", sample, re.M)
+            for frame in dict.fromkeys(frames):
+                counts[frame] = counts.get(frame, 0) + 1
+        total = sum(1 for x in stacks.split("jdk.ExecutionSample")[1:] if "Server thread" in x)
+        top = sorted(counts.items(), key=lambda kv: -kv[1])[:40]
+        print(f"::group::{label}: server-thread samples containing each method (of {total})\n"
+              + "\n".join(f"{n:6d} {100 * n / max(total, 1):5.1f}%  {m}" for m, n in top) + "\n::endgroup::", flush=True)
 
     result = {"label": label}
     durations = re.findall(r"(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)", out)
@@ -89,7 +125,7 @@ def measure(run_dir, label):
     passed = re.findall(r"Test passed[.,] [Cc]ount: (\d+)", out)
     result["items"] = passed[0] if len(passed) > 0 else "0"
     result["tnt_left"] = passed[1] if len(passed) > 1 else "0"
-    result["summoned"] = str(out.count("Summoned new"))
+    result["summoned"] = str(summon_out.count("Summoned new"))
     print(json.dumps(result), flush=True)
     return result
 

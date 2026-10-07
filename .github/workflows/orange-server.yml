@@ -31,6 +31,11 @@ jobs:
           git config --global user.email "orange-ci@users.noreply.github.com"
       - name: Apply patches
         run: ./gradlew applyAllPatches --stacktrace --console=plain
+      - name: Show source of patch targets
+        run: |
+          for f in world/entity/item/PrimedTnt world/level/ServerExplosion; do
+            echo "::group::$f.java"; cat "orange-server/src/minecraft/java/net/minecraft/$f.java"; echo "::endgroup::"
+          done
       - name: Build server jar
         run: ./gradlew createMojmapPaperclipJar --stacktrace --console=plain
         env:
