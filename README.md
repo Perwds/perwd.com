@@ -115,6 +115,21 @@ java -jar orange.jar --dry-run
   `-javaagent:orange.jar` to `user_jvm_args.txt` to get Orange mods, and copy the flags from
   `java -jar orange.jar --dry-run`.
 
+## Plugins
+
+The Orange server uses Paper's plugin loader, so it runs:
+
+- **Bukkit/Spigot plugins** (`plugin.yml`) and **Paper plugins** (`paper-plugin.yml`);
+- **Folia-compatible plugins** (`folia-supported: true`) *next to* the regular ones. Folia's
+  scheduler API (global region, region, entity and async schedulers) is part of Paper's API; on
+  Orange those schedulers run tasks on the server thread. CI proves it: a Folia-style test plugin
+  ([`ci/folia-test-plugin`](ci/folia-test-plugin)) runs every scheduler next to the Orange plugin on
+  the Orange server, Paper and Purpur.
+
+Not supported: plugins that refuse to start unless the server *is* Folia, Fabric/Forge mods, and
+proxy (Velocity/BungeeCord) plugins. Running regular plugins on Folia itself isn't possible: they
+aren't written to be called from several threads at once.
+
 ## orange.yml
 
 ```yaml
