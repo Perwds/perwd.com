@@ -16,6 +16,7 @@ jobs:
           - { server: purpur, java: 25 }
           - { server: download, java: 21 }
           - { server: download, java: 25 }
+          - { server: switch, java: 21 }
     name: ${{ matrix.server }} (Java ${{ matrix.java }})
     runs-on: ubuntu-latest
     timeout-minutes: 30

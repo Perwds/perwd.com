@@ -58,6 +58,24 @@ final class ServerDownloader {
         this.stateFile = home.resolve(".orange").resolve("download.properties");
     }
 
+    /** What Orange downloaded before, whichever server it was: {project, version, file}, or null. */
+    String[] previousDownload() {
+        Properties state = state();
+        String file = state.getProperty("file");
+        if (file == null || !Files.isRegularFile(home.resolve(file))) {
+            return null;
+        }
+        return new String[] {state.getProperty("project"), state.getProperty("version"), file};
+    }
+
+    /** Minecraft versions this server is available for. */
+    List<String> availableVersions() throws IOException, InterruptedException {
+        if (project.equals("orange")) {
+            return new ArrayList<>(asMap(json(ORANGE_MANIFEST).get("versions")).keySet());
+        }
+        return List.of(newestUsableVersion());
+    }
+
     /** The jar Orange downloaded earlier, if it's still there. */
     Path installed() {
         Properties state = state();

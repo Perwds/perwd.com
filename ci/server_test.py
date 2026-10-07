@@ -212,13 +212,17 @@ def main():
     with open(os.path.join(run_dir, "server.properties"), "w") as f:
         f.write("level-seed=orange\nonline-mode=false\n")
     # orange.yml from the template, with a CI-sized heap.
-    dry = subprocess.run(["java", "-jar", "orange.jar", "--dry-run"], cwd=run_dir, check=flavor != "download",
+    downloads = flavor in ("download", "switch")
+    dry = subprocess.run(["java", "-jar", "orange.jar", "--dry-run"], cwd=run_dir, check=not downloads,
                          capture_output=True, text=True).stdout
     print(dry)
     open(os.path.join(run_dir, "dry-run.txt"), "w").write(dry)
     yml = os.path.join(run_dir, "orange.yml")
     # agent: true covers the branding patch together with the startup cache.
     text = open(yml).read().replace("memory: auto", "memory: 2G").replace("agent: auto", "agent: true")
+    if flavor == "switch":
+        # Like an older orange.jar: Paper first, then the Orange server.
+        text = text.replace("download: orange", "download: paper")
     open(yml, "w").write(text)
 
     log1 = boot(run_dir, "boot1", pregen=True)
@@ -233,7 +237,7 @@ def main():
     cache_dir = os.path.join(run_dir, ".orange", "cache", "jvm")
     caches = os.listdir(cache_dir) if os.path.isdir(cache_dir) else []
     check(any(f.endswith((".aot", ".jsa")) for f in caches), f"startup cache file written ({caches})")
-    if JAVA >= 25 and flavor != "download":
+    if JAVA >= 25 and not downloads:
         check("UseCompactObjectHeaders" in open(os.path.join(run_dir, "dry-run.txt")).read(),
               "compact object headers enabled on Java 25")
 
@@ -244,7 +248,15 @@ def main():
             group(f"generated {name}", open(path).read())
 
     # Second boot: the configs now exist, so the optimizer tunes them.
+    if flavor == "switch":
+        check(re.search(r"Downloaded paper-[\d.]+-\d+\.jar", log1) is not None, "first start downloaded Paper")
+        open(yml, "w").write(open(yml).read().replace("download: paper", "download: orange"))
     log2 = boot(run_dir, "boot2", pregen=False)
+    if flavor == "switch":
+        check("Switching from paper-" in log2, "switched from Paper to the Orange server")
+        check(re.search(r"Loading Orange [\w.\-]+", log2) is not None, "second start runs the Orange server")
+        check(not any(f.startswith("paper-") and f.endswith(".jar") for f in os.listdir(run_dir)),
+              "the old Paper jar was removed")
     if flavor == "download":
         check("Downloading" not in log2 and "Couldn't check for server updates" not in log2,
               "second start checked for updates without downloading again")

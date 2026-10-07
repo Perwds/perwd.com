@@ -142,6 +142,29 @@ public final class OrangeLauncher {
                 return downloaded;
             }
         }
+        // Orange downloaded a different server here before (e.g. Paper, before the Orange server
+        // existed): switch, but only to the same Minecraft version, since an older version can't
+        // safely load a newer world.
+        String[] previous = downloader == null ? null : downloader.previousDownload();
+        if (previous != null && !dryRun) {
+            Path previousJar = home.resolve(previous[2]);
+            try {
+                if (!downloader.availableVersions().contains(previous[1])) {
+                    Log.info("The " + config.download() + " server isn't available for Minecraft " + previous[1]
+                            + " yet; keeping " + previous[2] + ".");
+                    return previousJar;
+                }
+                Log.info("Switching from " + previous[2] + " to the " + config.download() + " server (same Minecraft "
+                        + previous[1] + "; your world and plugins stay as they are).");
+                Path jar = new ServerDownloader(home, config.download(), previous[1]).ensure(false);
+                java.nio.file.Files.deleteIfExists(previousJar);
+                return jar;
+            } catch (java.io.IOException e) {
+                Log.warn("Couldn't switch to the " + config.download() + " server (" + e.getMessage() + "); starting "
+                        + previous[2] + ".");
+                return previousJar;
+            }
+        }
         try {
             return ServerJarLocator.locate(home, "auto", selfJar);
         } catch (LauncherException noJar) {
