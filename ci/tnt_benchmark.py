@@ -192,7 +192,15 @@ def main():
         print(f"Release has build {info['build']}; waiting for build {MIN_BUILD}...", flush=True)
         time.sleep(60)
     print(f"Orange server {version} build {info['build']}")
-    download(info["url"], os.path.join(template, info["file"]))
+    for attempt in range(10):  # the manifest can list a build a moment before its jar is uploaded
+        try:
+            download(info["url"], os.path.join(template, info["file"]))
+            break
+        except Exception as e:
+            print(f"Download failed ({e}); retrying in 30 s", flush=True)
+            time.sleep(30)
+    else:
+        raise SystemExit("could not download the Orange server jar")
     shutil.copy(orange_jar, os.path.join(template, "orange.jar"))
     open(os.path.join(template, "eula.txt"), "w").write("eula=true\n")
     open(os.path.join(template, "server.properties"), "w").write(
