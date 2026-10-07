@@ -100,8 +100,6 @@ public enum Profile {
         global.put("unsupported-settings.allow-headless-pistons", "true");
         global.put("unsupported-settings.allow-permanent-block-break-exploits", "true");
         global.put("unsupported-settings.allow-unsafe-end-portal-teleportation", "true");
-        global.put("unsupported-settings.allow-tripwire-disarming-exploits", "true");
-        global.put("unsupported-settings.allow-grindstone-overstacking", "true");
         global.put("unsupported-settings.skip-tripwire-hook-placement-validation", "true");
 
         Map<String, String> paper = file(out, "config/paper-world-defaults.yml");
@@ -110,7 +108,6 @@ public enum Profile {
         paper.put("collisions.allow-player-cramming-damage", "true");
         paper.put("fixes.disable-unloaded-chunk-enderpearl-exploit", "false");
         paper.put("fixes.split-overstacked-loot", "false");
-        paper.put("fixes.fix-curing-zombie-villager-discount-exploit", "false");
         paper.put("fixes.prevent-tnt-from-moving-in-water", "false");
         paper.put("fixes.falling-block-height-nerf", "disabled");
         paper.put("fixes.tnt-entity-height-nerf", "disabled");

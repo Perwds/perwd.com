@@ -36,38 +36,59 @@ public final class ConfigOptimizer {
 
     public void run() throws IOException {
         Properties state = loadState();
-        int pending = 0;
+        int pendingFiles = 0;
         for (Map.Entry<String, Map<String, String>> entry : settings.entrySet()) {
             String name = entry.getKey();
             Path file = home.resolve(name);
-            if (id.equals(state.getProperty(name))) {
+            // State is tracked per key: a key is applied once per wanted value, so the user's later
+            // edits stick, while a key the file doesn't have yet (e.g. not generated until the
+            // server's first start) is retried on every launch until it shows up.
+            Map<String, String> pending = new java.util.LinkedHashMap<>();
+            entry.getValue().forEach((key, value) -> {
+                if (!value.equals(state.getProperty(name + "|" + key))) {
+                    pending.put(key, value);
+                }
+            });
+            if (pending.isEmpty()) {
                 continue;
             }
             if (Files.notExists(file)) {
-                pending++;
+                pendingFiles++;
                 continue;
             }
             List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
             LineConfigEditor.Result result = name.endsWith(".properties")
-                    ? LineConfigEditor.editProperties(lines, entry.getValue())
-                    : LineConfigEditor.editYaml(lines, entry.getValue());
+                    ? LineConfigEditor.editProperties(lines, pending)
+                    : LineConfigEditor.editYaml(lines, pending);
             if (result.changed() > 0 && !dryRun) {
                 backup(file, name);
                 Files.write(file, result.lines(), StandardCharsets.UTF_8);
             }
-            List<String> missing = entry.getValue().keySet().stream().filter(k -> !result.found().contains(k)).toList();
-            Log.info((dryRun ? "Would tune " : "Tuned ") + name + " (" + id + "): " + result.changed() + " changed, "
-                    + result.unchanged() + " already optimal" + (missing.isEmpty() ? "" : ", " + missing.size() + " not present in this version"));
-            if (!missing.isEmpty()) {
-                Log.info("  not present in " + name + ": " + String.join(", ", missing));
+            List<String> newlyMissing = new java.util.ArrayList<>();
+            for (Map.Entry<String, String> p : pending.entrySet()) {
+                String stateKey = name + "|" + p.getKey();
+                if (result.found().contains(p.getKey())) {
+                    state.setProperty(stateKey, p.getValue());
+                } else if (!("missing:" + p.getValue()).equals(state.getProperty(stateKey))) {
+                    newlyMissing.add(p.getKey());
+                    state.setProperty(stateKey, "missing:" + p.getValue());
+                }
             }
-            state.setProperty(name, id);
+            if (result.found().isEmpty() && newlyMissing.isEmpty()) {
+                continue; // only keys we already reported as missing; stay quiet
+            }
+            Log.info((dryRun ? "Would tune " : "Tuned ") + name + " (" + id + "): " + result.changed() + " changed, "
+                    + result.unchanged() + " already optimal"
+                    + (newlyMissing.isEmpty() ? "" : ", " + newlyMissing.size() + " not present in this version"));
+            if (!newlyMissing.isEmpty()) {
+                Log.info("  not present in " + name + ": " + String.join(", ", newlyMissing));
+            }
         }
         if (!dryRun) {
             saveState(state);
         }
-        if (pending > 0) {
-            Log.info(pending + " config file(s) don't exist yet; they'll be tuned on the next start after the server creates them.");
+        if (pendingFiles > 0) {
+            Log.info(pendingFiles + " config file(s) don't exist yet; they'll be tuned on the next start after the server creates them.");
         }
     }
 
@@ -91,7 +112,7 @@ public final class ConfigOptimizer {
     private void saveState(Properties p) throws IOException {
         Files.createDirectories(stateFile.getParent());
         try (OutputStream out = Files.newOutputStream(stateFile)) {
-            p.store(out, "Which Orange profile has been applied to each config file. Delete a line to re-apply.");
+            p.store(out, "Config values Orange has applied (file|key=value). Delete a line to re-apply it.");
         }
     }
 }

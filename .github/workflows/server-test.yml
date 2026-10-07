@@ -26,6 +26,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew :orange-launcher:shadowJar --console=plain
       - run: python3 ci/server_test.py ${{ matrix.server }} orange-launcher/build/libs/orange.jar
+      - name: Decompile patch targets
+        if: matrix.server == 'paper' && matrix.java == 25
+        run: |
+          curl -sSfL -o vineflower.jar https://repo.maven.apache.org/maven2/org/vineflower/vineflower/1.12.0/vineflower-1.12.0.jar
+          python3 ci/decompile.py run-paper-java25 vineflower.jar decompiled
       - if: always()
         uses: actions/upload-artifact@v4
         with:

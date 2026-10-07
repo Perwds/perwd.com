@@ -1,0 +1,10 @@
+# Classes CI decompiles (with their inner classes) so optimizations are written against real code.
+net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity
+net.minecraft.world.level.block.entity.BrewingStandBlockEntity
+net.minecraft.world.level.block.entity.HopperBlockEntity
+net.minecraft.world.level.chunk.LevelChunk
+net.minecraft.world.level.Level
+net.minecraft.world.level.ServerExplosion
+net.minecraft.world.entity.ai.sensing.NearestLivingEntitySensor
+net.minecraft.world.entity.ai.goal.GoalSelector
+net.minecraft.world.entity.ai.goal.WrappedGoal
