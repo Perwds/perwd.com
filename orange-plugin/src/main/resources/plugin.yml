@@ -1,0 +1,16 @@
+name: Orange
+version: '${version}'
+main: com.perwd.orange.plugin.OrangePlugin
+api-version: '1.21'
+description: Orange performance companion - TPS governor, entity limiter, /orange status.
+website: https://perwd.com
+load: STARTUP
+commands:
+  orange:
+    description: Orange performance status and controls.
+    usage: /orange <status|reload>
+    permission: orange.admin
+permissions:
+  orange.admin:
+    description: Use /orange.
+    default: op
