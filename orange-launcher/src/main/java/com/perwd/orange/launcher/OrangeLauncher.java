@@ -39,6 +39,12 @@ public final class OrangeLauncher {
         Path selfJar = selfJar();
         // Work next to orange.jar, so double-clicking it from any folder behaves the same.
         Path home = selfJar != null ? selfJar.getParent() : Path.of("").toAbsolutePath();
+        if (!dryRun) {
+            int exit = ServerFolder.offerOwnFolder(home, selfJar, javaBinary(), argList.toArray(String[]::new));
+            if (exit >= 0) {
+                return exit;
+            }
+        }
         OrangeConfig config = OrangeConfig.loadOrCreate(home.resolve("orange.yml"));
 
         Path serverJar = resolveServerJar(home, config, selfJar, dryRun);

@@ -83,6 +83,29 @@ final class Terminal {
         }
     }
 
+    /**
+     * Reads one line from stdin without buffering ahead, so whatever is typed after it (the next
+     * question, or server commands) is left for whoever reads next, including the server process.
+     */
+    static String readLine() throws IOException {
+        java.io.ByteArrayOutputStream line = new java.io.ByteArrayOutputStream();
+        int b;
+        while ((b = System.in.read()) != -1 && b != '\n') {
+            if (b != '\r') {
+                line.write(b);
+            }
+        }
+        return b == -1 && line.size() == 0 ? null : line.toString(StandardCharsets.UTF_8);
+    }
+
+    /** Asks a yes/no question on the console. */
+    static boolean ask(String question) throws IOException {
+        System.out.print("[Orange] " + question + " (yes/no): ");
+        System.out.flush();
+        String answer = readLine();
+        return answer != null && answer.trim().toLowerCase(Locale.ROOT).matches("y|yes");
+    }
+
     /** Shown when there's no console and no terminal could be opened. */
     static void showError(String message) {
         if (interactive() || GraphicsEnvironment.isHeadless()) {

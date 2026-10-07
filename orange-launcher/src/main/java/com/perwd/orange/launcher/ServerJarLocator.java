@@ -25,9 +25,11 @@ final class ServerJarLocator {
             candidates = files
                     .filter(p -> p.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".jar"))
                     .filter(p -> !isSelf(p, selfJar))
-                    .filter(p -> ServerJarLocator.isCandidate(p.getFileName().toString()))
+                    .filter(p -> !p.getFileName().toString().toLowerCase(Locale.ROOT).startsWith("orange"))
+                    // Only real server jars: plugins and mods lying around don't count.
+                    .filter(p -> ServerType.inspect(p) != null)
                     // Prefer the most specific fork, then the newest file.
-                    .sorted(Comparator.<Path>comparingInt(p -> ServerType.fromName(p.getFileName().toString()).ordinal())
+                    .sorted(Comparator.<Path>comparingInt(p -> ServerType.inspect(p).ordinal())
                             .thenComparing(ServerJarLocator::lastModified, Comparator.reverseOrder()))
                     .toList();
         }
@@ -41,11 +43,6 @@ final class ServerJarLocator {
                       or set server-jar in orange.yml.""");
         }
         return candidates.getFirst();
-    }
-
-    private static boolean isCandidate(String name) {
-        String lower = name.toLowerCase(Locale.ROOT);
-        return !lower.startsWith("orange") && ServerType.matchesName(name);
     }
 
     private static boolean isSelf(Path p, Path selfJar) {

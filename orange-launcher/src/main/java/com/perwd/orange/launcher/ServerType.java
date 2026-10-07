@@ -52,42 +52,72 @@ public enum ServerType {
         return Character.toUpperCase(n.charAt(0)) + n.substring(1);
     }
 
-    /** True if the file name looks like a server jar Orange knows. */
-    static boolean matchesName(String fileName) {
-        return fromName(fileName) != UNKNOWN || fileName.toLowerCase(Locale.ROOT).equals("server.jar");
-    }
-
+    /**
+     * The fork a file name points to, e.g. {@code leaf-1.21.11-42.jar} or {@code purpur-26.3.jar}.
+     * The name has to start with the fork's name followed by a separator or digit, so a plugin
+     * like {@code LeafInventory-3.1.0.jar} doesn't count.
+     */
     static ServerType fromName(String fileName) {
         String lower = fileName.toLowerCase(Locale.ROOT);
         for (ServerType type : values()) {
-            if (!type.token.isEmpty() && lower.contains(type.token)) {
+            if (!type.token.isEmpty() && lower.matches(java.util.regex.Pattern.quote(type.token) + "([-_.0-9].*)?\\.jar")) {
                 return type;
             }
         }
         return UNKNOWN;
     }
 
-    public static ServerType detect(Path jar) {
-        ServerType byName = fromName(jar.getFileName().toString());
-        if (byName != UNKNOWN) {
-            return byName;
-        }
+    /**
+     * What kind of server {@code jar} is, judged by what's inside it, or {@code null} if it isn't a
+     * server jar at all (a plugin, a mod, a library...).
+     */
+    public static ServerType inspect(Path jar) {
         try (JarFile file = new JarFile(jar.toFile())) {
-            if (file.getEntry("io/papermc/paperclip/") != null || file.getEntry("io/papermc/paperclip/Main.class") != null) {
-                return PAPER;
+            var manifest = file.getManifest();
+            boolean runnable = manifest != null && manifest.getMainAttributes().getValue("Main-Class") != null;
+            if (!runnable) {
+                return null;
             }
-            if (file.getEntry("org/bukkit/") != null || file.getEntry("org/bukkit/craftbukkit/bootstrap/Main.class") != null) {
-                return SPIGOT;
+            ServerType byName = fromName(jar.getFileName().toString());
+            if (file.getEntry("META-INF/patches.list") != null || has(file, "io/papermc/paperclip/")) {
+                // A Paperclip jar: Paper or one of its forks; only the name tells which.
+                return byName != UNKNOWN && byName.runsBukkitPlugins() ? byName : PAPER;
             }
-            if (file.getEntry("net/fabricmc/") != null || file.getEntry("fabric-server-launch.properties") != null) {
-                return FABRIC;
+            if (has(file, "org/bukkit/craftbukkit/")) {
+                return byName == CRAFTBUKKIT ? CRAFTBUKKIT : SPIGOT;
             }
-            if (file.getEntry("net/minecraft/bundler/Main.class") != null) {
+            if (has(file, "net/fabricmc/loader/") || file.getEntry("fabric-server-launch.properties") != null) {
+                return byName == QUILT ? QUILT : FABRIC;
+            }
+            if (has(file, "org/quiltmc/loader/")) {
+                return QUILT;
+            }
+            if (file.getEntry("net/minecraft/bundler/Main.class") != null
+                    || file.getEntry("net/minecraft/server/MinecraftServer.class") != null) {
                 return VANILLA;
             }
+            return null;
         } catch (IOException e) {
-            Log.warn("Could not inspect " + jar.getFileName() + ": " + e.getMessage());
+            return null;
         }
-        return UNKNOWN;
+    }
+
+    /** For a jar the user named explicitly: whatever it is, run it. */
+    public static ServerType detect(Path jar) {
+        ServerType type = inspect(jar);
+        return type != null ? type : fromName(jar.getFileName().toString());
+    }
+
+    private static boolean has(JarFile file, String prefix) {
+        if (file.getEntry(prefix) != null) {
+            return true;
+        }
+        var entries = file.entries();
+        while (entries.hasMoreElements()) {
+            if (entries.nextElement().getName().startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
