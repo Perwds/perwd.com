@@ -4,8 +4,8 @@
 Usage: tnt_benchmark.py <orange.jar>
 
 Every variant starts from the same pre-generated world, summons 1,000 primed TNT in one spot
-(fuse 80 ticks, so all of them are in the world before the first goes off), and reads spark's
-tick times for the 10 seconds that include the blast.
+with a 15 s fuse, and reads spark's tick times for a 10 s window that contains the blast but
+not the tick that ran the 1,000 summon commands (that tick is reported separately).
 """
 import json
 import os
@@ -58,16 +58,21 @@ def measure(run_dir, label):
     idle = "".join(s.lines)
     mark = len(s.lines)
     for _ in range(TNT):
-        s.send("execute positioned 0 0 0 positioned over motion_blocking_no_leaves run summon minecraft:tnt ~ ~ ~ {fuse:80}")
+        s.send("execute positioned 0 0 0 positioned over motion_blocking_no_leaves run summon minecraft:tnt ~ ~ ~ {fuse:300}")
     s.wait_for(r"Summoned new", 60)
-    time.sleep(4 + 6)  # fuse plus the blast itself
-    s.send("spark tps")
+    time.sleep(5)
+    s.send("spark tps")  # 10 s window with the summon tick, before the blast
+    time.sleep(3)
+    summon_out = "".join(s.lines[mark:])
+    mark2 = len(s.lines)
+    time.sleep(7 + 5)  # rest of the fuse (15 s) plus 5 s of blast and aftermath
+    s.send("spark tps")  # 10 s window: blast only
     time.sleep(3)
     s.send("execute if entity @e[type=minecraft:item]")
     time.sleep(2)
     s.send("execute if entity @e[type=minecraft:tnt]")
     time.sleep(2)
-    out = "".join(s.lines[mark:])
+    out = "".join(s.lines[mark2:])
     s.stop()
 
     result = {"label": label}
@@ -75,6 +80,9 @@ def measure(run_dir, label):
     if durations:
         mn, med, p95, mx = durations[0]  # "last 10s" window, which contains the blast
         result.update(median=med, p95=p95, max=mx)
+    summon_d = re.findall(r"(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)", summon_out)
+    if summon_d:
+        result["summon_max"] = summon_d[0][3]
     idle_d = re.findall(r"(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)", idle)
     if idle_d:
         result["idle_max"] = idle_d[-2][3] if len(idle_d) > 1 else idle_d[-1][3]
@@ -123,11 +131,12 @@ def main():
     lines = [f"## {TNT} TNT on the Orange server {version} (build {info['build']})", "",
              "| | " + " | ".join(r["label"] for r in results) + " |",
              "|---|" + "---|" * len(results)]
-    for title, key in [("TNT summoned", "summoned"), ("Worst tick (10 s with the blast)", "max"),
+    for title, key in [("TNT summoned", "summoned"), ("Worst tick during the blast", "max"),
                        ("95th percentile tick", "p95"), ("Median tick", "median"),
-                       ("Worst tick before the blast", "idle_max"),
+                       ("Tick that ran the 1,000 summon commands", "summon_max"),
+                       ("Worst tick before summoning (chunk loading)", "idle_max"),
                        ("Dropped items left", "items"), ("TNT left", "tnt_left")]:
-        lines.append(f"| {title} | " + " | ".join(str(r.get(key, "?")) + (" ms" if key in ("max", "p95", "median", "idle_max") else "") for r in results) + " |")
+        lines.append(f"| {title} | " + " | ".join(str(r.get(key, "?")) + (" ms" if key in ("max", "p95", "median", "idle_max", "summon_max") else "") for r in results) + " |")
     summary = "\n".join(lines)
     print("\n" + summary)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
