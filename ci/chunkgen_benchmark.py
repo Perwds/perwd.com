@@ -20,14 +20,14 @@ RADIUS = 480  # blocks: 61 x 61 = 3,721 chunks
 CORES = os.cpu_count() or 4
 
 # name -> {file: {exact text: replacement}}
+# The template ran through Orange, which sets worker-threads to cores - 1; variants change it.
 VARIANTS = {
-    "Defaults": {},
-    "Pregen 64 in flight": {
-        "plugins/Orange/config.yml": {"parallel-chunks: 16": "parallel-chunks: 64"},
+    "Paper default (worker-threads -1)": {
+        "config/paper-global.yml": {f"worker-threads: {max(1, CORES - 1)}": "worker-threads: -1"},
     },
-    f"64 in flight + {CORES} worker threads": {
-        "plugins/Orange/config.yml": {"parallel-chunks: 16": "parallel-chunks: 64"},
-        "config/paper-global.yml": {"worker-threads: -1": f"worker-threads: {CORES}"},
+    f"Orange: {max(1, CORES - 1)} worker threads": {},
+    f"{CORES} worker threads (every core)": {
+        "config/paper-global.yml": {f"worker-threads: {max(1, CORES - 1)}": f"worker-threads: {CORES}"},
     },
 }
 
@@ -78,7 +78,13 @@ def main():
         mark = len(s.lines)
         start = time.time()
         s.send(f"orange pregen world {RADIUS}")
-        done = s.wait_for(r"Pre-generation of world finished", 1200)
+        # Sample spark's 10 s window every 10 s while generating: the worst tick over the whole run.
+        done = False
+        while time.time() - start < 1200:
+            if s.wait_for(r"Pre-generation of world finished", 10):
+                done = True
+                break
+            s.send("spark tps")
         elapsed = time.time() - start
         s.send("spark tps")
         time.sleep(3)
@@ -92,14 +98,17 @@ def main():
             "rate": f"{float(m.group(3)):.0f}" if m else "?",
             "seconds": f"{elapsed:.0f}" if done else "timeout",
             # 1-minute window: covers the generation (or its last minute)
-            "max": durations[1][3] if len(durations) > 1 else (durations[0][3] if durations else "?"),
+            # every spark tps prints a 10 s then a 1 m tuple; take the worst 10 s window
+            "max": max((d[3] for d in durations[0::2]), key=float) if durations else "?",
+            "median": sorted((float(d[1]) for d in durations[0::2]))[len(durations[0::2]) // 2] if durations else "?",
         })
         print(results[-1], flush=True)
 
     lines = [f"## Chunk generation on the Orange server {version} ({CORES} CPU cores, radius {RADIUS} blocks)", "",
              "| | " + " | ".join(r["label"] for r in results) + " |", "|---|" + "---|" * len(results)]
     for title, key, unit in [("Chunks generated", "chunks", ""), ("Chunks per second", "rate", ""),
-                             ("Total time", "seconds", " s"), ("Worst tick while generating (1 min)", "max", " ms")]:
+                             ("Total time", "seconds", " s"), ("Worst tick while generating", "max", " ms"),
+                             ("Typical (median) tick while generating", "median", " ms")]:
         lines.append(f"| {title} | " + " | ".join(f"{r[key]}{unit}" for r in results) + " |")
     summary = "\n".join(lines)
     print("\n" + summary)
