@@ -44,11 +44,15 @@ public record OrangeConfig(
             gc: auto
 
             # Server config tuning, applied once per config file per profile (your later edits stick):
+            #   vanilla    = 100% vanilla gameplay. Undoes Paper/Spigot's mechanic changes (piston duping,
+            #                bedrock breaking, entity activation range, item merging...) and only applies
+            #                optimizations that have no gameplay effect. (default)
+            #   balanced   = big TPS wins; changes things most players won't notice (spawn rates, far-away
+            #                mob AI). Some farms get slower.
+            #   aggressive = maximum TPS; changes vanilla mechanics (redstone engine, spawner AI, villager
+            #                AI, armor stand ticking). Read the README before using it.
             #   off        = don't touch my configs
-            #   balanced   = big wins, no gameplay changes players notice (recommended)
-            #   aggressive = maximum TPS; changes some vanilla mechanics (redstone engine, spawner AI,
-            #                villager AI, armor stand ticking). Read the README before using it.
-            optimization-profile: balanced
+            optimization-profile: vanilla
 
             # Copy the Orange plugin (TPS governor, entity limiter, /orange) into plugins/.
             install-plugin: true
@@ -79,7 +83,7 @@ public record OrangeConfig(
                 string(map, "server-jar", "auto"),
                 string(map, "memory", "auto"),
                 string(map, "gc", "auto").toLowerCase(Locale.ROOT),
-                Profile.parse(string(map, "optimization-profile", "balanced")),
+                Profile.parse(string(map, "optimization-profile", "vanilla")),
                 bool(map, "install-plugin", true),
                 bool(map, "agent", true),
                 bool(map, "auto-restart", false),

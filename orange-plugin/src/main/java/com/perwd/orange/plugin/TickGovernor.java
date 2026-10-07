@@ -9,8 +9,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
- * Sheds load when MSPT climbs by lowering simulation distance first (fewer ticking chunks),
- * then view distance, one step per check. Restores in reverse order once MSPT is low again.
+ * Sheds load when MSPT climbs, one step per check: simulation distance first (if allowed, since
+ * it means fewer ticking chunks), then view distance. Restores in reverse order once MSPT is low.
  */
 final class TickGovernor {
     private final OrangePlugin plugin;
@@ -24,6 +24,7 @@ final class TickGovernor {
     private double msptLow;
     private int minSimulation;
     private int minView;
+    private boolean adjustSimulation;
     private String lastAction = "none yet";
 
     TickGovernor(OrangePlugin plugin, TickMonitor monitor) {
@@ -45,6 +46,7 @@ final class TickGovernor {
         msptLow = config.getDouble("mspt-low", 30.0);
         minSimulation = Math.max(2, config.getInt("min-simulation-distance", 3));
         minView = Math.max(2, config.getInt("min-view-distance", 5));
+        adjustSimulation = config.getBoolean("adjust-simulation-distance", false);
         long period = Math.max(1, config.getLong("check-interval-seconds", 10)) * 20L;
         task = Bukkit.getScheduler().runTaskTimer(plugin, this::check, period, period);
     }
@@ -83,7 +85,7 @@ final class TickGovernor {
             int sim = world.getSimulationDistance();
             int view = world.getViewDistance();
             if (mspt > msptHigh) {
-                if (sim > minSimulation) {
+                if (adjustSimulation && sim > minSimulation) {
                     world.setSimulationDistance(sim - 1);
                     record(world, "simulation-distance " + sim + " -> " + (sim - 1), mspt);
                 } else if (view > minView) {

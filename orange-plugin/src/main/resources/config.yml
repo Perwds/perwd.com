@@ -1,10 +1,13 @@
 # Orange plugin settings. /orange reload applies changes.
 
-# Lowers view/simulation distance while the server is struggling and puts it back when it recovers.
-# Players far from lag sources never notice; the server stays at 20 TPS instead of rubber-banding.
-# Needs Paper (or a Paper fork). Disabled automatically on Spigot.
+# Lowers view distance while the server is struggling and puts it back when it recovers, so the
+# server stays at 20 TPS instead of rubber-banding. View distance only changes how far players can
+# see, not how the world behaves. Needs Paper (or a Paper fork); disabled automatically on Spigot.
 governor:
   enabled: true
+  # Also lower simulation distance. Much bigger TPS win, but chunks at the edge stop ticking, so
+  # farms there pause. Off by default to keep gameplay vanilla.
+  adjust-simulation-distance: false
   check-interval-seconds: 10
   # Average milliseconds per tick (50 = the tick budget). Above "high" we shed load, below "low" we restore.
   mspt-high: 45.0
@@ -13,8 +16,9 @@ governor:
   min-view-distance: 5
 
 # Stops mob farms and breeding pens from piling hundreds of the same mob into one chunk.
+# Off by default because it isn't vanilla behaviour.
 entity-limiter:
-  enabled: true
+  enabled: false
   # Max entities of the same type in one chunk before more stop spawning.
   max-per-type-per-chunk: 40
   # Per-type overrides (Bukkit EntityType names).
@@ -35,3 +39,11 @@ entity-limiter:
     - RAID
     - PATROL
     - SLIME_SPLIT
+
+# /orange pregen <world> <radius>: generates chunks ahead of time so players never trigger
+# generation, the biggest single source of lag. Doesn't change the world at all.
+pregen:
+  # Chunks generated in parallel. Higher is faster but uses more CPU.
+  parallel-chunks: 16
+  # Pause while the server is busier than this (milliseconds per tick).
+  pause-above-mspt: 40.0

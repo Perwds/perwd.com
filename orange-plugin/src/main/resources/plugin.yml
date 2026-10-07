@@ -8,7 +8,7 @@ load: STARTUP
 commands:
   orange:
     description: Orange performance status and controls.
-    usage: /orange <status|reload>
+    usage: /orange <status|reload|pregen>
     permission: orange.admin
 permissions:
   orange.admin:

@@ -7,6 +7,7 @@ public final class OrangePlugin extends JavaPlugin {
     private TickMonitor tickMonitor;
     private TickGovernor governor;
     private EntityLimiter entityLimiter;
+    private Pregenerator pregenerator;
 
     @Override
     public void onEnable() {
@@ -16,6 +17,7 @@ public final class OrangePlugin extends JavaPlugin {
 
         governor = new TickGovernor(this, tickMonitor);
         entityLimiter = new EntityLimiter();
+        pregenerator = new Pregenerator(this, tickMonitor);
         getServer().getPluginManager().registerEvents(entityLimiter, this);
         applyConfig();
 
@@ -32,12 +34,16 @@ public final class OrangePlugin extends JavaPlugin {
         if (governor != null) {
             governor.stop();
         }
+        if (pregenerator != null && pregenerator.running()) {
+            pregenerator.stop();
+        }
     }
 
     void applyConfig() {
         reloadConfig();
         governor.configure(getConfig().getConfigurationSection("governor"));
         entityLimiter.configure(getConfig().getConfigurationSection("entity-limiter"), getLogger());
+        pregenerator.configure(getConfig().getConfigurationSection("pregen"));
     }
 
     TickMonitor tickMonitor() {
@@ -50,5 +56,9 @@ public final class OrangePlugin extends JavaPlugin {
 
     EntityLimiter entityLimiter() {
         return entityLimiter;
+    }
+
+    Pregenerator pregenerator() {
+        return pregenerator;
     }
 }
