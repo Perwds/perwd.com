@@ -95,13 +95,13 @@ def fetch_purpur(dest):
 
 
 class Server:
-    def __init__(self, run_dir, log_path):
+    def __init__(self, run_dir, log_path, command=None):
         self.log_path = log_path
         self.cmd_path = os.path.join(run_dir, ".commands")
         open(self.cmd_path, "w").close()
         self.log = open(log_path, "w")
         feeder = subprocess.Popen(["tail", "-f", self.cmd_path], stdout=subprocess.PIPE)
-        self.proc = subprocess.Popen(["java", "-jar", "orange.jar"], cwd=run_dir, stdin=feeder.stdout,
+        self.proc = subprocess.Popen(command or ["java", "-jar", "orange.jar"], cwd=run_dir, stdin=feeder.stdout,
                                      stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         self.feeder = feeder
         self.lines = []
