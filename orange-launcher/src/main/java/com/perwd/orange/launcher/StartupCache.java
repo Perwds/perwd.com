@@ -36,8 +36,14 @@ final class StartupCache {
         Path file = dir.resolve(key + (aot ? ".aot" : ".jsa"));
         removeStale(dir, file);
         // The JVM refuses to write a class cache while a Java agent is attached unless told it may.
-        List<String> agentFlags = agentJar == null ? List.of()
-                : List.of("-XX:+UnlockDiagnosticVMOptions", "-XX:+AllowArchivingWithJavaAgent");
+        List<String> agentFlags = new java.util.ArrayList<>(agentJar == null ? List.of()
+                : List.of("-XX:+UnlockDiagnosticVMOptions", "-XX:+AllowArchivingWithJavaAgent"));
+        // Writing the cache lists every class it can't store (signed jars, proxies, ...) as a
+        // warning: hundreds of harmless lines at the first shutdown. Keep errors only.
+        agentFlags.add("-Xlog:cds=error");
+        if (aot) {
+            agentFlags.add("-Xlog:aot=error");
+        }
         if (!aot) {
             return concat(agentFlags, List.of("-XX:+AutoCreateSharedArchive", "-XX:SharedArchiveFile=" + file));
         }
