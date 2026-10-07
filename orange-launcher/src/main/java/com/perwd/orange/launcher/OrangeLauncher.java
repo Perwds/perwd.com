@@ -57,16 +57,33 @@ public final class OrangeLauncher {
         }
         new ConfigOptimizer(home, config.profile(), config.pingTolerance(), dryRun).run();
 
+        String java = javaBinary();
+        DirectLaunch direct = config.fastStartup() ? DirectLaunch.prepare(home, serverJar, java, dryRun) : null;
+        boolean agent = selfJar != null && switch (config.agent()) {
+            case "true" -> true;
+            case "false" -> false;
+            default -> hasMods(home.resolve("orange-mods"));
+        };
+
         List<String> command = new ArrayList<>();
-        command.add(javaBinary());
+        command.add(java);
         command.addAll(JvmFlags.build(heapMb, gc, type));
-        if (config.agent() && selfJar != null) {
+        if (direct != null) {
+            command.addAll(StartupCache.flags(home, direct, agent ? selfJar : null));
+        }
+        if (agent) {
             command.add("-javaagent:" + selfJar);
             command.add("-Dorange.home=" + home);
         }
         command.addAll(config.extraJvmArgs());
-        command.add("-jar");
-        command.add(serverJar.toString());
+        if (direct != null) {
+            command.add("-cp");
+            command.add(direct.classpathString());
+            command.add(direct.mainClass());
+        } else {
+            command.add("-jar");
+            command.add(serverJar.toString());
+        }
         command.addAll(config.serverArgs());
         command.addAll(argList);
 
@@ -105,6 +122,14 @@ public final class OrangeLauncher {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    private static boolean hasMods(Path dir) {
+        try (var files = java.nio.file.Files.list(dir)) {
+            return files.anyMatch(p -> p.toString().endsWith(".jar"));
+        } catch (java.io.IOException e) {
+            return false;
         }
     }
 

@@ -23,8 +23,9 @@ public record OrangeConfig(
         Profile profile,
         PingTolerance pingTolerance,
         boolean installPlugin,
-        boolean agent,
+        String agent,
         boolean autoRestart,
+        boolean fastStartup,
         List<String> serverArgs,
         List<String> extraJvmArgs) {
 
@@ -67,11 +68,19 @@ public record OrangeConfig(
             # Copy the Orange plugin (TPS governor, entity limiter, /orange) into plugins/.
             install-plugin: true
 
-            # Load the Orange agent: server branding and Orange mods from orange-mods/.
-            agent: true
+            # The Orange agent loads Orange mods from orange-mods/ and brands the server "Orange (Paper)".
+            #   auto  = only when orange-mods/ has mods (keeps the JVM's startup cache fully supported)
+            #   true  = always, for the branding too (the JVM then marks its startup cache "for testing")
+            #   false = never
+            agent: auto
 
             # Restart the server automatically if it crashes (exit code other than 0).
             auto-restart: false
+
+            # Faster starts for Paper-based servers: launch the unpacked server directly (skipping
+            # Paperclip's re-hashing of every library) and keep a JVM class cache between runs
+            # (the AOT cache on Java 25+, AppCDS on older Java). The first start records the cache.
+            fast-startup: true
 
             server-args:
               - nogui
@@ -96,8 +105,9 @@ public record OrangeConfig(
                 Profile.parse(string(map, "optimization-profile", "vanilla")),
                 PingTolerance.parse(string(map, "ping-tolerance", "normal")),
                 bool(map, "install-plugin", true),
-                bool(map, "agent", true),
+                string(map, "agent", "auto").toLowerCase(Locale.ROOT),
                 bool(map, "auto-restart", false),
+                bool(map, "fast-startup", true),
                 list(map, "server-args", List.of("nogui")),
                 list(map, "extra-jvm-args", List.of()));
     }

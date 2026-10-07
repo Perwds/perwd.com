@@ -102,9 +102,13 @@ def run(label, run_dir, command):
     s.stop()
 
     print(f"\n===== {label}: measured boot =====", flush=True)
+    launched = time.time()
     s = Server(run_dir, os.path.join(run_dir, "bench.log"), command)
     if not s.wait_for(r"Done \(\d", 900):
         raise SystemExit(f"{label}: measured boot failed")
+    # Wall clock from launching the command to "Done": includes JVM start-up and Paperclip, which
+    # Paper's own "Done (...)" timer leaves out.
+    results["startup_wall"] = f"{time.time() - launched:.1f} s"
     results["startup"] = re.search(r"Done \(([\d.]+)s\)", "".join(s.lines)).group(1) + " s"
 
     start = time.time()
@@ -185,7 +189,8 @@ def main():
         runs.append(run(f"Orange ({profile})", d, ["java", "-jar", "orange.jar"]))
 
     rows = [
-        ("Startup (measured boot)", "startup"),
+        ("Startup, wall clock", "startup_wall"),
+        ("Startup, Paper's \"Done\" timer", "startup"),
         ("Entities loaded", "entities"),
         ("TPS (last 1m)", "tps_1m"),
         ("MSPT median (1m)", "mspt_median"),

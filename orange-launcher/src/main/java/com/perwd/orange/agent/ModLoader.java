@@ -43,6 +43,19 @@ final class ModLoader {
         this.registry = registry;
     }
 
+    boolean hasMods() {
+        try {
+            Files.createDirectories(directory);
+        } catch (IOException e) {
+            return false;
+        }
+        try (Stream<Path> files = Files.list(directory)) {
+            return files.anyMatch(p -> p.toString().endsWith(".jar"));
+        } catch (IOException e) {
+            return false; // no orange-mods/ folder yet
+        }
+    }
+
     void loadAll() {
         List<Path> jars;
         try {

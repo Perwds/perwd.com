@@ -19,7 +19,8 @@ java -jar orange.jar
 | **Launcher** (`orange.jar`) | Starts your server with tuned JVM flags: [Aikar's G1 flags](https://docs.papermc.io/paper/aikars-flags) or generational ZGC, picked for your heap size. On Java 25+ it adds compact object headers (a smaller heap and less GC work), and transparent huge pages when the kernel supports them. Sizes the heap from your RAM (container-aware), sets `-Xms = -Xmx`, adds the SIMD Vector API for Pufferfish-based forks, optionally restarts after crashes, and shuts the server down cleanly on Ctrl+C or SIGTERM. |
 | **Config optimizer** | Edits `server.properties`, `bukkit.yml`, `spigot.yml`, `config/paper-global.yml`, `config/paper-world-defaults.yml`, `purpur.yml` and `pufferfish.yml` for the profile you pick (below). It keeps comments, backs every file up to `.orange/backups/`, only changes keys that already exist, and applies each profile **once** so your later edits stick. |
 | **Orange plugin** (auto-installed) | **`/orange pregen <world> <radius>`**: generates the world ahead of time. Chunk generation is the biggest single source of lag, and pre-generating changes nothing about the world. It spirals out from spawn and pauses while the server is busy. **TPS governor**: lowers *view* distance while MSPT is above 45 and puts it back when the server recovers. **High-ping helper**: tracks every player's ping and jitter (`/orange ping`). When a player's ping stays above 250 ms, it sends them fewer chunks so their connection has room for movement and combat updates. It restores them when their ping recovers, and the world simulates exactly as before. **`/orange status`**: TPS, MSPT, memory, chunks and entities per world. The entity limiter and the simulation-distance governor change gameplay, so they're **off by default**. |
-| **Orange mods** (agent) | Fabric-style bytecode patches (ASM) loaded from `orange-mods/`, on any server software. Also brands the server as `Orange (Paper)` in the server list and F3. |
+| **Fast startup** | For Paper-based servers, Orange launches the unpacked server directly, so Paperclip doesn't re-hash every library on each start. It also keeps a JVM class cache between runs: the AOT cache on Java 25+, AppCDS on Java 21–24. The first start records the cache, and later starts reuse it. Turn it off with `fast-startup: false`. |
+| **Orange mods** (agent) | Fabric-style bytecode patches (ASM) loaded from `orange-mods/`, on any server software. The agent attaches only when mods are installed (`agent: auto`). Set `agent: true` to also brand the server as `Orange (Paper)` in the server list and F3. |
 
 ### Profiles
 
@@ -111,7 +112,8 @@ gc: auto                         # auto | g1 | zgc
 optimization-profile: vanilla    # vanilla | balanced | aggressive | off
 ping-tolerance: normal           # normal | high
 install-plugin: true
-agent: true
+agent: auto                      # auto | true | false
+fast-startup: true
 auto-restart: false
 server-args: [nogui]
 extra-jvm-args: []

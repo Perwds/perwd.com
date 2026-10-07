@@ -23,19 +23,21 @@ public final class OrangeAgent {
 
     public static void premain(String args, Instrumentation inst) {
         Path home = Path.of(System.getProperty("orange.home", ".")).toAbsolutePath();
-        try {
-            Path hooks = extractHooks(home);
-            // Bootstrap visibility: patched game classes can reach OrangeHooks from any class loader.
-            inst.appendToBootstrapClassLoaderSearch(new JarFile(hooks.toFile()));
-        } catch (IOException e) {
-            Log.error("Could not set up Orange hooks; the agent is disabled", e);
-            return;
-        }
-
         PatchRegistry registry = new PatchRegistry();
         registry.register(new BrandingPatch());
-        if (!Boolean.getBoolean("orange.mods.disable")) {
-            new ModLoader(home.resolve("orange-mods"), registry).loadAll();
+
+        ModLoader mods = new ModLoader(home.resolve("orange-mods"), registry);
+        if (!Boolean.getBoolean("orange.mods.disable") && mods.hasMods()) {
+            try {
+                // Mods' patched code calls OrangeHooks, so it must be reachable from every class
+                // loader. Appending to the boot class path disables the JVM's class cache for
+                // application classes, so it only happens when mods are installed.
+                Path hooks = extractHooks(home);
+                inst.appendToBootstrapClassLoaderSearch(new JarFile(hooks.toFile()));
+                mods.loadAll();
+            } catch (IOException e) {
+                Log.error("Could not set up Orange hooks; Orange mods are disabled", e);
+            }
         }
         inst.addTransformer(new OrangeTransformer(registry), false);
         Log.info("Agent ready: " + registry.size() + " patch(es) registered.");

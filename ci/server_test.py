@@ -209,12 +209,17 @@ def main():
     print(dry)
     open(os.path.join(run_dir, "dry-run.txt"), "w").write(dry)
     yml = os.path.join(run_dir, "orange.yml")
-    text = open(yml).read().replace("memory: auto", "memory: 2G")
+    # agent: true covers the branding patch together with the startup cache.
+    text = open(yml).read().replace("memory: auto", "memory: 2G").replace("agent: auto", "agent: true")
     open(yml, "w").write(text)
 
     log1 = boot(run_dir, "boot1", pregen=True)
     check("Applied patch orange:branding" in log1, "branding patch applied to the real MinecraftServer")
     check("Enabling Orange" in log1, "Orange plugin enabled")
+    check("Error occurred during CDS dumping" not in log1, "startup cache recorded without errors")
+    cache_dir = os.path.join(run_dir, ".orange", "cache", "jvm")
+    caches = os.listdir(cache_dir) if os.path.isdir(cache_dir) else []
+    check(any(f.endswith((".aot", ".jsa")) for f in caches), f"startup cache file written ({caches})")
     if JAVA >= 25:
         check("UseCompactObjectHeaders" in open(os.path.join(run_dir, "dry-run.txt")).read(),
               "compact object headers enabled on Java 25")
@@ -228,6 +233,7 @@ def main():
     # Second boot: the configs now exist, so the optimizer tunes them.
     log2 = boot(run_dir, "boot2", pregen=False)
     check("Tuned spigot.yml" in log2, "optimizer tuned spigot.yml")
+    check("Applied patch orange:branding" in log2, "branding still applied with the startup cache")
     check("Tuned config/paper-world-defaults.yml" in log2, "optimizer tuned paper-world-defaults.yml")
 
     for log, label in [(log1, "boot1"), (log2, "boot2")]:
