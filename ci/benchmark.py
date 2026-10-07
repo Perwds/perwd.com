@@ -115,8 +115,8 @@ def run(label, run_dir, command):
         s.send(c)
     time.sleep(30)  # let mobs settle
     s.send("execute if entity @e")
-    s.wait_for(r"Test passed, count: \d+", 60)
-    m = re.findall(r"Test passed, count: (\d+)", "".join(s.lines))
+    s.wait_for(r"Test passed[.,] [Cc]ount: \d+", 60)
+    m = re.findall(r"Test passed[.,] [Cc]ount: (\d+)", "".join(s.lines))
     results["entities"] = m[-1] if m else "?"
 
     mark = len(s.lines)
@@ -137,7 +137,8 @@ def run(label, run_dir, command):
         # spark prints "last 10s" then "last 1m"; the 1m window covers the whole profile.
         mn, med, p95, mx = durations[1] if len(durations) > 1 else durations[0]
         results.update(mspt_median=med, mspt_p95=p95, mspt_max=mx)
-    tps = re.search(r"TPS from last.*?\n\s*\D*([\d.]+)\*?,\s*\D*([\d.]+)\*?,\s*\D*([\d.]+)", out)
+    # e.g. "[12:00:00 INFO]: [⚡]  19.89, 19.94, *20.0, 18.43, 19.45" (5s, 10s, 1m, 5m, 15m)
+    tps = re.search(r"TPS from last.*\n.*?\]:\s*\S*\s+\*?([\d.]+)\*?,\s*\*?([\d.]+)\*?,\s*\*?([\d.]+)", out)
     if tps:
         results["tps_1m"] = tps.group(3)
     results["elapsed"] = f"{time.time() - start:.0f} s"
