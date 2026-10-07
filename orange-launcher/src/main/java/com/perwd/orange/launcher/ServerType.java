@@ -7,6 +7,7 @@ import java.util.jar.JarFile;
 
 /** The kind of server jar Orange is wrapping. Order matters: forks come before their parents. */
 public enum ServerType {
+    ORANGE("orange", Family.PAPER, false),
     LEAF("leaf", Family.PAPER, true),
     GALE("gale", Family.PAPER, true),
     CANVAS("canvas", Family.FOLIA, true),

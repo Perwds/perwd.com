@@ -30,6 +30,9 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 /**
  * Downloads and updates the server jar, so {@code orange.jar} is all a user needs.
  *
+ * <p>Sources: the Orange server (this project's own Paper fork, published as a GitHub release by
+ * the orange-server workflow), Paper (PaperMC's Fill API) and Purpur (Purpur's API).
+ *
  * <p>Picks the newest stable build of the newest Minecraft version that runs on this Java
  * (1.x needs Java 21, 26.x needs Java 25), and verifies its checksum. Updates only ever move to
  * newer builds of the installed Minecraft version: changing the Minecraft version upgrades the
@@ -38,6 +41,8 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 final class ServerDownloader {
     private static final String USER_AGENT = "Orange/" + OrangeLauncher.version() + " (https://github.com/Perwds/perwd.com)";
     private static final Duration TIMEOUT = Duration.ofSeconds(20);
+    static final String ORANGE_MANIFEST =
+            "https://github.com/Perwds/perwd.com/releases/download/orange-server/orange-server.json";
 
     private final Path home;
     private final String project;
@@ -114,7 +119,9 @@ final class ServerDownloader {
 
     private String newestUsableVersion() throws IOException, InterruptedException {
         List<String> versions = new ArrayList<>();
-        if (project.equals("purpur")) {
+        if (project.equals("orange")) {
+            versions.addAll(asMap(json(ORANGE_MANIFEST).get("versions")).keySet());
+        } else if (project.equals("purpur")) {
             versions.addAll(stringList(json("https://api.purpurmc.org/v2/purpur").get("versions")));
         } else {
             Object grouped = json(fill("")).get("versions");
@@ -133,6 +140,14 @@ final class ServerDownloader {
     }
 
     private Build latestBuild(String version) throws IOException, InterruptedException {
+        if (project.equals("orange")) {
+            Map<String, Object> build = asMap(asMap(json(ORANGE_MANIFEST).get("versions")).get(version));
+            if (build.isEmpty()) {
+                throw new LauncherException("There's no Orange server for Minecraft " + version + " yet.");
+            }
+            return new Build(String.valueOf(build.get("build")), String.valueOf(build.get("file")),
+                    URI.create(String.valueOf(build.get("url"))), "SHA-256", String.valueOf(build.get("sha256")));
+        }
         if (project.equals("purpur")) {
             String base = "https://api.purpurmc.org/v2/purpur/" + version;
             Object latest = asMap(json(base).get("builds")).get("latest");

@@ -24,8 +24,7 @@ final class ServerJarLocator {
         try (Stream<Path> files = Files.list(home)) {
             candidates = files
                     .filter(p -> p.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".jar"))
-                    .filter(p -> !isSelf(p, selfJar))
-                    .filter(p -> !p.getFileName().toString().toLowerCase(Locale.ROOT).startsWith("orange"))
+                    .filter(p -> !isSelf(p, selfJar))   // orange.jar itself
                     // Only real server jars: plugins and mods lying around don't count.
                     .filter(p -> ServerType.inspect(p) != null)
                     // Prefer the most specific fork, then the newest file.

@@ -126,8 +126,8 @@ public final class OrangeLauncher {
             return ServerJarLocator.locate(home, config.serverJar(), selfJar);
         }
         boolean downloads = !config.download().equals("off");
-        if (downloads && !config.download().matches("paper|purpur")) {
-            throw new LauncherException("Unknown download '" + config.download() + "' in orange.yml (use paper, purpur or off).");
+        if (downloads && !config.download().matches("orange|paper|purpur")) {
+            throw new LauncherException("Unknown download '" + config.download() + "' in orange.yml (use orange, paper, purpur or off).");
         }
         ServerDownloader downloader = downloads ? new ServerDownloader(home, config.download(), config.minecraftVersion()) : null;
         Path downloaded = downloader == null ? null : downloader.installed();

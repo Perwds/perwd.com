@@ -198,7 +198,11 @@ def main():
     shutil.rmtree(run_dir, ignore_errors=True)
     os.makedirs(run_dir)
     # "download": no server jar at all; Orange has to download Paper itself.
-    if flavor == "paper":
+    if flavor == "file":
+        # A server jar built by this repo (the Orange server): ORANGE_SERVER_JAR=path
+        src = os.environ["ORANGE_SERVER_JAR"]
+        shutil.copy(src, os.path.join(run_dir, os.path.basename(src)))
+    elif flavor == "paper":
         fetch_paper(run_dir)
     elif flavor == "purpur":
         fetch_purpur(run_dir)
@@ -222,6 +226,8 @@ def main():
         check(re.search(r"Downloaded paper-[\d.]+-\d+\.jar", log1) is not None, "Orange downloaded Paper by itself")
     check("Applied patch orange:branding" in log1, "branding patch applied to the real MinecraftServer")
     check("Enabling Orange" in log1, "Orange plugin enabled")
+    if flavor == "file":
+        check(re.search(r"Loading Orange [\w.\-]+", log1) is not None, "server identifies itself as Orange")
     check("Error occurred during CDS dumping" not in log1, "startup cache recorded without errors")
     cache_dir = os.path.join(run_dir, ".orange", "cache", "jvm")
     caches = os.listdir(cache_dir) if os.path.isdir(cache_dir) else []

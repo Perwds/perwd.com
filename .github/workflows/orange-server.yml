@@ -1,6 +1,7 @@
 name: Orange server
 
-# Builds the Orange server jar (a Paper fork) from server/.
+# Builds the Orange server jar (a Paper fork) from server/, boots it through orange.jar, and
+# publishes it as the "orange-server" GitHub release that orange.jar downloads from.
 on:
   push:
     paths:
@@ -15,6 +16,8 @@ jobs:
     defaults:
       run:
         working-directory: server
+    outputs:
+      mc: ${{ steps.info.outputs.mc }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -30,9 +33,86 @@ jobs:
         run: ./gradlew applyAllPatches --stacktrace --console=plain
       - name: Build server jar
         run: ./gradlew createMojmapPaperclipJar --stacktrace --console=plain
-      - name: Show output
-        run: ls -la orange-server/build/libs/
+      - id: info
+        name: Name the jar
+        run: |
+          mc=$(grep '^mcVersion' gradle.properties | cut -d= -f2 | tr -d ' ')
+          echo "mc=$mc" >> "$GITHUB_OUTPUT"
+          mkdir -p ../out
+          cp orange-server/build/libs/*paperclip*mojmap*.jar "../out/orange-$mc-${{ github.run_number }}.jar"
+          ls -la ../out
       - uses: actions/upload-artifact@v4
         with:
           name: orange-server
-          path: server/orange-server/build/libs/*paperclip*.jar
+          path: out/*.jar
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: orange-server
+          path: out
+      - run: ./gradlew :orange-launcher:shadowJar --console=plain
+      - name: Boot the Orange server through orange.jar
+        run: |
+          export ORANGE_SERVER_JAR=$(ls out/*.jar)
+          python3 ci/server_test.py file orange-launcher/build/libs/orange.jar
+
+  publish:
+    needs: [build, test]
+    if: github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'claude/quirky-hawking-29f5dl')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MC: ${{ needs.build.outputs.mc }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: orange-server
+          path: out
+      - name: Publish to the orange-server release
+        run: |
+          set -euo pipefail
+          jar=$(ls out/*.jar)
+          name=$(basename "$jar")
+          if ! gh release view orange-server >/dev/null 2>&1; then
+            gh release create orange-server --title "Orange server" --latest=false \
+              --notes "Builds of the Orange server (a Paper fork). orange.jar downloads these automatically (download: orange)."
+          fi
+          # Previous manifest, if any, so other Minecraft versions stay listed.
+          gh release download orange-server -p orange-server.json -D prev 2>/dev/null || true
+          python3 - "$jar" "$name" <<'PY'
+          import hashlib, json, os, sys
+          jar, name = sys.argv[1], sys.argv[2]
+          mc, build = os.environ["MC"], os.environ["GITHUB_RUN_NUMBER"]
+          try:
+              manifest = json.load(open("prev/orange-server.json"))
+          except FileNotFoundError:
+              manifest = {"versions": {}}
+          manifest["versions"][mc] = {
+              "build": build,
+              "file": name,
+              "sha256": hashlib.sha256(open(jar, "rb").read()).hexdigest(),
+              "url": f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/releases/download/orange-server/{name}",
+              "commit": os.environ["GITHUB_SHA"],
+          }
+          json.dump(manifest, open("orange-server.json", "w"), indent=2)
+          print(json.dumps(manifest, indent=2))
+          PY
+          gh release upload orange-server "$jar" orange-server.json --clobber
+          # Keep only the newest jar per Minecraft version.
+          gh release view orange-server --json assets -q '.assets[].name' \
+            | grep -E "^orange-${MC//./\\.}-[0-9]+\.jar$" | grep -vx "$name" \
+            | while read -r old; do gh release delete-asset orange-server "$old" -y; done
