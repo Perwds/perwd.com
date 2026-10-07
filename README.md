@@ -67,12 +67,20 @@ at 20 TPS. Every millisecond a tick runs over 50 ms adds to *everyone's* ping.
 
 ## Quick start
 
-1. Download your server jar (for example [Paper](https://papermc.io/downloads/paper) or
-   [Purpur](https://purpurmc.org/downloads)) and put it in a folder with `orange.jar`.
-2. Run `java -jar orange.jar`. It creates `orange.yml`, detects the server jar, and starts it.
-3. The server creates its config files on the first start. **Restart once** and Orange tunes them.
+All you need is Java 25 (or 21) and `orange.jar`:
 
-4. Pre-generate the world (in-game or from the console):
+1. Put `orange.jar` in an empty folder and run `java -jar orange.jar`.
+2. Orange downloads the latest stable Paper for your Java version, verifies its checksum, asks
+   you to accept the Minecraft EULA, and starts the server.
+3. Restart once after the first start: the server creates its config files on the first start,
+   and Orange tunes them on the next one.
+
+Want Purpur instead? Set `download: purpur` in `orange.yml`. Already have a server jar? Put it next
+to `orange.jar` and Orange uses it. Orange keeps the jar it downloaded up to date with new builds
+of the same Minecraft version (`auto-update: true`). It never changes the Minecraft version by itself,
+because that upgrades your world, which can't be undone. Set `minecraft-version` to move to a new one.
+
+Then pre-generate the world (in-game or from the console):
    ```
    /orange pregen world 5000
    /orange pregen world_nether 2000
@@ -107,6 +115,9 @@ java -jar orange.jar --dry-run
 
 ```yaml
 server-jar: auto                 # or a file name
+download: paper                  # paper | purpur | off
+minecraft-version: latest        # or e.g. 26.2
+auto-update: true
 memory: auto                     # e.g. 8G
 gc: auto                         # auto | g1 | zgc
 optimization-profile: vanilla    # vanilla | balanced | aggressive | off

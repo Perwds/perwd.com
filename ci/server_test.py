@@ -197,14 +197,18 @@ def main():
     run_dir = os.path.abspath(f"run-{flavor}-java{JAVA}")
     shutil.rmtree(run_dir, ignore_errors=True)
     os.makedirs(run_dir)
-    jar = fetch_paper(run_dir) if flavor == "paper" else fetch_purpur(run_dir)
+    # "download": no server jar at all; Orange has to download Paper itself.
+    if flavor == "paper":
+        fetch_paper(run_dir)
+    elif flavor == "purpur":
+        fetch_purpur(run_dir)
     shutil.copy(orange_jar, os.path.join(run_dir, "orange.jar"))
     with open(os.path.join(run_dir, "eula.txt"), "w") as f:
         f.write("eula=true\n")
     with open(os.path.join(run_dir, "server.properties"), "w") as f:
         f.write("level-seed=orange\nonline-mode=false\n")
     # orange.yml from the template, with a CI-sized heap.
-    dry = subprocess.run(["java", "-jar", "orange.jar", "--dry-run"], cwd=run_dir, check=True,
+    dry = subprocess.run(["java", "-jar", "orange.jar", "--dry-run"], cwd=run_dir, check=flavor != "download",
                          capture_output=True, text=True).stdout
     print(dry)
     open(os.path.join(run_dir, "dry-run.txt"), "w").write(dry)
@@ -214,13 +218,15 @@ def main():
     open(yml, "w").write(text)
 
     log1 = boot(run_dir, "boot1", pregen=True)
+    if flavor == "download":
+        check(re.search(r"Downloaded paper-[\d.]+-\d+\.jar", log1) is not None, "Orange downloaded Paper by itself")
     check("Applied patch orange:branding" in log1, "branding patch applied to the real MinecraftServer")
     check("Enabling Orange" in log1, "Orange plugin enabled")
     check("Error occurred during CDS dumping" not in log1, "startup cache recorded without errors")
     cache_dir = os.path.join(run_dir, ".orange", "cache", "jvm")
     caches = os.listdir(cache_dir) if os.path.isdir(cache_dir) else []
     check(any(f.endswith((".aot", ".jsa")) for f in caches), f"startup cache file written ({caches})")
-    if JAVA >= 25:
+    if JAVA >= 25 and flavor != "download":
         check("UseCompactObjectHeaders" in open(os.path.join(run_dir, "dry-run.txt")).read(),
               "compact object headers enabled on Java 25")
 
@@ -232,6 +238,9 @@ def main():
 
     # Second boot: the configs now exist, so the optimizer tunes them.
     log2 = boot(run_dir, "boot2", pregen=False)
+    if flavor == "download":
+        check("Downloading" not in log2 and "Couldn't check for server updates" not in log2,
+              "second start checked for updates without downloading again")
     check("Tuned spigot.yml" in log2, "optimizer tuned spigot.yml")
     check("Applied patch orange:branding" in log2, "branding still applied with the startup cache")
     check("Tuned config/paper-world-defaults.yml" in log2, "optimizer tuned paper-world-defaults.yml")

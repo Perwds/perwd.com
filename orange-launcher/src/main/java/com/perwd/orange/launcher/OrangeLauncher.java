@@ -35,7 +35,7 @@ public final class OrangeLauncher {
         Path selfJar = selfJar();
         OrangeConfig config = OrangeConfig.loadOrCreate(home.resolve("orange.yml"));
 
-        Path serverJar = ServerJarLocator.locate(home, config.serverJar(), selfJar);
+        Path serverJar = resolveServerJar(home, config, selfJar, dryRun);
         ServerType type = ServerType.detect(serverJar);
         long heapMb = JvmFlags.heapMegabytes(config.memory());
         String gc = JvmFlags.resolveGc(config.gc(), heapMb);
@@ -43,6 +43,10 @@ public final class OrangeLauncher {
         Log.info("Orange " + version() + " | server: " + serverJar.getFileName() + " (" + type.displayName() + ")"
                 + " | heap: " + heapMb + " MB | gc: " + gc + " | profile: " + config.profile().id()
                 + " | ping tolerance: " + config.pingTolerance().id());
+
+        if (!dryRun) {
+            Eula.askIfNeeded(home);
+        }
 
         if (Runtime.version().feature() < 25) {
             Log.info("Tip: run Orange on Java 25 (LTS) or newer to enable compact object headers (smaller heap, faster GC).");
@@ -101,6 +105,46 @@ public final class OrangeLauncher {
             }
             Log.warn("Server exited with code " + exit + ", restarting in 5 seconds (auto-restart is on)...");
             Thread.sleep(5000);
+        }
+    }
+
+    /** The configured jar, the jar Orange downloaded (updated if allowed), any jar in the folder, or a fresh download. */
+    private static Path resolveServerJar(Path home, OrangeConfig config, Path selfJar, boolean dryRun) throws Exception {
+        if (!config.serverJar().equalsIgnoreCase("auto")) {
+            return ServerJarLocator.locate(home, config.serverJar(), selfJar);
+        }
+        boolean downloads = !config.download().equals("off");
+        if (downloads && !config.download().matches("paper|purpur")) {
+            throw new LauncherException("Unknown download '" + config.download() + "' in orange.yml (use paper, purpur or off).");
+        }
+        ServerDownloader downloader = downloads ? new ServerDownloader(home, config.download(), config.minecraftVersion()) : null;
+        Path downloaded = downloader == null ? null : downloader.installed();
+        if (downloaded != null) {
+            if (dryRun) {
+                return downloaded;
+            }
+            try {
+                return downloader.ensure(config.autoUpdate());
+            } catch (java.io.IOException e) {
+                Log.warn("Couldn't check for server updates (" + e.getMessage() + "); starting " + downloaded.getFileName() + ".");
+                return downloaded;
+            }
+        }
+        try {
+            return ServerJarLocator.locate(home, "auto", selfJar);
+        } catch (LauncherException noJar) {
+            if (downloader == null) {
+                throw noJar;
+            }
+            if (dryRun) {
+                throw new LauncherException("No server jar yet; the first real start will download " + config.download() + ".");
+            }
+            try {
+                return downloader.ensure(false);
+            } catch (java.io.IOException e) {
+                throw new LauncherException("Couldn't download the server (" + e.getMessage() + "). Check the internet "
+                        + "connection, or put a server jar next to orange.jar.");
+            }
         }
     }
 

@@ -18,6 +18,9 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 /** Settings from {@code orange.yml}. */
 public record OrangeConfig(
         String serverJar,
+        String download,
+        String minecraftVersion,
+        boolean autoUpdate,
         String memory,
         String gc,
         Profile profile,
@@ -32,9 +35,22 @@ public record OrangeConfig(
     static final String TEMPLATE = """
             # Orange launcher settings. Delete this file to get the defaults back.
 
-            # Server jar to run. "auto" picks the first Paper/Purpur/Pufferfish/Leaf/Spigot/Fabric/vanilla
-            # jar in this folder. Otherwise give a file name, e.g. paper-1.21.10-130.jar
+            # Server jar to run. "auto" uses the jar Orange downloaded (see "download"), or else the first
+            # Paper/Purpur/Pufferfish/Leaf/Spigot/Fabric/vanilla jar in this folder.
+            # Otherwise give a file name, e.g. paper-26.2-132.jar
             server-jar: auto
+
+            # When there's no server jar, download one: paper | purpur | off
+            download: paper
+
+            # Minecraft version to download. "latest" picks the newest one your Java can run, once.
+            # Orange never changes the Minecraft version by itself afterwards (that upgrades the world,
+            # which can't be undone); set a version here, e.g. 26.2, to move to it.
+            minecraft-version: latest
+
+            # Check for a newer build of the same Minecraft version on every start (bug and security
+            # fixes). Only applies to the jar Orange downloaded.
+            auto-update: true
 
             # Heap size, e.g. 6G or 6144M. "auto" uses ~75% of the RAM this machine/container has,
             # leaving at least 2 GB for the OS. -Xms is set to the same value (no heap resizing pauses).
@@ -100,6 +116,9 @@ public record OrangeConfig(
         }
         return new OrangeConfig(
                 string(map, "server-jar", "auto"),
+                string(map, "download", "paper").toLowerCase(Locale.ROOT),
+                string(map, "minecraft-version", "latest"),
+                bool(map, "auto-update", true),
                 string(map, "memory", "auto"),
                 string(map, "gc", "auto").toLowerCase(Locale.ROOT),
                 Profile.parse(string(map, "optimization-profile", "vanilla")),
