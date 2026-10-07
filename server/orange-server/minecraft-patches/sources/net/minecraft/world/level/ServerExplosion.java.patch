@@ -9,7 +9,26 @@
                          }
                      } else {
                          cachedBlock.cachedCollisionShape = collision;
-@@ -742,9 +744,25 @@
+@@ -641,14 +643,18 @@
+         this.mutablePos = new BlockPos.MutableBlockPos();
+         // Paper end - collision optimisations
+         this.level.gameEvent(this.source, GameEvent.EXPLODE, this.center);
++        final long orangeT0 = com.perwd.orange.server.ExplosionStats.start(); // Orange - explosion timing
+         List<BlockPos> list = this.calculateExplodedPositions();
++        final long orangeT1 = System.nanoTime(); // Orange - explosion timing
+         this.hurtEntities();
++        final long orangeT2 = System.nanoTime(); // Orange - explosion timing
+         if (this.interactsWithBlocks()) {
+             ProfilerFiller profilerFiller = Profiler.get();
+             profilerFiller.push("explosion_blocks");
+             this.interactWithBlocks(list);
+             profilerFiller.pop();
+         }
++        com.perwd.orange.server.ExplosionStats.finish(orangeT0, orangeT1, orangeT2, list.size()); // Orange - explosion timing
+ 
+         if (this.fire) {
+             this.createFire(list);
+@@ -742,9 +748,27 @@
  
  
      // Paper start - Optimize explosions
@@ -23,9 +42,11 @@
 +            final float cached = com.perwd.orange.server.ExposureCache.get(this.level, vec3d.x, vec3d.y, vec3d.z,
 +                    box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
 +            if (cached >= 0.0F) {
++                com.perwd.orange.server.ExplosionStats.cacheHit();
 +                return cached;
 +            }
 +            this.orangeEntityDependent = false;
++            com.perwd.orange.server.ExplosionStats.cacheMiss();
 +            final float seen = this.getSeenFraction(vec3d, entity, this.directMappedBlockCache, this.mutablePos); // Paper - collision optimisations
 +            if (!this.orangeEntityDependent) {
 +                com.perwd.orange.server.ExposureCache.put(this.level, vec3d.x, vec3d.y, vec3d.z,

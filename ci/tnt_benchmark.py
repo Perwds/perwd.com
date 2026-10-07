@@ -21,16 +21,34 @@ from server_test import Server, download, get_json  # noqa: E402
 TNT = 1000
 # Oldest Orange server build to benchmark (build 6 adds the TNT time budget). If the release is
 # older, wait for the orange-server workflow to publish it.
-MIN_BUILD = int(os.environ.get("ORANGE_MIN_BUILD", "10"))
+MIN_BUILD = int(os.environ.get("ORANGE_MIN_BUILD", "11"))
 MANIFEST = "https://github.com/Perwds/perwd.com/releases/download/orange-server/orange-server.json"
 
 # name -> {config file: {exact line to replace: new line}}; "orange.yml" lines are appended.
 VARIANTS = {
     "No TNT budget (like Paper)": {"orange.yml": "tnt-tick-budget-ms: 0"},
     "Orange default (20 ms budget)": {},
-    "10 ms budget": {"orange.yml": "tnt-tick-budget-ms: 10"},
     "5 ms budget": {"orange.yml": "tnt-tick-budget-ms: 5"},
 }
+
+
+BLAST_TIMEOUT = 240
+
+
+def query_count(s, command):
+    """Entities matched by an 'execute if entity' command (0 when it prints 'Test failed')."""
+    before = len(s.lines)
+    s.send(command)
+    deadline = time.time() + 5
+    while time.time() < deadline:
+        for line in s.lines[before:]:
+            m = re.search(r"Test passed[.,] [Cc]ount: (\d+)", line)
+            if m:
+                return int(m.group(1))
+            if "Test failed" in line:
+                return 0
+        time.sleep(0.2)
+    return -1
 
 
 def boot_and_stop(run_dir, label):
@@ -56,12 +74,12 @@ def server_pid():
 
 
 def jfr(pid, *args):
-    return subprocess.run(["jcmd", pid, *args], capture_output=True, text=True).stdout
+    return subprocess.run(["jcmd", pid, *args], capture_output=True, text=True, timeout=120).stdout
 
 
 def measure(run_dir, label):
     s = boot_and_stop(run_dir, label)
-    s.send("forceload add -32 -32 31 31")
+    s.send("forceload add -128 -128 127 127")
     time.sleep(10)
     s.send("spark tps")
     time.sleep(3)
@@ -86,30 +104,34 @@ def measure(run_dir, label):
         jfr(pid, "JFR.stop", "name=blast", f"filename={recording}")
     s.send("spark tps")  # 10 s window: blast only
     time.sleep(3)
-    # How long until every TNT has gone off (the budget spreads the blast over more ticks).
+    # Poll until every TNT has gone off (Spigot's max-tnt-per-tick lets only 100 tick per tick, so a
+    # 1,000 TNT blast takes several fuse lengths), with a spark window every 10 s for the worst tick.
     blast_start = mark2_time + 15.0
     finished = None
-    while time.time() - blast_start < 90:
-        before = len(s.lines)
-        s.send("execute if entity @e[type=minecraft:tnt]")
-        time.sleep(1)
-        # "Test failed" = no TNT left. Only look at what the server printed after this query.
-        if any("Test failed" in line for line in s.lines[before:]):
+    polls = 0
+    while time.time() - blast_start < BLAST_TIMEOUT:
+        left = query_count(s, "execute if entity @e[type=minecraft:tnt]")
+        if left == 0:
             finished = max(0.0, time.time() - blast_start)
             break
-    s.send("spark tps")  # second 10 s window: the rest of a long, budgeted blast
+        time.sleep(0.8)
+        polls += 1
+        if polls % 10 == 0:
+            s.send("spark tps")
+            time.sleep(1)
+    s.send("spark tps")  # last 10 s window
     time.sleep(3)
-    s.send("execute if entity @e[type=minecraft:item]")
-    time.sleep(2)
+    tnt_left = query_count(s, "execute if entity @e[type=minecraft:tnt]")
+    items_left = query_count(s, "execute if entity @e[type=minecraft:item]")
     out = "".join(s.lines[mark2:])
     s.stop()
     if os.path.exists(recording):
         for view in ("hot-methods", "allocation-by-class"):
-            report = subprocess.run(["jfr", "view", "--width", "220", view, recording], capture_output=True, text=True)
+            report = subprocess.run(["jfr", "view", "--width", "220", view, recording], capture_output=True, text=True, timeout=300)
             print(f"::group::{label}: jfr {view}\n{report.stdout[:12000]}{report.stderr[:2000]}\n::endgroup::", flush=True)
         # Hot call paths on the server thread: top frames' callers, to see where explosions spend time.
         stacks = subprocess.run(["jfr", "print", "--events", "jdk.ExecutionSample", "--stack-depth", "12", recording],
-                                capture_output=True, text=True).stdout
+                                capture_output=True, text=True, timeout=300).stdout
         counts = {}
         for sample in stacks.split("jdk.ExecutionSample")[1:]:
             if "Server thread" not in sample:
@@ -136,13 +158,20 @@ def measure(run_dir, label):
     idle_d = re.findall(r"(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)", idle)
     if idle_d:
         result["idle_max"] = idle_d[-2][3] if len(idle_d) > 1 else idle_d[-1][3]
-    # The item count is the last query sent (TNT polling also prints "Test passed" lines before it).
-    item_query = out.rsplit("execute if entity @e[type=minecraft:item]", 1)[-1]
-    found = re.findall(r"Test passed[.,] [Cc]ount: (\d+)", item_query)
-    result["items"] = found[0] if found else "0"
-    result["blast_seconds"] = f"{finished:.0f} s" if finished is not None else "> 90 s"
-    tnt_left = re.findall(r"Test passed[.,] [Cc]ount: (\d+)", out.rsplit("execute if entity @e[type=minecraft:tnt]", 1)[-1].split("execute if entity @e[type=minecraft:item]")[0])
-    result["tnt_left"] = tnt_left[-1] if tnt_left else "0"
+    result["items"] = str(items_left)
+    result["blast_seconds"] = f"{finished:.0f} s" if finished is not None else f"> {BLAST_TIMEOUT} s"
+    result["tnt_left"] = str(tnt_left)
+    slow = [float(m) for m in re.findall(r"slow explosion (\d+(?:\.\d+)?) ms", out)]
+    result["slow_explosions"] = f"{len(slow)} (max {max(slow):.0f} ms)" if slow else "0"
+    print(f"::group::{label}: slowest explosions\n" + "\n".join(
+        sorted((l.strip() for l in s.lines[mark2:] if "slow explosion" in l),
+               key=lambda l: -float(re.search(r"explosion (\d+(?:\.\d+)?)", l).group(1)))[:25]) + "\n::endgroup::", flush=True)
+    gc_log = os.path.join(run_dir, "gc.log")
+    if os.path.exists(gc_log):
+        pauses = [float(m) for m in re.findall(r"Pause.* (\d+(?:\.\d+)?)ms", open(gc_log).read())]
+        result["gc_max"] = f"{max(pauses):.1f}" if pauses else "0"
+        print(f"::group::{label}: GC pauses over 10 ms\n" + "\n".join(
+            l.rstrip() for l in open(gc_log) if (m := re.search(r"Pause.* (\d+(?:\.\d+)?)ms", l)) and float(m.group(1)) > 10) + "\n::endgroup::", flush=True)
     result["summoned"] = str(summon_out.count("Summoned new"))
     print(json.dumps(result), flush=True)
     return result
@@ -168,13 +197,16 @@ def main():
     open(os.path.join(template, "eula.txt"), "w").write("eula=true\n")
     open(os.path.join(template, "server.properties"), "w").write(
         "level-seed=orange-tnt\nonline-mode=false\nspawn-protection=0\n")
-    open(os.path.join(template, "orange.yml"), "w").write("memory: 6G\nserver-args: [nogui]\n")
+    open(os.path.join(template, "orange.yml"), "w").write(
+        "memory: 6G\nserver-args: [nogui]\n"
+        # log explosions over 15 ms with per-phase timings, and every GC pause, to explain the worst ticks
+        'extra-jvm-args: ["-Dorange.debug.explosionMs=15", "-Xlog:gc:file=gc.log"]\n')
 
     # Two starts: the first generates world and configs, the second lets Orange tune the configs.
     for label in ("template1", "template2"):
         s = boot_and_stop(template, label)
         if label == "template1":
-            s.send("forceload add -32 -32 31 31")
+            s.send("forceload add -128 -128 127 127")
             time.sleep(20)
         s.stop()
 
@@ -199,8 +231,9 @@ def main():
                        ("95th percentile tick", "p95"), ("Median tick", "median"),
                        ("Tick that ran the 1,000 summon commands", "summon_max"),
                        ("Worst tick before summoning (chunk loading)", "idle_max"),
-                       ("Time until all TNT went off", "blast_seconds"), ("Dropped items left", "items"), ("TNT left after 90 s", "tnt_left")]:
-        lines.append(f"| {title} | " + " | ".join(str(r.get(key, "?")) + (" ms" if key in ("max", "p95", "median", "idle_max", "summon_max") else "") for r in results) + " |")
+                       ("Time until all TNT went off", "blast_seconds"), ("TNT left at the end", "tnt_left"), ("Dropped items left", "items"),
+                       ("Explosions over 15 ms", "slow_explosions"), ("Longest GC pause", "gc_max")]:
+        lines.append(f"| {title} | " + " | ".join(str(r.get(key, "?")) + (" ms" if key in ("max", "p95", "median", "idle_max", "summon_max", "gc_max") else "") for r in results) + " |")
     summary = "\n".join(lines)
     print("\n" + summary)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
