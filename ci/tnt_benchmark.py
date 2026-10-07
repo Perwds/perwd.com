@@ -28,9 +28,8 @@ MANIFEST = "https://github.com/Perwds/perwd.com/releases/download/orange-server/
 VARIANTS = {
     "No TNT budget (like Paper)": {"orange.yml": "tnt-tick-budget-ms: 0"},
     "Orange default (20 ms budget)": {},
-    "20 ms budget + optimize-explosions": {
-        "config/paper-world-defaults.yml": {"optimize-explosions: false": "optimize-explosions: true"},
-    },
+    "10 ms budget": {"orange.yml": "tnt-tick-budget-ms: 10"},
+    "5 ms budget": {"orange.yml": "tnt-tick-budget-ms: 5"},
 }
 
 
@@ -142,6 +141,8 @@ def measure(run_dir, label):
     found = re.findall(r"Test passed[.,] [Cc]ount: (\d+)", item_query)
     result["items"] = found[0] if found else "0"
     result["blast_seconds"] = f"{finished:.0f} s" if finished is not None else "> 90 s"
+    tnt_left = re.findall(r"Test passed[.,] [Cc]ount: (\d+)", out.rsplit("execute if entity @e[type=minecraft:tnt]", 1)[-1].split("execute if entity @e[type=minecraft:item]")[0])
+    result["tnt_left"] = tnt_left[-1] if tnt_left else "0"
     result["summoned"] = str(summon_out.count("Summoned new"))
     print(json.dumps(result), flush=True)
     return result
@@ -198,7 +199,7 @@ def main():
                        ("95th percentile tick", "p95"), ("Median tick", "median"),
                        ("Tick that ran the 1,000 summon commands", "summon_max"),
                        ("Worst tick before summoning (chunk loading)", "idle_max"),
-                       ("Time until all TNT went off", "blast_seconds"), ("Dropped items left", "items")]:
+                       ("Time until all TNT went off", "blast_seconds"), ("Dropped items left", "items"), ("TNT left after 90 s", "tnt_left")]:
         lines.append(f"| {title} | " + " | ".join(str(r.get(key, "?")) + (" ms" if key in ("max", "p95", "median", "idle_max", "summon_max") else "") for r in results) + " |")
     summary = "\n".join(lines)
     print("\n" + summary)
