@@ -107,6 +107,12 @@ public final class OrangeLauncher {
             Log.info("Dry run, would execute:\n  " + String.join(" ", command));
             return 0;
         }
+        Log.info("Starting " + serverJar.getFileName() + ": " + (direct != null ? "direct launch" : "java -jar")
+                + ", class cache " + (direct != null ? (Runtime.version().feature() >= 25 ? "AOT" : "AppCDS") : "off")
+                + ", agent " + (agent ? "on" : "off"));
+        if (System.getenv("ORANGE_DEBUG") != null) {
+            Log.info("Command: " + String.join(" ", command));
+        }
 
         Runtime.getRuntime().addShutdownHook(new Thread(OrangeLauncher::stopServer, "orange-shutdown"));
         while (true) {

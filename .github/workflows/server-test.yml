@@ -29,6 +29,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew :orange-launcher:shadowJar --console=plain
       - run: python3 ci/server_test.py ${{ matrix.server }} orange-launcher/build/libs/orange.jar
+        env:
+          ORANGE_DEBUG: 1
       - name: Decompile patch targets
         if: matrix.server == 'paper' && matrix.java == 25
         run: |
