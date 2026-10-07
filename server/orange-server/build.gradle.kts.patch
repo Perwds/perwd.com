@@ -1,0 +1,113 @@
+--- a/paper-server/build.gradle.kts
++++ b/paper-server/build.gradle.kts
+@@ -2,6 +_,7 @@
+ import io.papermc.paperweight.attribute.DevBundleOutput
+ import io.papermc.paperweight.util.*
+ import java.time.Instant
++import kotlin.io.path.writeText
+ 
+ plugins {
+     `java-library`
+@@ -22,6 +_,18 @@
+     minecraftVersion = providers.gradleProperty("mcVersion")
+     gitFilePatches = false
+ 
++    // Orange start - Rebrand
++    val orange = forks.register("orange") {
++        upstream.patchDir("paperServer") {
++            upstreamPath = "paper-server"
++            excludes = setOf("src/minecraft", "patches", "build.gradle.kts")
++            patchesDir = rootDirectory.dir("orange-server/paper-patches")
++            outputDir = rootDirectory.dir("paper-server")
++        }
++    }
++    activeFork = orange
++    // Orange end - Rebrand
++
+     spigot {
+         enabled = true
+         buildDataRef = "17f77cee7117ab9d6175f088ae8962bfd04e61a9"
+@@ -104,7 +_,21 @@
+     }
+ }
+ 
+-val log4jPlugins = sourceSets.create("log4jPlugins")
++// Orange start - Rebrand
++sourceSets {
++    main {
++        java { srcDir("../paper-server/src/main/java") }
++        resources { srcDir("../paper-server/src/main/resources") }
++    }
++    test {
++        java { srcDir("../paper-server/src/test/java") }
++        resources { srcDir("../paper-server/src/test/resources") }
++    }
++}
++val log4jPlugins = sourceSets.create("log4jPlugins") {
++    java { srcDir("../paper-server/src/log4jPlugins/java") }
++}
++// Orange end - Rebrand
+ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
+     extendsFrom(configurations.compileClasspath.get())
+ }
+@@ -127,7 +_,7 @@
+ }
+ 
+ dependencies {
+-    implementation(project(":paper-api"))
++    implementation(project(":orange-api")) // Orange
+     implementation("ca.spottedleaf:concurrentutil:0.0.8")
+     implementation("org.jline:jline-terminal-ffm:3.27.1") // use ffm on java 22+
+     implementation("org.jline:jline-terminal-jni:3.27.1") // fall back to jni on java 21
+@@ -191,21 +_,21 @@
+         val git = Git(rootProject.layout.projectDirectory.path)
+         val mcVersion = rootProject.providers.gradleProperty("mcVersion").get()
+         val build = System.getenv("BUILD_NUMBER") ?: null
+-        val buildTime = providers.environmentVariable("BUILD_STARTED_AT").map(Instant::parse).orElse(Instant.EPOCH).get()
++        val buildTime = if (build != null) Instant.now() else Instant.EPOCH // Orange
+         val gitHash = git.exec(providers, "rev-parse", "--short=7", "HEAD").get().trim()
+         val implementationVersion = "$mcVersion-${build ?: "DEV"}-$gitHash"
+         val date = git.exec(providers, "show", "-s", "--format=%ci", gitHash).get().trim()
+         val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
+         attributes(
+             "Main-Class" to "org.bukkit.craftbukkit.Main",
+-            "Implementation-Title" to "Paper",
++            "Implementation-Title" to "Orange", // Orange
+             "Implementation-Version" to implementationVersion,
+             "Implementation-Vendor" to date,
+-            "Specification-Title" to "Paper",
++            "Specification-Title" to "Orange", // Orange
+             "Specification-Version" to project.version,
+-            "Specification-Vendor" to "Paper Team",
+-            "Brand-Id" to "papermc:paper",
+-            "Brand-Name" to "Paper",
++            "Specification-Vendor" to "Orange", // Orange
++            "Brand-Id" to "perwd:orange", // Orange
++            "Brand-Name" to "Orange", // Orange
+             "Build-Number" to (build ?: ""),
+             "Build-Time" to buildTime.toString(),
+             "Git-Branch" to gitBranch,
+@@ -264,7 +_,7 @@
+     jvmArgumentProviders.add(provider)
+ }
+ 
+-val generatedDir: java.nio.file.Path = layout.projectDirectory.dir("src/generated/java").asFile.toPath()
++val generatedDir: java.nio.file.Path = layout.projectDirectory.dir("../paper-server/src/generated/java").asFile.toPath() // Orange
+ idea {
+     module {
+         generatedSourceDirs.add(generatedDir.toFile())
+@@ -356,7 +_,7 @@
+     mainClass.set(null as String?)
+ }
+ 
+-fill {
++/* fill { // Orange - we don't use fill
+     project("paper")
+     versionFamily(paperweight.minecraftVersion.map { it.split(".", "-").takeWhile { part -> part.toIntOrNull() != null }.take(2).joinToString(".") })
+     version(paperweight.minecraftVersion)
+@@ -371,4 +_,4 @@
+             }
+         }
+     }
+-}
++} */ // Orange - we don't use fill
