@@ -9,7 +9,7 @@
                          }
                      } else {
                          cachedBlock.cachedCollisionShape = collision;
-@@ -742,9 +744,26 @@
+@@ -742,9 +744,25 @@
  
  
      // Paper start - Optimize explosions
@@ -18,10 +18,9 @@
      private float getBlockDensity(Vec3 vec3d, Entity entity) {
          if (!this.level.paperConfig().environment.optimizeExplosions) {
 -            return this.getSeenFraction(vec3d, entity, this.directMappedBlockCache, this.mutablePos); // Paper - collision optimisations
-+            // Orange start - exact exposure cache (same centre + box + blocks = same exposure)
++            // Orange start - exact exposure cache (same centre + box + nearby blocks = same exposure)
 +            final AABB box = entity.getBoundingBox();
-+            final int tick = this.level.getServer().getTickCount();
-+            final float cached = com.perwd.orange.server.ExposureCache.get(this.level, tick, vec3d.x, vec3d.y, vec3d.z,
++            final float cached = com.perwd.orange.server.ExposureCache.get(this.level, vec3d.x, vec3d.y, vec3d.z,
 +                    box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
 +            if (cached >= 0.0F) {
 +                return cached;
@@ -29,7 +28,7 @@
 +            this.orangeEntityDependent = false;
 +            final float seen = this.getSeenFraction(vec3d, entity, this.directMappedBlockCache, this.mutablePos); // Paper - collision optimisations
 +            if (!this.orangeEntityDependent) {
-+                com.perwd.orange.server.ExposureCache.put(this.level, tick, vec3d.x, vec3d.y, vec3d.z,
++                com.perwd.orange.server.ExposureCache.put(this.level, vec3d.x, vec3d.y, vec3d.z,
 +                        box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, seen);
 +            }
 +            return seen;

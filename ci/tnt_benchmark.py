@@ -21,7 +21,7 @@ from server_test import Server, download, get_json  # noqa: E402
 TNT = 1000
 # Oldest Orange server build to benchmark (build 6 adds the TNT time budget). If the release is
 # older, wait for the orange-server workflow to publish it.
-MIN_BUILD = int(os.environ.get("ORANGE_MIN_BUILD", "9"))
+MIN_BUILD = int(os.environ.get("ORANGE_MIN_BUILD", "10"))
 MANIFEST = "https://github.com/Perwds/perwd.com/releases/download/orange-server/orange-server.json"
 
 # name -> {config file: {exact line to replace: new line}}; "orange.yml" lines are appended.
