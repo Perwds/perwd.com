@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew applyAllPatches --stacktrace --console=plain
       - name: Show source of patch targets
         run: |
-          for f in world/entity/item/PrimedTnt world/level/ServerExplosion; do
+          for f in world/entity/item/PrimedTnt world/level/ServerExplosion world/level/chunk/LevelChunk; do
             echo "::group::$f.java"; cat "orange-server/src/minecraft/java/net/minecraft/$f.java"; echo "::endgroup::"
           done
       - name: Build server jar

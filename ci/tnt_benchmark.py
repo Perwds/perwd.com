@@ -91,10 +91,12 @@ def measure(run_dir, label):
     blast_start = mark2_time + 15.0
     finished = None
     while time.time() - blast_start < 90:
+        before = len(s.lines)
         s.send("execute if entity @e[type=minecraft:tnt]")
         time.sleep(1)
-        if re.search(r"Test failed", "".join(s.lines[-5:])):
-            finished = time.time() - blast_start
+        # "Test failed" = no TNT left. Only look at what the server printed after this query.
+        if any("Test failed" in line for line in s.lines[before:]):
+            finished = max(0.0, time.time() - blast_start)
             break
     s.send("spark tps")  # second 10 s window: the rest of a long, budgeted blast
     time.sleep(3)
