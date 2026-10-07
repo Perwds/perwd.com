@@ -250,7 +250,8 @@ def main():
     # Second boot: the configs now exist, so the optimizer tunes them.
     if flavor == "switch":
         check(re.search(r"Downloaded paper-[\d.]+-\d+\.jar", log1) is not None, "first start downloaded Paper")
-        open(yml, "w").write(open(yml).read().replace("download: paper", "download: orange"))
+        config = open(yml).read()  # read before opening for writing, which empties the file
+        open(yml, "w").write(config.replace("download: paper", "download: orange"))
     log2 = boot(run_dir, "boot2", pregen=False)
     if flavor == "switch":
         check("Switching from paper-" in log2, "switched from Paper to the Orange server")
