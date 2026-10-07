@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 final class LineConfigEditor {
     private static final Pattern YAML_KEY = Pattern.compile("^( *)(\"[^\"]+\"|'[^']+'|[^\\s#'\"-][^:#]*?):(?:[ \\t]+(.*))?$");
 
-    record Result(List<String> lines, int changed, int unchanged) {
+    record Result(List<String> lines, int changed, int unchanged, java.util.Set<String> found) {
     }
 
     private LineConfigEditor() {
@@ -27,6 +27,7 @@ final class LineConfigEditor {
         Deque<String> keys = new ArrayDeque<>();
         int changed = 0;
         int unchanged = 0;
+        java.util.Set<String> found = new java.util.HashSet<>();
         for (String line : lines) {
             Matcher m = YAML_KEY.matcher(line);
             if (!m.matches()) {
@@ -45,6 +46,9 @@ final class LineConfigEditor {
             String value = m.group(3);
             String path = String.join(".", keys.reversed());
             String wanted = values.get(path);
+            if (wanted != null) {
+                found.add(path);
+            }
             if (wanted == null || value == null || value.isBlank() || isComplex(value)) {
                 out.add(line);
                 continue;
@@ -57,13 +61,14 @@ final class LineConfigEditor {
                 out.add(m.group(1) + m.group(2) + ": " + wanted);
             }
         }
-        return new Result(out, changed, unchanged);
+        return new Result(out, changed, unchanged, found);
     }
 
     static Result editProperties(List<String> lines, Map<String, String> values) {
         List<String> out = new ArrayList<>(lines.size());
         int changed = 0;
         int unchanged = 0;
+        java.util.Set<String> found = new java.util.HashSet<>();
         for (String line : lines) {
             int eq = line.indexOf('=');
             if (line.startsWith("#") || eq < 0) {
@@ -72,6 +77,9 @@ final class LineConfigEditor {
             }
             String key = line.substring(0, eq).trim();
             String wanted = values.get(key);
+            if (wanted != null) {
+                found.add(key);
+            }
             if (wanted == null) {
                 out.add(line);
             } else if (line.substring(eq + 1).trim().equals(wanted)) {
@@ -82,7 +90,7 @@ final class LineConfigEditor {
                 out.add(key + "=" + wanted);
             }
         }
-        return new Result(out, changed, unchanged);
+        return new Result(out, changed, unchanged, found);
     }
 
     private static boolean isComplex(String value) {

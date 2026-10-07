@@ -4,3 +4,5 @@ out/
 .idea/
 *.iml
 /run/
+/run-*/
+__pycache__/

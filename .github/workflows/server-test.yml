@@ -1,0 +1,38 @@
+name: Server test
+
+# Boots real servers with Orange and checks the launcher, agent, optimizer and plugin end to end.
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  server-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { server: paper, java: 21 }
+          - { server: paper, java: 25 }
+          - { server: purpur, java: 25 }
+    name: ${{ matrix.server }} (Java ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew :orange-launcher:shadowJar --console=plain
+      - run: python3 ci/server_test.py ${{ matrix.server }} orange-launcher/build/libs/orange.jar
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-test-${{ matrix.server }}-java${{ matrix.java }}
+          path: |
+            run-*/*.log
+            run-*/logs/latest.log
+            run-*/*.yml
+            run-*/config/*.yml
+            run-*/server.properties

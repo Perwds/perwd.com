@@ -1,0 +1,16 @@
+# Classes whose real signatures CI prints, so patches are written against actual bytecode.
+net.minecraft.server.MinecraftServer
+net.minecraft.server.level.ServerLevel
+net.minecraft.server.level.ServerEntity
+net.minecraft.server.level.ChunkMap
+net.minecraft.server.network.ServerCommonPacketListenerImpl
+net.minecraft.server.network.ServerGamePacketListenerImpl
+net.minecraft.network.Connection
+net.minecraft.world.level.block.entity.HopperBlockEntity
+net.minecraft.world.entity.ai.village.poi.PoiManager
+net.minecraft.world.entity.ai.goal.GoalSelector
+net.minecraft.world.entity.ai.sensing.NearestLivingEntitySensor
+net.minecraft.world.entity.Entity
+net.minecraft.world.entity.LivingEntity
+net.minecraft.world.level.Explosion
+net.minecraft.world.level.ServerExplosion

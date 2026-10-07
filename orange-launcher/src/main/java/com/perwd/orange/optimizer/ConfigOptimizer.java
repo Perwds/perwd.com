@@ -55,9 +55,12 @@ public final class ConfigOptimizer {
                 backup(file, name);
                 Files.write(file, result.lines(), StandardCharsets.UTF_8);
             }
-            int skipped = entry.getValue().size() - result.changed() - result.unchanged();
+            List<String> missing = entry.getValue().keySet().stream().filter(k -> !result.found().contains(k)).toList();
             Log.info((dryRun ? "Would tune " : "Tuned ") + name + " (" + id + "): " + result.changed() + " changed, "
-                    + result.unchanged() + " already optimal" + (skipped > 0 ? ", " + skipped + " not present in this version" : ""));
+                    + result.unchanged() + " already optimal" + (missing.isEmpty() ? "" : ", " + missing.size() + " not present in this version"));
+            if (!missing.isEmpty()) {
+                Log.info("  not present in " + name + ": " + String.join(", ", missing));
+            }
             state.setProperty(name, id);
         }
         if (!dryRun) {
