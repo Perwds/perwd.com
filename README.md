@@ -1,12 +1,14 @@
 # 🍊 Orange
 
-**Vanilla gameplay, as fast as it can go.** Orange is a performance layer that runs *on top of*
-the server you already use (Paper, Purpur, Pufferfish, Leaf, Leaves, Spigot, Fabric or vanilla).
-By default it **undoes the vanilla changes Paper and Spigot make** (piston duping, headless
-pistons, bedrock breaking, frozen far-away mobs, item merging...) and only adds optimizations
-that don't change gameplay.
-Because the real server still runs underneath, **every plugin that works on your server keeps
-working**, and you get each new Minecraft version the day your server software supports it.
+**Vanilla gameplay, as fast as it can go.** Orange is two things:
+
+- **The Orange server** ([`server/`](server/)): Orange's own server jar, a Paper fork, so Paper
+  plugins work on it. `orange.jar` downloads it for you.
+- **The launcher** (`orange.jar`): starts the Orange server, or any server you already have
+  (Paper, Purpur, Pufferfish, Leaf, Leaves, Spigot, Fabric or vanilla), with tuned JVM flags, fast
+  startup and tuned configs. By default it **undoes the vanilla changes Paper and Spigot make**
+  (piston duping, headless pistons, bedrock breaking, frozen far-away mobs, item merging...) and
+  only adds optimizations that don't change gameplay.
 
 ```
 java -jar orange.jar
@@ -72,12 +74,12 @@ All you need is Java 25 (or 21) and `orange.jar`:
 1. Put `orange.jar` in an empty folder and double-click it, or run `java -jar orange.jar`.
    A double-click opens Orange in a terminal window and leaves a `start.bat` (Windows),
    `start.command` (macOS) or `start.sh` (Linux) next to it for the next time.
-2. Orange downloads the latest stable Paper for your Java version, verifies its checksum, asks
-   you to accept the Minecraft EULA, and starts the server.
+2. Orange downloads the **Orange server** (Orange's own Paper fork, see [`server/`](server/)),
+   verifies its checksum, asks you to accept the Minecraft EULA, and starts it.
 3. Restart once after the first start: the server creates its config files on the first start,
    and Orange tunes them on the next one.
 
-Want Purpur instead? Set `download: purpur` in `orange.yml`. Already have a server jar? Put it next
+Want upstream Paper or Purpur instead? Set `download: paper` or `download: purpur` in `orange.yml`. Already have a server jar? Put it next
 to `orange.jar` and Orange uses it. Orange keeps the jar it downloaded up to date with new builds
 of the same Minecraft version (`auto-update: true`). It never changes the Minecraft version by itself,
 because that upgrades your world, which can't be undone. Set `minecraft-version` to move to a new one.
@@ -117,7 +119,7 @@ java -jar orange.jar --dry-run
 
 ```yaml
 server-jar: auto                 # or a file name
-download: paper                  # paper | purpur | off
+download: orange                 # orange | paper | purpur | off
 minecraft-version: latest        # or e.g. 26.2
 auto-update: true
 memory: auto                     # e.g. 8G

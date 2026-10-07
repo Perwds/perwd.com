@@ -223,7 +223,8 @@ def main():
 
     log1 = boot(run_dir, "boot1", pregen=True)
     if flavor == "download":
-        check(re.search(r"Downloaded paper-[\d.]+-\d+\.jar", log1) is not None, "Orange downloaded Paper by itself")
+        check(re.search(r"Downloaded orange-[\d.]+-\d+\.jar", log1) is not None, "Orange downloaded the Orange server by itself")
+        check(re.search(r"Loading Orange [\w.\-]+", log1) is not None, "the downloaded server is the Orange server")
     check("Applied patch orange:branding" in log1, "branding patch applied to the real MinecraftServer")
     check("Enabling Orange" in log1, "Orange plugin enabled")
     if flavor == "file":

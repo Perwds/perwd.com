@@ -40,8 +40,11 @@ public record OrangeConfig(
             # Otherwise give a file name, e.g. paper-26.2-132.jar
             server-jar: auto
 
-            # When there's no server jar, download one: paper | purpur | off
-            download: paper
+            # When there's no server jar, download one:
+            #   orange = the Orange server: Orange's own Paper fork (plugins work), built by this project
+            #   paper | purpur = the upstream servers
+            #   off    = never download
+            download: orange
 
             # Minecraft version to download. "latest" picks the newest one your Java can run, once.
             # Orange never changes the Minecraft version by itself afterwards (that upgrades the world,
@@ -116,7 +119,7 @@ public record OrangeConfig(
         }
         return new OrangeConfig(
                 string(map, "server-jar", "auto"),
-                string(map, "download", "paper").toLowerCase(Locale.ROOT),
+                string(map, "download", "orange").toLowerCase(Locale.ROOT),
                 string(map, "minecraft-version", "latest"),
                 bool(map, "auto-update", true),
                 string(map, "memory", "auto"),

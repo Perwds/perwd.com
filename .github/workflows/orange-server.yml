@@ -33,6 +33,8 @@ jobs:
         run: ./gradlew applyAllPatches --stacktrace --console=plain
       - name: Build server jar
         run: ./gradlew createMojmapPaperclipJar --stacktrace --console=plain
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}  # version 1.21.11-<build>-<commit> and a real build time
       - id: info
         name: Name the jar
         run: |
@@ -114,5 +116,5 @@ jobs:
           gh release upload orange-server "$jar" orange-server.json --clobber
           # Keep only the newest jar per Minecraft version.
           gh release view orange-server --json assets -q '.assets[].name' \
-            | grep -E "^orange-${MC//./\\.}-[0-9]+\.jar$" | grep -vx "$name" \
+            | { grep -E "^orange-${MC//./\\.}-[0-9]+\.jar$" || true; } | { grep -vx "$name" || true; } \
             | while read -r old; do gh release delete-asset orange-server "$old" -y; done
