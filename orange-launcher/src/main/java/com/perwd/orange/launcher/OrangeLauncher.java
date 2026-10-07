@@ -19,10 +19,15 @@ public final class OrangeLauncher {
     }
 
     public static void main(String[] args) throws Exception {
+        Path selfJar = selfJar();
+        if (selfJar != null && Terminal.relaunchIfDoubleClicked(selfJar.getParent(), selfJar, javaBinary())) {
+            return; // continues in the terminal window
+        }
         try {
             System.exit(run(args));
         } catch (LauncherException | IllegalArgumentException e) {
             Log.error(e.getMessage(), null);
+            Terminal.showError(e.getMessage());
             System.exit(1);
         }
     }
@@ -31,8 +36,9 @@ public final class OrangeLauncher {
         List<String> argList = new ArrayList<>(Arrays.asList(args));
         boolean dryRun = argList.remove("--dry-run");
 
-        Path home = Path.of("").toAbsolutePath();
         Path selfJar = selfJar();
+        // Work next to orange.jar, so double-clicking it from any folder behaves the same.
+        Path home = selfJar != null ? selfJar.getParent() : Path.of("").toAbsolutePath();
         OrangeConfig config = OrangeConfig.loadOrCreate(home.resolve("orange.yml"));
 
         Path serverJar = resolveServerJar(home, config, selfJar, dryRun);

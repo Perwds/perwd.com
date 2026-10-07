@@ -18,7 +18,7 @@ final class Eula {
         if (Files.exists(file) && Files.readString(file).contains("eula=true")) {
             return;
         }
-        if (System.console() == null) {
+        if (!Terminal.interactive()) {
             return; // not interactive (service, panel, CI): the server will explain what to do
         }
         System.out.println("[Orange] To run a Minecraft server you must accept the Minecraft EULA:");

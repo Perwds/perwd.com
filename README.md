@@ -69,7 +69,9 @@ at 20 TPS. Every millisecond a tick runs over 50 ms adds to *everyone's* ping.
 
 All you need is Java 25 (or 21) and `orange.jar`:
 
-1. Put `orange.jar` in an empty folder and run `java -jar orange.jar`.
+1. Put `orange.jar` in an empty folder and double-click it, or run `java -jar orange.jar`.
+   A double-click opens Orange in a terminal window and leaves a `start.bat` (Windows),
+   `start.command` (macOS) or `start.sh` (Linux) next to it for the next time.
 2. Orange downloads the latest stable Paper for your Java version, verifies its checksum, asks
    you to accept the Minecraft EULA, and starts the server.
 3. Restart once after the first start: the server creates its config files on the first start,
