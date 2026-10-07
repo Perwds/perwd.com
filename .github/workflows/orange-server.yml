@@ -63,10 +63,11 @@ jobs:
         with:
           name: orange-server
           path: out
-      - run: ./gradlew :orange-launcher:shadowJar --console=plain
+      - run: ./gradlew :orange-launcher:shadowJar :folia-test-plugin:jar --console=plain
       - name: Boot the Orange server through orange.jar
         run: |
           export ORANGE_SERVER_JAR=$(ls out/*.jar)
+          export FOLIA_TEST_PLUGIN=ci/folia-test-plugin/build/libs/FoliaTest.jar
           python3 ci/server_test.py file orange-launcher/build/libs/orange.jar
 
   publish:

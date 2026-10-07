@@ -27,10 +27,11 @@ jobs:
           distribution: temurin
           java-version: ${{ matrix.java }}
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew :orange-launcher:shadowJar --console=plain
+      - run: ./gradlew :orange-launcher:shadowJar :folia-test-plugin:jar --console=plain
       - run: python3 ci/server_test.py ${{ matrix.server }} orange-launcher/build/libs/orange.jar
         env:
           ORANGE_DEBUG: 1
+          FOLIA_TEST_PLUGIN: ci/folia-test-plugin/build/libs/FoliaTest.jar
       - name: Decompile patch targets
         if: matrix.server == 'paper' && matrix.java == 25
         run: |

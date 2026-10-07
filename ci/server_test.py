@@ -211,6 +211,12 @@ def main():
         f.write("eula=true\n")
     with open(os.path.join(run_dir, "server.properties"), "w") as f:
         f.write("level-seed=orange\nonline-mode=false\n")
+    # A Folia-style plugin next to the regular ones, if CI built it.
+    folia_plugin = os.environ.get("FOLIA_TEST_PLUGIN")
+    if folia_plugin:
+        os.makedirs(os.path.join(run_dir, "plugins"), exist_ok=True)
+        shutil.copy(folia_plugin, os.path.join(run_dir, "plugins", "FoliaTest.jar"))
+
     # orange.yml from the template, with a CI-sized heap.
     downloads = flavor in ("download", "switch")
     dry = subprocess.run(["java", "-jar", "orange.jar", "--dry-run"], cwd=run_dir, check=not downloads,
@@ -231,6 +237,10 @@ def main():
         check(re.search(r"Loading Orange [\w.\-]+", log1) is not None, "the downloaded server is the Orange server")
     check("Applied patch orange:branding" in log1, "branding patch applied to the real MinecraftServer")
     check("Enabling Orange" in log1, "Orange plugin enabled")
+    if folia_plugin:
+        for scheduler in ("async", "global region", "region", "entity"):
+            check(f"FOLIA-TEST {scheduler} scheduler ok" in log1,
+                  f"Folia-style plugin: {scheduler} scheduler runs next to regular plugins")
     if flavor == "file":
         check(re.search(r"Loading Orange [\w.\-]+", log1) is not None, "server identifies itself as Orange")
     check("Error occurred during CDS dumping" not in log1, "startup cache recorded without errors")
