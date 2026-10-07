@@ -7,5 +7,5 @@ dependencies {
 }
 
 tasks.jar {
-    archiveBaseName.set("FoliaTest")
+    archiveFileName.set("FoliaTest.jar")
 }
