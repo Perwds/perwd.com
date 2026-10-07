@@ -1,0 +1,28 @@
+name: TNT benchmark
+
+# 1,000 TNT on the Orange server, with different explosion settings.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ci/tnt_benchmark.py
+      - .github/workflows/tnt-benchmark.yml
+
+jobs:
+  tnt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew :orange-launcher:shadowJar --console=plain
+      - run: python3 ci/tnt_benchmark.py orange-launcher/build/libs/orange.jar
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tnt-logs
+          path: tnt-*/*.log
