@@ -179,6 +179,23 @@ Use `./gradlew build -PwithoutPlugin` to build without the plugin if `repo.paper
 | `orange-hooks` | Dependency-free runtime hooks that patched game code calls |
 | `examples/example-mod` | A sample mod |
 
+## Benchmark
+
+[`ci/benchmark.py`](ci/benchmark.py) runs plain Paper and Paper through Orange one after another on
+the same GitHub Actions machine: 8 GB heap, same seed, TAB and spark, 256 force-loaded chunks and
+~2,000 mobs. Paper 26.2 on Java 25:
+
+| | Paper | Orange (vanilla) |
+|---|---|---|
+| Startup, wall clock | 10.6 s | **6.3 s** |
+| Startup, Paper's "Done" timer | 10.1 s | **5.0 s** |
+| MSPT median under load | 37.7 ms | 38.3 ms |
+
+Startup is faster from the second start on (the first start records the class cache, about
+200 MB in `.orange/cache/jvm/`). Under load the two are within run-to-run noise: Paper itself
+is already very well optimized, and Orange's `vanilla` profile turns off its gameplay-changing
+shortcuts.
+
 ## Tested on real servers
 
 Every push runs [`ci/server_test.py`](ci/server_test.py) in GitHub Actions against the newest
