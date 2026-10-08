@@ -327,10 +327,13 @@ code { font-family: var(--font-mono); font-size: .85em; background: var(--sunk);
               <option value="600">600 per site</option>
               <option value="1000">1,000 per site</option>
               <option value="2000">2,000 per site</option>
+              <option value="5000">5,000 per site</option>
+              <option value="10000">10,000 per site</option>
+              <option value="all">Everything</option>
             </select>
           </div>
         </div>
-        <p class="hint">The sites can't search by mod list, so Packfinder checks this many results and keeps the ones that fit.</p>
+        <p class="hint">The sites can't search by mod list, so Packfinder checks this many results and keeps the ones that fit. CurseForge only lets it reach 20,000 results per search; narrow by version or loader to cover more.</p>
       </div>
 
       <div class="submit-row">
@@ -363,6 +366,7 @@ code { font-family: var(--font-mono); font-size: .85em; background: var(--sunk);
     </div>
     <div class="notes" id="notes"></div>
     <div class="grid" id="grid"></div>
+    <div class="more-row"><button type="button" class="btn" id="show-more" hidden>Show more matches</button></div>
     <div class="more-row" id="more-row" hidden>
       <button type="button" class="btn" id="more">Check more results</button>
       <button type="button" class="btn ghost" id="stop" hidden>Stop</button>
@@ -446,7 +450,7 @@ const state = {
   proxy: store.get("pf.proxy") || "",
   include: [], exclude: [], match: "all",
   cats: new Set(),
-  results: [], seen: new Set(), f: null, scan: null, abort: null, running: false,
+  results: [], seen: new Set(), showLimit: 120, f: null, scan: null, abort: null, running: false,
   versions: [], categories: [],
 };
 
@@ -551,7 +555,7 @@ async function attachMRDeps(items, signal) {
   const ids = [...new Set(items.map(i => i.latestVersion).filter(Boolean))];
   const byId = await idb.getMany("mr", ids);
   const missing = ids.filter(id => !byId.has(id));
-  await Promise.all(chunk(missing, 80).map(async part => {
+  await Promise.all(chunk(missing, 100).map(async part => {
     const vs = await mr("/versions", { ids: part }, signal);
     const save = [];
     for (const v of vs || []) {
@@ -831,7 +835,8 @@ function mrFacets(f) {
   return facets;
 }
 const PAGE_SIZE = { modrinth: 100, curseforge: 50 };
-const CF_MAX = 10000;
+const CF_WINDOW = 10000;          // CurseForge's API stops at result #10,000…
+const CF_MAX = CF_WINDOW * 2;     // …so the rest is read from the other end of the list.
 async function fetchPage(name, f, offset, signal) {
   if (name === "modrinth") {
     const r = await mr("/search", { query: f.q || undefined, facets: mrFacets(f), index: f.sort, offset, limit: 100 }, signal);
@@ -840,20 +845,26 @@ async function fetchPage(name, f, offset, signal) {
     if (f.needDeps && items.length) await attachMRDeps(items, signal);
     return { items, total: r?.total_hits ?? 0 };
   }
-  const pageSize = Math.min(50, CF_MAX - offset);
-  if (pageSize <= 0) return { items: [], total: CF_MAX };
+  const known = state.scan?.sources.find(x => x.name === "curseforge")?.total;
+  const reach = Math.min(known ?? CF_WINDOW, CF_MAX);
+  const reverse = offset >= CF_WINDOW;
+  const index = reverse ? offset - CF_WINDOW : offset;
+  const pageSize = Math.min(50, reach - offset, CF_WINDOW - index);
+  if (pageSize <= 0) return { items: [], total: known ?? 0 };
   const r = await cf("/mods/search", {
     signal, params: {
       gameId: CF_GAME, classId: CF_CLASS[f.type], searchFilter: f.q, gameVersion: f.version,
       modLoaderType: f.loader ? CF_LOADER[f.loader] : undefined,
-      sortField: CF_SORT[f.sort], sortOrder: f.sort === "relevance" && f.q ? undefined : "desc",
-      index: offset, pageSize,
+      sortField: CF_SORT[f.sort],
+      sortOrder: reverse ? "asc" : f.sort === "relevance" && f.q ? undefined : "desc",
+      index, pageSize,
     },
   });
+  const total = r?.pagination?.totalCount ?? 0;
   const items = (r?.data || []).map(fromCF);
-  items.forEach((it, i) => { it.order = offset + i; });
+  items.forEach((it, i) => { it.order = reverse ? total - 1 - (index + i) : offset + i; });
   if (f.needDeps && f.type === "modpack") await attachCFManifests(items, signal);
-  return { items, total: Math.min(r?.pagination?.totalCount ?? 0, CF_MAX) };
+  return { items, total };
 }
 
 /* ---------- Reading the form ---------- */
@@ -861,7 +872,7 @@ function readFilters() {
   const num = id => { const v = parseInt($(id).value, 10); return Number.isFinite(v) && v > 0 ? v : 0; };
   const f = {
     q: $("#q").value.trim(), type: $("#type").value, version: $("#version").value, loader: $("#loader").value,
-    env: $("#env").value, oss: $("#oss").checked, sort: $("#sort").value, depth: parseInt($("#depth").value, 10),
+    env: $("#env").value, oss: $("#oss").checked, sort: $("#sort").value, depth: $("#depth").value === "all" ? Infinity : parseInt($("#depth").value, 10),
     cats: [...state.cats], minDl: num("#min-dl"), maxDl: num("#max-dl"),
     updatedDays: parseInt($("#updated").value, 10) || 0,
     noWords: $("#nowords").value.split(",").map(s => s.trim().toLowerCase()).filter(Boolean),
@@ -880,7 +891,7 @@ async function startSearch() {
   clearNotes();
   const f = readFilters();
   state.f = f;
-  state.results = []; state.seen = new Set();
+  state.results = []; state.seen = new Set(); state.showLimit = SHOW_STEP;
   const sources = state.source === "both" ? ["modrinth", "curseforge"] : [state.source];
   state.scan = { sources: [], stats: { noList: {} } };
   for (const name of sources) {
@@ -935,13 +946,17 @@ async function scanMore(count, ctrl = state.abort) {
   await Promise.all(state.scan.sources.filter(s => !s.done).map(async s => {
     const size = PAGE_SIZE[s.name];
     const stopAt = s.next + count;
+    const reach = () => s.name === "curseforge" ? Math.min(s.total, CF_MAX) : s.total;
     try {
       if (s.total == null) { const first = s.next; s.next += size; await runPage(s, first); }
       const offsets = [];
-      while (s.next < Math.min(stopAt, s.total)) { offsets.push(s.next); s.next += size; }
+      while (s.next < Math.min(stopAt, reach())) {
+        offsets.push(s.next);
+        s.next += s.name === "curseforge" && s.next < CF_WINDOW && s.next + size > CF_WINDOW ? CF_WINDOW - s.next : size;
+      }
       // Several pages at once; each page's mod lists are read in parallel too.
       await mapLimit(offsets, s.name === "modrinth" ? 3 : 4, o => runPage(s, o));
-      if (s.next >= s.total) s.done = true;
+      if (s.next >= reach()) s.done = true;
     } catch (e) {
       if (isAbort(e)) return;
       s.error = e.message; s.done = true;
@@ -1127,6 +1142,7 @@ function card(it, i) {
   </article>`;
 }
 let shown = [];
+const SHOW_STEP = 120;
 function renderResults() {
   shown = sortedResults();
   const grid = $("#grid");
@@ -1138,12 +1154,13 @@ function renderResults() {
         : '<div class="empty" style="grid-column:1/-1">Pick your filters and press Search.</div>';
     return;
   }
+  shown = shown.slice(0, state.showLimit);
   grid.innerHTML = shown.map(card).join("");
 }
 function renderStatus() {
   const el = $("#status");
   if (!state.scan) { el.innerHTML = ""; return; }
-  const parts = state.scan.sources.map(s => `<span class="src"><span class="dot ${s.name === "modrinth" ? "mr" : "cf"}"></span>checked <strong>${nfull.format(s.scanned)}</strong>${s.total != null ? " of " + nfull.format(Math.min(s.total, s.name === "curseforge" ? 10000 : s.total)) : ""}</span>`);
+  const parts = state.scan.sources.map(s => `<span class="src"><span class="dot ${s.name === "modrinth" ? "mr" : "cf"}"></span>checked <strong>${nfull.format(s.scanned)}</strong>${s.total != null ? " of " + nfull.format(s.total) : ""}${s.name === "curseforge" && s.total > CF_MAX ? ` <span title="CurseForge's API only reaches 20,000 results per search. Narrow by version or loader to reach the rest.">(max ${nfull.format(CF_MAX)})</span>` : ""}</span>`);
   parts.push(`<span><strong>${nfull.format(state.results.length)}</strong> match</span>`);
   if (state.f?.needDeps) for (const s of state.scan.sources) {
     const n = state.scan.stats.noList[s.name];
@@ -1155,7 +1172,10 @@ function renderStatus() {
   $("#more-row").hidden = !(canMore || state.running);
   $("#more").hidden = state.running || !canMore;
   $("#stop").hidden = !state.running;
-  $("#more").textContent = `Check ${state.f?.depth || 300} more per site`;
+  $("#more").textContent = Number.isFinite(state.f?.depth) ? `Check ${nfull.format(state.f.depth)} more per site` : "Keep checking";
+  const hiddenCount = state.results.length - shown.length;
+  $("#show-more").hidden = hiddenCount <= 0;
+  $("#show-more").textContent = `Show ${nfull.format(Math.min(hiddenCount, SHOW_STEP))} more matches`;
   $("#go").textContent = state.running ? "Searching…" : "Search";
 }
 function renderAll() { renderResults(); renderStatus(); }
@@ -1308,6 +1328,7 @@ $("#type").addEventListener("change", fillCats);
 $("#snapshots").addEventListener("change", fillVersions);
 $("#view-sort").addEventListener("change", renderResults);
 $("#more").addEventListener("click", () => scanMore(state.f?.depth || 300));
+$("#show-more").addEventListener("click", () => { state.showLimit += SHOW_STEP; renderAll(); });
 $("#stop").addEventListener("click", () => {
   state.abort?.abort();
   state.running = false;
