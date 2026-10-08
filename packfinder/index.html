@@ -531,7 +531,7 @@ function fromCF(m) {
     categories: (m.categories || []).map(c => c.name),
     versions: [...new Set(idx.map(i => i.gameVersion))],
     url: m.links?.websiteUrl || "https://www.curseforge.com/minecraft/search?search=" + encodeURIComponent(m.name),
-    deps: cfDeps(main), matched: [], order: 0,
+    cfFile: main, classId: m.classId, deps: cfDeps(main), matched: [], order: 0,
   };
 }
 function mrDepsFromVersion(v) {
@@ -581,7 +581,7 @@ function passes(it, f, stats) {
   }
   if (!f.needDeps) return true;
   if (!it.deps || it.deps.count === 0) {
-    stats.noList++;
+    stats.noList[it.source] = (stats.noList[it.source] || 0) + 1;
     if (f.include.length || f.minMods) return false;
   }
   const count = it.deps?.count ?? 0;
@@ -595,6 +595,117 @@ function passes(it, f, stats) {
   }
   if (f.exclude.some(c => hasMod(it, c) === true)) return false;
   return true;
+}
+
+/* ---------- Reading CurseForge modpack contents ----------
+   CurseForge's API doesn't list the mods in a modpack, but every pack zip has a
+   manifest.json that does. Range requests read only the zip's directory and that
+   one file, a few KB per pack instead of the whole download. */
+const cfManifestCache = new Map();
+const cdn = { fails: 0, blocked: false };
+function cdnUrls(file) {
+  const a = Math.floor(file.id / 1000), b = file.id % 1000, name = encodeURIComponent(file.fileName);
+  return [...new Set([file.downloadUrl, `https://mediafilez.forgecdn.net/files/${a}/${b}/${name}`, `https://edge.forgecdn.net/files/${a}/${b}/${name}`].filter(Boolean))];
+}
+async function rangeFetch(url, start, end, total, signal) {
+  const r = await fetch(url, { headers: { Range: `bytes=${start}-${end}` }, signal });
+  if (r.status === 206) return new Uint8Array(await r.arrayBuffer());
+  if (r.status === 200) {
+    if (total > 8e6) { r.body?.cancel(); throw new Error("no range support"); }
+    return new Uint8Array(await r.arrayBuffer()).subarray(start, end + 1);
+  }
+  throw new Error("download server returned " + r.status);
+}
+async function inflateRaw(bytes) {
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return new Response(stream).text();
+}
+async function readZipEntry(url, total, wanted, signal) {
+  // Fast path: CurseForge exports usually put manifest.json first in the zip.
+  const headLen = Math.min(total, 32768);
+  const head = await rangeFetch(url, 0, headLen - 1, total, signal);
+  const hv = new DataView(head.buffer, head.byteOffset, head.byteLength);
+  if (head.length >= 30 && hv.getUint32(0, true) === 0x04034b50) {
+    const flags = hv.getUint16(6, true), method = hv.getUint16(8, true), size = hv.getUint32(18, true);
+    const nlen = hv.getUint16(26, true), elen = hv.getUint16(28, true);
+    const name = new TextDecoder().decode(head.subarray(30, 30 + nlen));
+    if (name === wanted && !(flags & 8) && size > 0 && (method === 0 || method === 8)) {
+      const start = 30 + nlen + elen;
+      const data = start + size <= head.length ? head.subarray(start, start + size) : (await rangeFetch(url, 0, start + size - 1, total, signal)).subarray(start, start + size);
+      return method === 0 ? new TextDecoder().decode(data) : inflateRaw(data);
+    }
+  }
+  const tailLen = Math.min(total, 65536 + 22);
+  const tailStart = total - tailLen;
+  const tail = await rangeFetch(url, tailStart, total - 1, total, signal);
+  const tv = new DataView(tail.buffer, tail.byteOffset, tail.byteLength);
+  let eocd = -1;
+  for (let i = tail.length - 22; i >= 0; i--) if (tv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error("not a zip");
+  const cdSize = tv.getUint32(eocd + 12, true), cdOff = tv.getUint32(eocd + 16, true);
+  if (cdOff === 0xffffffff) throw new Error("zip64 not supported");
+  const cd = cdOff >= tailStart ? tail.subarray(cdOff - tailStart, cdOff - tailStart + cdSize) : await rangeFetch(url, cdOff, cdOff + cdSize - 1, total, signal);
+  const cv = new DataView(cd.buffer, cd.byteOffset, cd.byteLength);
+  const dec = new TextDecoder();
+  let q = 0, entry = null;
+  while (q + 46 <= cd.length && cv.getUint32(q, true) === 0x02014b50) {
+    const nlen = cv.getUint16(q + 28, true), elen = cv.getUint16(q + 30, true), clen = cv.getUint16(q + 32, true);
+    if (dec.decode(cd.subarray(q + 46, q + 46 + nlen)) === wanted) {
+      entry = { method: cv.getUint16(q + 10, true), size: cv.getUint32(q + 20, true), off: cv.getUint32(q + 42, true) };
+      break;
+    }
+    q += 46 + nlen + elen + clen;
+  }
+  if (!entry) return null;
+  const want = Math.min(total - 1, entry.off + 30 + 1024 + entry.size);
+  let local = await rangeFetch(url, entry.off, want, total, signal);
+  const lv = new DataView(local.buffer, local.byteOffset, local.byteLength);
+  if (lv.getUint32(0, true) !== 0x04034b50) throw new Error("bad zip entry");
+  const start = 30 + lv.getUint16(26, true) + lv.getUint16(28, true);
+  if (start + entry.size > local.length) local = await rangeFetch(url, entry.off, entry.off + start + entry.size - 1, total, signal);
+  const data = local.subarray(start, start + entry.size);
+  if (entry.method === 0) return dec.decode(data);
+  if (entry.method === 8) return inflateRaw(data);
+  throw new Error("unsupported compression");
+}
+function cfManifestDeps(file, signal) {
+  if (!file?.fileLength || !file.fileName) return Promise.resolve(null);
+  if (cfManifestCache.has(file.id)) return cfManifestCache.get(file.id);
+  const job = (async () => {
+    let lastErr;
+    for (const url of cdnUrls(file)) {
+      try {
+        const text = await readZipEntry(url, file.fileLength, "manifest.json", signal);
+        cdn.fails = 0;
+        if (text == null) return null;
+        const ids = [...new Set((JSON.parse(text.replace(/^\ufeff/, "")).files || []).map(f => f.projectID).filter(Boolean))];
+        return { kind: "cf", modIds: new Set(ids), list: ids.map(id => ({ modId: id, relationType: 6 })), count: ids.length, fileName: file.displayName || file.fileName };
+      } catch (e) {
+        if (isAbort(e)) throw e;
+        lastErr = e;
+      }
+    }
+    if (++cdn.fails >= 6) cdn.blocked = true;
+    throw lastErr;
+  })();
+  job.catch(e => { if (isAbort(e)) cfManifestCache.delete(file.id); });
+  cfManifestCache.set(file.id, job);
+  return job;
+}
+async function mapLimit(items, n, fn) {
+  let i = 0;
+  await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => {
+    while (i < items.length) await fn(items[i++]);
+  }));
+}
+async function attachCFManifests(items, signal) {
+  const todo = items.filter(it => it.classId === CF_CLASS.modpack && (!it.deps || !it.deps.count) && it.cfFile);
+  await mapLimit(todo, 6, async it => {
+    if (cdn.blocked) return;
+    try { const d = await cfManifestDeps(it.cfFile, signal); if (d) it.deps = d; }
+    catch (e) { if (isAbort(e)) throw e; }
+  });
+  if (cdn.blocked) note("CurseForge's download server blocked this page from reading modpack contents, so most CurseForge packs can't be checked for mods. Modrinth results aren't affected.", "warn", "cdn");
 }
 
 /* ---------- Search pagers ---------- */
@@ -636,6 +747,7 @@ async function* cfPager(f, signal) {
       },
     });
     const items = (r?.data || []).map(fromCF);
+    if (f.needDeps && f.type === "modpack") await attachCFManifests(items, signal);
     index += items.length;
     const total = r?.pagination?.totalCount ?? 0;
     const done = !items.length || index >= Math.min(total, 10000);
@@ -670,7 +782,7 @@ async function startSearch() {
   state.f = f;
   state.results = []; state.seen = new Set();
   const sources = state.source === "both" ? ["modrinth", "curseforge"] : [state.source];
-  state.scan = { sources: [], stats: { noList: 0 } };
+  state.scan = { sources: [], stats: { noList: {} } };
   for (const name of sources) {
     if (name === "curseforge" && !state.cfKey) {
       note("CurseForge needs an API key. Add one under \"CurseForge key\" at the top.", "err");
@@ -878,7 +990,7 @@ function sortedResults() {
 }
 function card(it, i) {
   const range = versionRange(it.versions);
-  const showMods = it.deps && it.deps.count > 0;
+  const showMods = (it.deps && it.deps.count > 0) || (it.source === "curseforge" && it.classId === CF_CLASS.modpack && it.cfFile);
   return `<article class="card">
     <div class="card-head">${img(it.icon)}
       <div class="card-title">
@@ -891,7 +1003,7 @@ function card(it, i) {
       <span title="${nfull.format(it.downloads)} downloads"><b>${nf.format(it.downloads)}</b> downloads</span>
       <span><b>${nf.format(it.follows || 0)}</b> ${it.source === "modrinth" ? "follows" : "likes"}</span>
       <span title="${it.updated.toLocaleString()}">updated <b>${ago(it.updated)}</b></span>
-      ${showMods ? `<span><b>${it.deps.count}</b> ${state.f?.type === "modpack" ? "mods" : "dependencies"}</span>` : ""}
+      ${it.deps?.count ? `<span><b>${it.deps.count}</b> ${state.f?.type === "modpack" ? "mods" : "dependencies"}</span>` : ""}
     </div>
     ${it.matched.length ? `<div class="tags">${it.matched.map(m => `<span class="tag hit">✓ ${esc(m)}</span>`).join("")}</div>` : ""}
     <div class="tags">
@@ -924,7 +1036,10 @@ function renderStatus() {
   if (!state.scan) { el.innerHTML = ""; return; }
   const parts = state.scan.sources.map(s => `<span class="src"><span class="dot ${s.name === "modrinth" ? "mr" : "cf"}"></span>checked <strong>${nfull.format(s.scanned)}</strong>${s.total != null ? " of " + nfull.format(Math.min(s.total, s.name === "curseforge" ? 10000 : s.total)) : ""}</span>`);
   parts.push(`<span><strong>${nfull.format(state.results.length)}</strong> match</span>`);
-  if (state.f?.needDeps && state.scan.stats.noList) parts.push(`<span title="These have no mod list published on the site, so they can't be checked.">${nfull.format(state.scan.stats.noList)} had no mod list</span>`);
+  if (state.f?.needDeps) for (const s of state.scan.sources) {
+    const n = state.scan.stats.noList[s.name];
+    if (n) parts.push(`<span title="These have no mod list the page could read, so they can't be checked.">${nfull.format(n)} ${s.name === "modrinth" ? "Modrinth" : "CurseForge"} without a mod list</span>`);
+  }
   if (state.running) parts.push('<span class="spin" aria-label="Searching"></span>');
   el.innerHTML = parts.join("");
   const canMore = state.scan.sources.some(s => !s.done && s.gen);
@@ -959,6 +1074,11 @@ async function openModList(it) {
   dlg.showModal();
   try {
     let deps = it.deps;
+    if (it.source === "curseforge" && (!deps || !deps.count) && it.cfFile && it.classId === CF_CLASS.modpack) {
+      $("#ml-body").innerHTML = '<p class="hint"><span class="spin"></span> Reading the pack\'s mod list from CurseForge…</p>';
+      try { const d = await cfManifestDeps(it.cfFile); if (d) deps = it.deps = d; }
+      catch { $("#ml-body").innerHTML = '<p class="note err">CurseForge\'s download server wouldn\'t let this page read the pack\'s mod list.</p>'; return; }
+    }
     if (it.source === "modrinth" && !deps) {
       const v = await mr("/version/" + it.latestVersion);
       deps = it.deps = v ? mrDepsFromVersion(v) : null;
