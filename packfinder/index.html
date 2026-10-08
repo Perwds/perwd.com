@@ -372,12 +372,15 @@ code { font-family: var(--font-mono); font-size: .85em; background: var(--sunk);
 
 <dialog id="settings">
   <form method="dialog" class="dlg" id="settings-form">
-    <div class="dlg-head"><h2>CurseForge API key</h2><button class="btn ghost" value="cancel" formnovalidate>Close</button></div>
+    <div class="dlg-head"><h2>CurseForge settings</h2><button class="btn ghost" value="cancel" formnovalidate>Close</button></div>
     <div class="dlg-body">
       <p class="hint" style="font-size:.9rem;color:var(--ink)">CurseForge requires a key for every request. Get a free one at <a href="https://console.curseforge.com/" target="_blank" rel="noopener">console.curseforge.com</a>, then paste it here.</p>
       <input class="field" id="cf-key" type="text" placeholder="$2a$10$…" aria-label="CurseForge API key" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore style="font-family:var(--font-mono);font-size:.85rem">
       <p class="hint" id="key-status" aria-live="polite"></p>
       <p class="hint">The key is saved in this browser only and sent only to api.curseforge.com.</p>
+      <label class="label" for="cf-proxy" style="margin-top:6px">Download relay (for "Must contain" on CurseForge)</label>
+      <p class="hint" style="font-size:.9rem;color:var(--ink)">CurseForge blocks web pages from reading the mod list inside modpack files. A free Cloudflare Worker can relay it. Paste your Worker's address here, e.g. <code>https://packfinder-relay.yourname.workers.dev</code>. Leave it empty to skip.</p>
+      <input class="field" id="cf-proxy" type="url" placeholder="https://….workers.dev" autocomplete="off" spellcheck="false" aria-label="Download relay address" style="font-family:var(--font-mono);font-size:.85rem">
       <div style="display:flex;gap:8px">
         <button class="btn primary" value="save" id="save-key">Save key</button>
         <button class="btn" id="test-key" type="button">Test key</button>
@@ -440,6 +443,7 @@ const img = (src, cls = "") => src ? `<img src="${esc(src)}" alt="" loading="laz
 const state = {
   source: store.get("pf.source") || "modrinth",
   cfKey: store.get("pf.cfkey") || "",
+  proxy: store.get("pf.proxy") || "",
   include: [], exclude: [], match: "all",
   cats: new Set(),
   results: [], seen: new Set(), f: null, scan: null, abort: null, running: false,
@@ -605,7 +609,8 @@ const cfManifestCache = new Map();
 const cdn = { fails: 0, blocked: false };
 function cdnUrls(file) {
   const a = Math.floor(file.id / 1000), b = file.id % 1000, name = encodeURIComponent(file.fileName);
-  return [...new Set([file.downloadUrl, `https://mediafilez.forgecdn.net/files/${a}/${b}/${name}`, `https://edge.forgecdn.net/files/${a}/${b}/${name}`].filter(Boolean))];
+  const urls = [...new Set([file.downloadUrl, `https://mediafilez.forgecdn.net/files/${a}/${b}/${name}`, `https://edge.forgecdn.net/files/${a}/${b}/${name}`].filter(Boolean))];
+  return state.proxy ? urls.map(u => state.proxy + "/?url=" + encodeURIComponent(u)) : urls;
 }
 async function rangeFetch(url, start, end, total, signal) {
   const r = await fetch(url, { headers: { Range: `bytes=${start}-${end}` }, signal });
@@ -705,7 +710,9 @@ async function attachCFManifests(items, signal) {
     try { const d = await cfManifestDeps(it.cfFile, signal); if (d) it.deps = d; }
     catch (e) { if (isAbort(e)) throw e; }
   });
-  if (cdn.blocked) note("CurseForge's download server blocked this page from reading modpack contents, so most CurseForge packs can't be checked for mods. Modrinth results aren't affected.", "warn", "cdn");
+  if (cdn.blocked) note(state.proxy
+    ? "The download relay didn't work, so CurseForge packs can't be checked for mods. Check the relay address under \"CurseForge key\" and open it in a new tab: it should say \"Packfinder relay is running\"."
+    : "CurseForge blocks web pages from reading the mod list inside modpacks, so CurseForge packs can't be checked for mods yet. Set up the free download relay under \"CurseForge key\" to fix this. Modrinth results aren't affected.", "warn", "cdn");
 }
 
 /* ---------- Search pagers ---------- */
@@ -1238,6 +1245,7 @@ $("#test-key").addEventListener("click", () => {
   testKey(k);
 });
 $("#open-settings").addEventListener("click", () => {
+  $("#cf-proxy").value = state.proxy;
   $("#cf-key").value = state.cfKey;
   $("#key-status").textContent = describeKey(state.cfKey);
   $("#settings").showModal();
@@ -1245,6 +1253,12 @@ $("#open-settings").addEventListener("click", () => {
 $("#settings").addEventListener("close", () => {
   if ($("#settings").returnValue === "save") {
     state.cfKey = cleanKey($("#cf-key").value);
+    const proxy = $("#cf-proxy").value.trim().replace(/\/+$/, "");
+    if (proxy !== state.proxy) {
+      state.proxy = /^https:\/\//i.test(proxy) ? proxy : "";
+      store.set("pf.proxy", state.proxy || null);
+      cdn.fails = 0; cdn.blocked = false; cfManifestCache.clear();
+    }
     store.set("pf.cfkey", state.cfKey || null);
     renderKeyButton();
     for (const c of [...state.include, ...state.exclude]) if (!c.cf) { c.linking = true; renderChips(); c.ready = linkChip(c).finally(() => { c.linking = false; renderChips(); }); }
