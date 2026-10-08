@@ -454,7 +454,7 @@ async function mr(path, params = {}, signal) {
   for (let attempt = 0; attempt < 5; attempt++) {
     let r;
     try { r = await fetch(u, { signal }); }
-    catch (e) { if (isAbort(e)) throw e; throw new Error("Couldn't reach Modrinth. Check your connection."); }
+    catch (e) { if (isAbort(e)) throw e; throw new Error("Couldn't reach Modrinth. Check your connection. If this page is on a free Neocities site, Neocities blocks it from contacting other websites."); }
     if (r.status === 429) {
       const wait = Number(r.headers.get("x-ratelimit-reset")) || 10;
       note("Modrinth asked to slow down. Waiting " + wait + "s, then continuing.", "warn", "mr-rate");
@@ -1120,6 +1120,12 @@ if (state.source !== "modrinth" && !state.cfKey) state.source = "modrinth";
 for (const b of $$(".seg button")) b.setAttribute("aria-pressed", b.dataset.src === state.source);
 renderKeyButton(); renderChips(); fillVersions();
 if (matchMedia("(max-width: 860px)").matches) $("#filters").open = false;
+let cspWarned = false;
+document.addEventListener("securitypolicyviolation", e => {
+  if (cspWarned || !/modrinth|curseforge/.test(e.blockedURI || "")) return;
+  cspWarned = true;
+  note("The website hosting this page blocks requests to Modrinth and CurseForge, so searches can't run here. Free Neocities sites do this. Host the page somewhere that allows it (GitHub Pages, Cloudflare Pages, Netlify), use a Neocities Supporter account, or open the file directly on your computer.", "err", "csp");
+});
 loadTags();
 startSearch();
 </script>
