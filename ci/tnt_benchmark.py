@@ -29,6 +29,8 @@ VARIANTS = {
     "No TNT budget (like Paper)": {"orange.yml": "tnt-tick-budget-ms: 0"},
     "Orange default (20 ms budget)": {},
     "5 ms budget": {"orange.yml": "tnt-tick-budget-ms: 5"},
+    "20 ms budget + ZGC": {"orange.yml": "gc: zgc"},
+    "5 ms budget + ZGC": {"orange.yml": "tnt-tick-budget-ms: 5\ngc: zgc"},
 }
 
 
