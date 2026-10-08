@@ -21,6 +21,10 @@
   --accent-soft: #d3e6d2;
   --mr: #10994c;
   --cf: #cf5223;
+  --ftb: #b8322c;
+  --tech: #2a6fb5;
+  --hangar: #1c56d6;
+  --spigot: #c27400;
   --warn: #9a6200;
   --danger: #b3261e;
   --font-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
@@ -34,12 +38,14 @@
     --bg: #111513; --surface: #181d1a; --sunk: #0d100e; --ink: #e2e8e0; --muted: #93a197;
     --line: #2a322c; --accent: #5cbf69; --accent-ink: #0b120c; --accent-soft: #1e3322;
     --mr: #36d27c; --cf: #f07a45; --warn: #e0a640; --danger: #f2867e; color-scheme: dark;
+    --ftb: #f0675f; --tech: #6aaef0; --hangar: #7aa2ff; --spigot: #f2a93b;
   }
 }
 :root[data-theme="dark"] {
   --bg: #111513; --surface: #181d1a; --sunk: #0d100e; --ink: #e2e8e0; --muted: #93a197;
   --line: #2a322c; --accent: #5cbf69; --accent-ink: #0b120c; --accent-soft: #1e3322;
   --mr: #36d27c; --cf: #f07a45; --warn: #e0a640; --danger: #f2867e; color-scheme: dark;
+    --ftb: #f0675f; --tech: #6aaef0; --hangar: #7aa2ff; --spigot: #f2a93b;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -59,11 +65,26 @@ a { color: inherit; }
 .brand-mark i:nth-child(2), .brand-mark i:nth-child(4), .brand-mark i:nth-child(9) { opacity: .45; }
 .brand small { font: 500 .72rem var(--font-mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
 
-.seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--sunk); }
-.seg button { border: 0; background: transparent; padding: 6px 14px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; }
-.seg button[aria-pressed="true"] { background: var(--surface); box-shadow: inset 0 -2px 0 var(--accent); }
 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
-.dot.mr { background: var(--mr); } .dot.cf { background: var(--cf); }
+.dot.mr { background: var(--mr); } .dot.cf { background: var(--cf); } .dot.ftb { background: var(--ftb); }
+.dot.tech { background: var(--tech); } .dot.hangar { background: var(--hangar); } .dot.spigot { background: var(--spigot); }
+
+.dd { position: relative; }
+.dd > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.dd > summary::-webkit-details-marker { display: none; }
+.dd > summary::after { content: "▾"; color: var(--muted); margin-left: auto; padding-left: 6px; }
+.dd > summary .dots { display: inline-flex; gap: 3px; }
+.dd-sum-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.dd-panel { position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; width: max(100%, 260px); max-width: calc(100vw - 32px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 10px 28px rgb(0 0 0 / .2); padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+.dd-panel.right { left: auto; right: 0; width: 320px; }
+.dd-scroll { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; }
+.dd-opt { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 4px; cursor: pointer; font-size: .9rem; }
+.dd-opt:hover { background: var(--sunk); }
+.dd-opt input { accent-color: var(--accent); margin: 0; }
+.dd-opt small { color: var(--muted); margin-left: auto; font-size: .74rem; text-align: right; }
+.dd-opt.off { opacity: .55; }
+.dd-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 4px 2px; border-top: 1px solid var(--line); }
+.dd-foot .btn { padding: 3px 10px; font-size: .8rem; }
 
 .btn { border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius); padding: 7px 14px; cursor: pointer; font-weight: 500; }
 .btn:hover { border-color: var(--muted); }
@@ -147,7 +168,8 @@ a { color: inherit; }
 .card-title a:hover { text-decoration: underline; }
 .by { font-size: .82rem; color: var(--muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .src-tag { font: 600 .62rem var(--font-mono); text-transform: uppercase; letter-spacing: .06em; padding: 1px 5px; border-radius: 3px; color: var(--surface); }
-.src-tag.modrinth { background: var(--mr); } .src-tag.curseforge { background: var(--cf); }
+.src-tag.modrinth { background: var(--mr); } .src-tag.curseforge { background: var(--cf); } .src-tag.ftb { background: var(--ftb); }
+.src-tag.technic { background: var(--tech); } .src-tag.hangar { background: var(--hangar); } .src-tag.spigot { background: var(--spigot); }
 .summary { margin: 0; font-size: .9rem; color: var(--ink); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .stats { display: flex; flex-wrap: wrap; gap: 4px 14px; font: .8rem var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 .stats b { color: var(--ink); font-weight: 500; }
@@ -185,13 +207,15 @@ code { font-family: var(--font-mono); font-size: .85em; background: var(--sunk);
 <header class="top">
   <div class="brand">
     <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-    Packfinder <small>Modrinth + CurseForge</small>
+    Packfinder <small>Minecraft mod search</small>
   </div>
-  <div class="seg" role="group" aria-label="Where to search">
-    <button type="button" data-src="modrinth" aria-pressed="true"><span class="dot mr"></span>Modrinth</button>
-    <button type="button" data-src="curseforge" aria-pressed="false"><span class="dot cf"></span>CurseForge</button>
-    <button type="button" data-src="both" aria-pressed="false"><span class="dot mr"></span><span class="dot cf" style="margin-left:-5px"></span>Both</button>
-  </div>
+  <details class="dd" id="sites-dd">
+    <summary class="btn" id="sites-sum" aria-label="Sites to search"><span class="dots" id="sites-dots"></span><span class="dd-sum-text" id="sites-text">Modrinth</span></summary>
+    <div class="dd-panel right">
+      <div class="dd-scroll" id="sites-list"></div>
+      <div class="dd-foot"><span class="hint">Changes apply on the next search</span><button type="button" class="btn primary" id="sites-go">Search</button></div>
+    </div>
+  </details>
   <button type="button" class="btn ghost" id="open-settings">CurseForge key</button>
 </header>
 
@@ -252,7 +276,14 @@ code { font-family: var(--font-mono); font-size: .85em; background: var(--sunk);
       <div class="group">
         <span class="label">Minecraft</span>
         <div class="row2">
-          <select class="field" id="version" aria-label="Game version"><option value="">Any version</option></select>
+          <details class="dd" id="ver-dd">
+            <summary class="field" aria-label="Game versions"><span class="dd-sum-text" id="ver-text">Any version</span></summary>
+            <div class="dd-panel">
+              <input class="field" id="ver-filter" type="search" placeholder="Find a version" aria-label="Find a version">
+              <div class="dd-scroll" id="ver-list"></div>
+              <div class="dd-foot"><span class="hint" id="ver-count">Pick one or more</span><button type="button" class="btn" id="ver-clear">Clear</button></div>
+            </div>
+          </details>
           <select class="field" id="loader" aria-label="Mod loader">
             <option value="">Any loader</option>
             <option value="fabric">Fabric</option>
@@ -262,6 +293,7 @@ code { font-family: var(--font-mono); font-size: .85em; background: var(--sunk);
           </select>
         </div>
         <label class="check"><input type="checkbox" id="snapshots"> Show snapshot versions</label>
+        <p class="hint">Pick several versions to find results for any of them.</p>
       </div>
 
       <div class="group">
@@ -415,6 +447,25 @@ const CF_LOADER = { forge: 1, fabric: 4, quilt: 5, neoforge: 6 };
 const CF_LOADER_NAME = { 1: "forge", 2: "cauldron", 3: "liteloader", 4: "fabric", 5: "quilt", 6: "neoforge" };
 const CF_SORT = { relevance: 2, downloads: 6, follows: 12, newest: 11, updated: 3 };
 const LOADERS = new Set(["forge", "fabric", "quilt", "neoforge", "liteloader", "rift", "modloader", "bukkit", "paper", "spigot", "purpur", "folia", "sponge", "velocity", "bungeecord", "waterfall", "iris", "optifine", "canvas", "vanilla", "minecraft", "datapack", "babric", "bta-babric", "java-agent", "legacy-fabric", "nilloader", "ornithe", "geyser"]);
+const ALL_TYPES = ["modpack", "mod", "shader", "resourcepack", "datapack", "plugin"];
+const SITES = {
+  modrinth:   { name: "Modrinth", dot: "mr", types: ALL_TYPES, page: 100, conc: 3 },
+  curseforge: { name: "CurseForge", dot: "cf", types: ALL_TYPES, page: 50, conc: 4, needsKey: true },
+  ftb:        { name: "Feed The Beast", dot: "ftb", types: ["modpack"], page: 25, conc: 2 },
+  technic:    { name: "Technic", dot: "tech", types: ["modpack"], page: 20, conc: 2 },
+  hangar:     { name: "Hangar (Paper)", dot: "hangar", types: ["plugin"], page: 25, conc: 3 },
+  spigot:     { name: "SpigotMC", dot: "spigot", types: ["plugin"], page: 100, conc: 1 },
+};
+const SITE_HINT = { curseforge: "needs API key", ftb: "modpacks only", technic: "modpacks, by name only", hangar: "plugins only", spigot: "plugins only" };
+const siteName = id => SITES[id]?.name || id;
+function loadSites() {
+  try {
+    const saved = JSON.parse(store.get("pf.sites") || "null");
+    if (Array.isArray(saved) && saved.some(x => SITES[x])) return new Set(saved.filter(x => SITES[x]));
+  } catch {}
+  const old = store.get("pf.source");
+  return new Set(old === "both" ? ["modrinth", "curseforge"] : old === "curseforge" ? ["curseforge"] : ["modrinth"]);
+}
 const FALLBACK_VERSIONS = ["1.21.4", "1.21.1", "1.21", "1.20.6", "1.20.4", "1.20.1", "1.19.4", "1.19.2", "1.18.2", "1.17.1", "1.16.5", "1.12.2", "1.7.10"];
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -445,14 +496,16 @@ const noImg = '<span class="noimg" aria-hidden="true"></span>';
 const img = (src, cls = "") => src ? `<img src="${esc(src)}" alt="" loading="lazy" class="${cls}">` : noImg;
 
 const state = {
-  source: store.get("pf.source") || "modrinth",
+  sites: null,
+  pickedVersions: new Set(),
   cfKey: store.get("pf.cfkey") || "",
   proxy: store.get("pf.proxy") || "",
   include: [], exclude: [], match: "all",
   cats: new Set(),
   results: [], seen: new Set(), showLimit: 120, f: null, scan: null, abort: null, running: false,
-  versions: [], categories: [],
+  versionTags: [], categories: [],
 };
+state.sites = loadSites();
 
 /* ---------- API helpers ---------- */
 async function mr(path, params = {}, signal) {
@@ -501,6 +554,160 @@ async function cf(path, { params = {}, body, signal } = {}) {
     return r.json();
   }
   throw new Error("CurseForge kept rate-limiting. Wait a minute and search again.");
+}
+
+/* ---------- Other sites ----------
+   These are tried directly first. If a site blocks web pages, the request is retried
+   through the download relay (a relay deployed from the newest cors-worker.js allows them). */
+const viaRelay = new Set();
+const relayUrl = u => state.proxy + "/?url=" + encodeURIComponent(u);
+async function getJSON(site, url, signal) {
+  const name = siteName(site);
+  for (let attempt = 0; attempt < 4; attempt++) {
+    let r;
+    try { r = await fetch(viaRelay.has(site) ? relayUrl(url) : url, { signal }); }
+    catch (e) {
+      if (isAbort(e)) throw e;
+      if (!viaRelay.has(site) && state.proxy) { viaRelay.add(site); attempt--; continue; }
+      throw new Error(state.proxy
+        ? `Couldn't reach ${name}, even through your relay. Make sure the relay runs the newest cors-worker.js.`
+        : `Couldn't reach ${name}. It may block web pages from searching it; setting up the download relay (under "CurseForge key") can fix this.`);
+    }
+    if (r.status === 429) { await sleep(4000 * (attempt + 1), signal); continue; }
+    if (r.status === 404) return null;
+    if (r.status === 403 && viaRelay.has(site)) throw new Error(`Your relay refused ${name}. Paste the newest cors-worker.js into the Worker and deploy it again.`);
+    if (!r.ok) throw new Error(`${name} returned an error (${r.status}).`);
+    return r.json();
+  }
+  throw new Error(`${name} kept rate-limiting. Wait a minute and search again.`);
+}
+const stripHtml = t => String(t || "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+const fromEpoch = n => (n ? new Date(n * 1000) : null);
+const slugify = t => String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+// Feed The Beast (modpacks.ch API). Its version data lists every mod with CurseForge ids.
+const FTB_API = "https://api.modpacks.ch/public/modpack";
+function fromFTB(p, order) {
+  const art = (p.art || []).find(a => a.type === "square") || (p.art || [])[0];
+  const versions = (p.versions || []).slice().sort((a, b) => (b.updated || 0) - (a.updated || 0));
+  const targets = versions.flatMap(v => v.targets || []);
+  return {
+    source: "ftb", key: "ftb:" + p.id, id: p.id, slug: slugify(p.name), title: p.name,
+    author: p.authors?.[0]?.name, summary: p.synopsis || stripHtml(p.description).slice(0, 300), icon: art?.url || null,
+    downloads: p.installs ?? p.plays ?? 0, follows: p.plays ?? 0, statLabel: "plays",
+    updated: fromEpoch(p.updated || versions[0]?.updated), created: fromEpoch(p.released),
+    loaders: [...new Set(targets.filter(t => t.type === "modloader").map(t => String(t.name).toLowerCase()))],
+    categories: (p.tags || []).map(t => t.name).filter(Boolean),
+    versions: [...new Set(targets.filter(t => t.type === "game" || t.name === "minecraft").map(t => t.version))],
+    url: `https://www.feed-the-beast.com/modpacks/${p.id}-${slugify(p.name)}`,
+    ftbVersion: versions[0]?.id, deps: null, matched: [], order,
+  };
+}
+async function attachFTBDeps(it, signal) {
+  if (!it.ftbVersion) return;
+  const key = `ftb:${it.id}/${it.ftbVersion}`;
+  const saved = await idb.getMany("mr", [key]);
+  let files = saved.get(key);
+  if (!files) {
+    const v = await getJSON("ftb", `${FTB_API}/${it.id}/${it.ftbVersion}`, signal);
+    files = (v?.files || []).filter(x => x.type === "mod" || /\.jar$/i.test(x.name || "")).map(x => ({ n: x.name, c: x.curseforge?.project || null }));
+    idb.putMany("mr", [[key, files]]);
+  }
+  it.deps = { kind: "ftb", list: files, count: files.length, modIds: new Set(files.map(x => x.c).filter(Boolean)), fileNames: files.map(x => String(x.n || "").toLowerCase()) };
+}
+async function ftbPage(s, f, offset, signal) {
+  if (!s.list) {
+    const r = f.q ? await getJSON("ftb", `${FTB_API}/search/100?term=${encodeURIComponent(f.q)}`, signal) : await getJSON("ftb", `${FTB_API}/all`, signal);
+    s.list = r?.packs || [];
+  }
+  const ids = s.list.slice(offset, offset + SITES.ftb.page);
+  const items = [];
+  await mapLimit(ids, 8, async id => {
+    try {
+      const p = await getJSON("ftb", `${FTB_API}/${id}`, signal);
+      if (p && p.name && p.status !== "error") items.push(fromFTB(p, offset + ids.indexOf(id)));
+    } catch (e) { if (isAbort(e)) throw e; }
+  });
+  if (f.needDeps) await mapLimit(items, 8, async it => { try { await attachFTBDeps(it, signal); } catch (e) { if (isAbort(e)) throw e; } });
+  return { items, total: s.list.length };
+}
+
+// Technic Platform: search by name only, no mod lists.
+const TECHNIC_API = "https://api.technicpack.net";
+function fromTechnic(p, d, order) {
+  d = d || {};
+  return {
+    source: "technic", key: "technic:" + p.slug, id: d.id || p.slug, slug: p.slug, title: d.displayName || p.name || p.slug,
+    author: d.user, summary: stripHtml(d.description).slice(0, 300), icon: d.icon?.url || p.iconUrl || d.logo?.url || null,
+    downloads: d.installs ?? d.downloads ?? d.runs ?? 0, follows: d.ratings ?? 0, statLabel: "ratings",
+    updated: null, created: null, loaders: [], categories: [], versions: d.minecraft ? [d.minecraft] : [],
+    url: d.platformUrl || p.url || `https://www.technicpack.net/modpack/${p.slug}`, deps: null, matched: [], order,
+  };
+}
+async function technicPage(s, f, offset, signal) {
+  if (!s.list) {
+    if (!f.q) { s.list = []; note("Technic can only be searched by name. Type something in Search to include Technic packs.", "warn", "technic-q"); }
+    else {
+      const r = await getJSON("technic", `${TECHNIC_API}/search?q=${encodeURIComponent(f.q)}&build=999`, signal);
+      s.list = (r?.modpacks || []).filter(p => p.slug);
+    }
+  }
+  const part = s.list.slice(offset, offset + SITES.technic.page);
+  const items = [];
+  await mapLimit(part, 6, async p => {
+    let d = null;
+    try { d = await getJSON("technic", `${TECHNIC_API}/modpack/${encodeURIComponent(p.slug)}?build=999`, signal); } catch (e) { if (isAbort(e)) throw e; }
+    items.push(fromTechnic(p, d, offset + part.indexOf(p)));
+  });
+  return { items, total: s.list.length };
+}
+
+// Hangar (PaperMC plugins).
+const HANGAR_API = "https://hangar.papermc.io/api/v1";
+const HANGAR_SORT = { relevance: "-downloads", downloads: "-downloads", follows: "-stars", newest: "-newest", updated: "-updated" };
+function fromHangar(p, order) {
+  const plats = p.supportedPlatforms || {};
+  const owner = p.namespace?.owner, slug = p.namespace?.slug || p.name;
+  return {
+    source: "hangar", key: "hangar:" + (p.id ?? `${owner}/${slug}`), id: p.id, slug, title: p.name, author: owner,
+    summary: p.description, icon: p.avatarUrl || null, downloads: p.stats?.downloads ?? 0, follows: p.stats?.stars ?? 0, statLabel: "stars",
+    updated: p.lastUpdated ? new Date(p.lastUpdated) : null, created: p.createdAt ? new Date(p.createdAt) : null,
+    loaders: Object.keys(plats).map(x => x.toLowerCase()), categories: p.category ? [String(p.category).replace(/_/g, " ")] : [],
+    versions: [...new Set(Object.values(plats).flat())], url: `https://hangar.papermc.io/${owner}/${slug}`, deps: null, matched: [], order,
+  };
+}
+async function hangarPage(s, f, offset, signal) {
+  const u = new URL(HANGAR_API + "/projects");
+  u.searchParams.set("limit", SITES.hangar.page);
+  u.searchParams.set("offset", offset);
+  u.searchParams.set("sort", HANGAR_SORT[f.sort] || "-downloads");
+  if (f.q) { u.searchParams.set("q", f.q); u.searchParams.set("query", f.q); }
+  if (f.versions.length === 1) { u.searchParams.set("platform", "PAPER"); u.searchParams.set("version", f.versions[0]); }
+  const r = await getJSON("hangar", u.href, signal);
+  const items = (r?.result || []).map((p, i) => fromHangar(p, offset + i));
+  return { items, total: r?.pagination?.count ?? offset + items.length };
+}
+
+// SpigotMC through the Spiget API. It doesn't report a total, so pages run until one comes back short.
+const SPIGET_API = "https://api.spiget.org/v2";
+const SPIGET_SORT = { relevance: "-downloads", downloads: "-downloads", follows: "-likes", newest: "-releaseDate", updated: "-updateDate" };
+function fromSpigot(p, order) {
+  return {
+    source: "spigot", key: "spigot:" + p.id, id: p.id, slug: String(p.id), title: p.name, author: "",
+    summary: p.tag, icon: p.icon?.url ? "https://www.spigotmc.org/" + p.icon.url : null,
+    downloads: p.downloads ?? 0, follows: p.likes ?? p.rating?.count ?? 0, statLabel: "likes",
+    updated: fromEpoch(p.updateDate), created: fromEpoch(p.releaseDate), loaders: [],
+    categories: p.premium ? ["premium"] : [], versions: p.testedVersions || [],
+    url: `https://www.spigotmc.org/resources/${p.id}/`, deps: null, matched: [], order,
+  };
+}
+async function spigotPage(s, f, offset, signal) {
+  const size = SITES.spigot.page, page = Math.floor(offset / size) + 1;
+  const fields = "id,name,tag,downloads,likes,rating,icon,updateDate,releaseDate,testedVersions,premium";
+  const base = f.q ? `${SPIGET_API}/search/resources/${encodeURIComponent(f.q)}?field=name&` : `${SPIGET_API}/resources?`;
+  const r = await getJSON("spigot", `${base}size=${size}&page=${page}&sort=${SPIGET_SORT[f.sort] || "-downloads"}&fields=${fields}`, signal);
+  const list = Array.isArray(r) ? r : [];
+  return { items: list.map((p, i) => fromSpigot(p, offset + i)), total: list.length < size ? offset + list.length : null };
 }
 
 /* ---------- Normalizing results ---------- */
@@ -623,13 +830,25 @@ function hasMod(item, chip) {
     if (m.fileRe && d.fileNames.some(f => m.fileRe.test(f))) return true;
     return false;
   }
+  if (d.kind === "ftb") {
+    if (chip.cf && d.modIds.has(chip.cf.id)) return true;
+    const res = [chip.mr?.fileRe, chip.cf?.fileRe].filter(Boolean);
+    if (res.some(re => d.fileNames.some(fn => re.test(fn)))) return true;
+    return chip.cf || res.length ? false : null;
+  }
   if (!chip.cf) return null;
   return d.modIds.has(chip.cf.id);
+}
+function versionOk(it, f) {
+  if (!f.versions.length || !it.versions.length) return true;
+  return it.versions.some(v => f.versions.some(w => v === w || w.startsWith(v + ".") || v.startsWith(w + ".")));
 }
 function passes(it, f, stats) {
   if (f.minDl && it.downloads < f.minDl) return false;
   if (f.maxDl && it.downloads > f.maxDl) return false;
-  if (f.updatedDays && Date.now() - it.updated > f.updatedDays * 864e5) return false;
+  if (f.updatedDays && it.updated && Date.now() - it.updated > f.updatedDays * 864e5) return false;
+  if (!versionOk(it, f)) return false;
+  if (f.loader && it.source === "ftb" && it.loaders.length && !it.loaders.includes(f.loader)) return false;
   if (f.noWords.length) {
     const t = (it.title + " " + it.summary).toLowerCase();
     if (f.noWords.some(w => t.includes(w))) return false;
@@ -826,7 +1045,7 @@ async function attachCFManifests(items, signal) {
 function mrFacets(f) {
   const facets = [["project_type:" + f.type]];
   if (f.loader) facets.push(["categories:" + f.loader]);
-  if (f.version) facets.push(["versions:" + f.version]);
+  if (f.versions.length) facets.push(f.versions.map(v => "versions:" + v));
   for (const c of f.cats) facets.push(["categories:" + c]);
   if (f.env === "server") facets.push(["server_side:required", "server_side:optional"]);
   if (f.env === "client-only") facets.push(["server_side:unsupported"]);
@@ -834,18 +1053,21 @@ function mrFacets(f) {
   if (f.oss) facets.push(["open_source:true"]);
   return facets;
 }
-const PAGE_SIZE = { modrinth: 100, curseforge: 50 };
 const CF_WINDOW = 10000;          // CurseForge's API stops at result #10,000…
 const CF_MAX = CF_WINDOW * 2;     // …so the rest is read from the other end of the list.
-async function fetchPage(name, f, offset, signal) {
-  if (name === "modrinth") {
+async function fetchPage(s, f, offset, signal) {
+  if (s.name === "ftb") return ftbPage(s, f, offset, signal);
+  if (s.name === "technic") return technicPage(s, f, offset, signal);
+  if (s.name === "hangar") return hangarPage(s, f, offset, signal);
+  if (s.name === "spigot") return spigotPage(s, f, offset, signal);
+  if (s.name === "modrinth") {
     const r = await mr("/search", { query: f.q || undefined, facets: mrFacets(f), index: f.sort, offset, limit: 100 }, signal);
     const items = (r?.hits || []).map(fromMR);
     items.forEach((it, i) => { it.order = offset + i; });
     if (f.needDeps && items.length) await attachMRDeps(items, signal);
     return { items, total: r?.total_hits ?? 0 };
   }
-  const known = state.scan?.sources.find(x => x.name === "curseforge")?.total;
+  const known = s.total;
   const reach = Math.min(known ?? CF_WINDOW, CF_MAX);
   const reverse = offset >= CF_WINDOW;
   const index = reverse ? offset - CF_WINDOW : offset;
@@ -853,7 +1075,7 @@ async function fetchPage(name, f, offset, signal) {
   if (pageSize <= 0) return { items: [], total: known ?? 0 };
   const r = await cf("/mods/search", {
     signal, params: {
-      gameId: CF_GAME, classId: CF_CLASS[f.type], searchFilter: f.q, gameVersion: f.version,
+      gameId: CF_GAME, classId: CF_CLASS[f.type], searchFilter: f.q, gameVersion: f.versions.length === 1 ? f.versions[0] : undefined,
       modLoaderType: f.loader ? CF_LOADER[f.loader] : undefined,
       sortField: CF_SORT[f.sort],
       sortOrder: reverse ? "asc" : f.sort === "relevance" && f.q ? undefined : "desc",
@@ -871,7 +1093,7 @@ async function fetchPage(name, f, offset, signal) {
 function readFilters() {
   const num = id => { const v = parseInt($(id).value, 10); return Number.isFinite(v) && v > 0 ? v : 0; };
   const f = {
-    q: $("#q").value.trim(), type: $("#type").value, version: $("#version").value, loader: $("#loader").value,
+    q: $("#q").value.trim(), type: $("#type").value, versions: [...state.pickedVersions], loader: $("#loader").value,
     env: $("#env").value, oss: $("#oss").checked, sort: $("#sort").value, depth: $("#depth").value === "all" ? Infinity : parseInt($("#depth").value, 10),
     cats: [...state.cats], minDl: num("#min-dl"), maxDl: num("#max-dl"),
     updatedDays: parseInt($("#updated").value, 10) || 0,
@@ -892,16 +1114,19 @@ async function startSearch() {
   const f = readFilters();
   state.f = f;
   state.results = []; state.seen = new Set(); state.showLimit = SHOW_STEP;
-  const sources = state.source === "both" ? ["modrinth", "curseforge"] : [state.source];
+  const sources = Object.keys(SITES).filter(id => state.sites.has(id));
   state.scan = { sources: [], stats: { noList: {} } };
   for (const name of sources) {
     if (name === "curseforge" && !state.cfKey) {
       note("CurseForge needs an API key. Add one under \"CurseForge key\" at the top.", "err");
       continue;
     }
-    if (name === "curseforge" && !CF_CLASS[f.type]) continue;
-    state.scan.sources.push({ name, scanned: 0, total: null, next: 0, done: false, error: null });
+    if (!SITES[name].types.includes(f.type)) continue;
+    state.scan.sources.push({ name, scanned: 0, total: null, started: false, next: 0, done: false, error: null });
   }
+  const skipped = sources.filter(id => !SITES[id].types.includes(f.type));
+  if (skipped.length) note(`Skipped ${skipped.map(siteName).join(", ")}: ${skipped.length > 1 ? "they don't" : "it doesn't"} have ${$("#type").selectedOptions[0].textContent.toLowerCase()}.`, "warn");
+  if (!sources.length) note("Pick at least one site from the Sites menu at the top.", "err");
   renderAll();
   if (!state.scan.sources.length) return;
 
@@ -915,11 +1140,12 @@ async function startSearch() {
       for (const s of state.scan.sources) {
         if (s.name === "modrinth" && !c.mr) note(`"${c.title}" isn't on Modrinth, so Modrinth results can't be checked for it.`, "warn");
         if (s.name === "curseforge" && !c.cf) note(`"${c.title}" wasn't found on CurseForge, so CurseForge results can't be checked for it.`, "warn");
+        if (s.name === "ftb" && !c.cf && !c.mr?.fileRe) note(`"${c.title}" couldn't be matched to FTB's mod lists, so FTB results can't be checked for it.`, "warn");
       }
     }
   } catch (e) { if (isAbort(e)) return; }
 
-  await scanMore(f.needDeps || f.minDl || f.maxDl || f.updatedDays || f.noWords.length ? f.depth : Math.min(f.depth, 100), ctrl);
+  await scanMore(f.needDeps || f.minDl || f.maxDl || f.updatedDays || f.noWords.length || f.versions.length > 1 ? f.depth : Math.min(f.depth, 100), ctrl);
 }
 
 let renderQueued = false;
@@ -933,7 +1159,7 @@ async function scanMore(count, ctrl = state.abort) {
   const { signal } = ctrl;
   state.running = true; renderStatus();
   const runPage = async (s, offset) => {
-    const { items, total } = await fetchPage(s.name, state.f, offset, signal);
+    const { items, total } = await fetchPage(s, state.f, offset, signal);
     if (signal.aborted) return;
     s.total = total; s.scanned += items.length;
     for (const it of items) {
@@ -944,23 +1170,23 @@ async function scanMore(count, ctrl = state.abort) {
     scheduleRender();
   };
   await Promise.all(state.scan.sources.filter(s => !s.done).map(async s => {
-    const size = PAGE_SIZE[s.name];
+    const { page: size, conc } = SITES[s.name];
     const stopAt = s.next + count;
-    const reach = () => s.name === "curseforge" ? Math.min(s.total, CF_MAX) : s.total;
+    // A null total means the site doesn't say how many results there are (keep going until a short page).
+    const reach = () => s.total == null ? Infinity : s.name === "curseforge" ? Math.min(s.total, CF_MAX) : s.total;
+    const step = () => s.name === "curseforge" && s.next < CF_WINDOW && s.next + size > CF_WINDOW ? CF_WINDOW - s.next : size;
     try {
-      if (s.total == null) { const first = s.next; s.next += size; await runPage(s, first); }
-      const offsets = [];
-      while (s.next < Math.min(stopAt, reach())) {
-        offsets.push(s.next);
-        s.next += s.name === "curseforge" && s.next < CF_WINDOW && s.next + size > CF_WINDOW ? CF_WINDOW - s.next : size;
+      if (!s.started) { s.started = true; const first = s.next; s.next += step(); await runPage(s, first); }
+      while (!signal.aborted && s.next < Math.min(stopAt, reach())) {
+        const batch = [];
+        while (batch.length < conc && s.next < Math.min(stopAt, reach())) { batch.push(s.next); s.next += step(); }
+        await Promise.all(batch.map(o => runPage(s, o)));
       }
-      // Several pages at once; each page's mod lists are read in parallel too.
-      await mapLimit(offsets, s.name === "modrinth" ? 3 : 4, o => runPage(s, o));
-      if (s.next >= reach()) s.done = true;
+      if (s.total != null && s.next >= reach()) s.done = true;
     } catch (e) {
       if (isAbort(e)) return;
       s.error = e.message; s.done = true;
-      note((s.name === "modrinth" ? "Modrinth: " : "CurseForge: ") + e.message, "err");
+      note(siteName(s.name) + ": " + e.message, "err");
     }
   }));
   if (state.abort !== ctrl) return;
@@ -979,7 +1205,7 @@ function addChip(list, pick) {
   if ([...state.include, ...state.exclude].some(c => c.keys.has(key))) return;
   const chip = { uid: ++chipSeq, title: pick.title, keys: new Set([key]), mr: null, cf: null, linking: true };
   if (pick.source === "modrinth") chip.mr = { id: pick.id, slug: pick.slug, fileRe: fileReFor(pick.slug) };
-  else chip.cf = { id: pick.id, slug: pick.slug };
+  else chip.cf = { id: pick.id, slug: pick.slug, fileRe: fileReFor(pick.slug) };
   chip.ready = linkChip(chip).finally(() => { chip.linking = false; renderChips(); });
   state[list].push(chip);
   renderChips();
@@ -1003,7 +1229,7 @@ async function linkChip(chip) {
         r = await cf("/mods/search", { params: { gameId: CF_GAME, classId: 6, searchFilter: chip.title, pageSize: 10, sortField: 2, sortOrder: "desc" } });
         hit = r?.data?.find(m => m.name.toLowerCase() === chip.title.toLowerCase());
       }
-      if (hit) { chip.cf = { id: hit.id, slug: hit.slug }; chip.keys.add("cf:" + hit.id); }
+      if (hit) { chip.cf = { id: hit.id, slug: hit.slug, fileRe: fileReFor(hit.slug) }; chip.keys.add("cf:" + hit.id); }
     }
   } catch { /* linking is best effort */ }
 }
@@ -1046,7 +1272,7 @@ function makePicker(input, listEl, listName) {
       mr("/search", { query: q, facets: [["project_type:mod", "project_type:shader", "project_type:resourcepack"]], limit: 7, index: "relevance" }, signal)
         .then(r => (r?.hits || []).map(h => ({ source: "modrinth", id: h.project_id, slug: h.slug, title: h.title, icon: h.icon_url, downloads: h.downloads }))),
     ];
-    if (state.cfKey && state.source !== "modrinth") {
+    if (state.cfKey && (state.sites.has("curseforge") || state.sites.has("ftb"))) {
       tasks.push(cf("/mods/search", { signal, params: { gameId: CF_GAME, classId: 6, searchFilter: q, pageSize: 7, sortField: 2, sortOrder: "desc" } })
         .then(r => (r?.data || []).map(m => ({ source: "curseforge", id: m.id, slug: m.slug, title: m.name, icon: m.logo?.thumbnailUrl, downloads: m.downloadCount }))));
     }
@@ -1099,16 +1325,16 @@ function sortedResults() {
   const list = state.results.slice(), how = $("#view-sort").value;
   const by = {
     downloads: (a, b) => b.downloads - a.downloads,
-    updated: (a, b) => b.updated - a.updated,
-    newest: (a, b) => b.created - a.created,
+    updated: (a, b) => (b.updated || 0) - (a.updated || 0),
+    newest: (a, b) => (b.created || 0) - (a.created || 0),
     "mods-desc": (a, b) => (b.deps?.count ?? -1) - (a.deps?.count ?? -1),
     "mods-asc": (a, b) => (a.deps?.count ?? 1e9) - (b.deps?.count ?? 1e9),
     name: (a, b) => a.title.localeCompare(b.title),
   }[how];
   if (by) list.sort(by);
-  else if (state.source === "both" && state.f && state.f.sort !== "relevance") {
+  else if ((state.scan?.sources.length || 0) > 1 && state.f && state.f.sort !== "relevance") {
     const key = state.f.sort;
-    list.sort((a, b) => ({ downloads: b.downloads - a.downloads, follows: b.follows - a.follows, newest: b.created - a.created, updated: b.updated - a.updated }[key] ?? a.order - b.order));
+    list.sort((a, b) => ({ downloads: b.downloads - a.downloads, follows: b.follows - a.follows, newest: (b.created || 0) - (a.created || 0), updated: (b.updated || 0) - (a.updated || 0) }[key] ?? a.order - b.order));
   } else list.sort((a, b) => a.order - b.order);
   return list;
 }
@@ -1119,14 +1345,14 @@ function card(it, i) {
     <div class="card-head">${img(it.icon)}
       <div class="card-title">
         <a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.title)}</a>
-        <span class="by"><span class="src-tag ${it.source}">${it.source === "modrinth" ? "Modrinth" : "CurseForge"}</span>${it.author ? "by " + esc(it.author) : ""}</span>
+        <span class="by"><span class="src-tag ${it.source}">${esc(siteName(it.source))}</span>${it.author ? "by " + esc(it.author) : ""}</span>
       </div>
     </div>
     <p class="summary">${esc(it.summary)}</p>
     <div class="stats">
       <span title="${nfull.format(it.downloads)} downloads"><b>${nf.format(it.downloads)}</b> downloads</span>
-      <span><b>${nf.format(it.follows || 0)}</b> ${it.source === "modrinth" ? "follows" : "likes"}</span>
-      <span title="${it.updated.toLocaleString()}">updated <b>${ago(it.updated)}</b></span>
+      <span><b>${nf.format(it.follows || 0)}</b> ${it.statLabel || (it.source === "modrinth" ? "follows" : "likes")}</span>
+      ${it.updated ? `<span title="${it.updated.toLocaleString()}">updated <b>${ago(it.updated)}</b></span>` : ""}
       ${it.deps?.count ? `<span><b>${it.deps.count}</b> ${state.f?.type === "modpack" ? "mods" : "dependencies"}</span>` : ""}
     </div>
     ${it.matched.length ? `<div class="tags">${it.matched.map(m => `<span class="tag hit">✓ ${esc(m)}</span>`).join("")}</div>` : ""}
@@ -1136,8 +1362,8 @@ function card(it, i) {
       ${it.categories.slice(0, 4).map(c => `<span class="tag">${esc(c)}</span>`).join("")}
     </div>
     <div class="card-foot">
-      ${(it.source === "modrinth" && it.latestVersion) || showMods ? `<button type="button" class="btn" data-mods="${i}">${state.f?.type === "modpack" ? "See mod list" : "See dependencies"}</button>` : ""}
-      <a class="btn ghost" href="${esc(it.url)}" target="_blank" rel="noopener" style="text-decoration:none">Open on ${it.source === "modrinth" ? "Modrinth" : "CurseForge"} ↗</a>
+      ${(it.source === "modrinth" && it.latestVersion) || (it.source === "ftb" && it.ftbVersion) || showMods ? `<button type="button" class="btn" data-mods="${i}">${state.f?.type === "modpack" ? "See mod list" : "See dependencies"}</button>` : ""}
+      <a class="btn ghost" href="${esc(it.url)}" target="_blank" rel="noopener" style="text-decoration:none">Open on ${esc(siteName(it.source))} ↗</a>
     </div>
   </article>`;
 }
@@ -1160,11 +1386,11 @@ function renderResults() {
 function renderStatus() {
   const el = $("#status");
   if (!state.scan) { el.innerHTML = ""; return; }
-  const parts = state.scan.sources.map(s => `<span class="src"><span class="dot ${s.name === "modrinth" ? "mr" : "cf"}"></span>checked <strong>${nfull.format(s.scanned)}</strong>${s.total != null ? " of " + nfull.format(s.total) : ""}${s.name === "curseforge" && s.total > CF_MAX ? ` <span title="CurseForge's API only reaches 20,000 results per search. Narrow by version or loader to reach the rest.">(max ${nfull.format(CF_MAX)})</span>` : ""}</span>`);
+  const parts = state.scan.sources.map(s => `<span class="src" title="${esc(siteName(s.name))}"><span class="dot ${SITES[s.name].dot}"></span>checked <strong>${nfull.format(s.scanned)}</strong>${s.total != null ? " of " + nfull.format(s.total) : ""}${s.name === "curseforge" && s.total > CF_MAX ? ` <span title="CurseForge's API only reaches 20,000 results per search. Narrow by version or loader to reach the rest.">(max ${nfull.format(CF_MAX)})</span>` : ""}</span>`);
   parts.push(`<span><strong>${nfull.format(state.results.length)}</strong> match</span>`);
   if (state.f?.needDeps) for (const s of state.scan.sources) {
     const n = state.scan.stats.noList[s.name];
-    if (n) parts.push(`<span title="These have no mod list the page could read, so they can't be checked.">${nfull.format(n)} ${s.name === "modrinth" ? "Modrinth" : "CurseForge"} without a mod list</span>`);
+    if (n) parts.push(`<span title="These have no mod list the page could read, so they can't be checked.">${nfull.format(n)} ${esc(siteName(s.name))} without a mod list</span>`);
   }
   if (state.running) parts.push('<span class="spin" aria-label="Searching"></span>');
   el.innerHTML = parts.join("");
@@ -1208,6 +1434,7 @@ async function openModList(it) {
       try { const d = await cfManifestDeps(it.cfFile); if (d) deps = it.deps = d; }
       catch { $("#ml-body").innerHTML = '<p class="note err">CurseForge\'s download server wouldn\'t let this page read the pack\'s mod list.</p>'; return; }
     }
+    if (it.source === "ftb" && !deps) { await attachFTBDeps(it); deps = it.deps; }
     if (it.source === "modrinth" && !deps) {
       const v = await mr("/version/" + it.latestVersion);
       deps = it.deps = v ? mrDepsFromVersion(v) : null;
@@ -1216,7 +1443,10 @@ async function openModList(it) {
     const matchedIds = new Set();
     for (const c of state.include) { if (it.source === "modrinth" && c.mr) matchedIds.add(c.mr.id); if (it.source === "curseforge" && c.cf) matchedIds.add(c.cf.id); }
     let rows = [];
-    if (deps.kind === "mr") {
+    if (deps.kind === "ftb") {
+      const want = new Set(state.include.map(c => c.cf?.id).filter(Boolean));
+      rows = deps.list.map(x => ({ title: x.n, url: x.c ? `https://www.curseforge.com/projects/${x.c}` : "", kind: x.c ? "on CurseForge" : "file", hit: !!(x.c && want.has(x.c)) }));
+    } else if (deps.kind === "mr") {
       const byVersion = deps.list.filter(d => !d.project_id && d.version_id).map(d => d.version_id);
       const verToProj = new Map();
       for (const part of chunk(byVersion, 80)) for (const v of (await mr("/versions", { ids: part })) || []) verToProj.set(v.id, v.project_id);
@@ -1272,13 +1502,28 @@ $("#grid").addEventListener("click", e => {
 
 /* ---------- Tags from Modrinth ---------- */
 function fillVersions() {
-  const snaps = $("#snapshots").checked, sel = $("#version"), cur = sel.value;
-  const list = state.versions.length
-    ? state.versions.filter(v => snaps || v.version_type === "release").map(v => v.version)
+  const snaps = $("#snapshots").checked, q = $("#ver-filter").value.trim();
+  const list = state.versionTags.length
+    ? state.versionTags.filter(v => snaps || v.version_type === "release").map(v => v.version)
     : FALLBACK_VERSIONS;
-  sel.innerHTML = '<option value="">Any version</option>' + list.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
-  if (list.includes(cur)) sel.value = cur;
+  const shownList = [...new Set([...state.pickedVersions].filter(v => !q || v.includes(q)).concat(list.filter(v => !q || v.includes(q))))];
+  $("#ver-list").innerHTML = shownList.length
+    ? shownList.map(v => `<label class="dd-opt"><input type="checkbox" value="${esc(v)}" ${state.pickedVersions.has(v) ? "checked" : ""}> ${esc(v)}</label>`).join("")
+    : '<span class="hint" style="padding:6px 8px">No versions match.</span>';
+  renderVersionSummary();
 }
+function renderVersionSummary() {
+  const v = [...state.pickedVersions];
+  $("#ver-text").textContent = !v.length ? "Any version" : v.length <= 2 ? v.join(", ") : `${v.length} versions`;
+  $("#ver-count").textContent = v.length ? `${v.length} picked` : "Pick one or more";
+}
+$("#ver-list").addEventListener("change", e => {
+  const v = e.target.value;
+  e.target.checked ? state.pickedVersions.add(v) : state.pickedVersions.delete(v);
+  renderVersionSummary();
+});
+$("#ver-filter").addEventListener("input", fillVersions);
+$("#ver-clear").addEventListener("click", () => { state.pickedVersions.clear(); fillVersions(); });
 function fillCats() {
   const type = $("#type").value;
   const cats = state.categories.filter(c => c.project_type === type && c.header === "categories").map(c => c.name).sort();
@@ -1296,19 +1541,36 @@ $("#cats").addEventListener("click", e => {
 });
 async function loadTags() {
   const [vs, cats] = await Promise.allSettled([mr("/tag/game_version"), mr("/tag/category")]);
-  if (vs.status === "fulfilled" && vs.value) state.versions = vs.value;
+  if (vs.status === "fulfilled" && vs.value) state.versionTags = vs.value;
   if (cats.status === "fulfilled" && cats.value) state.categories = cats.value;
   fillVersions(); fillCats();
 }
 
 /* ---------- Wiring ---------- */
-function setSource(src) {
-  state.source = src; store.set("pf.source", src);
-  for (const b of $$(".seg button")) b.setAttribute("aria-pressed", b.dataset.src === src);
-  if (src !== "modrinth" && !state.cfKey) $("#settings").showModal();
+function renderSites() {
+  const ids = Object.keys(SITES);
+  $("#sites-list").innerHTML = ids.map(id => `<label class="dd-opt">
+      <input type="checkbox" value="${id}" ${state.sites.has(id) ? "checked" : ""}>
+      <span class="dot ${SITES[id].dot}"></span>${esc(SITES[id].name)}
+      ${SITE_HINT[id] ? `<small>${esc(id === "curseforge" && state.cfKey ? "key added" : SITE_HINT[id])}</small>` : ""}</label>`).join("");
+  const on = ids.filter(id => state.sites.has(id));
+  $("#sites-dots").innerHTML = on.map(id => `<span class="dot ${SITES[id].dot}"></span>`).join("");
+  $("#sites-text").textContent = !on.length ? "Pick sites" : on.length <= 2 ? on.map(siteName).join(" + ") : `${on.length} sites`;
 }
-$$(".seg button").forEach(b => b.addEventListener("click", () => { setSource(b.dataset.src); if (src_ok()) startSearch(); }));
-function src_ok() { return state.source === "modrinth" || state.cfKey; }
+function setSite(id, on) {
+  on ? state.sites.add(id) : state.sites.delete(id);
+  store.set("pf.sites", JSON.stringify([...state.sites]));
+  renderSites();
+  if (on && id === "curseforge" && !state.cfKey) { $("#sites-dd").open = false; $("#settings").showModal(); }
+}
+$("#sites-list").addEventListener("change", e => setSite(e.target.value, e.target.checked));
+$("#sites-go").addEventListener("click", () => { $("#sites-dd").open = false; startSearch(); });
+document.addEventListener("click", e => {
+  for (const dd of $$(".dd[open]")) if (!dd.contains(e.target)) dd.open = false;
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") for (const dd of $$(".dd[open]")) { dd.open = false; dd.querySelector("summary").focus(); }
+});
 $$(".mini-seg button").forEach(b => b.addEventListener("click", () => {
   state.match = b.dataset.match;
   $$(".mini-seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
@@ -1320,7 +1582,7 @@ $("#search-form").addEventListener("submit", e => {
 });
 $("#reset").addEventListener("click", () => {
   $("#search-form").reset();
-  state.include = []; state.exclude = []; state.cats.clear(); state.match = "all";
+  state.include = []; state.exclude = []; state.cats.clear(); state.match = "all"; state.pickedVersions.clear();
   $$(".mini-seg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.match === "all"));
   renderChips(); fillVersions(); fillCats();
 });
@@ -1385,8 +1647,9 @@ $("#settings").addEventListener("close", () => {
     store.set("pf.cfkey", state.cfKey || null);
     renderKeyButton();
     for (const c of [...state.include, ...state.exclude]) if (!c.cf) { c.linking = true; renderChips(); c.ready = linkChip(c).finally(() => { c.linking = false; renderChips(); }); }
-    if (state.cfKey && state.source !== "modrinth") startSearch();
-  } else if (!state.cfKey && state.source !== "modrinth") setSource("modrinth");
+    renderSites();
+    if (state.cfKey && state.sites.has("curseforge")) startSearch();
+  } else if (!state.cfKey && state.sites.has("curseforge")) setSite("curseforge", false);
 });
 $("#clear-key").addEventListener("click", () => {
   state.cfKey = ""; store.set("pf.cfkey", null); $("#cf-key").value = "";
@@ -1410,15 +1673,16 @@ $("#suggest").addEventListener("click", async e => {
 
 makePicker($("#inc-input"), $("#inc-list"), "include");
 makePicker($("#exc-input"), $("#exc-list"), "exclude");
-if (state.source !== "modrinth" && !state.cfKey) state.source = "modrinth";
-for (const b of $$(".seg button")) b.setAttribute("aria-pressed", b.dataset.src === state.source);
+if (!state.cfKey) state.sites.delete("curseforge");
+if (!state.sites.size) state.sites.add("modrinth");
+renderSites();
 renderKeyButton(); renderChips(); fillVersions();
 if (matchMedia("(max-width: 860px)").matches) $("#filters").open = false;
 let cspWarned = false;
 document.addEventListener("securitypolicyviolation", e => {
-  if (cspWarned || !/modrinth|curseforge/.test(e.blockedURI || "")) return;
+  if (cspWarned || !/modrinth|curseforge|modpacks\.ch|technicpack|papermc|spiget/.test(e.blockedURI || "")) return;
   cspWarned = true;
-  note("The website hosting this page blocks requests to Modrinth and CurseForge, so searches can't run here. Free Neocities sites do this. Host the page somewhere that allows it (GitHub Pages, Cloudflare Pages, Netlify), use a Neocities Supporter account, or open the file directly on your computer.", "err", "csp");
+  note("The website hosting this page blocks requests to the mod sites, so searches can't run here. Free Neocities sites do this. Host the page somewhere that allows it (GitHub Pages, Cloudflare Pages, Netlify), use a Neocities Supporter account, or open the file directly on your computer.", "err", "csp");
 });
 loadTags();
 startSearch();

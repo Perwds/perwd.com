@@ -1,14 +1,17 @@
 // Packfinder download relay: a Cloudflare Worker that lets the Packfinder page
 // read CurseForge modpack files. CurseForge's download server doesn't allow
 // web pages to read its files directly; this relays requests and adds the
-// header browsers need. It only talks to CurseForge's download servers.
+// header browsers need. It only talks to CurseForge's download servers and the
+// public APIs of the other mod sites Packfinder searches.
 //
-//   GET  /?url=<CurseForge download link>   relays one (partial) download
+//   GET  /?url=<link>                        relays one (partial) download or API call
 //   POST /manifests                          reads the mod list of up to 10 packs at once
 //        body: {"files":[{"id":123,"size":4567,"urls":["https://mediafilez.forgecdn.net/..."]}]}
 //        answer: {"results":{"123":[projectID, ...] | null | {"error":"..."}}}
 
 const ALLOWED_HOSTS = ["edge.forgecdn.net", "mediafilez.forgecdn.net"];
+// Sites some browsers can't search directly; relayed for GET requests only.
+const API_HOSTS = ["api.modpacks.ch", "api.feed-the-beast.com", "api.technicpack.net", "hangar.papermc.io", "api.spiget.org"];
 const MAX_FILES = 10;
 // Free Workers may make 50 outgoing requests per incoming request; keep a margin.
 const SUBREQUEST_BUDGET = 45;
@@ -21,10 +24,10 @@ const CORS = {
   "Access-Control-Max-Age": "86400",
 };
 
-function allowed(raw) {
+function allowed(raw, hosts = ALLOWED_HOSTS) {
   try {
     const u = new URL(raw);
-    return u.protocol === "https:" && ALLOWED_HOSTS.includes(u.hostname) ? u : null;
+    return u.protocol === "https:" && hosts.includes(u.hostname) ? u : null;
   } catch {
     return null;
   }
@@ -44,10 +47,10 @@ export default {
 
     const raw = new URL(request.url).searchParams.get("url");
     if (!raw) return new Response("Packfinder relay is running. Add ?url=<CurseForge download link>.", { headers: CORS });
-    const target = allowed(raw);
-    if (!target) return new Response("Only CurseForge download links are allowed", { status: 403, headers: CORS });
+    const target = allowed(raw, [...ALLOWED_HOSTS, ...API_HOSTS]);
+    if (!target) return new Response("Only CurseForge downloads and supported mod sites are allowed", { status: 403, headers: CORS });
 
-    const headers = {};
+    const headers = { "User-Agent": "Packfinder relay (https://github.com/Perwds/perwd.com)" };
     const range = request.headers.get("Range");
     if (range) headers.Range = range;
     const upstream = await fetch(target, { headers, redirect: "follow" });
