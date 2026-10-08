@@ -548,17 +548,64 @@ function mrDepsFromVersion(v) {
   };
 }
 async function attachMRDeps(items, signal) {
-  const ids = items.map(i => i.latestVersion).filter(Boolean);
-  const byId = new Map();
-  for (const part of chunk(ids, 80)) {
+  const ids = [...new Set(items.map(i => i.latestVersion).filter(Boolean))];
+  const byId = await idb.getMany("mr", ids);
+  const missing = ids.filter(id => !byId.has(id));
+  await Promise.all(chunk(missing, 80).map(async part => {
     const vs = await mr("/versions", { ids: part }, signal);
-    for (const v of vs || []) byId.set(v.id, v);
-  }
+    const save = [];
+    for (const v of vs || []) {
+      const slim = {
+        version_number: v.version_number,
+        dependencies: (v.dependencies || []).map(d => ({ project_id: d.project_id, version_id: d.version_id, file_name: d.file_name, dependency_type: d.dependency_type })),
+      };
+      byId.set(v.id, slim);
+      save.push([v.id, slim]);
+    }
+    idb.putMany("mr", save);
+  }));
   for (const it of items) {
     const v = byId.get(it.latestVersion);
     it.deps = v ? mrDepsFromVersion(v) : null;
   }
 }
+
+/* ---------- Saved mod lists ----------
+   Mod lists only change when a pack publishes a new file, so they're saved in this
+   browser by file id. Repeat searches skip the network for packs already read. */
+const idb = (() => {
+  let dbp = null;
+  function open() {
+    if (!dbp) dbp = new Promise(res => {
+      try {
+        const rq = indexedDB.open("packfinder", 1);
+        rq.onupgradeneeded = () => { rq.result.createObjectStore("cf"); rq.result.createObjectStore("mr"); };
+        rq.onsuccess = () => res(rq.result);
+        rq.onerror = rq.onblocked = () => res(null);
+      } catch { res(null); }
+    });
+    return dbp;
+  }
+  async function getMany(store, keys) {
+    const out = new Map();
+    const db = await open();
+    if (!db || !keys.length) return out;
+    return new Promise(res => {
+      try {
+        const os = db.transaction(store).objectStore(store);
+        for (const k of keys) { const r = os.get(k); r.onsuccess = () => { if (r.result !== undefined) out.set(k, r.result); }; }
+        os.transaction.oncomplete = () => res(out);
+        os.transaction.onerror = os.transaction.onabort = () => res(out);
+      } catch { res(out); }
+    });
+  }
+  async function putMany(store, entries) {
+    const db = await open();
+    if (!db || !entries.length) return;
+    try { const os = db.transaction(store, "readwrite").objectStore(store); for (const [k, v] of entries) os.put(v, k); } catch {}
+  }
+  return { getMany, putMany };
+})();
 
 /* ---------- Mod-content matching ---------- */
 function hasMod(item, chip) {
@@ -607,9 +654,12 @@ function passes(it, f, stats) {
    one file, a few KB per pack instead of the whole download. */
 const cfManifestCache = new Map();
 const cdn = { fails: 0, blocked: false };
-function cdnUrls(file) {
+function cdnRawUrls(file) {
   const a = Math.floor(file.id / 1000), b = file.id % 1000, name = encodeURIComponent(file.fileName);
-  const urls = [...new Set([file.downloadUrl, `https://mediafilez.forgecdn.net/files/${a}/${b}/${name}`, `https://edge.forgecdn.net/files/${a}/${b}/${name}`].filter(Boolean))];
+  return [...new Set([`https://mediafilez.forgecdn.net/files/${a}/${b}/${name}`, file.downloadUrl, `https://edge.forgecdn.net/files/${a}/${b}/${name}`].filter(Boolean))];
+}
+function cdnUrls(file) {
+  const urls = cdnRawUrls(file);
   return state.proxy ? urls.map(u => state.proxy + "/?url=" + encodeURIComponent(u)) : urls;
 }
 async function rangeFetch(url, start, end, total, signal) {
@@ -673,18 +723,27 @@ async function readZipEntry(url, total, wanted, signal) {
   if (entry.method === 8) return inflateRaw(data);
   throw new Error("unsupported compression");
 }
+function manifestDeps(ids, file) {
+  if (!ids) return null;
+  return { kind: "cf", modIds: new Set(ids), list: ids.map(id => ({ modId: id, relationType: 6 })), count: ids.length, fileName: file.displayName || file.fileName };
+}
+function parseManifestIds(text) {
+  return [...new Set((JSON.parse(text.replace(/^﻿/, "")).files || []).map(f => f.projectID).filter(Boolean))];
+}
 function cfManifestDeps(file, signal) {
   if (!file?.fileLength || !file.fileName) return Promise.resolve(null);
   if (cfManifestCache.has(file.id)) return cfManifestCache.get(file.id);
   const job = (async () => {
+    const saved = await idb.getMany("cf", [file.id]);
+    if (saved.has(file.id)) return manifestDeps(saved.get(file.id), file);
     let lastErr;
     for (const url of cdnUrls(file)) {
       try {
         const text = await readZipEntry(url, file.fileLength, "manifest.json", signal);
         cdn.fails = 0;
-        if (text == null) return null;
-        const ids = [...new Set((JSON.parse(text.replace(/^\ufeff/, "")).files || []).map(f => f.projectID).filter(Boolean))];
-        return { kind: "cf", modIds: new Set(ids), list: ids.map(id => ({ modId: id, relationType: 6 })), count: ids.length, fileName: file.displayName || file.fileName };
+        const ids = text == null ? null : parseManifestIds(text);
+        idb.putMany("cf", [[file.id, ids]]);
+        return manifestDeps(ids, file);
       } catch (e) {
         if (isAbort(e)) throw e;
         lastErr = e;
@@ -703,16 +762,60 @@ async function mapLimit(items, n, fn) {
     while (i < items.length) await fn(items[i++]);
   }));
 }
-async function attachCFManifests(items, signal) {
-  const todo = items.filter(it => it.classId === CF_CLASS.modpack && (!it.deps || !it.deps.count) && it.cfFile);
-  await mapLimit(todo, 6, async it => {
-    if (cdn.blocked) return;
-    try { const d = await cfManifestDeps(it.cfFile, signal); if (d) it.deps = d; }
-    catch (e) { if (isAbort(e)) throw e; }
+
+// A relay deployed from the current cors-worker.js reads up to 10 packs per request.
+const relay = { batch: null };
+async function relayBatch(files, signal) {
+  const r = await fetch(state.proxy + "/manifests", {
+    method: "POST", signal, headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ files: files.map(f => ({ id: f.id, size: f.fileLength, urls: cdnRawUrls(f) })) }),
   });
+  if (r.status === 404 || r.status === 405) { relay.batch = false; return null; }
+  if (!r.ok) throw new Error("relay returned " + r.status);
+  relay.batch = true;
+  return (await r.json()).results || {};
+}
+async function attachCFManifests(items, signal) {
+  const todo = items.filter(it => it.classId === CF_CLASS.modpack && (!it.deps || !it.deps.count) && it.cfFile?.fileLength);
+  if (!todo.length) return;
+  const saved = await idb.getMany("cf", todo.map(it => it.cfFile.id));
+  let need = [];
+  for (const it of todo) {
+    if (saved.has(it.cfFile.id)) { const d = manifestDeps(saved.get(it.cfFile.id), it.cfFile); if (d) it.deps = d; }
+    else need.push(it);
+  }
+  if (need.length && state.proxy && relay.batch !== false && !cdn.blocked) {
+    const done = new Set();
+    await Promise.all(chunk(need, 10).map(async group => {
+      try {
+        const res = await relayBatch(group.map(it => it.cfFile), signal);
+        if (!res) return;
+        const save = [];
+        let errors = 0;
+        for (const it of group) {
+          const v = res[it.cfFile.id];
+          if (Array.isArray(v) || v === null) {
+            save.push([it.cfFile.id, v]); done.add(it);
+            const d = manifestDeps(v, it.cfFile); if (d) it.deps = d;
+          } else errors++;
+        }
+        idb.putMany("cf", save);
+        if (errors === group.length) { if (++cdn.fails >= 4) cdn.blocked = true; } else cdn.fails = 0;
+      } catch (e) { if (isAbort(e)) throw e; }
+    }));
+    need = need.filter(it => !done.has(it));
+  }
+  if (need.length && !cdn.blocked) {
+    await mapLimit(need, 12, async it => {
+      if (cdn.blocked) return;
+      try { const d = await cfManifestDeps(it.cfFile, signal); if (d) it.deps = d; }
+      catch (e) { if (isAbort(e)) throw e; }
+    });
+  }
   if (cdn.blocked) note(state.proxy
     ? "The download relay didn't work, so CurseForge packs can't be checked for mods. Check the relay address under \"CurseForge key\" and open it in a new tab: it should say \"Packfinder relay is running\"."
     : "CurseForge blocks web pages from reading the mod list inside modpacks, so CurseForge packs can't be checked for mods yet. Set up the free download relay under \"CurseForge key\" to fix this. Modrinth results aren't affected.", "warn", "cdn");
+  if (state.proxy && relay.batch === false) note("Your download relay is an older version, so CurseForge checks are slower than they could be. Paste the newest cors-worker.js into the Worker and deploy it again for faster searches.", "warn", "relay-old");
 }
 
 /* ---------- Search pagers ---------- */
@@ -727,40 +830,30 @@ function mrFacets(f) {
   if (f.oss) facets.push(["open_source:true"]);
   return facets;
 }
-async function* mrPager(f, signal) {
-  let offset = 0;
-  for (;;) {
+const PAGE_SIZE = { modrinth: 100, curseforge: 50 };
+const CF_MAX = 10000;
+async function fetchPage(name, f, offset, signal) {
+  if (name === "modrinth") {
     const r = await mr("/search", { query: f.q || undefined, facets: mrFacets(f), index: f.sort, offset, limit: 100 }, signal);
     const items = (r?.hits || []).map(fromMR);
+    items.forEach((it, i) => { it.order = offset + i; });
     if (f.needDeps && items.length) await attachMRDeps(items, signal);
-    offset += items.length;
-    const done = !items.length || offset >= r.total_hits;
-    yield { items, total: r?.total_hits ?? 0, done };
-    if (done) return;
+    return { items, total: r?.total_hits ?? 0 };
   }
-}
-async function* cfPager(f, signal) {
-  const classId = CF_CLASS[f.type];
-  let index = 0;
-  for (;;) {
-    const pageSize = Math.min(50, 10000 - index);
-    if (pageSize <= 0) return;
-    const r = await cf("/mods/search", {
-      signal, params: {
-        gameId: CF_GAME, classId, searchFilter: f.q, gameVersion: f.version,
-        modLoaderType: f.loader ? CF_LOADER[f.loader] : undefined,
-        sortField: CF_SORT[f.sort], sortOrder: f.sort === "relevance" && f.q ? undefined : "desc",
-        index, pageSize,
-      },
-    });
-    const items = (r?.data || []).map(fromCF);
-    if (f.needDeps && f.type === "modpack") await attachCFManifests(items, signal);
-    index += items.length;
-    const total = r?.pagination?.totalCount ?? 0;
-    const done = !items.length || index >= Math.min(total, 10000);
-    yield { items, total, done };
-    if (done) return;
-  }
+  const pageSize = Math.min(50, CF_MAX - offset);
+  if (pageSize <= 0) return { items: [], total: CF_MAX };
+  const r = await cf("/mods/search", {
+    signal, params: {
+      gameId: CF_GAME, classId: CF_CLASS[f.type], searchFilter: f.q, gameVersion: f.version,
+      modLoaderType: f.loader ? CF_LOADER[f.loader] : undefined,
+      sortField: CF_SORT[f.sort], sortOrder: f.sort === "relevance" && f.q ? undefined : "desc",
+      index: offset, pageSize,
+    },
+  });
+  const items = (r?.data || []).map(fromCF);
+  items.forEach((it, i) => { it.order = offset + i; });
+  if (f.needDeps && f.type === "modpack") await attachCFManifests(items, signal);
+  return { items, total: Math.min(r?.pagination?.totalCount ?? 0, CF_MAX) };
 }
 
 /* ---------- Reading the form ---------- */
@@ -796,7 +889,7 @@ async function startSearch() {
       continue;
     }
     if (name === "curseforge" && !CF_CLASS[f.type]) continue;
-    state.scan.sources.push({ name, gen: null, scanned: 0, total: null, done: false, error: null });
+    state.scan.sources.push({ name, scanned: 0, total: null, next: 0, done: false, error: null });
   }
   renderAll();
   if (!state.scan.sources.length) return;
@@ -815,31 +908,40 @@ async function startSearch() {
     }
   } catch (e) { if (isAbort(e)) return; }
 
-  for (const s of state.scan.sources) s.gen = s.name === "modrinth" ? mrPager(f, ctrl.signal) : cfPager(f, ctrl.signal);
   await scanMore(f.needDeps || f.minDl || f.maxDl || f.updatedDays || f.noWords.length ? f.depth : Math.min(f.depth, 100), ctrl);
 }
 
+let renderQueued = false;
+function scheduleRender() {
+  if (renderQueued) return;
+  renderQueued = true;
+  setTimeout(() => { renderQueued = false; renderResults(); renderStatus(); }, 120);
+}
 async function scanMore(count, ctrl = state.abort) {
   if (!state.scan || !ctrl) return;
   const { signal } = ctrl;
   state.running = true; renderStatus();
-  await Promise.all(state.scan.sources.filter(s => !s.done && s.gen).map(async s => {
-    let got = 0;
+  const runPage = async (s, offset) => {
+    const { items, total } = await fetchPage(s.name, state.f, offset, signal);
+    if (signal.aborted) return;
+    s.total = total; s.scanned += items.length;
+    for (const it of items) {
+      if (state.seen.has(it.key)) continue;
+      state.seen.add(it.key);
+      if (passes(it, state.f, state.scan.stats)) state.results.push(it);
+    }
+    scheduleRender();
+  };
+  await Promise.all(state.scan.sources.filter(s => !s.done).map(async s => {
+    const size = PAGE_SIZE[s.name];
+    const stopAt = s.next + count;
     try {
-      while (got < count && !s.done) {
-        const { value, done } = await s.gen.next();
-        if (done || !value) { s.done = true; break; }
-        if (signal.aborted) return;
-        s.total = value.total; s.scanned += value.items.length; got += value.items.length;
-        if (value.done) s.done = true;
-        for (const it of value.items) {
-          if (state.seen.has(it.key)) continue;
-          state.seen.add(it.key);
-          it.order = state.seen.size;
-          if (passes(it, state.f, state.scan.stats)) state.results.push(it);
-        }
-        renderResults(); renderStatus();
-      }
+      if (s.total == null) { const first = s.next; s.next += size; await runPage(s, first); }
+      const offsets = [];
+      while (s.next < Math.min(stopAt, s.total)) { offsets.push(s.next); s.next += size; }
+      // Several pages at once; each page's mod lists are read in parallel too.
+      await mapLimit(offsets, s.name === "modrinth" ? 3 : 4, o => runPage(s, o));
+      if (s.next >= s.total) s.done = true;
     } catch (e) {
       if (isAbort(e)) return;
       s.error = e.message; s.done = true;
@@ -1049,7 +1151,7 @@ function renderStatus() {
   }
   if (state.running) parts.push('<span class="spin" aria-label="Searching"></span>');
   el.innerHTML = parts.join("");
-  const canMore = state.scan.sources.some(s => !s.done && s.gen);
+  const canMore = state.scan.sources.some(s => !s.done);
   $("#more-row").hidden = !(canMore || state.running);
   $("#more").hidden = state.running || !canMore;
   $("#stop").hidden = !state.running;
