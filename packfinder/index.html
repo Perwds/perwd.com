@@ -375,10 +375,12 @@ code { font-family: var(--font-mono); font-size: .85em; background: var(--sunk);
     <div class="dlg-head"><h2>CurseForge API key</h2><button class="btn ghost" value="cancel" formnovalidate>Close</button></div>
     <div class="dlg-body">
       <p class="hint" style="font-size:.9rem;color:var(--ink)">CurseForge requires a key for every request. Get a free one at <a href="https://console.curseforge.com/" target="_blank" rel="noopener">console.curseforge.com</a>, then paste it here.</p>
-      <input class="field" id="cf-key" type="password" placeholder="$2a$10$…" aria-label="CurseForge API key">
+      <input class="field" id="cf-key" type="text" placeholder="$2a$10$…" aria-label="CurseForge API key" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore style="font-family:var(--font-mono);font-size:.85rem">
+      <p class="hint" id="key-status" aria-live="polite"></p>
       <p class="hint">The key is saved in this browser only and sent only to api.curseforge.com.</p>
       <div style="display:flex;gap:8px">
         <button class="btn primary" value="save" id="save-key">Save key</button>
+        <button class="btn" id="test-key" type="button">Test key</button>
         <button class="btn" value="clear" id="clear-key" type="button">Remove key</button>
       </div>
     </div>
@@ -485,7 +487,7 @@ async function cf(path, { params = {}, body, signal } = {}) {
       if (isAbort(e)) throw e;
       throw new Error("Couldn't reach CurseForge. Check your connection and key. Some browsers block CurseForge's API on pages opened from a file; if so, serve this page from a website (for example GitHub Pages).");
     }
-    if (r.status === 401 || r.status === 403) throw new Error("CurseForge rejected the API key. Check it under \"CurseForge key\".");
+    if (r.status === 401 || r.status === 403) throw new Error(`CurseForge refused the request (error ${r.status}). Open "CurseForge key" and press "Test key" to see why.`);
     if (r.status === 429) { await sleep(4000 * (attempt + 1), signal); continue; }
     if (!r.ok) throw new Error("CurseForge returned an error (" + r.status + ").");
     return r.json();
@@ -1084,10 +1086,45 @@ $("#stop").addEventListener("click", () => {
   renderAll();
 });
 
-$("#open-settings").addEventListener("click", () => { $("#cf-key").value = state.cfKey; $("#settings").showModal(); });
+function cleanKey(v) {
+  return String(v || "").replace(/^\s*x-api-key\s*:\s*/i, "").replace(/["'`\s\u200b\ufeff]/g, "");
+}
+function describeKey(k) {
+  return k ? `Saved key: ${k.slice(0, 10)}…${k.slice(-4)} (${k.length} characters)` : "No key saved.";
+}
+async function testKey(key) {
+  const out = $("#key-status");
+  if (!key) { out.textContent = "Paste a key first."; return false; }
+  out.innerHTML = '<span class="spin"></span> Testing ' + esc(key.slice(0, 10)) + "…" + esc(key.slice(-4)) + " (" + key.length + " characters)…";
+  let r;
+  try {
+    r = await fetch(CF_API + "/games/" + CF_GAME, { headers: { "x-api-key": key, "Accept": "application/json" } });
+  } catch {
+    out.textContent = "Couldn't reach CurseForge from this page. The key may be fine, but the browser or the site hosting this page blocked the request."
+      + (location.protocol === "file:" ? " This page was opened from a file on your computer; try it on GitHub Pages instead." : "");
+    return false;
+  }
+  if (r.ok) { out.textContent = "The key works. CurseForge answered with the Minecraft game entry."; return true; }
+  let body = "";
+  try { body = (await r.text()).slice(0, 160); } catch {}
+  out.textContent = `CurseForge refused this key (error ${r.status}). Check that you copied the whole key with no missing characters. It should start with $2a$10$.`
+    + (location.protocol === "file:" ? " This page was opened from a file on your computer; CurseForge may refuse those, so also try it on GitHub Pages." : "")
+    + (body ? " CurseForge said: " + body : "");
+  return false;
+}
+$("#test-key").addEventListener("click", () => {
+  const k = cleanKey($("#cf-key").value);
+  $("#cf-key").value = k;
+  testKey(k);
+});
+$("#open-settings").addEventListener("click", () => {
+  $("#cf-key").value = state.cfKey;
+  $("#key-status").textContent = describeKey(state.cfKey);
+  $("#settings").showModal();
+});
 $("#settings").addEventListener("close", () => {
   if ($("#settings").returnValue === "save") {
-    state.cfKey = $("#cf-key").value.trim();
+    state.cfKey = cleanKey($("#cf-key").value);
     store.set("pf.cfkey", state.cfKey || null);
     renderKeyButton();
     for (const c of [...state.include, ...state.exclude]) if (!c.cf) { c.linking = true; renderChips(); c.ready = linkChip(c).finally(() => { c.linking = false; renderChips(); }); }
