@@ -144,6 +144,7 @@ ping-tolerance: normal           # normal | high
 install-plugin: true
 agent: auto                      # auto | true | false
 fast-startup: true
+tnt-tick-budget-ms: 20           # Orange server: max explosion time per tick (0 = off)
 auto-restart: false
 server-args: [nogui]
 extra-jvm-args: []
@@ -225,6 +226,51 @@ Startup is faster from the second start on (the first start records the class ca
 200 MB in `.orange/cache/jvm/`). Under load the two are within run-to-run noise: Paper itself
 is already very well optimized, and Orange's `vanilla` profile turns off its gameplay-changing
 shortcuts.
+
+### 1,000 TNT
+
+[`ci/tnt_benchmark.py`](ci/tnt_benchmark.py) summons 1,000 primed TNT in one spot on the Orange
+server (1.21.11, Java 21, 6 GB) and measures every tick until the last one has gone off
+(spark 10 s windows, plus a GC log and a per-explosion timer):
+
+| | No TNT budget (like Paper) | Orange default (20 ms budget) |
+|---|---|---|
+| Worst tick during the blast | 392-800 ms | **100-110 ms** |
+| 95th percentile tick | 7-17 ms | 24-28 ms |
+| Median tick | ~1 ms | ~1 ms |
+| TNT left / items left at the end | 0 / 0 | 0 / 0 |
+
+What the Orange server does, without changing explosion results:
+
+- **TNT time budget.** Once explosions have used `tnt-tick-budget-ms` of a tick, the remaining
+  TNT waits a tick instead of exploding in the same one. One explosion per tick always goes
+  through, so nothing is ever starved.
+- **Exact exposure cache.** For every entity in range an explosion casts dozens of rays to see
+  how exposed it is. Results are reused for the same centre and bounding box until a block
+  changes in a chunk section between them; anything whose rays touched an entity-dependent
+  block shape is never cached. With stacked TNT 99.9 % of lookups hit.
+- **JVM flags.** A 512 MB code cache and 256 MB initial metaspace stop the extra
+  "CodeCache/Metadata GC Threshold" pauses the GC log showed during the blast.
+
+The remaining worst tick is the blast's *first* explosion (60-70 ms the first time that code
+runs) plus that tick's other TNT work; GC pauses are the next biggest (ZGC removes them, but
+didn't improve the worst tick in this test, so `gc: auto` still picks G1 below 16 GB).
+Spigot's `max-tnt-per-tick: 100` (also Paper's default) is why 1,000 TNT takes ~140 s to go
+off. To see slow explosions on your own server, add
+`extra-jvm-args: ["-Dorange.debug.explosionMs=15"]`.
+
+### Chunk generation
+
+[`ci/chunkgen_benchmark.py`](ci/chunkgen_benchmark.py) generates 3,721 chunks (radius 480 blocks)
+on a 4-core machine. Paper uses one chunk worker thread by default; Orange's optimizer sets
+`chunk-system.worker-threads` to cores - 1 (every profile except `off`; world generation is
+identical, only done in parallel):
+
+| | Paper default (1 worker) | Orange (cores - 1) | Every core |
+|---|---|---|---|
+| Chunks per second | 32 | **60** | 64 |
+| Time | 116 s | **62 s** | 58 s |
+| Worst tick | 92 ms | **71 ms** | 70 ms (higher median tick) |
 
 ## Tested on real servers
 
