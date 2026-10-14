@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Store</title>
+<style>
+  /* ---- Edit the look of the store here ---- */
+  :root { --bg:#0f1115; --card:#181b22; --text:#e8eaf0; --muted:#9aa1ad; --accent:#5b8cff; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  header { padding:32px 16px; text-align:center; }
+  header h1 { margin:0 0 8px; }
+  header p { margin:0; color:var(--muted); }
+  main { max-width:1100px; margin:0 auto; padding:0 16px 48px; }
+  .user { display:flex; gap:8px; justify-content:center; margin:0 0 24px; }
+  .user input { padding:10px 12px; border-radius:8px; border:1px solid #333; background:var(--card); color:var(--text); }
+  h2 { margin:32px 0 12px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; }
+  .card { background:var(--card); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px; }
+  .card img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; background:#222; }
+  .card .price { color:var(--muted); }
+  .card button { margin-top:auto; padding:10px; border:0; border-radius:8px; background:var(--accent); color:#fff; font-weight:600; cursor:pointer; }
+  .card button:disabled { opacity:.6; cursor:wait; }
+  .error { color:#ff7b7b; text-align:center; }
+</style>
+</head>
+<body>
+
+<!-- ---- Edit the store text/layout here ---- -->
+<header>
+  <h1>My Store</h1>
+  <p>Support the server and get cool perks.</p>
+</header>
+
+<main>
+  <!-- Remove this block if your store doesn't need a player username -->
+  <div class="user">
+    <input id="username" placeholder="Your in-game username">
+  </div>
+
+  <div id="store">Loading…</div>
+</main>
+
+<script>
+  // ---- Settings ----
+  // Your PUBLIC token: Tebex creator panel → Integrations → API Keys.
+  // It's safe to put in a web page. Never put your private/secret key here.
+  const TEBEX_TOKEN = "PUT_YOUR_PUBLIC_TOKEN_HERE";
+  const API = "https://headless.tebex.io/api";
+
+  const storeEl = document.getElementById("store");
+
+  async function api(path, options = {}) {
+    const res = await fetch(API + path, {
+      ...options,
+      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.detail || json.message || res.statusText);
+    return json;
+  }
+
+  function el(tag, props = {}, children = []) {
+    const node = Object.assign(document.createElement(tag), props);
+    node.append(...children);
+    return node;
+  }
+
+  async function loadStore() {
+    try {
+      const { data: categories } = await api(`/accounts/${TEBEX_TOKEN}/categories?includePackages=1`);
+      storeEl.textContent = "";
+      for (const category of categories) {
+        if (!category.packages?.length) continue;
+        const grid = el("div", { className: "grid" });
+        for (const pkg of category.packages) {
+          const button = el("button", { textContent: "Buy" });
+          button.onclick = () => buy(pkg.id, button);
+          grid.append(el("div", { className: "card" }, [
+            ...(pkg.image ? [el("img", { src: pkg.image, alt: pkg.name })] : []),
+            el("strong", { textContent: pkg.name }),
+            el("span", { className: "price", textContent: `${pkg.total_price} ${pkg.currency}` }),
+            button,
+          ]));
+        }
+        storeEl.append(el("h2", { textContent: category.name }), grid);
+      }
+    } catch (err) {
+      storeEl.innerHTML = "";
+      storeEl.append(el("p", { className: "error", textContent: "Couldn't load the store: " + err.message }));
+    }
+  }
+
+  async function buy(packageId, button) {
+    const username = document.getElementById("username")?.value.trim();
+    button.disabled = true;
+    try {
+      const here = location.href;
+      const { data: basket } = await api(`/accounts/${TEBEX_TOKEN}/baskets`, {
+        method: "POST",
+        body: JSON.stringify({
+          complete_url: here,
+          cancel_url: here,
+          complete_auto_redirect: true,
+          ...(username ? { username } : {}),
+        }),
+      });
+      await api(`/baskets/${basket.ident}/packages`, {
+        method: "POST",
+        body: JSON.stringify({ package_id: packageId, quantity: 1 }),
+      });
+      location.href = basket.links.checkout; // Tebex handles payment
+    } catch (err) {
+      alert("Checkout failed: " + err.message);
+      button.disabled = false;
+    }
+  }
+
+  loadStore();
+</script>
+</body>
+</html>
