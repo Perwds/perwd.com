@@ -6,244 +6,242 @@
 <title>Store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <!-- 3D skin viewer. If it fails to load, the page falls back to a flat skin image. -->
 <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
 <style>
-  /* ---- Colours: change these to restyle the whole store ---- */
+  /* ---- Colours ---- */
   :root {
-    --bg: #07080d;
-    --panel: rgba(255,255,255,.04);
-    --panel-border: rgba(255,255,255,.08);
-    --text: #f2f4fa;
-    --muted: #8d93a5;
-    --accent: #7c5cff;
-    --accent-2: #22d3ee;
-    --good: #34d399;
-    --bad: #fb7185;
-    --radius: 18px;
+    --page: #f2eee8;
+    --card: #ffffff;
+    --ink: #141414;
+    --soft: #8a8a8a;
+    --line: #ececec;
+    --up: #d4351c;
+    --down: #1f9d55;
+    --hero-1: #8c1a06;
+    --hero-2: #c8330e;
+    --hero-3: #ec6a1f;
+    --hero-4: #f7b67a;
+    --radius: 22px;
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
   body {
     margin: 0; min-height: 100vh; overflow-x: hidden;
-    font-family: "Outfit", system-ui, sans-serif;
-    background: var(--bg); color: var(--text);
+    font-family: "Inter", system-ui, sans-serif; color: var(--ink);
+    background:
+      linear-gradient(180deg, var(--hero-1) 0, var(--hero-2) 260px, var(--hero-3) 520px, var(--hero-4) 820px, var(--page) 1100px) no-repeat,
+      var(--page);
+    -webkit-font-smoothing: antialiased;
   }
-
-  /* Animated background glow */
-  .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-  .bg span {
-    position: absolute; width: 50vmax; height: 50vmax; border-radius: 50%;
-    filter: blur(90px); opacity: .35; animation: drift 22s ease-in-out infinite alternate;
-  }
-  .bg span:nth-child(1) { background: var(--accent); top: -20vmax; left: -10vmax; }
-  .bg span:nth-child(2) { background: var(--accent-2); bottom: -25vmax; right: -15vmax; animation-delay: -8s; }
-  .bg span:nth-child(3) { background: #ec4899; top: 40%; left: 45%; width: 30vmax; height: 30vmax; opacity: .18; animation-delay: -14s; }
-  .bg::after { /* subtle grid */
-    content: ""; position: absolute; inset: 0;
-    background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
-  }
-  @keyframes drift {
-    to { transform: translate(8vmax, 6vmax) scale(1.15); }
-  }
+  button, input, select { font: inherit; color: inherit; }
 
   .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
 
-  /* Hero */
-  .hero {
-    display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center;
-    padding: 64px 0 40px;
+  /* ---- Top bar ---- */
+  .top { display: flex; align-items: center; gap: 16px; padding: 24px 0; color: #fff; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -.01em; flex-shrink: 0; }
+  .logo svg { width: 28px; height: 28px; }
+  .nav { display: flex; gap: 4px; margin: 0 auto; overflow-x: auto; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav button {
+    border: 0; background: none; color: rgba(255,255,255,.85); padding: 9px 16px; border-radius: 999px;
+    font-size: 14px; cursor: pointer; white-space: nowrap; transition: background .2s, color .2s;
   }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px;
-    background: var(--panel); border: 1px solid var(--panel-border); color: var(--muted); font-size: 14px;
+  .nav button:hover { color: #fff; background: rgba(255,255,255,.1); }
+  .nav button.active { background: rgba(255,255,255,.18); color: #fff; }
+  .round {
+    width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0;
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); color: #fff;
   }
-  .eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: var(--good); box-shadow: 0 0 12px var(--good); animation: pulse 2s infinite; }
-  @keyframes pulse { 50% { opacity: .4; } }
-  .hero h1 {
-    font-size: clamp(40px, 7vw, 76px); line-height: 1; margin: 18px 0 14px; font-weight: 800; letter-spacing: -.02em;
-    background: linear-gradient(100deg, #fff 20%, var(--accent) 50%, var(--accent-2) 80%);
-    background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: shine 6s linear infinite;
-  }
-  @keyframes shine { to { background-position: 200% center; } }
-  .hero p { color: var(--muted); font-size: 18px; margin: 0 0 28px; max-width: 46ch; }
+  .round svg { width: 18px; height: 18px; }
 
-  .glass {
-    background: var(--panel); border: 1px solid var(--panel-border); border-radius: var(--radius);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  /* ---- Hero ---- */
+  .hero { display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; padding: 40px 0 0; color: #fff; }
+  .hero .kicker { font-size: 14px; opacity: .85; margin: 0 0 14px; }
+  .hero h1 { font-size: clamp(36px, 5.2vw, 58px); font-weight: 500; letter-spacing: -.04em; line-height: 1.05; margin: 0 0 32px; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; max-width: 520px; }
+  .pill {
+    display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 18px; border-radius: 999px;
+    background: #fff; color: var(--ink); flex: 1 1 200px; font-size: 14px;
+  }
+  .pill svg { width: 16px; height: 16px; flex-shrink: 0; color: #555; }
+  .pill input, .pill select { border: 0; outline: 0; background: none; width: 100%; height: 100%; padding: 0; color: var(--ink); }
+  .pill select { cursor: pointer; appearance: none; }
+  .pill:focus-within { box-shadow: 0 0 0 3px rgba(255,255,255,.35); }
+  .hint { font-size: 13px; margin-top: 12px; min-height: 1.3em; opacity: .9; }
+
+  /* Frosted skin card, stacked like a wallet */
+  .skin-card {
+    position: relative; align-self: end; margin-bottom: -56px; z-index: 0;
+    height: 380px; border-radius: var(--radius); padding: 20px 22px;
+    background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    display: flex; flex-direction: column;
+  }
+  .skin-card::before, .skin-card::after {
+    content: ""; position: absolute; left: 24px; right: 24px; height: 20px; border-radius: var(--radius) var(--radius) 0 0;
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-bottom: 0;
+  }
+  .skin-card::before { top: -11px; }
+  .skin-card::after { top: -21px; left: 44px; right: 44px; background: rgba(255,255,255,.06); }
+  .skin-top { display: flex; justify-content: space-between; font-size: 14px; opacity: .9; }
+  .skin-top b { font-weight: 600; letter-spacing: .02em; }
+  .skin-card .skin-badge { align-self: flex-start; margin-top: 10px; }
+  .stage { position: relative; flex: 1; margin-bottom: 52px; display: flex; align-items: center; justify-content: center; min-height: 0; }
+  .stage canvas { max-height: 100%; }
+  .stage img { height: 260px; image-rendering: pixelated; }
+  .stage.swap canvas, .stage.swap img { animation: fadeIn .4s ease; }
+  .skin-badge {
+    align-self: center; font-size: 12px; padding: 5px 12px; border-radius: 999px;
+    background: rgba(255,255,255,.18); transition: opacity .2s;
   }
 
-  .fields { display: grid; gap: 14px; padding: 20px; }
-  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; letter-spacing: .04em; text-transform: uppercase; }
-  .field input, .field select {
-    width: 100%; padding: 14px 16px; border-radius: 12px; font: inherit; font-size: 16px;
-    background: rgba(0,0,0,.35); color: var(--text); border: 1px solid var(--panel-border);
-    transition: border-color .2s, box-shadow .2s;
+  /* ---- Product tiles ---- */
+  .grid {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding-bottom: 60px;
   }
-  .field input:focus, .field select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(124,92,255,.25); }
-  .field select option { background: #12131a; }
-  .hint { font-size: 13px; color: var(--muted); min-height: 1.2em; margin-top: 6px; transition: color .2s; }
-  .hint.good { color: var(--good); }
-  .hint.bad { color: var(--bad); }
-
-  /* Skin stage */
-  .stage { position: relative; height: 440px; display: flex; align-items: center; justify-content: center; }
-  .stage::before { /* glowing pedestal */
-    content: ""; position: absolute; bottom: 30px; width: 220px; height: 40px; border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(124,92,255,.6), transparent 70%); filter: blur(6px);
-    animation: pulse 3s infinite;
+  .tile {
+    background: var(--card); border-radius: var(--radius); padding: 22px; min-height: 196px;
+    display: flex; flex-direction: column; gap: 6px;
+    opacity: 0; transform: translateY(12px);
+    transition: opacity .5s ease, transform .5s ease, box-shadow .25s ease;
   }
-  .stage canvas, .stage img { position: relative; max-height: 100%; }
-  .stage img { height: 360px; image-rendering: pixelated; animation: float 4s ease-in-out infinite; }
-  @keyframes float { 50% { transform: translateY(-12px); } }
-  .stage .tag {
-    position: absolute; top: 12px; padding: 6px 14px; border-radius: 999px; font-weight: 600;
-    background: rgba(0,0,0,.5); border: 1px solid var(--panel-border);
-    opacity: 0; transform: translateY(-6px); transition: opacity .3s, transform .3s;
-  }
-  .stage .tag.show { opacity: 1; transform: none; }
-  .stage.swap canvas, .stage.swap img { animation: pop .5s ease; }
-  @keyframes pop { 0% { transform: scale(.85); opacity: .3; } 100% { transform: none; opacity: 1; } }
-
-  /* Category tabs */
-  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0 20px; position: sticky; top: 0; z-index: 5; padding: 12px 0; }
-  .tabs:empty { display: none; }
-  .tabs::before { content: ""; position: absolute; inset: 0 -100vw; background: rgba(7,8,13,.7); backdrop-filter: blur(12px); z-index: -1; border-bottom: 1px solid var(--panel-border); }
-  .tab {
-    padding: 10px 18px; border-radius: 999px; border: 1px solid var(--panel-border); cursor: pointer;
-    background: var(--panel); color: var(--muted); font: inherit; font-weight: 500; transition: all .25s;
-  }
-  .tab:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
-  .tab.active { color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; box-shadow: 0 8px 24px rgba(124,92,255,.35); }
-
-  /* Package grid */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; padding-bottom: 80px; }
-  .card {
-    position: relative; padding: 18px; display: flex; flex-direction: column; gap: 10px; overflow: hidden;
-    opacity: 0; transform: translateY(24px);
-    transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, border-color .35s, opacity .5s;
-  }
-  .card.in { opacity: 1; transform: none; }
-  .card:hover { transform: translateY(-6px); border-color: rgba(124,92,255,.5); box-shadow: 0 20px 50px rgba(124,92,255,.25); }
-  .card::before { /* glow that follows the mouse */
-    content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity .3s; pointer-events: none;
-    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%), rgba(124,92,255,.18), transparent 60%);
-  }
-  .card:hover::before { opacity: 1; }
-  .card .thumb {
-    aspect-ratio: 1; border-radius: 12px; background: rgba(0,0,0,.3); overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .card .thumb img { width: 80%; height: 80%; object-fit: contain; transition: transform .5s cubic-bezier(.2,.8,.2,1); }
-  .card:hover .thumb img { transform: scale(1.08) rotate(-2deg); }
-  .card h3 { margin: 4px 0 0; font-size: 19px; }
-  .card .price { font-size: 26px; font-weight: 800; }
-  .card .price small { font-size: 14px; color: var(--muted); font-weight: 500; margin-left: 4px; }
-  .card .row { display: flex; gap: 8px; margin-top: auto; }
+  .tile.in { opacity: 1; transform: none; }
+  .tile:hover { box-shadow: 0 10px 30px rgba(60,30,10,.08); }
+  .tile-head { display: flex; justify-content: space-between; gap: 12px; }
+  .tile h3 { margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -.01em; }
+  .tile .icon { width: 36px; height: 36px; flex-shrink: 0; display: grid; place-items: center; color: #9a9a9a; }
+  .tile .icon img { width: 36px; height: 36px; object-fit: contain; }
+  .tile .icon svg { width: 17px; height: 17px; }
+  .price { font-size: 30px; font-weight: 500; letter-spacing: -.035em; margin-top: auto; }
+  .price .cents { color: #a3a3a3; }
+  .meta { font-size: 13px; color: var(--soft); }
+  .actions { display: flex; gap: 6px; margin-top: 12px; }
 
   .btn {
-    position: relative; overflow: hidden; flex: 1; padding: 13px; border: 0; border-radius: 12px; cursor: pointer;
-    font: inherit; font-weight: 600; color: #fff;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    transition: transform .15s, filter .2s;
+    height: 40px; padding: 0 18px; border-radius: 999px; border: 0; cursor: pointer; font-size: 14px; font-weight: 500;
+    background: var(--ink); color: #fff; transition: background .2s, transform .1s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   }
-  .btn:hover { filter: brightness(1.12); }
-  .btn:active { transform: scale(.96); }
-  .btn::after { /* shine sweep */
-    content: ""; position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
-    background: linear-gradient(110deg, transparent, rgba(255,255,255,.35), transparent);
-    transition: left .6s;
-  }
-  .btn:hover::after { left: 140%; }
-  .btn.ghost { flex: 0 0 auto; padding: 13px 16px; background: var(--panel); border: 1px solid var(--panel-border); }
-  .btn:disabled { cursor: wait; filter: grayscale(.4) brightness(.8); }
-  .btn .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -3px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .btn:hover { background: #333; }
+  .btn:active { transform: scale(.97); }
+  .btn.light { background: #f3f3f3; color: var(--ink); }
+  .btn.light:hover { background: #e9e9e9; }
+  .btn:disabled { cursor: wait; opacity: .7; }
+  .spin { width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
 
-  /* Loading skeletons */
-  .skeleton { height: 360px; border-radius: var(--radius); background: linear-gradient(100deg, var(--panel) 30%, rgba(255,255,255,.08) 50%, var(--panel) 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
-  @keyframes shimmer { to { background-position: -200% 0; } }
+  /* Featured (first) package: big tile like an overview card */
+  .tile.feature { grid-column: span 2; grid-row: span 2; padding: 28px; }
+  .tile.feature h3 { font-size: 18px; }
+  .tile.feature .price { font-size: 52px; margin-top: 10px; }
+  .tile.feature .desc { color: #555; font-size: 14px; line-height: 1.6; margin-top: 18px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; }
+  .tile.feature .desc :first-child { margin-top: 0; }
+  .tile.feature .feature-img { margin-top: 18px; max-height: 160px; object-fit: contain; align-self: flex-start; }
+  .tile.feature .actions { margin-top: auto; padding-top: 18px; }
 
-  .error { text-align: center; color: var(--bad); padding: 40px 0; }
+  .skeleton { min-height: 196px; border-radius: var(--radius); background: #fff; position: relative; overflow: hidden; }
+  .skeleton::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, #f4f4f4 50%, transparent 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+  .empty { grid-column: 1 / -1; background: #fff; border-radius: var(--radius); padding: 40px; text-align: center; color: var(--soft); }
 
-  /* Details modal */
-  .modal { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,.6); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  /* ---- Modal ---- */
+  .modal { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(20,20,20,.35); opacity: 0; pointer-events: none; transition: opacity .2s; }
   .modal.open { opacity: 1; pointer-events: auto; }
-  .modal .box { width: min(560px, 100%); max-height: 85vh; overflow: auto; padding: 24px; background: #11121a; transform: scale(.94) translateY(10px); transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+  .modal .box { width: min(520px, 100%); max-height: 85vh; overflow: auto; background: #fff; border-radius: var(--radius); padding: 28px; transform: translateY(8px); transition: transform .25s ease; }
   .modal.open .box { transform: none; }
-  .modal h2 { margin-top: 0; }
-  .modal .desc { color: var(--muted); line-height: 1.6; }
+  .modal h2 { margin: 0 0 4px; font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
+  .modal .desc { color: #555; line-height: 1.6; font-size: 15px; }
   .modal .desc img { max-width: 100%; }
 
-  /* Toasts */
-  .toasts { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 30; display: grid; gap: 8px; width: min(420px, calc(100% - 32px)); }
-  .toast { padding: 14px 18px; border-radius: 12px; background: #1a1b25; border: 1px solid var(--panel-border); border-left: 4px solid var(--bad); animation: toastIn .35s cubic-bezier(.2,.8,.2,1); }
-  @keyframes toastIn { from { opacity: 0; transform: translateY(16px); } }
+  /* ---- Toast (black pill, like a chart tooltip) ---- */
+  .toasts { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 30; display: grid; gap: 8px; justify-items: center; width: calc(100% - 32px); }
+  .toast { background: var(--ink); color: #fff; padding: 12px 18px; border-radius: 14px; font-size: 14px; max-width: 420px; animation: fadeIn .25s ease; }
 
-  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 0 0 40px; }
+  footer { text-align: center; color: var(--soft); font-size: 13px; padding: 0 0 40px; }
 
-  @media (max-width: 820px) {
-    .hero { grid-template-columns: 1fr; padding-top: 40px; }
-    .stage { height: 340px; order: -1; }
-    .stage img { height: 280px; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  @media (max-width: 960px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .top .round { display: none; }
+    .nav { margin: 0 0 0 auto; }
+    .hero { grid-template-columns: 1fr; gap: 28px; padding-top: 16px; }
+    .skin-card { height: 320px; margin-bottom: 16px; }
+    .stage { margin-bottom: 0; }
+  }
+  @media (max-width: 520px) {
+    .top { flex-wrap: wrap; }
+    .nav { margin: 0; width: 100%; }
+    .grid { grid-template-columns: 1fr; }
+    .tile.feature { grid-column: auto; grid-row: auto; }
+    .tile.feature .price { font-size: 42px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
-    .card { opacity: 1; transform: none; }
+    .tile { opacity: 1; transform: none; }
   }
 </style>
 </head>
 <body>
-<div class="bg"><span></span><span></span><span></span></div>
 
 <div class="wrap">
-  <!-- ---- Store text: edit the name and tagline here ---- -->
+  <header class="top">
+    <!-- ---- Store name ---- -->
+    <div class="logo">
+      <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3 29 28h-7.5L16 17.2 10.5 28H3z"/></svg>
+      My Store
+    </div>
+    <nav class="nav" id="tabs"></nav>
+    <a class="round" href="#" title="Server">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg>
+    </a>
+  </header>
+
   <section class="hero">
     <div>
-      <span class="eyebrow"><i></i> Store is online</span>
-      <h1>My Store</h1>
-      <p>Support the server and unlock ranks, perks and cosmetics. Every purchase helps keep the lights on.</p>
-
-      <div class="glass fields">
-        <div class="field">
-          <label for="username">Minecraft username</label>
-          <input id="username" placeholder="e.g. Notch" autocomplete="off" spellcheck="false">
-          <div class="hint" id="userHint">Type your username to preview your skin.</div>
-        </div>
-        <div class="field">
-          <label for="staff">Staff code</label>
-          <select id="staff"><option value="">No code</option></select>
-          <div class="hint">Picked by a staff member? Choose them to support them.</div>
-        </div>
+      <p class="kicker">Ranks, perks and cosmetics, delivered in-game</p>
+      <h1 id="welcome">Welcome to My Store</h1>
+      <div class="controls">
+        <label class="pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+          <input id="username" placeholder="Minecraft username" autocomplete="off" spellcheck="false">
+        </label>
+        <label class="pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M7.5 7.5h.01"/></svg>
+          <select id="staff"><option value="">No staff code</option></select>
+        </label>
       </div>
+      <div class="hint" id="userHint">Enter your username to preview your skin.</div>
     </div>
 
-    <div class="stage" id="stage">
-      <span class="tag" id="nameTag"></span>
+    <div class="skin-card">
+      <div class="skin-top"><span id="skinName">Steve</span><b>PREVIEW</b></div>
+      <span class="skin-badge" id="skinBadge">No staff code</span>
+      <div class="stage" id="stage"></div>
     </div>
   </section>
 
-  <nav class="tabs" id="tabs"></nav>
-  <div class="grid" id="grid">
+  <main class="grid" id="grid">
+    <div class="skeleton" style="grid-column: span 2; grid-row: span 2"></div>
     <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
-  </div>
+  </main>
 
-  <footer>Payments are processed securely by Tebex.</footer>
+  <footer>Payments are handled by Tebex.</footer>
 </div>
 
 <div class="modal" id="modal">
-  <div class="box glass" role="dialog" aria-modal="true">
+  <div class="box" role="dialog" aria-modal="true">
     <h2 id="modalTitle"></h2>
     <div class="desc" id="modalDesc"></div>
-    <div class="row" style="display:flex; gap:8px; margin-top:20px">
-      <button class="btn ghost" id="modalClose">Close</button>
-      <button class="btn" id="modalBuy">Buy</button>
+    <div class="actions" style="margin-top:22px">
+      <button class="btn" id="modalBuy">Buy now</button>
+      <button class="btn light" id="modalClose">Close</button>
     </div>
   </div>
 </div>
@@ -256,6 +254,7 @@
   // It's safe to put in a web page. Never put your private/secret key here.
   const TEBEX_TOKEN = "14yot-a3de445e89b78fde56a938ed711e63cdd9e0cdf5";
   const API = "https://headless.tebex.io/api";
+  const STORE_NAME = "My Store";
 
   // ---- Staff ----
   // Add one line per staff member. "code" must match a Creator Code you made in
@@ -272,12 +271,14 @@
     name => `https://mc-heads.net/skin/${name}`,
     name => `https://minotar.net/skin/${name}`,
   ];
-  const FLAT_SKIN = name => `https://mc-heads.net/body/${name}/360`;
+  const FLAT_SKIN = name => `https://mc-heads.net/body/${name}/260`;
   const DEFAULT_NAME = "MHF_Steve";
 
   const $ = id => document.getElementById(id);
-  const usernameEl = $("username"), staffEl = $("staff"), stage = $("stage"), nameTag = $("nameTag");
+  const usernameEl = $("username"), staffEl = $("staff"), stage = $("stage");
   const grid = $("grid"), tabs = $("tabs"), userHint = $("userHint");
+
+  const ICON_BAG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>';
 
   function el(tag, props = {}, children = []) {
     const node = Object.assign(document.createElement(tag), props);
@@ -288,7 +289,7 @@
   function toast(message) {
     const t = el("div", { className: "toast", textContent: message });
     $("toasts").append(t);
-    setTimeout(() => t.remove(), 5000);
+    setTimeout(() => t.remove(), 4500);
   }
 
   async function api(path, options = {}) {
@@ -301,11 +302,31 @@
     return json;
   }
 
+  // "$12,680.42" with the cents in grey
+  function priceEl(amount, currency) {
+    let parts;
+    try {
+      parts = new Intl.NumberFormat(undefined, { style: "currency", currency }).formatToParts(Number(amount));
+    } catch (e) {
+      parts = [{ type: "integer", value: String(amount) }];
+    }
+    const cut = parts.findIndex(p => p.type === "decimal");
+    const whole = (cut < 0 ? parts : parts.slice(0, cut)).map(p => p.value).join("");
+    const cents = cut < 0 ? "" : parts.slice(cut).map(p => p.value).join("");
+    return el("div", { className: "price" }, [whole, el("span", { className: "cents", textContent: cents })]);
+  }
+
   // ---------- Staff dropdown ----------
   for (const s of STAFF) staffEl.append(new Option(s.name, s.code));
   const linkCode = new URLSearchParams(location.search).get("code");
   const linked = linkCode && STAFF.find(s => s.code.toLowerCase() === linkCode.toLowerCase());
   if (linked) staffEl.value = linked.code;
+  const updateBadge = () => {
+    const s = STAFF.find(s => s.code === staffEl.value);
+    $("skinBadge").textContent = s ? `Supporting ${s.name}` : "No staff code";
+  };
+  staffEl.addEventListener("change", updateBadge);
+  updateBadge();
 
   // ---------- Skin viewer ----------
   let viewer = null;
@@ -313,16 +334,16 @@
     try {
       const canvas = el("canvas");
       stage.append(canvas);
-      viewer = new skinview3d.SkinViewer({ canvas, width: 320, height: 420 });
+      viewer = new skinview3d.SkinViewer({ canvas, width: 220, height: 280 });
       viewer.animation = new skinview3d.WalkingAnimation();
-      viewer.animation.speed = 0.6;
+      viewer.animation.speed = 0.5;
       viewer.autoRotate = true;
-      viewer.autoRotateSpeed = 0.6;
-      viewer.zoom = 0.85;
+      viewer.autoRotateSpeed = 0.5;
+      viewer.zoom = 0.8;
       viewer.controls.enableZoom = false;
       const resize = () => {
         const h = stage.clientHeight;
-        viewer.setSize(Math.round(h * 0.75), h);
+        if (h) viewer.setSize(Math.round(h * 0.8), h);
       };
       resize();
       addEventListener("resize", resize);
@@ -330,7 +351,7 @@
       viewer = null;
     }
   }
-  const flatImg = viewer ? null : stage.appendChild(el("img", { alt: "Skin preview" }));
+  const flatImg = viewer ? null : stage.appendChild(el("img", { alt: "Skin preview", hidden: true }));
 
   let skinRequest = 0;
   async function loadSkin(name) {
@@ -361,25 +382,23 @@
 
   async function updateSkin() {
     const name = usernameEl.value.trim();
-    userHint.className = "hint";
     if (!name) {
-      nameTag.classList.remove("show");
-      userHint.textContent = "Type your username to preview your skin.";
+      $("welcome").textContent = `Welcome to ${STORE_NAME}`;
+      $("skinName").textContent = "Steve";
+      userHint.textContent = "Enter your username to preview your skin.";
       loadSkin(DEFAULT_NAME);
       return;
     }
     if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) {
-      userHint.className = "hint bad";
       userHint.textContent = "Usernames are 3–16 letters, numbers or underscores.";
       return;
     }
     userHint.textContent = "Loading skin…";
     const ok = await loadSkin(name);
     if (name !== usernameEl.value.trim()) return; // they kept typing
-    nameTag.textContent = name;
-    nameTag.classList.add("show");
-    userHint.className = ok ? "hint good" : "hint bad";
-    userHint.textContent = ok ? `Welcome, ${name}!` : "Couldn't find that skin. Check the spelling.";
+    $("welcome").textContent = `Welcome back, ${name}!`;
+    $("skinName").textContent = name;
+    userHint.textContent = ok ? "" : "Couldn't find that skin. Check the spelling.";
   }
   loadSkin(DEFAULT_NAME);
 
@@ -396,42 +415,59 @@
       categories = data.filter(c => c.packages?.length);
       if (!categories.length) throw new Error("No packages yet.");
       tabs.replaceChildren(...categories.map((c, i) => {
-        const tab = el("button", { className: "tab", textContent: c.name });
+        const tab = el("button", { textContent: c.name });
         tab.onclick = () => showCategory(i);
         return tab;
       }));
       showCategory(0);
     } catch (err) {
-      grid.replaceChildren(el("p", { className: "error", textContent: "Couldn't load the store: " + err.message }));
+      grid.replaceChildren(el("div", { className: "empty", textContent: "Couldn't load the store: " + err.message }));
     }
   }
 
   function showCategory(index) {
     [...tabs.children].forEach((t, i) => t.classList.toggle("active", i === index));
-    grid.replaceChildren(...categories[index].packages.map((pkg, i) => packageCard(pkg, i)));
+    const [first, ...rest] = categories[index].packages;
+    grid.replaceChildren(featureTile(first), ...rest.map((pkg, i) => tile(pkg, i + 1)));
   }
 
-  function packageCard(pkg, i) {
+  function buyButtons(pkg, withInfo) {
     const buy = el("button", { className: "btn", textContent: "Buy now" });
     buy.onclick = () => checkout(pkg.id, buy);
-    const info = el("button", { className: "btn ghost", textContent: "Info", title: "Details" });
+    if (!withInfo || !pkg.description) return el("div", { className: "actions" }, [buy]);
+    const info = el("button", { className: "btn light", textContent: "Details" });
     info.onclick = () => openDetails(pkg);
+    return el("div", { className: "actions" }, [buy, info]);
+  }
 
-    const card = el("div", { className: "card glass" }, [
-      el("div", { className: "thumb" }, pkg.image ? [el("img", { src: pkg.image, alt: "", loading: "lazy" })] : []),
-      el("h3", { textContent: pkg.name }),
-      el("div", { className: "price" }, [String(pkg.total_price), el("small", { textContent: pkg.currency })]),
-      el("div", { className: "row" }, pkg.description ? [info, buy] : [buy]),
-    ]);
-    card.style.transitionDelay = `${Math.min(i, 8) * 60}ms`;
-    card.addEventListener("transitionend", () => { card.style.transitionDelay = ""; }, { once: true });
-    card.addEventListener("pointermove", e => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
-      card.style.setProperty("--my", `${e.clientY - r.top}px`);
-    });
-    appear.observe(card);
-    return card;
+  function reveal(node, i) {
+    node.style.transitionDelay = `${Math.min(i, 8) * 50}ms`;
+    node.addEventListener("transitionend", () => { node.style.transitionDelay = ""; }, { once: true });
+    appear.observe(node);
+    return node;
+  }
+
+  function featureTile(pkg) {
+    const desc = el("div", { className: "desc" });
+    desc.innerHTML = pkg.description || ""; // written by you in the Tebex panel
+    return reveal(el("article", { className: "tile feature" }, [
+      el("div", { className: "tile-head" }, [el("h3", { textContent: pkg.name }), el("span", { className: "meta", textContent: "Featured" })]),
+      priceEl(pkg.total_price, pkg.currency),
+      ...(pkg.image ? [el("img", { className: "feature-img", src: pkg.image, alt: "" })] : []),
+      ...(pkg.description ? [desc] : []),
+      buyButtons(pkg, true),
+    ]), 0);
+  }
+
+  function tile(pkg, i) {
+    const icon = el("span", { className: "icon" });
+    if (pkg.image) icon.append(el("img", { src: pkg.image, alt: "", loading: "lazy" }));
+    else icon.innerHTML = ICON_BAG;
+    return reveal(el("article", { className: "tile" }, [
+      el("div", { className: "tile-head" }, [el("h3", { textContent: pkg.name }), icon]),
+      priceEl(pkg.total_price, pkg.currency),
+      buyButtons(pkg, true),
+    ]), i);
   }
 
   // ---------- Details modal ----------
@@ -453,8 +489,8 @@
     const staffCode = staffEl.value;
     if (!username) {
       closeModal();
-      usernameEl.focus();
-      usernameEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      scrollTo({ top: 0, behavior: "smooth" });
+      usernameEl.focus({ preventScroll: true });
       toast("Enter your Minecraft username first.");
       return;
     }
