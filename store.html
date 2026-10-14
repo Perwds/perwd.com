@@ -13,8 +13,12 @@
   header h1 { margin:0 0 8px; }
   header p { margin:0; color:var(--muted); }
   main { max-width:1100px; margin:0 auto; padding:0 16px 48px; }
-  .user { display:flex; gap:8px; justify-content:center; margin:0 0 24px; }
-  .user input { padding:10px 12px; border-radius:8px; border:1px solid #333; background:var(--card); color:var(--text); }
+  .user { display:flex; gap:24px; justify-content:center; align-items:center; flex-wrap:wrap; margin:0 0 24px; }
+  .user .fields { display:flex; flex-direction:column; gap:10px; min-width:240px; }
+  .user label { display:flex; flex-direction:column; gap:4px; color:var(--muted); font-size:14px; }
+  .user input, .user select { padding:10px 12px; border-radius:8px; border:1px solid #333; background:var(--card); color:var(--text); font:inherit; }
+  .skin { width:120px; height:240px; display:flex; align-items:center; justify-content:center; background:var(--card); border-radius:12px; color:var(--muted); font-size:13px; text-align:center; }
+  .skin img { max-width:100%; max-height:100%; image-rendering:pixelated; }
   h2 { margin:32px 0 12px; }
   .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; }
   .card { background:var(--card); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px; }
@@ -34,9 +38,16 @@
 </header>
 
 <main>
-  <!-- Remove this block if your store doesn't need a player username -->
   <div class="user">
-    <input id="username" placeholder="Your in-game username">
+    <div class="skin" id="skin">Enter your username to see your skin</div>
+    <div class="fields">
+      <label>Minecraft username
+        <input id="username" placeholder="Your in-game username" autocomplete="off">
+      </label>
+      <label>Staff code (who sent you?)
+        <select id="staff"><option value="">None</option></select>
+      </label>
+    </div>
   </div>
 
   <div id="store">Loading…</div>
@@ -49,7 +60,45 @@
   const TEBEX_TOKEN = "14yot-a3de445e89b78fde56a938ed711e63cdd9e0cdf5";
   const API = "https://headless.tebex.io/api";
 
+  // ---- Staff ----
+  // Add one line per staff member. "code" must match a Creator Code you made in
+  // the Tebex panel. The percentage each person gets is set on that Creator Code
+  // in Tebex, which tracks the sales and pays out. It is NOT set here.
+  // Share links work too: perwd.com/store.html?code=STEVE picks that staff member.
+  const STAFF = [
+    { name: "Steve", code: "STEVE" },
+    { name: "Alex",  code: "ALEX" },
+  ];
+
   const storeEl = document.getElementById("store");
+  const usernameEl = document.getElementById("username");
+  const staffEl = document.getElementById("staff");
+  const skinEl = document.getElementById("skin");
+
+  // Fill the staff dropdown and preselect from ?code= in the link
+  for (const s of STAFF) staffEl.append(new Option(s.name, s.code));
+  const linkCode = new URLSearchParams(location.search).get("code");
+  const linked = linkCode && STAFF.find(s => s.code.toLowerCase() === linkCode.toLowerCase());
+  if (linked) staffEl.value = linked.code;
+
+  // Skin preview, updated shortly after the player stops typing
+  let skinTimer;
+  usernameEl.addEventListener("input", () => {
+    clearTimeout(skinTimer);
+    skinTimer = setTimeout(showSkin, 400);
+  });
+
+  function showSkin() {
+    const name = usernameEl.value.trim();
+    skinEl.textContent = "";
+    if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) {
+      skinEl.textContent = name ? "That isn't a valid Minecraft username" : "Enter your username to see your skin";
+      return;
+    }
+    const img = el("img", { src: `https://mc-heads.net/body/${name}/240`, alt: `${name}'s skin` });
+    img.onerror = () => { skinEl.textContent = "Couldn't load that skin"; };
+    skinEl.append(img);
+  }
 
   async function api(path, options = {}) {
     const res = await fetch(API + path, {
@@ -93,7 +142,8 @@
   }
 
   async function buy(packageId, button) {
-    const username = document.getElementById("username")?.value.trim();
+    const username = usernameEl.value.trim();
+    const staffCode = staffEl.value;
     button.disabled = true;
     try {
       const here = location.href;
@@ -110,6 +160,13 @@
         method: "POST",
         body: JSON.stringify({ package_id: packageId, quantity: 1 }),
       });
+      if (staffCode) {
+        // Credits this sale to the staff member's Creator Code in Tebex
+        await api(`/accounts/${TEBEX_TOKEN}/baskets/${basket.ident}/creator-codes`, {
+          method: "POST",
+          body: JSON.stringify({ creator_code: staffCode }),
+        });
+      }
       location.href = basket.links.checkout; // Tebex handles payment
     } catch (err) {
       alert("Checkout failed: " + err.message);
