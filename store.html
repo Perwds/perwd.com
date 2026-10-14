@@ -4,54 +4,251 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
+<!-- 3D skin viewer. If it fails to load, the page falls back to a flat skin image. -->
+<script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
 <style>
-  /* ---- Edit the look of the store here ---- */
-  :root { --bg:#0f1115; --card:#181b22; --text:#e8eaf0; --muted:#9aa1ad; --accent:#5b8cff; }
+  /* ---- Colours: change these to restyle the whole store ---- */
+  :root {
+    --bg: #07080d;
+    --panel: rgba(255,255,255,.04);
+    --panel-border: rgba(255,255,255,.08);
+    --text: #f2f4fa;
+    --muted: #8d93a5;
+    --accent: #7c5cff;
+    --accent-2: #22d3ee;
+    --good: #34d399;
+    --bad: #fb7185;
+    --radius: 18px;
+  }
+
   * { box-sizing: border-box; }
-  body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); }
-  header { padding:32px 16px; text-align:center; }
-  header h1 { margin:0 0 8px; }
-  header p { margin:0; color:var(--muted); }
-  main { max-width:1100px; margin:0 auto; padding:0 16px 48px; }
-  .user { display:flex; gap:24px; justify-content:center; align-items:center; flex-wrap:wrap; margin:0 0 24px; }
-  .user .fields { display:flex; flex-direction:column; gap:10px; min-width:240px; }
-  .user label { display:flex; flex-direction:column; gap:4px; color:var(--muted); font-size:14px; }
-  .user input, .user select { padding:10px 12px; border-radius:8px; border:1px solid #333; background:var(--card); color:var(--text); font:inherit; }
-  .skin { width:120px; height:240px; display:flex; align-items:center; justify-content:center; background:var(--card); border-radius:12px; color:var(--muted); font-size:13px; text-align:center; }
-  .skin img { max-width:100%; max-height:100%; image-rendering:pixelated; }
-  h2 { margin:32px 0 12px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; }
-  .card { background:var(--card); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px; }
-  .card img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; background:#222; }
-  .card .price { color:var(--muted); }
-  .card button { margin-top:auto; padding:10px; border:0; border-radius:8px; background:var(--accent); color:#fff; font-weight:600; cursor:pointer; }
-  .card button:disabled { opacity:.6; cursor:wait; }
-  .error { color:#ff7b7b; text-align:center; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; min-height: 100vh; overflow-x: hidden;
+    font-family: "Outfit", system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+  }
+
+  /* Animated background glow */
+  .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .bg span {
+    position: absolute; width: 50vmax; height: 50vmax; border-radius: 50%;
+    filter: blur(90px); opacity: .35; animation: drift 22s ease-in-out infinite alternate;
+  }
+  .bg span:nth-child(1) { background: var(--accent); top: -20vmax; left: -10vmax; }
+  .bg span:nth-child(2) { background: var(--accent-2); bottom: -25vmax; right: -15vmax; animation-delay: -8s; }
+  .bg span:nth-child(3) { background: #ec4899; top: 40%; left: 45%; width: 30vmax; height: 30vmax; opacity: .18; animation-delay: -14s; }
+  .bg::after { /* subtle grid */
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+  @keyframes drift {
+    to { transform: translate(8vmax, 6vmax) scale(1.15); }
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+
+  /* Hero */
+  .hero {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center;
+    padding: 64px 0 40px;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--panel-border); color: var(--muted); font-size: 14px;
+  }
+  .eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: var(--good); box-shadow: 0 0 12px var(--good); animation: pulse 2s infinite; }
+  @keyframes pulse { 50% { opacity: .4; } }
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 76px); line-height: 1; margin: 18px 0 14px; font-weight: 800; letter-spacing: -.02em;
+    background: linear-gradient(100deg, #fff 20%, var(--accent) 50%, var(--accent-2) 80%);
+    background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shine 6s linear infinite;
+  }
+  @keyframes shine { to { background-position: 200% center; } }
+  .hero p { color: var(--muted); font-size: 18px; margin: 0 0 28px; max-width: 46ch; }
+
+  .glass {
+    background: var(--panel); border: 1px solid var(--panel-border); border-radius: var(--radius);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+
+  .fields { display: grid; gap: 14px; padding: 20px; }
+  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; letter-spacing: .04em; text-transform: uppercase; }
+  .field input, .field select {
+    width: 100%; padding: 14px 16px; border-radius: 12px; font: inherit; font-size: 16px;
+    background: rgba(0,0,0,.35); color: var(--text); border: 1px solid var(--panel-border);
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(124,92,255,.25); }
+  .field select option { background: #12131a; }
+  .hint { font-size: 13px; color: var(--muted); min-height: 1.2em; margin-top: 6px; transition: color .2s; }
+  .hint.good { color: var(--good); }
+  .hint.bad { color: var(--bad); }
+
+  /* Skin stage */
+  .stage { position: relative; height: 440px; display: flex; align-items: center; justify-content: center; }
+  .stage::before { /* glowing pedestal */
+    content: ""; position: absolute; bottom: 30px; width: 220px; height: 40px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(124,92,255,.6), transparent 70%); filter: blur(6px);
+    animation: pulse 3s infinite;
+  }
+  .stage canvas, .stage img { position: relative; max-height: 100%; }
+  .stage img { height: 360px; image-rendering: pixelated; animation: float 4s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-12px); } }
+  .stage .tag {
+    position: absolute; top: 12px; padding: 6px 14px; border-radius: 999px; font-weight: 600;
+    background: rgba(0,0,0,.5); border: 1px solid var(--panel-border);
+    opacity: 0; transform: translateY(-6px); transition: opacity .3s, transform .3s;
+  }
+  .stage .tag.show { opacity: 1; transform: none; }
+  .stage.swap canvas, .stage.swap img { animation: pop .5s ease; }
+  @keyframes pop { 0% { transform: scale(.85); opacity: .3; } 100% { transform: none; opacity: 1; } }
+
+  /* Category tabs */
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0 20px; position: sticky; top: 0; z-index: 5; padding: 12px 0; }
+  .tabs:empty { display: none; }
+  .tabs::before { content: ""; position: absolute; inset: 0 -100vw; background: rgba(7,8,13,.7); backdrop-filter: blur(12px); z-index: -1; border-bottom: 1px solid var(--panel-border); }
+  .tab {
+    padding: 10px 18px; border-radius: 999px; border: 1px solid var(--panel-border); cursor: pointer;
+    background: var(--panel); color: var(--muted); font: inherit; font-weight: 500; transition: all .25s;
+  }
+  .tab:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+  .tab.active { color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; box-shadow: 0 8px 24px rgba(124,92,255,.35); }
+
+  /* Package grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; padding-bottom: 80px; }
+  .card {
+    position: relative; padding: 18px; display: flex; flex-direction: column; gap: 10px; overflow: hidden;
+    opacity: 0; transform: translateY(24px);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, border-color .35s, opacity .5s;
+  }
+  .card.in { opacity: 1; transform: none; }
+  .card:hover { transform: translateY(-6px); border-color: rgba(124,92,255,.5); box-shadow: 0 20px 50px rgba(124,92,255,.25); }
+  .card::before { /* glow that follows the mouse */
+    content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity .3s; pointer-events: none;
+    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%), rgba(124,92,255,.18), transparent 60%);
+  }
+  .card:hover::before { opacity: 1; }
+  .card .thumb {
+    aspect-ratio: 1; border-radius: 12px; background: rgba(0,0,0,.3); overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card .thumb img { width: 80%; height: 80%; object-fit: contain; transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+  .card:hover .thumb img { transform: scale(1.08) rotate(-2deg); }
+  .card h3 { margin: 4px 0 0; font-size: 19px; }
+  .card .price { font-size: 26px; font-weight: 800; }
+  .card .price small { font-size: 14px; color: var(--muted); font-weight: 500; margin-left: 4px; }
+  .card .row { display: flex; gap: 8px; margin-top: auto; }
+
+  .btn {
+    position: relative; overflow: hidden; flex: 1; padding: 13px; border: 0; border-radius: 12px; cursor: pointer;
+    font: inherit; font-weight: 600; color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    transition: transform .15s, filter .2s;
+  }
+  .btn:hover { filter: brightness(1.12); }
+  .btn:active { transform: scale(.96); }
+  .btn::after { /* shine sweep */
+    content: ""; position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+    background: linear-gradient(110deg, transparent, rgba(255,255,255,.35), transparent);
+    transition: left .6s;
+  }
+  .btn:hover::after { left: 140%; }
+  .btn.ghost { flex: 0 0 auto; padding: 13px 16px; background: var(--panel); border: 1px solid var(--panel-border); }
+  .btn:disabled { cursor: wait; filter: grayscale(.4) brightness(.8); }
+  .btn .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -3px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Loading skeletons */
+  .skeleton { height: 360px; border-radius: var(--radius); background: linear-gradient(100deg, var(--panel) 30%, rgba(255,255,255,.08) 50%, var(--panel) 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  .error { text-align: center; color: var(--bad); padding: 40px 0; }
+
+  /* Details modal */
+  .modal { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,.6); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .modal.open { opacity: 1; pointer-events: auto; }
+  .modal .box { width: min(560px, 100%); max-height: 85vh; overflow: auto; padding: 24px; background: #11121a; transform: scale(.94) translateY(10px); transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+  .modal.open .box { transform: none; }
+  .modal h2 { margin-top: 0; }
+  .modal .desc { color: var(--muted); line-height: 1.6; }
+  .modal .desc img { max-width: 100%; }
+
+  /* Toasts */
+  .toasts { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 30; display: grid; gap: 8px; width: min(420px, calc(100% - 32px)); }
+  .toast { padding: 14px 18px; border-radius: 12px; background: #1a1b25; border: 1px solid var(--panel-border); border-left: 4px solid var(--bad); animation: toastIn .35s cubic-bezier(.2,.8,.2,1); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(16px); } }
+
+  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 0 0 40px; }
+
+  @media (max-width: 820px) {
+    .hero { grid-template-columns: 1fr; padding-top: 40px; }
+    .stage { height: 340px; order: -1; }
+    .stage img { height: 280px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .card { opacity: 1; transform: none; }
+  }
 </style>
 </head>
 <body>
+<div class="bg"><span></span><span></span><span></span></div>
 
-<!-- ---- Edit the store text/layout here ---- -->
-<header>
-  <h1>My Store</h1>
-  <p>Support the server and get cool perks.</p>
-</header>
+<div class="wrap">
+  <!-- ---- Store text: edit the name and tagline here ---- -->
+  <section class="hero">
+    <div>
+      <span class="eyebrow"><i></i> Store is online</span>
+      <h1>My Store</h1>
+      <p>Support the server and unlock ranks, perks and cosmetics. Every purchase helps keep the lights on.</p>
 
-<main>
-  <div class="user">
-    <div class="skin" id="skin">Enter your username to see your skin</div>
-    <div class="fields">
-      <label>Minecraft username
-        <input id="username" placeholder="Your in-game username" autocomplete="off">
-      </label>
-      <label>Staff code (who sent you?)
-        <select id="staff"><option value="">None</option></select>
-      </label>
+      <div class="glass fields">
+        <div class="field">
+          <label for="username">Minecraft username</label>
+          <input id="username" placeholder="e.g. Notch" autocomplete="off" spellcheck="false">
+          <div class="hint" id="userHint">Type your username to preview your skin.</div>
+        </div>
+        <div class="field">
+          <label for="staff">Staff code</label>
+          <select id="staff"><option value="">No code</option></select>
+          <div class="hint">Picked by a staff member? Choose them to support them.</div>
+        </div>
+      </div>
     </div>
+
+    <div class="stage" id="stage">
+      <span class="tag" id="nameTag"></span>
+    </div>
+  </section>
+
+  <nav class="tabs" id="tabs"></nav>
+  <div class="grid" id="grid">
+    <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
   </div>
 
-  <div id="store">Loading…</div>
-</main>
+  <footer>Payments are processed securely by Tebex.</footer>
+</div>
+
+<div class="modal" id="modal">
+  <div class="box glass" role="dialog" aria-modal="true">
+    <h2 id="modalTitle"></h2>
+    <div class="desc" id="modalDesc"></div>
+    <div class="row" style="display:flex; gap:8px; margin-top:20px">
+      <button class="btn ghost" id="modalClose">Close</button>
+      <button class="btn" id="modalBuy">Buy</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
 
 <script>
   // ---- Settings ----
@@ -70,34 +267,28 @@
     { name: "Alex",  code: "ALEX" },
   ];
 
-  const storeEl = document.getElementById("store");
-  const usernameEl = document.getElementById("username");
-  const staffEl = document.getElementById("staff");
-  const skinEl = document.getElementById("skin");
+  // Skin sources, tried in order until one works
+  const SKIN_SOURCES = [
+    name => `https://mc-heads.net/skin/${name}`,
+    name => `https://minotar.net/skin/${name}`,
+  ];
+  const FLAT_SKIN = name => `https://mc-heads.net/body/${name}/360`;
+  const DEFAULT_NAME = "MHF_Steve";
 
-  // Fill the staff dropdown and preselect from ?code= in the link
-  for (const s of STAFF) staffEl.append(new Option(s.name, s.code));
-  const linkCode = new URLSearchParams(location.search).get("code");
-  const linked = linkCode && STAFF.find(s => s.code.toLowerCase() === linkCode.toLowerCase());
-  if (linked) staffEl.value = linked.code;
+  const $ = id => document.getElementById(id);
+  const usernameEl = $("username"), staffEl = $("staff"), stage = $("stage"), nameTag = $("nameTag");
+  const grid = $("grid"), tabs = $("tabs"), userHint = $("userHint");
 
-  // Skin preview, updated shortly after the player stops typing
-  let skinTimer;
-  usernameEl.addEventListener("input", () => {
-    clearTimeout(skinTimer);
-    skinTimer = setTimeout(showSkin, 400);
-  });
+  function el(tag, props = {}, children = []) {
+    const node = Object.assign(document.createElement(tag), props);
+    node.append(...children);
+    return node;
+  }
 
-  function showSkin() {
-    const name = usernameEl.value.trim();
-    skinEl.textContent = "";
-    if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) {
-      skinEl.textContent = name ? "That isn't a valid Minecraft username" : "Enter your username to see your skin";
-      return;
-    }
-    const img = el("img", { src: `https://mc-heads.net/body/${name}/240`, alt: `${name}'s skin` });
-    img.onerror = () => { skinEl.textContent = "Couldn't load that skin"; };
-    skinEl.append(img);
+  function toast(message) {
+    const t = el("div", { className: "toast", textContent: message });
+    $("toasts").append(t);
+    setTimeout(() => t.remove(), 5000);
   }
 
   async function api(path, options = {}) {
@@ -110,51 +301,171 @@
     return json;
   }
 
-  function el(tag, props = {}, children = []) {
-    const node = Object.assign(document.createElement(tag), props);
-    node.append(...children);
-    return node;
+  // ---------- Staff dropdown ----------
+  for (const s of STAFF) staffEl.append(new Option(s.name, s.code));
+  const linkCode = new URLSearchParams(location.search).get("code");
+  const linked = linkCode && STAFF.find(s => s.code.toLowerCase() === linkCode.toLowerCase());
+  if (linked) staffEl.value = linked.code;
+
+  // ---------- Skin viewer ----------
+  let viewer = null;
+  if (window.skinview3d) {
+    try {
+      const canvas = el("canvas");
+      stage.append(canvas);
+      viewer = new skinview3d.SkinViewer({ canvas, width: 320, height: 420 });
+      viewer.animation = new skinview3d.WalkingAnimation();
+      viewer.animation.speed = 0.6;
+      viewer.autoRotate = true;
+      viewer.autoRotateSpeed = 0.6;
+      viewer.zoom = 0.85;
+      viewer.controls.enableZoom = false;
+      const resize = () => {
+        const h = stage.clientHeight;
+        viewer.setSize(Math.round(h * 0.75), h);
+      };
+      resize();
+      addEventListener("resize", resize);
+    } catch (e) {
+      viewer = null;
+    }
   }
+  const flatImg = viewer ? null : stage.appendChild(el("img", { alt: "Skin preview" }));
+
+  let skinRequest = 0;
+  async function loadSkin(name) {
+    const id = ++skinRequest;
+    stage.classList.remove("swap"); void stage.offsetWidth; stage.classList.add("swap");
+    if (viewer) {
+      for (const source of SKIN_SOURCES) {
+        try {
+          // Cache-buster so a skin you just changed isn't served stale
+          await viewer.loadSkin(`${source(name)}?t=${Date.now()}`);
+          return id === skinRequest;
+        } catch (e) { /* try the next source */ }
+      }
+      return false;
+    }
+    return new Promise(resolve => {
+      flatImg.onload = () => { flatImg.hidden = false; resolve(id === skinRequest); };
+      flatImg.onerror = () => { flatImg.hidden = true; resolve(false); };
+      flatImg.src = `${FLAT_SKIN(name)}?t=${Date.now()}`;
+    });
+  }
+
+  let typingTimer;
+  usernameEl.addEventListener("input", () => {
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(updateSkin, 450);
+  });
+
+  async function updateSkin() {
+    const name = usernameEl.value.trim();
+    userHint.className = "hint";
+    if (!name) {
+      nameTag.classList.remove("show");
+      userHint.textContent = "Type your username to preview your skin.";
+      loadSkin(DEFAULT_NAME);
+      return;
+    }
+    if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) {
+      userHint.className = "hint bad";
+      userHint.textContent = "Usernames are 3–16 letters, numbers or underscores.";
+      return;
+    }
+    userHint.textContent = "Loading skin…";
+    const ok = await loadSkin(name);
+    if (name !== usernameEl.value.trim()) return; // they kept typing
+    nameTag.textContent = name;
+    nameTag.classList.add("show");
+    userHint.className = ok ? "hint good" : "hint bad";
+    userHint.textContent = ok ? `Welcome, ${name}!` : "Couldn't find that skin. Check the spelling.";
+  }
+  loadSkin(DEFAULT_NAME);
+
+  // ---------- Store ----------
+  const appear = new IntersectionObserver(entries => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); appear.unobserve(e.target); }
+  }, { threshold: 0.1 });
+
+  let categories = [];
 
   async function loadStore() {
     try {
-      const { data: categories } = await api(`/accounts/${TEBEX_TOKEN}/categories?includePackages=1`);
-      storeEl.textContent = "";
-      for (const category of categories) {
-        if (!category.packages?.length) continue;
-        const grid = el("div", { className: "grid" });
-        for (const pkg of category.packages) {
-          const button = el("button", { textContent: "Buy" });
-          button.onclick = () => buy(pkg.id, button);
-          grid.append(el("div", { className: "card" }, [
-            ...(pkg.image ? [el("img", { src: pkg.image, alt: pkg.name })] : []),
-            el("strong", { textContent: pkg.name }),
-            el("span", { className: "price", textContent: `${pkg.total_price} ${pkg.currency}` }),
-            button,
-          ]));
-        }
-        storeEl.append(el("h2", { textContent: category.name }), grid);
-      }
+      const { data } = await api(`/accounts/${TEBEX_TOKEN}/categories?includePackages=1`);
+      categories = data.filter(c => c.packages?.length);
+      if (!categories.length) throw new Error("No packages yet.");
+      tabs.replaceChildren(...categories.map((c, i) => {
+        const tab = el("button", { className: "tab", textContent: c.name });
+        tab.onclick = () => showCategory(i);
+        return tab;
+      }));
+      showCategory(0);
     } catch (err) {
-      storeEl.innerHTML = "";
-      storeEl.append(el("p", { className: "error", textContent: "Couldn't load the store: " + err.message }));
+      grid.replaceChildren(el("p", { className: "error", textContent: "Couldn't load the store: " + err.message }));
     }
   }
 
-  async function buy(packageId, button) {
+  function showCategory(index) {
+    [...tabs.children].forEach((t, i) => t.classList.toggle("active", i === index));
+    grid.replaceChildren(...categories[index].packages.map((pkg, i) => packageCard(pkg, i)));
+  }
+
+  function packageCard(pkg, i) {
+    const buy = el("button", { className: "btn", textContent: "Buy now" });
+    buy.onclick = () => checkout(pkg.id, buy);
+    const info = el("button", { className: "btn ghost", textContent: "Info", title: "Details" });
+    info.onclick = () => openDetails(pkg);
+
+    const card = el("div", { className: "card glass" }, [
+      el("div", { className: "thumb" }, pkg.image ? [el("img", { src: pkg.image, alt: "", loading: "lazy" })] : []),
+      el("h3", { textContent: pkg.name }),
+      el("div", { className: "price" }, [String(pkg.total_price), el("small", { textContent: pkg.currency })]),
+      el("div", { className: "row" }, pkg.description ? [info, buy] : [buy]),
+    ]);
+    card.style.transitionDelay = `${Math.min(i, 8) * 60}ms`;
+    card.addEventListener("transitionend", () => { card.style.transitionDelay = ""; }, { once: true });
+    card.addEventListener("pointermove", e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    });
+    appear.observe(card);
+    return card;
+  }
+
+  // ---------- Details modal ----------
+  const modal = $("modal");
+  function openDetails(pkg) {
+    $("modalTitle").textContent = pkg.name;
+    $("modalDesc").innerHTML = pkg.description; // written by you in the Tebex panel
+    $("modalBuy").onclick = () => checkout(pkg.id, $("modalBuy"));
+    modal.classList.add("open");
+  }
+  const closeModal = () => modal.classList.remove("open");
+  $("modalClose").onclick = closeModal;
+  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+  addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+  // ---------- Checkout ----------
+  async function checkout(packageId, button) {
     const username = usernameEl.value.trim();
     const staffCode = staffEl.value;
+    if (!username) {
+      closeModal();
+      usernameEl.focus();
+      usernameEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      toast("Enter your Minecraft username first.");
+      return;
+    }
+    const label = button.textContent;
     button.disabled = true;
+    button.replaceChildren(el("span", { className: "spin" }));
     try {
       const here = location.href;
       const { data: basket } = await api(`/accounts/${TEBEX_TOKEN}/baskets`, {
         method: "POST",
-        body: JSON.stringify({
-          complete_url: here,
-          cancel_url: here,
-          complete_auto_redirect: true,
-          ...(username ? { username } : {}),
-        }),
+        body: JSON.stringify({ complete_url: here, cancel_url: here, complete_auto_redirect: true, username }),
       });
       await api(`/baskets/${basket.ident}/packages`, {
         method: "POST",
@@ -169,8 +480,9 @@
       }
       location.href = basket.links.checkout; // Tebex handles payment
     } catch (err) {
-      alert("Checkout failed: " + err.message);
+      toast("Checkout failed: " + err.message);
       button.disabled = false;
+      button.textContent = label;
     }
   }
 
