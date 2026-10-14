@@ -1,0 +1,4 @@
+std = "roblox+lune"
+
+[lints]
+shadowing = "allow"

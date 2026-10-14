@@ -1,0 +1,6 @@
+---
+base: lua51
+name: lune
+globals:
+  _G:
+    property: read-only
